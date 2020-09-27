@@ -1,0 +1,2 @@
+# Flask-APIFairy Change Log
+
