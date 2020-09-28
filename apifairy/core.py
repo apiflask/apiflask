@@ -107,7 +107,25 @@ class APIFairy:
                     tag['description'] = module.__doc__.strip()
                 tags.append(tag)
 
-        # security
+        ma_plugin = MarshmallowPlugin(schema_name_resolver=resolver)
+        spec = APISpec(
+            title=self.title,
+            version=self.version,
+            openapi_version='3.0.2',
+            plugins=[ma_plugin],
+            info=info,
+            tags=tags,
+        )
+
+        # configure flask-marshmallow URL types
+        ma_plugin.converter.field_mapping[fields.URLFor] = ('string', 'url')
+        ma_plugin.converter.field_mapping[fields.AbsoluteURLFor] = \
+            ('string', 'url')
+        if sqla is not None:
+            ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = \
+                ('string', 'url')
+
+        # security schemes
         auth_schemes = []
         auth_names = []
         for rule in current_app.url_map.iter_rules():
@@ -156,26 +174,6 @@ class APIFairy:
             elif auth.__class__.__doc__:
                 security_schemes[name]['description'] = \
                     auth.__class__.__doc__.strip()
-
-        ma_plugin = MarshmallowPlugin(schema_name_resolver=resolver)
-        spec = APISpec(
-            title=self.title,
-            version=self.version,
-            openapi_version='3.0.2',
-            plugins=[ma_plugin],
-            info=info,
-            tags=tags,
-        )
-
-        # configure flask-marshmallow URL types
-        ma_plugin.converter.field_mapping[fields.URLFor] = ('string', 'url')
-        ma_plugin.converter.field_mapping[fields.AbsoluteURLFor] = \
-            ('string', 'url')
-        if sqla is not None:
-            ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = \
-                ('string', 'url')
-
-        # security schemes
         for name, scheme in security_schemes.items():
             spec.components.security_scheme(name, scheme)
 
@@ -188,21 +186,21 @@ class APIFairy:
             view_func = current_app.view_functions[rule.endpoint]
             if not hasattr(view_func, '_spec'):
                 continue
+            tag = None
             if '.' in rule.endpoint:
                 tag = rule.endpoint.split('.', 1)[0].title()
-            else:
-                continue
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
                 if method not in rule.methods:
                     continue
                 operation = {
-                    'tags': [tag],
                     'parameters': [
                         {'in': location, 'schema': schema}
                         for schema, location in view_func._spec.get('args', [])
                         if location != 'body'
                     ],
                 }
+                if tag:
+                    operation['tags'] = [tag]
                 docs = (view_func.__doc__ or '').strip().split('\n')
                 if docs:
                     operation['summary'] = docs[0]
