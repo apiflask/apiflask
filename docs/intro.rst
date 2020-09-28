@@ -6,7 +6,7 @@
 Overview
 ========
 
-APIFairy is a minimalistic API framework with the following goals:
+APIFairy is a minimalistic API framework for Flask with the following goals:
 
 - Give you a way to specify what the input arguments for each endpoint are,
   and automatically validate them for you.
@@ -19,13 +19,13 @@ APIFairy is a minimalistic API framework with the following goals:
 Below you can see an example API endpoint augmented with
 APIFairy decorators::
 
-    from flask_apifairy import authenticate, arguments, response
+    from apifairy import authenticate, arguments, response
 
     # ...
 
     @posts_blueprint.route('/posts/<int:id>', methods=['PUT'])
     @authenticate(token_auth)
-    @argument(update_post_schema)
+    @arguments(update_post_schema)
     @response(post_schema)
     @other_responses({404: 'Post not found'})
     def put(updated_post, id):
@@ -36,12 +36,12 @@ APIFairy decorators::
         db.session.commit()
         return post
 
-APIFairy's decorators are wrappers for popular packages. In the example above,
-``token_auth`` is an intialized authentication object from the Flask-HTTPAuth
-extension, and ``post_schema`` and ``update_post_schema`` are Flask-Marshmallow
-schema objects. These wrappers allow Flask-APIFairy to automatically generate
-documentation using the OpenAPI 3.x standard. Below is a screenshot of the
-documentation for the above endpoint:
+APIFairy's decorators are simple wrappers for existing solutions. In the
+example above, ``token_auth`` is an intialized authentication object from the
+Flask-HTTPAuth extension, and ``post_schema`` and ``update_post_schema`` are
+Flask-Marshmallow schema objects. These wrappers allow Flask-APIFairy to
+automatically generate documentation using the OpenAPI 3.x standard. Below is a
+screenshot of the documentation for the above endpoint:
 
 .. image:: _static/apispec-example.png
   :width: 100%
