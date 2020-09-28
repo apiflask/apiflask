@@ -43,18 +43,26 @@ def response(schema, status_code=200, description=None):
                   description=description)
 
         @wraps(f)
-        def _respond_with(*args, **kwargs):
+        def _response(*args, **kwargs):
             rv = f(*args, **kwargs)
             if isinstance(rv, Response):  # pragma: no cover
                 raise RuntimeError(
                     'The @response decorator cannot handle Response objects.')
             if isinstance(rv, tuple):
-                if len(rv) == 2 and not isinstance(rv[1], int):
-                    rv = (rv[0], status_code, rv[1])
-                return schema.jsonify(rv[0]), *rv[1:]
+                json = schema.jsonify(rv[0])
+                if len(rv) == 2:
+                    if not isinstance(rv[1], int):
+                        rv = (json, status_code, rv[1])
+                    else:
+                        rv = (json, rv[1])
+                elif len(rv) >= 3:
+                    rv = (json, rv[1], rv[2])
+                else:
+                    rv = json
+                return rv
             else:
                 return schema.jsonify(rv), status_code
-        return _respond_with
+        return _response
     return decorator
 
 
