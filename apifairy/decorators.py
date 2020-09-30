@@ -1,7 +1,23 @@
 from functools import wraps
 
 from flask import Response
-from webargs.flaskparser import use_args
+from webargs.flaskparser import FlaskParser as BaseFlaskParser
+
+from apifairy.exceptions import ValidationError
+
+
+class FlaskParser(BaseFlaskParser):
+    DEFAULT_VALIDATION_STATUS = 400
+
+    def handle_error(self, error, req, schema, *, error_status_code,
+                     error_headers):
+        raise ValidationError(
+            error_status_code or self.DEFAULT_VALIDATION_STATUS,
+            error.messages)
+
+
+parser = FlaskParser()
+use_args = parser.use_args
 
 
 def _annotate(f, **kwargs):
@@ -21,19 +37,19 @@ def authenticate(auth, **kwargs):
     return decorator
 
 
-def arguments(schema, location='query'):
+def arguments(schema, location='query', **kwargs):
     def decorator(f):
         if not hasattr(f, '_spec') or f._spec.get('args') is None:
             _annotate(f, args=[])
         f._spec['args'].append((schema, location))
-        return use_args(schema, location=location)(f)
+        return use_args(schema, location=location, **kwargs)(f)
     return decorator
 
 
-def body(schema):
+def body(schema, **kwargs):
     def decorator(f):
         _annotate(f, body=schema)
-        return use_args(schema, location='json')(f)
+        return use_args(schema, location='json', **kwargs)(f)
     return decorator
 
 

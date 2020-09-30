@@ -16,6 +16,8 @@ except ImportError:
     HTTPBasicAuth = None
     HTTPTokenAuth = None
 
+from apifairy.exceptions import ValidationError
+
 
 class APIFairy:
     def __init__(self, app=None, title='No title', version='No version',
@@ -28,6 +30,7 @@ class APIFairy:
         self.ui_path = ui_path
         self.apispec_path = apispec_path
         self.apispec_callback = None
+        self.error_handler = self.default_error_handler
         self._apispec = None
         if app is not None:
             self.init_app(app)
@@ -50,9 +53,20 @@ class APIFairy:
         if self.apispec_path or self.ui_path:
             app.register_blueprint(bp)
 
+        @app.errorhandler(ValidationError)
+        def http_error(error):
+            return self.error_handler(error.status_code, error.messages)
+
     def process_apispec(self, f):
         self.apispec_callback = f
         return f
+
+    def error_handler(self, f):
+        self.error_handler = f
+        return f
+
+    def default_error_handler(self, status_code, messages):
+        return {'messages': messages}, status_code
 
     @property
     def apispec(self):

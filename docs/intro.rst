@@ -19,13 +19,13 @@ APIFairy is a minimalistic API framework for Flask with the following goals:
 Below you can see an example API endpoint augmented with
 APIFairy decorators::
 
-    from apifairy import authenticate, arguments, response
+    from apifairy import authenticate, body, response
 
     # ...
 
     @posts_blueprint.route('/posts/<int:id>', methods=['PUT'])
     @authenticate(token_auth)
-    @arguments(update_post_schema)
+    @body(update_post_schema)
     @response(post_schema)
     @other_responses({404: 'Post not found'})
     def put(updated_post, id):

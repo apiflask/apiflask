@@ -25,10 +25,20 @@ class TestAPIFairy(unittest.TestCase):
         client = app.test_client()
 
         rv = client.post('/foo')
-        assert rv.status_code == 422
+        assert rv.status_code == 400
+        assert rv.json == {
+            'messages': {
+                'json': {'name': ['Missing data for required field.']}
+            }
+        }
 
         rv = client.post('/foo', json={'id': 1})
-        assert rv.status_code == 422
+        assert rv.status_code == 400
+        assert rv.json == {
+            'messages': {
+                'json': {'name': ['Missing data for required field.']}
+            }
+        }
 
         rv = client.post('/foo', json={'id': 1, 'name': 'bar'})
         assert rv.status_code == 200
@@ -66,10 +76,20 @@ class TestAPIFairy(unittest.TestCase):
         client = app.test_client()
 
         rv = client.post('/foo')
-        assert rv.status_code == 422
+        assert rv.status_code == 400
+        assert rv.json == {
+            'messages': {
+                'query': {'name': ['Missing data for required field.']}
+            }
+        }
 
         rv = client.post('/foo?id=1&name=bar')
-        assert rv.status_code == 422
+        assert rv.status_code == 400
+        assert rv.json == {
+            'messages': {
+                'query': {'name2': ['Missing data for required field.']}
+            }
+        }
 
         rv = client.post('/foo?id=1&name=bar&id2=2&name2=baz')
         assert rv.status_code == 200
