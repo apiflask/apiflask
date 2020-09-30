@@ -30,7 +30,7 @@ def _annotate(f, **kwargs):
 def authenticate(auth, **kwargs):
     def decorator(f):
         roles = kwargs.get('role')
-        if not isinstance(roles, list):
+        if not isinstance(roles, list):  # pragma: no cover
             roles = [roles]
         _annotate(f, auth=auth, roles=roles)
         return auth.login_required(**kwargs)(f)

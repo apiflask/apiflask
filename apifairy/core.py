@@ -12,7 +12,7 @@ except ImportError:
     sqla = None
 try:
     from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
-except ImportError:
+except ImportError:  # pragma: no cover
     HTTPBasicAuth = None
     HTTPTokenAuth = None
 
