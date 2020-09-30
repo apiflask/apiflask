@@ -41,7 +41,7 @@ class APIFairy:
         if self.apispec_path:
             @bp.route(self.apispec_path)
             def json():
-                return dumps(self.apispec.to_dict()), 200, \
+                return dumps(self.apispec), 200, \
                     {'Content-Type': 'application/json'}
 
         if self.ui_path:
@@ -71,7 +71,7 @@ class APIFairy:
     @property
     def apispec(self):
         if self._apispec is None:
-            self._apispec = self._generate_apispec()
+            self._apispec = self._generate_apispec().to_dict()
             if self.apispec_callback:
                 self._apispec = self.apispec_callback(self._apispec)
         return self._apispec
@@ -96,7 +96,7 @@ class APIFairy:
                 info['description'] = module.__doc__.strip()
                 break
             if '.' not in module_name:
-                break
+                module_name = '.' + module_name
             module_name = module_name.rsplit('.', 1)[0]
 
         # tags
@@ -125,7 +125,7 @@ class APIFairy:
         spec = APISpec(
             title=self.title,
             version=self.version,
-            openapi_version='3.0.2',
+            openapi_version='3.0.3',
             plugins=[ma_plugin],
             info=info,
             tags=tags,
@@ -231,9 +231,8 @@ class APIFairy:
                             }
                         }
                     }
-                    if view_func._spec.get('description'):
-                        operation['responses'][code]['description'] = \
-                            view_func._spec['description']
+                    operation['responses'][code]['description'] = \
+                        view_func._spec['description'] or ''
                 else:
                     operation['responses'] = {'204': {}}
 

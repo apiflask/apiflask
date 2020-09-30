@@ -31,13 +31,16 @@ def authenticate(auth, **kwargs):
     def decorator(f):
         roles = kwargs.get('role')
         if not isinstance(roles, list):  # pragma: no cover
-            roles = [roles]
+            roles = [roles] if roles is not None else []
         _annotate(f, auth=auth, roles=roles)
         return auth.login_required(**kwargs)(f)
     return decorator
 
 
 def arguments(schema, location='query', **kwargs):
+    if isinstance(schema, type):  # pragma: no cover
+        schema = schema()
+
     def decorator(f):
         if not hasattr(f, '_spec') or f._spec.get('args') is None:
             _annotate(f, args=[])
@@ -47,6 +50,9 @@ def arguments(schema, location='query', **kwargs):
 
 
 def body(schema, **kwargs):
+    if isinstance(schema, type):  # pragma: no cover
+        schema = schema()
+
     def decorator(f):
         _annotate(f, body=schema)
         return use_args(schema, location='json', **kwargs)(f)
@@ -54,6 +60,9 @@ def body(schema, **kwargs):
 
 
 def response(schema, status_code=200, description=None):
+    if isinstance(schema, type):  # pragma: no cover
+        schema = schema()
+
     def decorator(f):
         _annotate(f, response=schema, status_code=status_code,
                   description=description)
