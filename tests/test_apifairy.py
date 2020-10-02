@@ -9,16 +9,43 @@ from openapi_spec_validator import validate_spec
 from apifairy import APIFairy, body, arguments, response, authenticate, \
     other_responses
 
+ma = Marshmallow()
+
+
+class Schema(ma.Schema):
+    class Meta:
+        unknown = EXCLUDE
+
+    id = ma.Integer(default=123)
+    name = ma.Str(required=True)
+
+
+class Schema2(ma.Schema):
+    class Meta:
+        unknown = EXCLUDE
+
+    id2 = ma.Integer(default=123)
+    name2 = ma.Str(required=True)
+
+
+class FooSchema(ma.Schema):
+    id = ma.Integer(default=123)
+    name = ma.Str()
+
+
+class QuerySchema(ma.Schema):
+    id = ma.Integer(missing=1)
+
 
 class TestAPIFairy(unittest.TestCase):
-    def test_body(self):
+    def create_app(self):
         app = Flask(__name__)
-        ma = Marshmallow(app)
-        APIFairy(app)
+        ma.init_app(app)
+        apifairy = APIFairy(app)
+        return app, apifairy
 
-        class Schema(ma.Schema):
-            id = ma.Integer()
-            name = ma.Str(required=True)
+    def test_body(self):
+        app, _ = self.create_app()
 
         @app.route('/foo', methods=['POST'])
         @body(Schema())
@@ -52,24 +79,7 @@ class TestAPIFairy(unittest.TestCase):
         assert rv.json == {'name': 'bar'}
 
     def test_query(self):
-        app = Flask(__name__)
-        ma = Marshmallow(app)
-        apifairy = APIFairy()
-        apifairy.init_app(app)
-
-        class Schema(ma.Schema):
-            class Meta:
-                unknown = EXCLUDE
-
-            id = ma.Integer()
-            name = ma.Str(required=True)
-
-        class Schema2(ma.Schema):
-            class Meta:
-                unknown = EXCLUDE
-
-            id2 = ma.Integer()
-            name2 = ma.Str(required=True)
+        app, _ = self.create_app()
 
         @app.route('/foo', methods=['POST'])
         @arguments(Schema())
@@ -104,16 +114,7 @@ class TestAPIFairy(unittest.TestCase):
         assert rv.json == {'name': 'bar', 'name2': 'baz'}
 
     def test_response(self):
-        app = Flask(__name__)
-        ma = Marshmallow(app)
-        APIFairy(app)
-
-        class Schema(ma.Schema):
-            id = ma.Integer(default=123)
-            name = ma.Str()
-
-        class QuerySchema(ma.Schema):
-            id = ma.Integer(missing=1)
+        app, _ = self.create_app()
 
         @app.route('/foo')
         @response(Schema())
@@ -168,9 +169,8 @@ class TestAPIFairy(unittest.TestCase):
         assert 'Location' not in rv.headers
 
     def test_authenticate(self):
-        app = Flask(__name__)
+        app, _ = self.create_app()
         auth = HTTPBasicAuth()
-        APIFairy(app)
 
         @auth.verify_password
         def verify_password(username, password):
@@ -220,17 +220,8 @@ class TestAPIFairy(unittest.TestCase):
         assert rv.json == {'user': 'bar'}
 
     def test_apispec(self):
-        app = Flask(__name__)
+        app, apifairy = self.create_app()
         auth = HTTPBasicAuth()
-        ma = Marshmallow(app)
-        apifairy = APIFairy(app)
-
-        class Schema(ma.Schema):
-            id = ma.Integer(default=123)
-            name = ma.Str()
-
-        class QuerySchema(ma.Schema):
-            id = ma.Integer(missing=1)
 
         @apifairy.process_apispec
         def edit_apispec(apispec):
@@ -274,21 +265,7 @@ class TestAPIFairy(unittest.TestCase):
         assert b'redoc.standalone.js' in rv.data
 
     def test_apispec_schemas(self):
-        app = Flask(__name__)
-        ma = Marshmallow(app)
-        apifairy = APIFairy(app)
-
-        class Schema(ma.Schema):
-            id = ma.Integer(default=123)
-            name = ma.Str()
-
-        class Schema2(ma.Schema):
-            id = ma.Integer(default=123)
-            name = ma.Str()
-
-        class FooSchema(ma.Schema):
-            id = ma.Integer(default=123)
-            name = ma.Str()
+        app, apifairy = self.create_app()
 
         @app.route('/foo')
         @response(Schema(partial=True))
