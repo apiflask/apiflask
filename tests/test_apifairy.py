@@ -40,6 +40,8 @@ class QuerySchema(ma.Schema):
 class TestAPIFairy(unittest.TestCase):
     def create_app(self):
         app = Flask(__name__)
+        app.config['APIFAIRY_TITLE'] = 'Foo'
+        app.config['APIFAIRY_VERSION'] = '1.0'
         ma.init_app(app)
         apifairy = APIFairy(app)
         return app, apifairy
@@ -257,6 +259,8 @@ class TestAPIFairy(unittest.TestCase):
         assert rv.status_code == 200
         validate_spec(rv.json)
         assert rv.json['openapi'] == '3.0.2'
+        assert rv.json['info']['title'] == 'Foo'
+        assert rv.json['info']['version'] == '1.0'
 
         assert apifairy.apispec is apifairy.apispec
 

@@ -47,10 +47,49 @@ screenshot of the documentation for the above endpoint:
   :width: 100%
   :alt: Automatic documentation example
 
-Installation
-============
+Getting Started
+===============
 
 APIFairy is installed with ``pip``::
 
     pip install apifairy
 
+Once installed, this package is initialized as a standard Flask extension::
+
+    from flask import Flask
+    from apifairy import APIFairy
+
+    app = Flask(__name__)
+    apifairy = APIFairy(app)
+
+The two-phase initialization style is also supported::
+
+    from flask import Flask
+    from apifairy import APIFairy
+
+    apifairy = APIFairy()
+
+    def create_app():
+        app = Flask(__name__)
+        apifairy.init_app(app)
+        return app
+
+Once APIFairy is initialized, automatically generated documentation can be
+accessed at the */docs* URL.
+
+Configuration
+=============
+
+APIFairy imports its configuration from the Flask configuration object.
+The available options are shown in the table below.
+
+========================= ====== =============== ==================================================================================================
+Name                      Type   Default         Description
+========================= ====== =============== ==================================================================================================
+``APIFAIRY_TITLE``        String No title        The API's title.
+``APIFAIRY_VERSION``      String No version      The API's version.
+``APIFAIRY_APISPEC_PATH`` String */apispec.json* The URL path where the JSON OpenAPI specification for this project is served.
+``APIFAIRY_UI``           String redoc           The documentation format to use. Supported formats are "redoc" and "swagger_ui".
+``APIFAIRY_UI_PATH``      String */docs*         The URL path where the documentation is served.
+``APIFAIRY_TAGS``         List   ``None``        The list of ordered tags to include in the documentation. A value of ``None`` includes everything.
+========================= ====== =============== ==================================================================================================

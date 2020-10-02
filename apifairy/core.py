@@ -20,15 +20,14 @@ from apifairy.exceptions import ValidationError
 
 
 class APIFairy:
-    def __init__(self, app=None, title='No title', version='No version',
-                 tags=None, ui='redoc', ui_path='/docs',
-                 apispec_path='/apispec.json'):
-        self.title = title
-        self.version = version
-        self.tags = tags
-        self.ui = ui
-        self.ui_path = ui_path
-        self.apispec_path = apispec_path
+    def __init__(self, app=None):
+        self.title = None
+        self.version = None
+        self.apispec_path = None
+        self.ui = None
+        self.ui_path = None
+        self.tags = None
+
         self.apispec_callback = None
         self.error_handler = self.default_error_handler
         self._apispec = None
@@ -36,6 +35,14 @@ class APIFairy:
             self.init_app(app)
 
     def init_app(self, app):
+        self.title = app.config.get('APIFAIRY_TITLE', 'No title')
+        self.version = app.config.get('APIFAIRY_VERSION', 'No version')
+        self.apispec_path = app.config.get('APIFAIRY_APISPEC_PATH',
+                                           '/apispec.json')
+        self.ui = app.config.get('APIFAIRY_UI', 'redoc')
+        self.ui_path = app.config.get('APIFAIRY_UI_PATH', '/docs')
+        self.tags = app.config.get('APIFAIRY_TAGS')
+
         bp = Blueprint('apispec', __name__, template_folder='templates')
 
         if self.apispec_path:
