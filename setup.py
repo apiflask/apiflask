@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="apifairy",
-    version="0.5.0",
+    version="0.6.0",
     author="Miguel Grinberg",
     author_email="miguel.grinberg@gmail.com",
     description=("A minimalistic API framework built on top of Flask, "
