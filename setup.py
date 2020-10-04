@@ -17,9 +17,9 @@ setuptools.setup(
     install_requires=[
         'flask',
         'flask-marshmallow',
-        'webargs',
-        'flask-httpauth',
-        'apispec',
+        'webargs>=6',
+        'flask-httpauth>=4',
+        'apispec>=4',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

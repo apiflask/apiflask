@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Overview
-========
+Getting Started
+===============
 
 APIFairy is a minimalistic API framework for Flask with the following goals:
 
@@ -47,8 +47,8 @@ screenshot of the documentation for the above endpoint:
   :width: 100%
   :alt: Automatic documentation example
 
-Getting Started
-===============
+Installation
+------------
 
 APIFairy is installed with ``pip``::
 
@@ -75,10 +75,12 @@ The two-phase initialization style is also supported::
         return app
 
 Once APIFairy is initialized, automatically generated documentation can be
-accessed at the */docs* URL.
+accessed at the */docs* URL. The raw OpenAPI documentation data in JSON format
+can be accessed at the */apispec.json* URL. Both URLs can be changed in the
+configuration if desired.
 
 Configuration
-=============
+-------------
 
 APIFairy imports its configuration from the Flask configuration object.
 The available options are shown in the table below.
