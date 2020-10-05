@@ -198,5 +198,5 @@ object, and also adds an Authentication section to the documentation.
 
 If the roles feature of Flask-HTTPAuth is used, the documentation will include
 the required role(s) for each endpoint. Any keyword arguments given to the
-``authenticate`` decorator, include the ``role`` argument, are passed through
-to Flask-HTTPAuth.
+``authenticate`` decorator, including the ``role`` argument, are passed
+through to Flask-HTTPAuth.
