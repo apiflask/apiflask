@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="apifairy",
-    version="0.6.0",
+    version="0.6.1",
     author="Miguel Grinberg",
     author_email="miguel.grinberg@gmail.com",
     description=("A minimalistic API framework built on top of Flask, "
@@ -14,6 +14,8 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/miguelgrinberg/apifairy",
     packages=setuptools.find_packages(exclude=['tests']),
+    package_data={'apifairy': ['templates/apifairy/*.html']},
+    include_package_data=True,
     install_requires=[
         'flask',
         'flask-marshmallow',
