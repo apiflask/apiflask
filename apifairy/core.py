@@ -43,7 +43,7 @@ class APIFairy:
         self.ui_path = app.config.get('APIFAIRY_UI_PATH', '/docs')
         self.tags = app.config.get('APIFAIRY_TAGS')
 
-        bp = Blueprint('apispec', __name__, template_folder='templates')
+        bp = Blueprint('apifairy', __name__, template_folder='templates')
 
         if self.apispec_path:
             @bp.route(self.apispec_path)
