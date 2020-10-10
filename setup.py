@@ -1,11 +1,16 @@
+import re
 import setuptools
+
+with open('apifairy/__init__.py', 'r') as f:
+    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                        f.read(), re.MULTILINE).group(1)
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="apifairy",
-    version="0.6.1",
+    version=version,
     author="Miguel Grinberg",
     author_email="miguel.grinberg@gmail.com",
     description=("A minimalistic API framework built on top of Flask, "
