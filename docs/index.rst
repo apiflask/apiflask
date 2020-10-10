@@ -4,14 +4,14 @@
    contain the root `toctree` directive.
 
 APIFairy
-==============
+========
 
-Welcome to the official documentation for APIFairy. 
+Welcome to the documentation for APIFairy, the minimalistic API framework for
+Flask.
 
 .. toctree::
    :maxdepth: 2
 
    intro
    decorators
-   documentation
-   api
+   apifairy_class

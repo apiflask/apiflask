@@ -17,7 +17,7 @@ setuptools.setup(
     package_data={'apifairy': ['templates/apifairy/*.html']},
     include_package_data=True,
     install_requires=[
-        'flask',
+        'flask>=1.1.0',
         'flask-marshmallow',
         'webargs>=6',
         'flask-httpauth>=4',

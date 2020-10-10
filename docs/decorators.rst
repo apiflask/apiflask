@@ -9,8 +9,8 @@ Decorators
 The core functionality of APIFairy is accessed through its five decorators,
 which are used to define what the inputs and outputs of each endpoint are.
 
-arguments
----------
+@arguments
+----------
 
 The ``arguments`` decorator specifies input arguments, given in the query
 string of the request URL. The only argument this decorator requires is the
@@ -93,8 +93,8 @@ the ``location`` argument set to ``query``. Any additional options are passed
 directly into ``use_args``, which among other things allow the use of other
 locations for input arguments besides the query string.
 
-body
-----
+@body
+-----
 
 The ``body`` decorator defines the structure of the JSON body of the request.
 The only required argument to this decorator is the schema definition for the
@@ -131,8 +131,8 @@ the ``location`` argument set to ``json``. Any additional options are passed
 directly into ``use_args``, which among other things allow the use of form
 data as input instead of JSON.
 
-response
---------
+@response
+---------
 
 The ``response`` decorator specifies the structure of the endpoint response.
 The only required argument to this decorator is the schema that defines the
@@ -157,8 +157,8 @@ description of this response to be added to the documentation::
     def create_user(user):
         # ...
         
-other_responses
----------------
+@other_responses
+----------------
 
 The ``other_responses`` decorator is used to specify additional responses the
 endpoint can return, usually as a result of an error condition. The only
@@ -175,8 +175,8 @@ code::
 This decorator does not perform any action other than adding the additional
 responses to the documentation.
 
-authenticate
-------------
+@authenticate
+-------------
 
 The ``authenticate`` decorator is used to specify the authentication and
 authorization requirements of the endpoint. The only required argument for

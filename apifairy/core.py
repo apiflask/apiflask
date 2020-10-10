@@ -29,7 +29,7 @@ class APIFairy:
         self.tags = None
 
         self.apispec_callback = None
-        self.error_handler = self.default_error_handler
+        self.error_handler_callback = self.default_error_handler
         self._apispec = None
         if app is not None:
             self.init_app(app)
@@ -62,14 +62,15 @@ class APIFairy:
 
         @app.errorhandler(ValidationError)
         def http_error(error):
-            return self.error_handler(error.status_code, error.messages)
+            return self.error_handler_callback(error.status_code,
+                                               error.messages)
 
     def process_apispec(self, f):
         self.apispec_callback = f
         return f
 
     def error_handler(self, f):
-        self.error_handler = f
+        self.error_handler_callback = f
         return f
 
     def default_error_handler(self, status_code, messages):
