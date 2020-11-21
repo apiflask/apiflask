@@ -1,6 +1,6 @@
 # APIFairy
 
-[![Build Status](https://travis-ci.org/miguelgrinberg/APIFairy.png?branch=master)](https://travis-ci.org/miguelgrinberg/APIFairy)
+[![Build status](https://github.com/miguelgrinberg/apifairy/workflows/build/badge.svg)](https://github.com/miguelgrinberg/apifairy/actions) [![codecov](https://codecov.io/gh/miguelgrinberg/apifairy/branch/master/graph/badge.svg)](https://codecov.io/gh/miguelgrinberg/APIFairy)
 
 Resources
 ---------
