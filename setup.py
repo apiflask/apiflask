@@ -28,6 +28,9 @@ setuptools.setup(
         'flask-httpauth>=4',
         'apispec>=4',
     ],
+    tests_require=[
+        'openapi-spec-validator',
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
