@@ -224,7 +224,7 @@ class APIFairy:
                 if tag:
                     operation['tags'] = [tag]
                 docs = (view_func.__doc__ or '').strip().split('\n')
-                if docs:
+                if docs[0]:
                     operation['summary'] = docs[0]
                 if len(docs) > 1:
                     operation['description'] = '\n'.join(docs[1:]).strip()

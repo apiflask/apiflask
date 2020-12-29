@@ -292,3 +292,19 @@ class TestAPIFairy(unittest.TestCase):
         assert 'SchemaUpdate' in apispec['components']['schemas']
         assert 'Schema2List' in apispec['components']['schemas']
         assert 'Foo' in apispec['components']['schemas']
+
+    def test_apispec_path_summary_from_docs(self):
+        app, apifairy = self.create_app()
+
+        @app.route('/users')
+        @response(Schema)
+        def get_users():
+            "Get Users."
+            pass
+
+        client = app.test_client()
+
+        rv = client.get('/apispec.json')
+        assert rv.status_code == 200
+        validate_spec(rv.json)
+        assert rv.json['paths']['/users']['get']['summary'] == 'Get Users.'
