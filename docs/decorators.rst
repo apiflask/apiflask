@@ -17,6 +17,8 @@ string of the request URL. The only argument this decorator requires is the
 schema definition for the input data, which can be given as a schema class or
 instance::
 
+    from apifairy import arguments
+
     class PaginationSchema(ma.Schema):
        page = ma.Int(missing=1)
        limit = ma.Int(missing=10)
@@ -100,6 +102,8 @@ The ``body`` decorator defines the structure of the JSON body of the request.
 The only required argument to this decorator is the schema definition for the
 request body, which can be given as a schema class or instance::
 
+    from apifairy import body
+
     class UserSchema(ma.Schema):
         id = ma.Int()
         username = ma.Str(required=True)
@@ -138,6 +142,8 @@ The ``response`` decorator specifies the structure of the endpoint response.
 The only required argument to this decorator is the schema that defines the
 response, which can be given as a schema class or instance::
 
+    from apifairy import response
+
     @app.route('/users/<int:id>')
     @response(UserSchema)
     def get_user(id):
@@ -166,6 +172,8 @@ argument to this decorator is a dictionary with the keys set to numeric HTTP
 status codes, and the values set to the description text for each response
 code::
 
+    from apifairy import response, other_responses
+
     @app.route('/users/<int:id>')
     @response(UserSchema)
     @other_responses({400: 'Invalid request.', 404: 'User not found.'})
@@ -184,6 +192,7 @@ this decorator is an authentication object from the `Flask-HTTPAuth
 <https://flask-httpauth.readthedocs.io/>`_ extension::
 
     from flask_httpauth import HTTPBasicAuth
+    from apifairy import authenticate
 
     auth = HTTPBasicAuth()
 

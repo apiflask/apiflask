@@ -19,7 +19,7 @@ APIFairy is a minimalistic API framework for Flask with the following goals:
 Below you can see an example API endpoint augmented with
 APIFairy decorators::
 
-    from apifairy import authenticate, body, response
+    from apifairy import authenticate, body, response, other_responses
 
     # ...
 
