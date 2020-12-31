@@ -280,8 +280,8 @@ class APIFairy:
                         arguments['schema'] = {'type': 'number'}
                     else:
                         arguments['schema'] = {'type': 'string'}
-                for method, operation in operations.items():
-                    operation['parameters'].insert(0, arguments)
+                    for method, operation in operations.items():
+                        operation['parameters'].insert(0, arguments)
 
             path = re.sub(r'<([^:]+:)?', '{', rule.rule).replace('>', '}')
             if path not in paths:

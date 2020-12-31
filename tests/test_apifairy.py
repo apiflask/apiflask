@@ -299,7 +299,7 @@ class TestAPIFairy(unittest.TestCase):
         @app.route('/users')
         @response(Schema)
         def get_users():
-            "Get Users."
+            """Get Users."""
             pass
 
         client = app.test_client()
@@ -308,3 +308,46 @@ class TestAPIFairy(unittest.TestCase):
         assert rv.status_code == 200
         validate_spec(rv.json)
         assert rv.json['paths']['/users']['get']['summary'] == 'Get Users.'
+
+    def test_apispec_path_parameters_registration(self):
+        app, apifairy = self.create_app()
+
+        @app.route('/strings/<some_string>')
+        @response(Schema)
+        def get_string(some_string):
+            pass
+
+        @app.route('/floats/<float:some_float>', methods=['POST'])
+        @response(Schema)
+        def get_float(some_float):
+            pass
+
+        @app.route('/integers/<int:some_integer>', methods=['PUT'])
+        @response(Schema)
+        def get_integer(some_integer):
+            pass
+
+        @app.route('/users/<int:user_id>/articles/<int:article_id>')
+        @response(Schema)
+        def get_article(user_id, article_id):
+            pass
+
+        client = app.test_client()
+
+        rv = client.get('/apispec.json')
+        assert rv.status_code == 200
+        validate_spec(rv.json)
+        assert rv.json['paths']['/strings/{some_string}'][
+            'get']['parameters'][0]['in'] == 'path'
+        assert rv.json['paths']['/strings/{some_string}'][
+            'get']['parameters'][0]['name'] == 'some_string'
+        assert rv.json['paths']['/strings/{some_string}'][
+            'get']['parameters'][0]['schema']['type'] == 'string'
+        assert rv.json['paths']['/floats/{some_float}'][
+            'post']['parameters'][0]['schema']['type'] == 'number'
+        assert rv.json['paths']['/integers/{some_integer}'][
+            'put']['parameters'][0]['schema']['type'] == 'integer'
+        assert rv.json['paths']['/users/{user_id}/articles/{article_id}'][
+            'get']['parameters'][0]['name'] == 'article_id'
+        assert rv.json['paths']['/users/{user_id}/articles/{article_id}'][
+            'get']['parameters'][1]['name'] == 'user_id'
