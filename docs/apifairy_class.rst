@@ -48,6 +48,19 @@ obtained from several places:
 - Each security scheme is documented by inspecting the Flask-HTTPAuth object,
   plus the contents of the ``__doc__`` property if it exists.
 
+APIFairy.process_apispec
+------------------------
+
+The ``process_apispec`` decorator can be used to register a custom function
+that receives the generated OpenAPI definition as its single argument. The
+function can make changes and adjustments to it and return the modified
+definition, which will then be rendered::
+
+    @apifairy.process_apispec
+    def my_apispec_processor(spec):
+        # modify spec as needed here
+        return spec
+
 APIFairy.error_handler
 ----------------------
 
