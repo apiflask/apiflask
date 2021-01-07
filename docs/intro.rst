@@ -39,7 +39,7 @@ APIFairy decorators::
 APIFairy's decorators are simple wrappers for existing solutions. In the
 example above, ``token_auth`` is an intialized authentication object from the
 Flask-HTTPAuth extension, and ``post_schema`` and ``update_post_schema`` are
-Flask-Marshmallow schema objects. These wrappers allow Flask-APIFairy to
+Flask-Marshmallow schema objects. These wrappers allow APIFairy to
 automatically generate documentation using the OpenAPI 3.x standard. Below is a
 screenshot of the documentation for the above endpoint:
 
