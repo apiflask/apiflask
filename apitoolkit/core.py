@@ -16,10 +16,10 @@ except ImportError:  # pragma: no cover
     HTTPBasicAuth = None
     HTTPTokenAuth = None
 
-from apifairy.exceptions import ValidationError
+from apitoolkit.exceptions import ValidationError
 
 
-class APIFairy:
+class APIToolkit:
     def __init__(self, app=None):
         self.title = None
         self.version = None
@@ -35,15 +35,15 @@ class APIFairy:
             self.init_app(app)
 
     def init_app(self, app):
-        self.title = app.config.get('APIFAIRY_TITLE', 'No title')
-        self.version = app.config.get('APIFAIRY_VERSION', 'No version')
-        self.apispec_path = app.config.get('APIFAIRY_APISPEC_PATH',
+        self.title = app.config.get('APITOOLKIT_TITLE', 'No title')
+        self.version = app.config.get('APITOOLKIT_VERSION', 'No version')
+        self.apispec_path = app.config.get('APITOOLKIT_APISPEC_PATH',
                                            '/apispec.json')
-        self.ui = app.config.get('APIFAIRY_UI', 'redoc')
-        self.ui_path = app.config.get('APIFAIRY_UI_PATH', '/docs')
-        self.tags = app.config.get('APIFAIRY_TAGS')
+        self.ui = app.config.get('APITOOLKIT_UI', 'redoc')
+        self.ui_path = app.config.get('APITOOLKIT_UI_PATH', '/docs')
+        self.tags = app.config.get('APITOOLKIT_TAGS')
 
-        bp = Blueprint('apifairy', __name__, template_folder='templates')
+        bp = Blueprint('apitoolkit', __name__, template_folder='templates')
 
         if self.apispec_path:
             @bp.route(self.apispec_path)
@@ -54,7 +54,7 @@ class APIFairy:
         if self.ui_path:
             @bp.route(self.ui_path)
             def docs():
-                return render_template(f'apifairy/{self.ui}.html',
+                return render_template(f'apitoolkit/{self.ui}.html',
                                        title=self.title, version=self.version)
 
         if self.apispec_path or self.ui_path:

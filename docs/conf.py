@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'APIFairy'
-copyright = '2020, Miguel Grinberg'
-author = 'Miguel Grinberg'
+project = 'APIToolkit'
+copyright = '2021, Grey Li'
+author = 'Grey Li'
 
 
 # -- General configuration ---------------------------------------------------
@@ -54,11 +54,10 @@ html_theme = 'alabaster'
 html_static_path = ['_static']
 
 html_theme_options = {
-    'description': ('A minimalistic API framework built on top of Flask, '
-                    'Marshmallow and friends.'),
+    'description': 'A Web API development toolkit for Python web frameworks.',
     'fixed_sidebar': True,
-    'github_user': 'miguelgrinberg',
-    'github_repo': 'APIFairy',
+    'github_user': 'greyli',
+    'github_repo': 'APIToolkit',
     'github_button': True,
     'github_type': 'star',
     'github_banner': True,

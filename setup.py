@@ -1,25 +1,25 @@
 import re
 import setuptools
 
-with open('apifairy/__init__.py', 'r') as f:
+with open('apitoolkit/__init__.py', 'r') as f:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         f.read(), re.MULTILINE).group(1)
 
-with open("README.md", "r") as fh:
+with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="apifairy",
+    name='APIToolkit',
     version=version,
-    author="Miguel Grinberg",
-    author_email="miguel.grinberg@gmail.com",
-    description=("A minimalistic API framework built on top of Flask, "
-                 "Marshmallow and friends."),
+    author='Grey Li',
+    author_email='withlihui@gmail.com',
+    description='A Web API development toolkit for Python web frameworks.',
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/miguelgrinberg/apifairy",
+    long_description_content_type='text/markdown',
+    platforms='any',
+    url='https://github.com/greyli/apitoolkit',
     packages=setuptools.find_packages(exclude=['tests']),
-    package_data={'apifairy': ['templates/apifairy/*.html']},
+    package_data={'apitoolkit': ['templates/apitoolkit/*.html']},
     include_package_data=True,
     install_requires=[
         'flask>=1.1.0',
@@ -32,9 +32,12 @@ setuptools.setup(
         'openapi-spec-validator',
     ],
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
+        'Development Status :: 1 - Planning',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
     ],
     python_requires='>=3.6',
 )

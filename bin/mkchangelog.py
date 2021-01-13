@@ -3,7 +3,7 @@ import re
 import sys
 import git
 
-URL = 'https://github.com/miguelgrinberg/apifairy'
+URL = 'https://github.com/greyli/apitoolkit'
 merges = {}
 
 
@@ -29,7 +29,7 @@ def format_message(commit):
     message = re.sub('fixes (#[0-9]+)', '\\1', message)
     message = re.sub('#([0-9]+)', '[#\\1]({url}/issues/\\1)'.format(url=URL), message)
     message += ' ([commit]({url}/commit/{sha}))'.format(url=URL, sha=str(commit))
-    if commit.author.name != 'Miguel Grinberg':
+    if commit.author.name != 'Grey Li':
         message += ' (thanks **{name}**!)'.format(name=commit.author.name)
     return '- ' + message
 

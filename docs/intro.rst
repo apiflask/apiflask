@@ -1,4 +1,4 @@
-.. APIFairy documentation master file, created by
+.. APIToolkit documentation master file, created by
    sphinx-quickstart on Sun Sep 27 17:34:58 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -6,7 +6,8 @@
 Getting Started
 ===============
 
-APIFairy is a minimalistic API framework for Flask with the following goals:
+APIToolkit A Web API development toolkit for Python web frameworks (currently
+only support Flask) with the following goals:
 
 - Give you a way to specify what the input arguments for each endpoint are,
   and automatically validate them for you.
@@ -17,9 +18,9 @@ APIFairy is a minimalistic API framework for Flask with the following goals:
   endpoints in the style that you like.
 
 Below you can see an example API endpoint augmented with
-APIFairy decorators::
+APIToolkit decorators::
 
-    from apifairy import authenticate, body, response, other_responses
+    from apitoolkit import authenticate, body, response, other_responses
 
     # ...
 
@@ -36,10 +37,10 @@ APIFairy decorators::
         db.session.commit()
         return post
 
-APIFairy's decorators are simple wrappers for existing solutions. In the
+APIToolkit's decorators are simple wrappers for existing solutions. In the
 example above, ``token_auth`` is an intialized authentication object from the
 Flask-HTTPAuth extension, and ``post_schema`` and ``update_post_schema`` are
-Flask-Marshmallow schema objects. These wrappers allow APIFairy to
+Flask-Marshmallow schema objects. These wrappers allow APIToolkit to
 automatically generate documentation using the OpenAPI 3.x standard. Below is a
 screenshot of the documentation for the above endpoint:
 
@@ -50,31 +51,31 @@ screenshot of the documentation for the above endpoint:
 Installation
 ------------
 
-APIFairy is installed with ``pip``::
+APIToolkit is installed with ``pip``::
 
-    pip install apifairy
+    pip install apitoolkit
 
 Once installed, this package is initialized as a standard Flask extension::
 
     from flask import Flask
-    from apifairy import APIFairy
+    from apitoolkit import APIToolkit
 
     app = Flask(__name__)
-    apifairy = APIFairy(app)
+    apitoolkit = APIToolkit(app)
 
 The two-phase initialization style is also supported::
 
     from flask import Flask
-    from apifairy import APIFairy
+    from apitoolkit import APIToolkit
 
-    apifairy = APIFairy()
+    apitoolkit = APIToolkit()
 
     def create_app():
         app = Flask(__name__)
-        apifairy.init_app(app)
+        apitoolkit.init_app(app)
         return app
 
-Once APIFairy is initialized, automatically generated documentation can be
+Once APIToolkit is initialized, automatically generated documentation can be
 accessed at the */docs* URL. The raw OpenAPI documentation data in JSON format
 can be accessed at the */apispec.json* URL. Both URLs can be changed in the
 configuration if desired.
@@ -82,16 +83,16 @@ configuration if desired.
 Configuration
 -------------
 
-APIFairy imports its configuration from the Flask configuration object.
+APIToolkit imports its configuration from the Flask configuration object.
 The available options are shown in the table below.
 
 ========================= ====== =============== ==============================================================================================
 Name                      Type   Default         Description
 ========================= ====== =============== ==============================================================================================
-``APIFAIRY_TITLE``        String No title        The API's title.
-``APIFAIRY_VERSION``      String No version      The API's version.
-``APIFAIRY_APISPEC_PATH`` String */apispec.json* The URL path where the JSON OpenAPI specification for this project is served.
-``APIFAIRY_UI``           String redoc           The documentation format to use. Supported formats are "redoc" and "swagger_ui".
-``APIFAIRY_UI_PATH``      String */docs*         The URL path where the documentation is served.
-``APIFAIRY_TAGS``         List   ``None``        The list of ordered tags to include in the documentation, if the default order is not optimal.
+``APITOOLKIT_TITLE``        String No title        The API's title.
+``APITOOLKIT_VERSION``      String No version      The API's version.
+``APITOOLKIT_APISPEC_PATH`` String */apispec.json* The URL path where the JSON OpenAPI specification for this project is served.
+``APITOOLKIT_UI``           String redoc           The documentation format to use. Supported formats are "redoc" and "swagger_ui".
+``APITOOLKIT_UI_PATH``      String */docs*         The URL path where the documentation is served.
+``APITOOLKIT_TAGS``         List   ``None``        The list of ordered tags to include in the documentation, if the default order is not optimal.
 ========================= ====== =============== ==============================================================================================

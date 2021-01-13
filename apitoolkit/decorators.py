@@ -3,7 +3,7 @@ from functools import wraps
 from flask import Response
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
-from apifairy.exceptions import ValidationError
+from apitoolkit.exceptions import ValidationError
 
 
 class FlaskParser(BaseFlaskParser):

@@ -6,7 +6,7 @@ from flask_marshmallow import Marshmallow
 from marshmallow import EXCLUDE
 from openapi_spec_validator import validate_spec
 
-from apifairy import APIFairy, body, arguments, response, authenticate, \
+from apitoolkit import APIToolkit, body, arguments, response, authenticate, \
     other_responses
 
 ma = Marshmallow()
@@ -37,14 +37,14 @@ class QuerySchema(ma.Schema):
     id = ma.Integer(missing=1)
 
 
-class TestAPIFairy(unittest.TestCase):
+class TestAPIToolkit(unittest.TestCase):
     def create_app(self):
         app = Flask(__name__)
-        app.config['APIFAIRY_TITLE'] = 'Foo'
-        app.config['APIFAIRY_VERSION'] = '1.0'
+        app.config['APITOOLKIT_TITLE'] = 'Foo'
+        app.config['APITOOLKIT_VERSION'] = '1.0'
         ma.init_app(app)
-        apifairy = APIFairy(app)
-        return app, apifairy
+        apitoolkit = APIToolkit(app)
+        return app, apitoolkit
 
     def test_body(self):
         app, _ = self.create_app()
@@ -222,10 +222,10 @@ class TestAPIFairy(unittest.TestCase):
         assert rv.json == {'user': 'bar'}
 
     def test_apispec(self):
-        app, apifairy = self.create_app()
+        app, apitoolkit = self.create_app()
         auth = HTTPBasicAuth()
 
-        @apifairy.process_apispec
+        @apitoolkit.process_apispec
         def edit_apispec(apispec):
             assert apispec['openapi'] == '3.0.3'
             apispec['openapi'] = '3.0.2'
@@ -262,14 +262,14 @@ class TestAPIFairy(unittest.TestCase):
         assert rv.json['info']['title'] == 'Foo'
         assert rv.json['info']['version'] == '1.0'
 
-        assert apifairy.apispec is apifairy.apispec
+        assert apitoolkit.apispec is apitoolkit.apispec
 
         rv = client.get('/docs')
         assert rv.status_code == 200
         assert b'redoc.standalone.js' in rv.data
 
     def test_apispec_schemas(self):
-        app, apifairy = self.create_app()
+        app, apitoolkit = self.create_app()
 
         @app.route('/foo')
         @response(Schema(partial=True))
@@ -287,14 +287,14 @@ class TestAPIFairy(unittest.TestCase):
             pass
 
         with app.app_context():
-            apispec = apifairy.apispec
+            apispec = apitoolkit.apispec
         assert len(apispec['components']['schemas']) == 3
         assert 'SchemaUpdate' in apispec['components']['schemas']
         assert 'Schema2List' in apispec['components']['schemas']
         assert 'Foo' in apispec['components']['schemas']
 
     def test_apispec_path_summary_from_docs(self):
-        app, apifairy = self.create_app()
+        app, apitoolkit = self.create_app()
 
         @app.route('/users')
         @response(Schema)
@@ -310,7 +310,7 @@ class TestAPIFairy(unittest.TestCase):
         assert rv.json['paths']['/users']['get']['summary'] == 'Get Users.'
 
     def test_apispec_path_parameters_registration(self):
-        app, apifairy = self.create_app()
+        app, apitoolkit = self.create_app()
 
         @app.route('/strings/<some_string>')
         @response(Schema)
