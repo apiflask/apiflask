@@ -226,6 +226,8 @@ class APIToolkit:
                 docs = (view_func.__doc__ or '').strip().split('\n')
                 if docs[0]:
                     operation['summary'] = docs[0]
+                else:
+                    operation['summary'] = ' '.join(view_func.__name__.split('_')).title()
                 if len(docs) > 1:
                     operation['description'] = '\n'.join(docs[1:]).strip()
                 if view_func._spec.get('response'):
