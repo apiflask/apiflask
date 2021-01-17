@@ -35,8 +35,8 @@ class APIToolkit:
             self.init_app(app)
 
     def init_app(self, app):
-        self.title = app.config.get('APITOOLKIT_TITLE', 'No title')
-        self.version = app.config.get('APITOOLKIT_VERSION', 'No version')
+        self.title = app.config.get('APITOOLKIT_TITLE', 'APIToolkit')
+        self.version = app.config.get('APITOOLKIT_VERSION', '1.0.0')
         self.apispec_path = app.config.get('APITOOLKIT_APISPEC_PATH',
                                            '/apispec.json')
         self.ui = app.config.get('APITOOLKIT_UI', 'redoc')

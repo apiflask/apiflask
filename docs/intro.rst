@@ -89,8 +89,8 @@ The available options are shown in the table below.
 ========================= ====== =============== ==============================================================================================
 Name                      Type   Default         Description
 ========================= ====== =============== ==============================================================================================
-``APITOOLKIT_TITLE``        String No title        The API's title.
-``APITOOLKIT_VERSION``      String No version      The API's version.
+``APITOOLKIT_TITLE``        String APIToolkit      The API's title.
+``APITOOLKIT_VERSION``      String 1.0.0           The API's version.
 ``APITOOLKIT_APISPEC_PATH`` String */apispec.json* The URL path where the JSON OpenAPI specification for this project is served.
 ``APITOOLKIT_UI``           String redoc           The documentation format to use. Supported formats are "redoc" and "swagger_ui".
 ``APITOOLKIT_UI_PATH``      String */docs*         The URL path where the documentation is served.
