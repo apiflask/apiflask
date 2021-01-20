@@ -39,8 +39,8 @@ class APIToolkit:
         self.version = app.config.get('APITOOLKIT_VERSION', '1.0.0')
         self.apispec_path = app.config.get('APITOOLKIT_APISPEC_PATH',
                                            '/apispec.json')
-        self.ui = app.config.get('APITOOLKIT_UI', 'redoc')
-        self.ui_path = app.config.get('APITOOLKIT_UI_PATH', '/docs')
+        self.swagger_ui_path = app.config.get('APITOOLKIT_SWAGGER_UI_PATH', '/docs')
+        self.redoc_path = app.config.get('APITOOLKIT_REDOC_PATH', '/redoc')
         self.tags = app.config.get('APITOOLKIT_TAGS')
 
         bp = Blueprint('apitoolkit', __name__, template_folder='templates')
@@ -51,13 +51,17 @@ class APIToolkit:
                 return dumps(self.apispec), 200, \
                     {'Content-Type': 'application/json'}
 
-        if self.ui_path:
-            @bp.route(self.ui_path)
-            def docs():
-                return render_template(f'apitoolkit/{self.ui}.html',
-                                       title=self.title, version=self.version)
+        if self.swagger_ui_path:
+            @bp.route(self.swagger_ui_path)
+            def swagger():
+                return render_template('apitoolkit/swagger_ui.html', title=self.title, version=self.version)
 
-        if self.apispec_path or self.ui_path:
+        if self.redoc_path:
+            @bp.route(self.redoc_path)
+            def redoc():
+                return render_template('apitoolkit/redoc.html', title=self.title, version=self.version)
+
+        if self.apispec_path or self.swagger_ui_path or self.redoc_path:
             app.register_blueprint(bp)
 
         @app.errorhandler(ValidationError)

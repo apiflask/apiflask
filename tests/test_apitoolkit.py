@@ -266,6 +266,10 @@ class TestAPIToolkit(unittest.TestCase):
 
         rv = client.get('/docs')
         assert rv.status_code == 200
+        assert b'swagger-ui-standalone-preset.js' in rv.data
+        
+        rv = client.get('/redoc')
+        assert rv.status_code == 200
         assert b'redoc.standalone.js' in rv.data
 
     def test_apispec_schemas(self):

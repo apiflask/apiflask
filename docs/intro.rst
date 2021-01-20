@@ -6,7 +6,7 @@
 Getting Started
 ===============
 
-APIToolkit A Web API development toolkit for Python web frameworks (currently
+APIToolkit is a Web API development toolkit for Python web frameworks (currently
 only support Flask) with the following goals:
 
 - Give you a way to specify what the input arguments for each endpoint are,
@@ -86,13 +86,13 @@ Configuration
 APIToolkit imports its configuration from the Flask configuration object.
 The available options are shown in the table below.
 
-========================= ====== =============== ==============================================================================================
-Name                      Type   Default         Description
-========================= ====== =============== ==============================================================================================
-``APITOOLKIT_TITLE``        String APIToolkit      The API's title.
-``APITOOLKIT_VERSION``      String 1.0.0           The API's version.
-``APITOOLKIT_APISPEC_PATH`` String */apispec.json* The URL path where the JSON OpenAPI specification for this project is served.
-``APITOOLKIT_UI``           String redoc           The documentation format to use. Supported formats are "redoc" and "swagger_ui".
-``APITOOLKIT_UI_PATH``      String */docs*         The URL path where the documentation is served.
-``APITOOLKIT_TAGS``         List   ``None``        The list of ordered tags to include in the documentation, if the default order is not optimal.
-========================= ====== =============== ==============================================================================================
+============================== ====== =============== ==============================================================================================
+Name                           Type   Default         Description
+============================== ====== =============== ==============================================================================================
+``APITOOLKIT_TITLE``           String APIToolkit      The API's title.
+``APITOOLKIT_VERSION``         String 1.0.0           The API's version.
+``APITOOLKIT_APISPEC_PATH``    String */apispec.json* The URL path where the JSON OpenAPI specification for this project is served.
+``APITOOLKIT_SWAGGER_UI_PATH`` String */swaggger*     The URL path where the Swagger UI documentation is served. Set it to ``None`` to disable it.
+``APITOOLKIT_REDOC_PATH``      String */redoc*        The URL path where the Redoc documentation is served. Set it to ``None`` to disable it.
+``APITOOLKIT_TAGS``            List   ``None``        The list of ordered tags to include in the documentation, if the default order is not optimal.
+============================== ====== =============== ==============================================================================================
