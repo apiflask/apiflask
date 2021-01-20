@@ -77,7 +77,7 @@ The two-phase initialization style is also supported::
 
 Once APIToolkit is initialized, automatically generated documentation can be
 accessed at the */docs* URL. The raw OpenAPI documentation data in JSON format
-can be accessed at the */apispec.json* URL. Both URLs can be changed in the
+can be accessed at the */openapi.json* URL. Both URLs can be changed in the
 configuration if desired.
 
 Configuration
@@ -91,7 +91,7 @@ Name                           Type   Default         Description
 ============================== ====== =============== ==============================================================================================
 ``APITOOLKIT_TITLE``           String APIToolkit      The API's title.
 ``APITOOLKIT_VERSION``         String 1.0.0           The API's version.
-``APITOOLKIT_APISPEC_PATH``    String */apispec.json* The URL path where the JSON OpenAPI specification for this project is served.
+``APITOOLKIT_APISPEC_PATH``    String */openapi.json* The URL path where the JSON OpenAPI specification for this project is served.
 ``APITOOLKIT_SWAGGER_UI_PATH`` String */swaggger*     The URL path where the Swagger UI documentation is served. Set it to ``None`` to disable it.
 ``APITOOLKIT_REDOC_PATH``      String */redoc*        The URL path where the Redoc documentation is served. Set it to ``None`` to disable it.
 ``APITOOLKIT_TAGS``            List   ``None``        The list of ordered tags to include in the documentation, if the default order is not optimal.

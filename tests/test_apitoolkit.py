@@ -255,7 +255,7 @@ class TestAPIToolkit(unittest.TestCase):
 
         client = app.test_client()
 
-        rv = client.get('/apispec.json')
+        rv = client.get('/openapi.json')
         assert rv.status_code == 200
         validate_spec(rv.json)
         assert rv.json['openapi'] == '3.0.2'
@@ -318,7 +318,7 @@ class TestAPIToolkit(unittest.TestCase):
 
         client = app.test_client()
 
-        rv = client.get('/apispec.json')
+        rv = client.get('/openapi.json')
         assert rv.status_code == 200
         validate_spec(rv.json)
         assert rv.json['paths']['/users']['get']['summary'] == 'Get Users'
@@ -352,7 +352,7 @@ class TestAPIToolkit(unittest.TestCase):
 
         client = app.test_client()
 
-        rv = client.get('/apispec.json')
+        rv = client.get('/openapi.json')
         assert rv.status_code == 200
         validate_spec(rv.json)
         assert rv.json['paths']['/strings/{some_string}'][
@@ -395,7 +395,7 @@ class TestAPIToolkit(unittest.TestCase):
 
         client = app.test_client()
 
-        rv = client.get('/apispec.json')
+        rv = client.get('/openapi.json')
         assert rv.status_code == 200
         validate_spec(rv.json)
         assert rv.json['paths']['/users']['get']['summary'] == 'Get Users'

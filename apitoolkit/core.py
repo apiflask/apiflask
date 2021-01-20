@@ -38,7 +38,7 @@ class APIToolkit:
         self.title = app.config.get('APITOOLKIT_TITLE', 'APIToolkit')
         self.version = app.config.get('APITOOLKIT_VERSION', '1.0.0')
         self.apispec_path = app.config.get('APITOOLKIT_APISPEC_PATH',
-                                           '/apispec.json')
+                                           '/openapi.json')
         self.swagger_ui_path = app.config.get('APITOOLKIT_SWAGGER_UI_PATH', '/docs')
         self.redoc_path = app.config.get('APITOOLKIT_REDOC_PATH', '/redoc')
         self.tags = app.config.get('APITOOLKIT_TAGS')
