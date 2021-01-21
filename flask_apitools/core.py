@@ -35,6 +35,9 @@ class APITools:
             self.init_app(app)
 
     def init_app(self, app):
+        app.extensions = getattr(app, 'extensions', {})
+        app.extensions['apitools'] = self
+
         self.title = app.config.get('APITOOLS_TITLE', 'Flask-APITools')
         self.version = app.config.get('APITOOLS_VERSION', '1.0.0')
         self.apispec_path = app.config.get('APITOOLS_APISPEC_PATH',
