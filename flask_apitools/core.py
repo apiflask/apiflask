@@ -16,10 +16,10 @@ except ImportError:  # pragma: no cover
     HTTPBasicAuth = None
     HTTPTokenAuth = None
 
-from apitoolkit.exceptions import ValidationError
+from flask_apitools.exceptions import ValidationError
 
 
-class APIToolkit:
+class APITools:
     def __init__(self, app=None):
         self.title = None
         self.version = None
@@ -35,15 +35,16 @@ class APIToolkit:
             self.init_app(app)
 
     def init_app(self, app):
-        self.title = app.config.get('APITOOLKIT_TITLE', 'APIToolkit')
-        self.version = app.config.get('APITOOLKIT_VERSION', '1.0.0')
-        self.apispec_path = app.config.get('APITOOLKIT_APISPEC_PATH',
+        self.title = app.config.get('APITOOLS_TITLE', 'Flask-APITools')
+        self.version = app.config.get('APITOOLS_VERSION', '1.0.0')
+        self.apispec_path = app.config.get('APITOOLS_APISPEC_PATH',
                                            '/openapi.json')
-        self.swagger_ui_path = app.config.get('APITOOLKIT_SWAGGER_UI_PATH', '/docs')
-        self.redoc_path = app.config.get('APITOOLKIT_REDOC_PATH', '/redoc')
-        self.tags = app.config.get('APITOOLKIT_TAGS')
+        self.swagger_ui_path = app.config.get('APITOOLS_SWAGGER_UI_PATH',
+                                              '/docs')
+        self.redoc_path = app.config.get('APITOOLS_REDOC_PATH', '/redoc')
+        self.tags = app.config.get('APITOOLS_TAGS')
 
-        bp = Blueprint('apitoolkit', __name__, template_folder='templates')
+        bp = Blueprint('apitools', __name__, template_folder='templates')
 
         if self.apispec_path:
             @bp.route(self.apispec_path)
@@ -54,12 +55,14 @@ class APIToolkit:
         if self.swagger_ui_path:
             @bp.route(self.swagger_ui_path)
             def swagger():
-                return render_template('apitoolkit/swagger_ui.html', title=self.title, version=self.version)
+                return render_template('flask_apitools/swagger_ui.html',
+                                       title=self.title, version=self.version)
 
         if self.redoc_path:
             @bp.route(self.redoc_path)
             def redoc():
-                return render_template('apitoolkit/redoc.html', title=self.title, version=self.version)
+                return render_template('flask_apitools/redoc.html',
+                                       title=self.title, version=self.version)
 
         if self.apispec_path or self.swagger_ui_path or self.redoc_path:
             app.register_blueprint(bp)
@@ -231,7 +234,8 @@ class APIToolkit:
                 if docs[0]:
                     operation['summary'] = docs[0]
                 else:
-                    operation['summary'] = ' '.join(view_func.__name__.split('_')).title()
+                    operation['summary'] = ' '.join(
+                        view_func.__name__.split('_')).title()
                 if len(docs) > 1:
                     operation['description'] = '\n'.join(docs[1:]).strip()
                 if view_func._spec.get('response'):

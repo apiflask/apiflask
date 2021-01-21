@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'APIToolkit'
+project = 'Flask-APITools'
 copyright = '2021, Grey Li'
 author = 'Grey Li'
 
@@ -57,7 +57,7 @@ html_theme_options = {
     'description': 'A Web API development toolkit for Python web frameworks.',
     'fixed_sidebar': True,
     'github_user': 'greyli',
-    'github_repo': 'APIToolkit',
+    'github_repo': 'Flask-APITools',
     'github_button': True,
     'github_type': 'star',
     'github_banner': True,

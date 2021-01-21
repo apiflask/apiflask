@@ -1,4 +1,4 @@
-.. APIToolkit documentation master file, created by
+.. Flask-APITools documentation master file, created by
    sphinx-quickstart on Sun Sep 27 17:34:58 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -6,8 +6,7 @@
 Getting Started
 ===============
 
-APIToolkit is a Web API development toolkit for Python web frameworks (currently
-only support Flask) with the following goals:
+Flask-APITools is a Web API development toolkit for Flask with the following goals:
 
 - Give you a way to specify what the input arguments for each endpoint are,
   and automatically validate them for you.
@@ -18,9 +17,9 @@ only support Flask) with the following goals:
   endpoints in the style that you like.
 
 Below you can see an example API endpoint augmented with
-APIToolkit decorators::
+Flask-APITools decorators::
 
-    from apitoolkit import authenticate, body, response, other_responses
+    from flask_apitools import authenticate, body, response, other_responses
 
     # ...
 
@@ -37,10 +36,10 @@ APIToolkit decorators::
         db.session.commit()
         return post
 
-APIToolkit's decorators are simple wrappers for existing solutions. In the
+Flask-APITools's decorators are simple wrappers for existing solutions. In the
 example above, ``token_auth`` is an intialized authentication object from the
 Flask-HTTPAuth extension, and ``post_schema`` and ``update_post_schema`` are
-Flask-Marshmallow schema objects. These wrappers allow APIToolkit to
+Flask-Marshmallow schema objects. These wrappers allow Flask-APITools to
 automatically generate documentation using the OpenAPI 3.x standard. Below is a
 screenshot of the documentation for the above endpoint:
 
@@ -51,31 +50,31 @@ screenshot of the documentation for the above endpoint:
 Installation
 ------------
 
-APIToolkit is installed with ``pip``::
+Flask-APITools is installed with ``pip``::
 
-    pip install apitoolkit
+    pip install flask-apitools
 
 Once installed, this package is initialized as a standard Flask extension::
 
     from flask import Flask
-    from apitoolkit import APIToolkit
+    from flask_apitools import APITools
 
     app = Flask(__name__)
-    apitoolkit = APIToolkit(app)
+    apitools = APITools(app)
 
 The two-phase initialization style is also supported::
 
     from flask import Flask
-    from apitoolkit import APIToolkit
+    from flask_apitools import Flask-APITools
 
-    apitoolkit = APIToolkit()
+    apitools = APITools()
 
     def create_app():
         app = Flask(__name__)
-        apitoolkit.init_app(app)
+        apitools.init_app(app)
         return app
 
-Once APIToolkit is initialized, automatically generated documentation can be
+Once Flask-APITools is initialized, automatically generated documentation can be
 accessed at the */docs* URL. The raw OpenAPI documentation data in JSON format
 can be accessed at the */openapi.json* URL. Both URLs can be changed in the
 configuration if desired.
@@ -83,16 +82,16 @@ configuration if desired.
 Configuration
 -------------
 
-APIToolkit imports its configuration from the Flask configuration object.
+Flask-APITools imports its configuration from the Flask configuration object.
 The available options are shown in the table below.
 
 ============================== ====== =============== ==============================================================================================
 Name                           Type   Default         Description
 ============================== ====== =============== ==============================================================================================
-``APITOOLKIT_TITLE``           String APIToolkit      The API's title.
-``APITOOLKIT_VERSION``         String 1.0.0           The API's version.
-``APITOOLKIT_APISPEC_PATH``    String */openapi.json* The URL path where the JSON OpenAPI specification for this project is served.
-``APITOOLKIT_SWAGGER_UI_PATH`` String */swaggger*     The URL path where the Swagger UI documentation is served. Set it to ``None`` to disable it.
-``APITOOLKIT_REDOC_PATH``      String */redoc*        The URL path where the Redoc documentation is served. Set it to ``None`` to disable it.
-``APITOOLKIT_TAGS``            List   ``None``        The list of ordered tags to include in the documentation, if the default order is not optimal.
+``APITOOLS_TITLE``             String Flask-APITools  The API's title.
+``APITOOLS_VERSION``           String 1.0.0           The API's version.
+``APITOOLS_APISPEC_PATH``      String */openapi.json* The URL path where the JSON OpenAPI specification for this project is served.
+``APITOOLS_SWAGGER_UI_PATH``   String */swaggger*     The URL path where the Swagger UI documentation is served. Set it to ``None`` to disable it.
+``APITOOLS_REDOC_PATH``        String */redoc*        The URL path where the Redoc documentation is served. Set it to ``None`` to disable it.
+``APITOOLS_TAGS``              List   ``None``        The list of ordered tags to include in the documentation, if the default order is not optimal.
 ============================== ====== =============== ==============================================================================================

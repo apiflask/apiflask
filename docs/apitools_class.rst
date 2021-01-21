@@ -1,33 +1,33 @@
-.. APIToolkit documentation master file, created by
+.. Flask-APITools documentation master file, created by
    sphinx-quickstart on Sun Sep 27 17:34:58 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-The APIToolkit Class
-====================
+The APITools Class
+==================
 
-The main function of the ``APIToolkit`` instance is to gather all the information
+The main function of the ``APITools`` instance is to gather all the information
 registered by the decorators and generate an `OpenAPI 3.x
 <https://swagger.io/specification/>`_ compliant schema with it. This schema is
 then used to render the documentation site using one of the available
 open-source documentation projects that are compatible with this specification.
 
-In addition to ducmentation, ``APIToolkit`` allows the application to
+In addition to ducmentation, ``APITools`` allows the application to
 install a custom error handler to be used when a schema validation error occurs
 in routes decorated with the ``@body`` or ``@arguments`` decorators. It also
 registers routes to serve the OpenAPI definition in JSON format and a
 documentation site based on one of the supported third-party documentation
 projects.
 
-APIToolkit.apispec
-------------------
+APITools.apispec
+----------------
 
 The ``apispec`` property returns the complete OpenAPI definition for the
 project as a Python dictionary. The information used to build this data is
 obtained from several places:
 
-- The project's name and version are obtained from the ``APITOOLKIT_TITLE`` and
-  ``APITOOLKIT_VERSION`` configuration items respectively.
+- The project's name and version are obtained from the ``APITOOLS_TITLE`` and
+  ``APITOOLS_VERSION`` configuration items respectively.
 - The top-level documentation for the project, which appears above the API
   definitions, is obtained from the main module's docstring. Markdown can be
   used to organize this content in sections and use rich-text formatting.
@@ -43,32 +43,32 @@ obtained from several places:
 - If a route belongs to a blueprint, the corresponding path is tagged with the
   blueprint name. Paths are grouped by their tag, which ensures that routes
   from each blueprint are rendered together in their own section. The
-  ``APITOOLKIT_TAGS`` configuration item can be used to provide a custom ordering
+  ``APITOOLS_TAGS`` configuration item can be used to provide a custom ordering
   for tags.
 - Each security scheme is documented by inspecting the Flask-HTTPAuth object,
   plus the contents of the ``__doc__`` property if it exists.
 
-APIToolkit.process_apispec
---------------------------
+APITools.process_apispec
+------------------------
 
 The ``process_apispec`` decorator can be used to register a custom function
 that receives the generated OpenAPI definition as its single argument. The
 function can make changes and adjustments to it and return the modified
 definition, which will then be rendered::
 
-    @apitoolkit.process_apispec
+    @apitools.process_apispec
     def my_apispec_processor(spec):
         # modify spec as needed here
         return spec
 
-APIToolkit.error_handler
-------------------------
+APITools.error_handler
+----------------------
 
 The `error_handler`` method can be used to register a custom error handler
 function that will be invoked whenever a validation error is raised by the
 webargs project. This method can be used as a decorator as follows::
 
-    @apitoolkit.error_handler
+    @apitools.error_handler
     def my_error_handler(status_code, messages):
         return {'code': status_code, 'messages': messages}, status_code
 

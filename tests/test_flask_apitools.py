@@ -6,7 +6,7 @@ from flask_marshmallow import Marshmallow
 from marshmallow import EXCLUDE
 from openapi_spec_validator import validate_spec
 
-from apitoolkit import APIToolkit, body, arguments, response, authenticate, \
+from flask_apitools import APITools, body, arguments, response, authenticate, \
     other_responses
 
 ma = Marshmallow()
@@ -37,14 +37,14 @@ class QuerySchema(ma.Schema):
     id = ma.Integer(missing=1)
 
 
-class TestAPIToolkit(unittest.TestCase):
+class TestAPITools(unittest.TestCase):
     def create_app(self):
         app = Flask(__name__)
-        app.config['APITOOLKIT_TITLE'] = 'Foo'
-        app.config['APITOOLKIT_VERSION'] = '1.0'
+        app.config['APITOOLS_TITLE'] = 'Foo'
+        app.config['APITOOLS_VERSION'] = '1.0'
         ma.init_app(app)
-        apitoolkit = APIToolkit(app)
-        return app, apitoolkit
+        apitools = APITools(app)
+        return app, apitools
 
     def test_body(self):
         app, _ = self.create_app()
@@ -222,10 +222,10 @@ class TestAPIToolkit(unittest.TestCase):
         assert rv.json == {'user': 'bar'}
 
     def test_apispec(self):
-        app, apitoolkit = self.create_app()
+        app, apitools = self.create_app()
         auth = HTTPBasicAuth()
 
-        @apitoolkit.process_apispec
+        @apitools.process_apispec
         def edit_apispec(apispec):
             assert apispec['openapi'] == '3.0.3'
             apispec['openapi'] = '3.0.2'
@@ -262,18 +262,18 @@ class TestAPIToolkit(unittest.TestCase):
         assert rv.json['info']['title'] == 'Foo'
         assert rv.json['info']['version'] == '1.0'
 
-        assert apitoolkit.apispec is apitoolkit.apispec
+        assert apitools.apispec is apitools.apispec
 
         rv = client.get('/docs')
         assert rv.status_code == 200
         assert b'swagger-ui-standalone-preset.js' in rv.data
-        
+
         rv = client.get('/redoc')
         assert rv.status_code == 200
         assert b'redoc.standalone.js' in rv.data
 
     def test_apispec_schemas(self):
-        app, apitoolkit = self.create_app()
+        app, apitools = self.create_app()
 
         @app.route('/foo')
         @response(Schema(partial=True))
@@ -291,7 +291,7 @@ class TestAPIToolkit(unittest.TestCase):
             pass
 
         with app.app_context():
-            apispec = apitoolkit.apispec
+            apispec = apitools.apispec
         assert len(apispec['components']['schemas']) == 3
         assert 'SchemaUpdate' in apispec['components']['schemas']
         assert 'Schema2List' in apispec['components']['schemas']
@@ -328,7 +328,7 @@ class TestAPIToolkit(unittest.TestCase):
             'Update a user with specified ID.'
 
     def test_apispec_path_parameters_registration(self):
-        app, apitoolkit = self.create_app()
+        app, apitools = self.create_app()
 
         @app.route('/strings/<some_string>')
         @response(Schema)
