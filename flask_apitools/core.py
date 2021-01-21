@@ -55,13 +55,13 @@ class APITools:
         if self.swagger_ui_path:
             @bp.route(self.swagger_ui_path)
             def swagger():
-                return render_template('flask_apitools/swagger_ui.html',
+                return render_template('apitools/swagger_ui.html',
                                        title=self.title, version=self.version)
 
         if self.redoc_path:
             @bp.route(self.redoc_path)
             def redoc():
-                return render_template('flask_apitools/redoc.html',
+                return render_template('apitools/redoc.html',
                                        title=self.title, version=self.version)
 
         if self.apispec_path or self.swagger_ui_path or self.redoc_path:
