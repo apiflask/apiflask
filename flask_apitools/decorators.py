@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import Response
+from flask import Response, jsonify
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
 from flask_apitools.exceptions import ValidationError
@@ -66,6 +66,15 @@ def response(schema, status_code=200, description=None):
     def decorator(f):
         _annotate(f, response=schema, status_code=status_code,
                   description=description)
+        
+        sentinel = object()
+        
+        def _jsonify(obj, many=sentinel, *args, **kwargs):
+            """Copy from flask_marshmallow.schemas.Schema.jsonify"""
+            if many is sentinel:
+                many = schema.many
+            data = schema.dump(obj, many=many)
+            return jsonify(data, *args, **kwargs)
 
         @wraps(f)
         def _response(*args, **kwargs):
@@ -74,7 +83,7 @@ def response(schema, status_code=200, description=None):
                 raise RuntimeError(
                     'The @response decorator cannot handle Response objects.')
             if isinstance(rv, tuple):
-                json = schema.jsonify(rv[0])
+                json = _jsonify(rv[0])
                 if len(rv) == 2:
                     if not isinstance(rv[1], int):
                         rv = (json, status_code, rv[1])
@@ -86,7 +95,7 @@ def response(schema, status_code=200, description=None):
                     rv = json
                 return rv
             else:
-                return schema.jsonify(rv), status_code
+                return _jsonify(rv), status_code
         return _response
     return decorator
 
