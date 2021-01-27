@@ -9,17 +9,20 @@ A lightweight Web API toolkit for Flask, based on marshmallow-code projects and 
 ## Installation
 
 ```bash
-$ pip install apiflask
+$ pip install -U apiflask
 ```
 
 ## Example
 
 ```python
+from flask import Flask
 from apiflask import APIFlask
 from apiflask.decorators import arguments, body, response
 from marshmallow import Schema
 
-app = APIFlask(__name__)
+app = Flask(__name__)
+api = APIFlask(app)
+
 
 class PetSchema(Schema):
     id = Integer(dump_only=True)

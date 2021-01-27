@@ -1,6 +1,7 @@
 # APIFlask Change Log
 
-**Release 0.1.0** - 2021-1-27
+## Version 0.1.0
+Released: 2021-1-27
 
 - Add view functions without reponse schema into spec ([commit](https://github.com/greyli/apiflask/commit/aabf427590227001e0e443d8d6a3bf5f56dc5964))       
 - Set default response descriptions ([commit](https://github.com/greyli/apiflask/commit/b9edf9e8f5731a8f45b359f6a101b4d39ba3f2f5))
