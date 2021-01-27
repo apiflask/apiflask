@@ -216,8 +216,10 @@ class APITools:
         for rule in rules:
             operations = {}
             view_func = current_app.view_functions[rule.endpoint]
-            if not hasattr(view_func, '_spec'):
+            if rule.endpoint.startswith('apitools') or rule.endpoint.startswith('static'):
                 continue
+            if not hasattr(view_func, '_spec'):
+                view_func._spec = dict(_response=True, status_code=200, description=None)
             tag = None
             if '.' in rule.endpoint:
                 tag = rule.endpoint.split('.', 1)[0].title()
@@ -241,13 +243,18 @@ class APITools:
                         view_func.__name__.split('_')).title()
                 if len(docs) > 1:
                     operation['description'] = '\n'.join(docs[1:]).strip()
-                if view_func._spec.get('response'):
+                if view_func._spec.get('response') or view_func._spec.get('_response'):
                     code = str(view_func._spec['status_code'])
+                    response = view_func._spec.get('response')
+                    if response:
+                        schema = response
+                    else:
+                        schema = {}
                     operation['responses'] = {
                         code: {
                             'content': {
                                 'application/json': {
-                                    'schema': view_func._spec.get('response')
+                                    'schema': schema
                                 }
                             }
                         }
