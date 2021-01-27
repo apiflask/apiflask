@@ -216,10 +216,12 @@ class APIFlask:
         for rule in rules:
             operations = {}
             view_func = current_app.view_functions[rule.endpoint]
-            if rule.endpoint.startswith('apiflask') or rule.endpoint.startswith('static'):
+            if rule.endpoint.startswith('apiflask') or \
+               rule.endpoint.startswith('static'):
                 continue
             if not hasattr(view_func, '_spec'):
-                view_func._spec = dict(_response=True, status_code=200, description=None)
+                view_func._spec = \
+                    dict(_response=True, status_code=200, description=None)
             tag = None
             if '.' in rule.endpoint:
                 tag = rule.endpoint.split('.', 1)[0].title()
@@ -243,7 +245,8 @@ class APIFlask:
                         view_func.__name__.split('_')).title()
                 if len(docs) > 1:
                     operation['description'] = '\n'.join(docs[1:]).strip()
-                if view_func._spec.get('response') or view_func._spec.get('_response'):
+                if view_func._spec.get('response') or \
+                   view_func._spec.get('_response'):
                     code = str(view_func._spec['status_code'])
                     response = view_func._spec.get('response')
                     if response:
@@ -263,7 +266,8 @@ class APIFlask:
                         view_func._spec['description'] or 'Successful response'
                 else:
                     operation['responses'] = {'204': {}}
-                    operation['responses']['204']['description'] = 'Empty response'
+                    operation['responses']['204']['description'] = \
+                        'Empty response'
 
                 if view_func._spec.get('other_responses'):
                     for status_code, description in view_func._spec.get(

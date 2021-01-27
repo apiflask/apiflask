@@ -66,9 +66,9 @@ def response(schema, status_code=200, description=None):
     def decorator(f):
         _annotate(f, response=schema, status_code=status_code,
                   description=description)
-        
+
         sentinel = object()
-        
+
         def _jsonify(obj, many=sentinel, *args, **kwargs):
             """Copy from flask_marshmallow.schemas.Schema.jsonify"""
             if many is sentinel:
