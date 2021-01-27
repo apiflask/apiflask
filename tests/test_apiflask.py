@@ -6,7 +6,7 @@ from flask_marshmallow import Marshmallow
 from marshmallow import EXCLUDE
 from openapi_spec_validator import validate_spec
 
-from flask_apitools import APITools, body, arguments, response, authenticate, \
+from apiflask import APIFlask, body, arguments, response, authenticate, \
     other_responses
 
 ma = Marshmallow()
@@ -37,14 +37,14 @@ class QuerySchema(ma.Schema):
     id = ma.Integer(missing=1)
 
 
-class TestAPITools(unittest.TestCase):
+class TestAPIFlask(unittest.TestCase):
     def create_app(self):
         app = Flask(__name__)
-        app.config['APITOOLS_TITLE'] = 'Foo'
-        app.config['APITOOLS_VERSION'] = '1.0'
+        app.config['APIFLASK_TITLE'] = 'Foo'
+        app.config['APIFLASK_VERSION'] = '1.0'
         ma.init_app(app)
-        apitools = APITools(app)
-        return app, apitools
+        apiflask = APIFlask(app)
+        return app, apiflask
 
     def test_body(self):
         app, _ = self.create_app()
@@ -222,10 +222,10 @@ class TestAPITools(unittest.TestCase):
         assert rv.json == {'user': 'bar'}
 
     def test_apispec(self):
-        app, apitools = self.create_app()
+        app, apiflask = self.create_app()
         auth = HTTPBasicAuth()
 
-        @apitools.process_apispec
+        @apiflask.process_apispec
         def edit_apispec(apispec):
             assert apispec['openapi'] == '3.0.3'
             apispec['openapi'] = '3.0.2'
@@ -262,7 +262,7 @@ class TestAPITools(unittest.TestCase):
         assert rv.json['info']['title'] == 'Foo'
         assert rv.json['info']['version'] == '1.0'
 
-        assert apitools.apispec is apitools.apispec
+        assert apiflask.apispec is apiflask.apispec
 
         rv = client.get('/docs')
         assert rv.status_code == 200
@@ -273,7 +273,7 @@ class TestAPITools(unittest.TestCase):
         assert b'redoc.standalone.js' in rv.data
 
     def test_apispec_schemas(self):
-        app, apitools = self.create_app()
+        app, apiflask = self.create_app()
 
         @app.route('/foo')
         @response(Schema(partial=True))
@@ -291,7 +291,7 @@ class TestAPITools(unittest.TestCase):
             pass
 
         with app.app_context():
-            apispec = apitools.apispec
+            apispec = apiflask.apispec
         assert len(apispec['components']['schemas']) == 3
         assert 'SchemaUpdate' in apispec['components']['schemas']
         assert 'Schema2List' in apispec['components']['schemas']
@@ -328,7 +328,7 @@ class TestAPITools(unittest.TestCase):
             'Update a user with specified ID.'
 
     def test_apispec_path_parameters_registration(self):
-        app, apitools = self.create_app()
+        app, apiflask = self.create_app()
 
         @app.route('/strings/<some_string>')
         @response(Schema)

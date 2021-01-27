@@ -1,4 +1,4 @@
-.. Flask-APITools documentation master file, created by
+.. APIFlask documentation master file, created by
    sphinx-quickstart on Sun Sep 27 17:34:58 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -6,7 +6,7 @@
 Decorators
 ==========
 
-The core functionality of Flask-APITools is accessed through its five decorators,
+The core functionality of APIFlask is accessed through its five decorators,
 which are used to define what the inputs and outputs of each endpoint are.
 
 @arguments
@@ -17,7 +17,7 @@ string of the request URL. The only argument this decorator requires is the
 schema definition for the input data, which can be given as a schema class or
 instance::
 
-    from flask_apitools import arguments
+    from apiflask import arguments
 
     class PaginationSchema(ma.Schema):
        page = ma.Int(missing=1)
@@ -102,7 +102,7 @@ The ``body`` decorator defines the structure of the JSON body of the request.
 The only required argument to this decorator is the schema definition for the
 request body, which can be given as a schema class or instance::
 
-    from flask_apitools import body
+    from apiflask import body
 
     class UserSchema(ma.Schema):
         id = ma.Int()
@@ -142,7 +142,7 @@ The ``response`` decorator specifies the structure of the endpoint response.
 The only required argument to this decorator is the schema that defines the
 response, which can be given as a schema class or instance::
 
-    from flask_apitools import response
+    from apiflask import response
 
     @app.route('/users/<int:id>')
     @response(UserSchema)
@@ -172,7 +172,7 @@ argument to this decorator is a dictionary with the keys set to numeric HTTP
 status codes, and the values set to the description text for each response
 code::
 
-    from flask_apitools import response, other_responses
+    from apiflask import response, other_responses
 
     @app.route('/users/<int:id>')
     @response(UserSchema)
@@ -192,7 +192,7 @@ this decorator is an authentication object from the `Flask-HTTPAuth
 <https://flask-httpauth.readthedocs.io/>`_ extension::
 
     from flask_httpauth import HTTPBasicAuth
-    from flask_apitools import authenticate
+    from apiflask import authenticate
 
     auth = HTTPBasicAuth()
 

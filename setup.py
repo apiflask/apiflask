@@ -1,7 +1,7 @@
 import re
 import setuptools
 
-with open('flask_apitools/__init__.py', 'r') as f:
+with open('apiflask/__init__.py', 'r') as f:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         f.read(), re.MULTILINE).group(1)
 
@@ -9,7 +9,7 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='Flask-APITools',
+    name='APIFlask',
     version=version,
     author='Grey Li',
     author_email='withlihui@gmail.com',
@@ -17,9 +17,9 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     platforms='any',
-    url='https://github.com/greyli/flask-apitools',
+    url='https://github.com/greyli/apiflask',
     packages=setuptools.find_packages(exclude=['tests']),
-    package_data={'flask_apitools': ['templates/flask_apitools/*.html']},
+    package_data={'apiflask': ['templates/apiflask/*.html']},
     include_package_data=True,
     install_requires=[
         'flask>=1.1.0',

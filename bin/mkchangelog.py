@@ -3,7 +3,7 @@ import re
 import sys
 import git
 
-URL = 'https://github.com/greyli/flask-apitools'
+URL = 'https://github.com/greyli/apiflask'
 merges = {}
 
 

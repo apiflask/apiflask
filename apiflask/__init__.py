@@ -1,4 +1,4 @@
-from .core import APITools  # noqa: F401
+from .core import APIFlask  # noqa: F401
 from .decorators import authenticate, arguments, body, response, \
     other_responses  # noqa: F401
 

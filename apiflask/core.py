@@ -16,10 +16,10 @@ except ImportError:  # pragma: no cover
     HTTPBasicAuth = None
     HTTPTokenAuth = None
 
-from flask_apitools.exceptions import ValidationError
+from apiflask.exceptions import ValidationError
 
 
-class APITools:
+class APIFlask:
     def __init__(self, app=None):
         self.title = None
         self.version = None
@@ -36,18 +36,18 @@ class APITools:
 
     def init_app(self, app):
         app.extensions = getattr(app, 'extensions', {})
-        app.extensions['apitools'] = self
+        app.extensions['apiflask'] = self
 
-        self.title = app.config.get('APITOOLS_TITLE', 'Flask-APITools')
-        self.version = app.config.get('APITOOLS_VERSION', '1.0.0')
-        self.apispec_path = app.config.get('APITOOLS_APISPEC_PATH',
+        self.title = app.config.get('APIFLASK_TITLE', 'APIFlask')
+        self.version = app.config.get('APIFLASK_VERSION', '1.0.0')
+        self.apispec_path = app.config.get('APIFLASK_APISPEC_PATH',
                                            '/openapi.json')
-        self.swagger_ui_path = app.config.get('APITOOLS_SWAGGER_UI_PATH',
+        self.swagger_ui_path = app.config.get('APIFLASK_SWAGGER_UI_PATH',
                                               '/docs')
-        self.redoc_path = app.config.get('APITOOLS_REDOC_PATH', '/redoc')
-        self.tags = app.config.get('APITOOLS_TAGS')
+        self.redoc_path = app.config.get('APIFLASK_REDOC_PATH', '/redoc')
+        self.tags = app.config.get('APIFLASK_TAGS')
 
-        bp = Blueprint('apitools', __name__, template_folder='templates')
+        bp = Blueprint('apiflask', __name__, template_folder='templates')
 
         if self.apispec_path:
             @bp.route(self.apispec_path)
@@ -58,13 +58,13 @@ class APITools:
         if self.swagger_ui_path:
             @bp.route(self.swagger_ui_path)
             def swagger():
-                return render_template('apitools/swagger_ui.html',
+                return render_template('apiflask/swagger_ui.html',
                                        title=self.title, version=self.version)
 
         if self.redoc_path:
             @bp.route(self.redoc_path)
             def redoc():
-                return render_template('apitools/redoc.html',
+                return render_template('apiflask/redoc.html',
                                        title=self.title, version=self.version)
 
         if self.apispec_path or self.swagger_ui_path or self.redoc_path:
@@ -216,7 +216,7 @@ class APITools:
         for rule in rules:
             operations = {}
             view_func = current_app.view_functions[rule.endpoint]
-            if rule.endpoint.startswith('apitools') or rule.endpoint.startswith('static'):
+            if rule.endpoint.startswith('apiflask') or rule.endpoint.startswith('static'):
                 continue
             if not hasattr(view_func, '_spec'):
                 view_func._spec = dict(_response=True, status_code=200, description=None)
