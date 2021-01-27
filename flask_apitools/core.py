@@ -253,9 +253,10 @@ class APITools:
                         }
                     }
                     operation['responses'][code]['description'] = \
-                        view_func._spec['description'] or ''
+                        view_func._spec['description'] or 'Successful response'
                 else:
                     operation['responses'] = {'204': {}}
+                    operation['responses']['204']['description'] = 'Empty response'
 
                 if view_func._spec.get('other_responses'):
                     for status_code, description in view_func._spec.get(
