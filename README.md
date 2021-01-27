@@ -1,23 +1,76 @@
-# Flask-APITools
+# APIFlask
 
-[![Build status](https://github.com/greyli/flask-apitools/workflows/build/badge.svg)](https://github.com/greyli/flask-apitools/actions) [![codecov](https://codecov.io/gh/greyli/flask-apitools/branch/master/graph/badge.svg)](https://codecov.io/gh/greyli/flask-apitools)
+[![Build status](https://github.com/greyli/apiflask/workflows/build/badge.svg)](https://github.com/greyli/apiflask/actions) [![codecov](https://codecov.io/gh/greyli/apiflask/branch/master/graph/badge.svg)](https://codecov.io/gh/greyli/apiflask)
 
-A Web API development toolkit for Flask.
+A lightweight Web API toolkit for Flask, based on marshmallow-code projects and other Flask extensions.
 
-Currently this project is in plan/experimental stage, break changes are expected, do not use it in production. Contribution and suggestions are welcome!
+**Currently this project is in plan/experimental stage, break changes are expected. Improvement and suggestions are welcome!**
 
 ## Installation
 
 ```bash
-$ pip install -U flask-apitools
+$ pip install apiflask
 ```
+
+## Example
+
+```python
+from apiflask import APIFlask
+from apiflask.decorators import arguments, body, response
+from marshmallow import Schema
+
+app = APIFlask(__name__)
+
+class PetSchema(Schema):
+    id = Integer(dump_only=True)
+    name = String(required=True)
+    age = Integer(required=True)
+    category = String(required=True)
+
+
+@app.route('/pets/<int:pet_id>')
+@response(PetSchema)
+def get_pet(pet_id):
+    pass
+
+
+@app.route('/pets', methods=['POST'])
+@body(PetSchema)
+@response(PetSchema)
+def create_pet(pet):
+    pass
+
+
+@app.route('/pets', methods=['PUT'])
+@body(PetSchema)
+@response(PetSchema)
+def update_pet(updated_pet, pet_id):
+    pass
+```
+
+Save the file as `app.py`, then run it with:
+
+```bash
+$ flask run
+``` 
+
+Now visit the interactive docs by Swagger UI at <http://localhost:5000/docs>:
+
+![](./images/swaggerui.png)
+
+Or you can visit the alternative Redoc docs at <http://localhost:5000/redoc>:
+
+![](./images/redoc.png)
+
+The auto-generated OpenAPI spec file are available at <http://localhost:5000/openapi.json>.
+
 
 ## Links
 
-- [Documentation](http://flask-apitools.readthedocs.io/en/latest/)
-- [PyPI](https://pypi.python.org/pypi/Flask-APITools)
-- [Change Log](https://github.com/greyli/flask-apitools/blob/master/CHANGES.md)
+- Documentation (WIP)
+- [PyPI](https://pypi.python.org/pypi/APIFlask)
+- [Change Log](https://github.com/greyli/apiflask/blob/master/CHANGES.md)
 
 ---
 
-Flask-APITools starts as a fork of [APIFairy 0.6.3dev](https://github.com/miguelgrinberg/APIFairy), it also inspired by [FastAPI](https://github.com/tiangolo/fastapi).
+APIFlask starts as a fork of [APIFairy 0.6.3dev](https://github.com/miguelgrinberg/APIFairy) and heavily inspired by [FastAPI](https://github.com/tiangolo/fastapi).
