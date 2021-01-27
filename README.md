@@ -73,4 +73,4 @@ The auto-generated OpenAPI spec file are available at <http://localhost:5000/ope
 
 ---
 
-APIFlask starts as a fork of [APIFairy 0.6.3dev](https://github.com/miguelgrinberg/APIFairy) and heavily inspired by [FastAPI](https://github.com/tiangolo/fastapi).
+APIFlask starts as a fork of [APIFairy 0.6.3dev](https://github.com/miguelgrinberg/APIFairy) and inspired by [FastAPI](https://github.com/tiangolo/fastapi).
