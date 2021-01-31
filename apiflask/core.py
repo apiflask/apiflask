@@ -84,6 +84,78 @@ class APIFlask(Flask):
     def default_error_handler(self, status_code, messages):
         return {'messages': messages}, status_code
 
+    def get(self, rule, **options):
+        def decorator(f):
+            endpoint = options.pop('endpoint', None)
+            options['methods'] = ['GET']
+            self.add_url_rule(rule, endpoint, f, **options)
+            return f
+        return decorator
+
+    def get(self, rule, **options):
+        def decorator(f):
+            endpoint = options.pop('endpoint', None)
+            options['methods'] = ['GET']
+            self.add_url_rule(rule, endpoint, f, **options)
+            return f
+        return decorator
+
+    def post(self, rule, **options):
+        def decorator(f):
+            endpoint = options.pop('endpoint', None)
+            options['methods'] = ['POST']
+            self.add_url_rule(rule, endpoint, f, **options)
+            return f
+        return decorator
+
+    def put(self, rule, **options):
+        def decorator(f):
+            endpoint = options.pop('endpoint', None)
+            options['methods'] = ['PUT']
+            self.add_url_rule(rule, endpoint, f, **options)
+            return f
+        return decorator
+
+    def patch(self, rule, **options):
+        def decorator(f):
+            endpoint = options.pop('endpoint', None)
+            options['methods'] = ['PATCH']
+            self.add_url_rule(rule, endpoint, f, **options)
+            return f
+        return decorator
+
+    def delete(self, rule, **options):
+        def decorator(f):
+            endpoint = options.pop('endpoint', None)
+            options['methods'] = ['DELETE']
+            self.add_url_rule(rule, endpoint, f, **options)
+            return f
+        return decorator
+
+    def options(self, rule, **options):
+        def decorator(f):
+            endpoint = options.pop('endpoint', None)
+            options['methods'] = ['OPTIONS']
+            self.add_url_rule(rule, endpoint, f, **options)
+            return f
+        return decorator
+
+    def head(self, rule, **options):
+        def decorator(f):
+            endpoint = options.pop('endpoint', None)
+            options['methods'] = ['HEAD']
+            self.add_url_rule(rule, endpoint, f, **options)
+            return f
+        return decorator
+
+    def trace(self, rule, **options):
+        def decorator(f):
+            endpoint = options.pop('endpoint', None)
+            options['methods'] = ['TRACE']
+            self.add_url_rule(rule, endpoint, f, **options)
+            return f
+        return decorator
+
     @property
     def apispec(self):
         if self._apispec is None:
