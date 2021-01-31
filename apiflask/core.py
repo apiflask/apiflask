@@ -2,6 +2,7 @@ from json import dumps
 import re
 import sys
 
+from flask import Flask
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import current_app, Blueprint, render_template
@@ -19,8 +20,9 @@ except ImportError:  # pragma: no cover
 from apiflask.exceptions import ValidationError
 
 
-class APIFlask:
-    def __init__(self, app=None):
+class APIFlask(Flask):
+    def __init__(self, import_name, **kwargs):
+        super(APIFlask, self).__init__(import_name, **kwargs)
         self.title = None
         self.version = None
         self.apispec_path = None
@@ -31,21 +33,17 @@ class APIFlask:
         self.apispec_callback = None
         self.error_handler_callback = self.default_error_handler
         self._apispec = None
-        if app is not None:
-            self.init_app(app)
+        self.init_app()
 
-    def init_app(self, app):
-        app.extensions = getattr(app, 'extensions', {})
-        app.extensions['apiflask'] = self
-
-        self.title = app.config.get('APIFLASK_TITLE', 'APIFlask')
-        self.version = app.config.get('APIFLASK_VERSION', '1.0.0')
-        self.apispec_path = app.config.get('APIFLASK_APISPEC_PATH',
+    def init_app(self):
+        self.title = self.config.get('APIFLASK_TITLE', 'APIFlask')
+        self.version = self.config.get('APIFLASK_VERSION', '1.0.0')
+        self.apispec_path = self.config.get('APIFLASK_APISPEC_PATH',
                                            '/openapi.json')
-        self.swagger_ui_path = app.config.get('APIFLASK_SWAGGER_UI_PATH',
+        self.swagger_ui_path = self.config.get('APIFLASK_SWAGGER_UI_PATH',
                                               '/docs')
-        self.redoc_path = app.config.get('APIFLASK_REDOC_PATH', '/redoc')
-        self.tags = app.config.get('APIFLASK_TAGS')
+        self.redoc_path = self.config.get('APIFLASK_REDOC_PATH', '/redoc')
+        self.tags = self.config.get('APIFLASK_TAGS')
 
         bp = Blueprint('apiflask', __name__, template_folder='templates')
 
@@ -68,9 +66,9 @@ class APIFlask:
                                        title=self.title, version=self.version)
 
         if self.apispec_path or self.swagger_ui_path or self.redoc_path:
-            app.register_blueprint(bp)
+            self.register_blueprint(bp)
 
-        @app.errorhandler(ValidationError)
+        @self.errorhandler(ValidationError)
         def http_error(error):
             return self.error_handler_callback(error.status_code,
                                                error.messages)
