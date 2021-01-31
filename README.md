@@ -2,7 +2,7 @@
 
 [![Build status](https://github.com/greyli/apiflask/workflows/build/badge.svg)](https://github.com/greyli/apiflask/actions) [![codecov](https://codecov.io/gh/greyli/apiflask/branch/master/graph/badge.svg)](https://codecov.io/gh/greyli/apiflask)
 
-A lightweight Web API toolkit for Flask, based on marshmallow-code projects and other Flask extensions.
+A lightweight Web API framework, based on Flask, marshmallow-code projects and other Flask extensions.
 
 **Currently this project is in plan/experimental stage, break changes are expected. Improvement and suggestions are welcome!**
 
@@ -15,13 +15,11 @@ $ pip install -U apiflask
 ## Example
 
 ```python
-from flask import Flask
 from apiflask import APIFlask
 from apiflask.decorators import arguments, body, response
 from marshmallow import Schema
 
-app = Flask(__name__)
-api = APIFlask(app)
+app = APIFlask(__name__)
 
 
 class PetSchema(Schema):
@@ -31,20 +29,20 @@ class PetSchema(Schema):
     category = String(required=True)
 
 
-@app.route('/pets/<int:pet_id>')
+@app.get('/pets/<int:pet_id>')
 @response(PetSchema)
 def get_pet(pet_id):
     pass
 
 
-@app.route('/pets', methods=['POST'])
+@app.post('/pets')
 @body(PetSchema)
 @response(PetSchema)
 def create_pet(pet):
     pass
 
 
-@app.route('/pets', methods=['PUT'])
+@app.put('/pets')
 @body(PetSchema)
 @response(PetSchema)
 def update_pet(updated_pet, pet_id):
