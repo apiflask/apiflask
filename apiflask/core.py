@@ -115,14 +115,6 @@ class APIFlask(Flask):
             return f
         return decorator
 
-    def get(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            options['methods'] = ['GET']
-            self.add_url_rule(rule, endpoint, f, **options)
-            return f
-        return decorator
-
     def post(self, rule, **options):
         def decorator(f):
             endpoint = options.pop('endpoint', None)
