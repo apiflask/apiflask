@@ -147,30 +147,6 @@ class APIFlask(Flask):
             return f
         return decorator
 
-    def options(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            options['methods'] = ['OPTIONS']
-            self.add_url_rule(rule, endpoint, f, **options)
-            return f
-        return decorator
-
-    def head(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            options['methods'] = ['HEAD']
-            self.add_url_rule(rule, endpoint, f, **options)
-            return f
-        return decorator
-
-    def trace(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            options['methods'] = ['TRACE']
-            self.add_url_rule(rule, endpoint, f, **options)
-            return f
-        return decorator
-
     @property
     def apispec(self):
         if self._apispec is None:
