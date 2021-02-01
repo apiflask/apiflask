@@ -7,6 +7,7 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import current_app, Blueprint, render_template
 from flask_marshmallow import fields
+from werkzeug.datastructures import ImmutableDict
 try:
     from flask_marshmallow import sqla
 except ImportError:
@@ -17,33 +18,31 @@ except ImportError:  # pragma: no cover
     HTTPBasicAuth = None
     HTTPTokenAuth = None
 
-from apiflask.exceptions import ValidationError
+from .exceptions import ValidationError
 
 
 class APIFlask(Flask):
+
+    api_default_config = ImmutableDict(
+        {
+            'OPENAPI_TITLE': 'APIFlask',
+            'OPENAPI_VERSION': '1.0.0',
+            'OPENAPI_SPEC_PATH': '/openapi.json',
+            'SWAGGER_UI_PATH': '/docs',
+            'REDOC_PATH': '/redoc',
+            'OPENAPI_TAGS': None
+        }
+    )
+
     def __init__(self, import_name, **kwargs):
         super(APIFlask, self).__init__(import_name, **kwargs)
-        self.title = None
-        self.version = None
-        self.apispec_path = None
-        self.ui = None
-        self.ui_path = None
-        self.tags = None
+
+        # set default config
+        self.config.update(self.api_default_config)
 
         self.apispec_callback = None
         self.error_handler_callback = self.default_error_handler
         self._apispec = None
-        self.init_app()
-
-    def init_app(self):
-        self.title = self.config.get('APIFLASK_TITLE', 'APIFlask')
-        self.version = self.config.get('APIFLASK_VERSION', '1.0.0')
-        self.apispec_path = self.config.get('APIFLASK_APISPEC_PATH',
-                                           '/openapi.json')
-        self.swagger_ui_path = self.config.get('APIFLASK_SWAGGER_UI_PATH',
-                                              '/docs')
-        self.redoc_path = self.config.get('APIFLASK_REDOC_PATH', '/redoc')
-        self.tags = self.config.get('APIFLASK_TAGS')
 
         bp = Blueprint('apiflask', __name__, template_folder='templates')
 
@@ -72,6 +71,30 @@ class APIFlask(Flask):
         def http_error(error):
             return self.error_handler_callback(error.status_code,
                                                error.messages)
+
+    @property
+    def title(self):
+        return self.config['OPENAPI_TITLE']
+
+    @property
+    def version(self):
+        return self.config['OPENAPI_VERSION']
+
+    @property
+    def apispec_path(self):
+        return self.config['OPENAPI_SPEC_PATH']
+
+    @property
+    def swagger_ui_path(self):
+        return self.config['SWAGGER_UI_PATH']
+
+    @property
+    def redoc_path(self):
+        return self.config['REDOC_PATH']
+
+    @property
+    def tags(self):
+        return self.config['OPENAPI_TAGS']
 
     def process_apispec(self, f):
         self.apispec_callback = f
