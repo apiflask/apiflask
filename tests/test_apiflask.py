@@ -1,6 +1,5 @@
 import unittest
 
-from flask import Flask
 from flask_httpauth import HTTPBasicAuth
 from flask_marshmallow import Marshmallow
 from marshmallow import EXCLUDE
@@ -39,15 +38,14 @@ class QuerySchema(ma.Schema):
 
 class TestAPIFlask(unittest.TestCase):
     def create_app(self):
-        app = Flask(__name__)
-        app.config['APIFLASK_TITLE'] = 'Foo'
-        app.config['APIFLASK_VERSION'] = '1.0'
+        app = APIFlask(__name__)
+        app.config['OPENAPI_TITLE'] = 'Foo'
+        app.config['OPENAPI_VERSION'] = '1.0'
         ma.init_app(app)
-        apiflask = APIFlask(app)
-        return app, apiflask
+        return app
 
     def test_body(self):
-        app, _ = self.create_app()
+        app = self.create_app()
 
         @app.route('/foo', methods=['POST'])
         @body(Schema())
@@ -81,7 +79,7 @@ class TestAPIFlask(unittest.TestCase):
         assert rv.json == {'name': 'bar'}
 
     def test_query(self):
-        app, _ = self.create_app()
+        app = self.create_app()
 
         @app.route('/foo', methods=['POST'])
         @arguments(Schema())
@@ -116,7 +114,7 @@ class TestAPIFlask(unittest.TestCase):
         assert rv.json == {'name': 'bar', 'name2': 'baz'}
 
     def test_response(self):
-        app, _ = self.create_app()
+        app = self.create_app()
 
         @app.route('/foo')
         @response(Schema())
@@ -171,7 +169,7 @@ class TestAPIFlask(unittest.TestCase):
         assert 'Location' not in rv.headers
 
     def test_authenticate(self):
-        app, _ = self.create_app()
+        app = self.create_app()
         auth = HTTPBasicAuth()
 
         @auth.verify_password
@@ -222,10 +220,10 @@ class TestAPIFlask(unittest.TestCase):
         assert rv.json == {'user': 'bar'}
 
     def test_apispec(self):
-        app, apiflask = self.create_app()
+        app = self.create_app()
         auth = HTTPBasicAuth()
 
-        @apiflask.process_apispec
+        @app.process_apispec
         def edit_apispec(apispec):
             assert apispec['openapi'] == '3.0.3'
             apispec['openapi'] = '3.0.2'
@@ -258,11 +256,12 @@ class TestAPIFlask(unittest.TestCase):
         rv = client.get('/openapi.json')
         assert rv.status_code == 200
         validate_spec(rv.json)
+        assert app.config['OPENAPI_TITLE'] == 'Foo'
         assert rv.json['openapi'] == '3.0.2'
         assert rv.json['info']['title'] == 'Foo'
         assert rv.json['info']['version'] == '1.0'
 
-        assert apiflask.apispec is apiflask.apispec
+        assert app.apispec is app.apispec
 
         rv = client.get('/docs')
         assert rv.status_code == 200
@@ -273,7 +272,7 @@ class TestAPIFlask(unittest.TestCase):
         assert b'redoc.standalone.js' in rv.data
 
     def test_apispec_schemas(self):
-        app, apiflask = self.create_app()
+        app = self.create_app()
 
         @app.route('/foo')
         @response(Schema(partial=True))
@@ -291,14 +290,14 @@ class TestAPIFlask(unittest.TestCase):
             pass
 
         with app.app_context():
-            apispec = apiflask.apispec
+            apispec = app.apispec
         assert len(apispec['components']['schemas']) == 3
         assert 'SchemaUpdate' in apispec['components']['schemas']
         assert 'Schema2List' in apispec['components']['schemas']
         assert 'Foo' in apispec['components']['schemas']
 
     def test_apispec_path_summary_description_from_docs(self):
-        app, apifairy = self.create_app()
+        app = self.create_app()
 
         @app.route('/users')
         @response(Schema)
@@ -328,7 +327,7 @@ class TestAPIFlask(unittest.TestCase):
             'Update a user with specified ID.'
 
     def test_apispec_path_parameters_registration(self):
-        app, apiflask = self.create_app()
+        app = self.create_app()
 
         @app.route('/strings/<some_string>')
         @response(Schema)
@@ -371,7 +370,7 @@ class TestAPIFlask(unittest.TestCase):
             'get']['parameters'][1]['name'] == 'user_id'
 
     def test_apispec_path_summary_auto_generation(self):
-        app, apifairy = self.create_app()
+        app = self.create_app()
 
         @app.route('/users')
         @response(Schema)
