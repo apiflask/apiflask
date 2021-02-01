@@ -404,3 +404,56 @@ class TestAPIFlask(unittest.TestCase):
             'Summary from Docs'
         assert rv.json['paths']['/users/{id}']['delete']['description'] == \
             'Delete a user with specified ID.'
+
+    def test_route_shortcuts(self):
+        app = self.create_app()
+
+        @app.get('/pet')
+        @response(Schema)
+        def test_get():
+            return {'name': 'get'}
+
+        @app.post('/pet')
+        @response(Schema)
+        def test_post():
+            return {'name': 'post'}
+
+        @app.put('/pet')
+        @response(Schema)
+        def test_put():
+            return {'name': 'put'}
+
+        @app.patch('/pet')
+        @response(Schema)
+        def test_patch():
+            return {'name': 'patch'}
+
+        @app.delete('/pet')
+        @response(Schema)
+        def test_delete():
+            return {'name': 'delete'}
+
+        client = app.test_client()
+        rv = client.get('/pet')
+        assert rv.json['name'] == 'get'
+
+        rv = client.post('/pet')
+        assert rv.json['name'] == 'post'
+
+        rv = client.put('/pet')
+        assert rv.json['name'] == 'put'
+
+        rv = client.patch('/pet')
+        assert rv.json['name'] == 'patch'
+
+        rv = client.delete('/pet')
+        assert rv.json['name'] == 'delete'
+
+        rv = client.get('/openapi.json')
+        assert rv.status_code == 200
+        validate_spec(rv.json)
+        assert rv.json['paths']['/pet']['get']['summary'] == 'Test Get'
+        assert rv.json['paths']['/pet']['post']['summary'] == 'Test Post'
+        assert rv.json['paths']['/pet']['put']['summary'] == 'Test Put'
+        assert rv.json['paths']['/pet']['patch']['summary'] == 'Test Patch'
+        assert rv.json['paths']['/pet']['delete']['summary'] == 'Test Delete'
