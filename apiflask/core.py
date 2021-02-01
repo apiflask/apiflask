@@ -5,7 +5,7 @@ import sys
 from flask import Flask
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-from flask import current_app, Blueprint, render_template
+from flask import Blueprint, render_template
 from flask_marshmallow import fields
 from werkzeug.datastructures import ImmutableDict
 try:
@@ -192,7 +192,7 @@ class APIFlask(Flask):
 
         # info object
         info = {}
-        module_name = current_app.import_name
+        module_name = self.import_name
         while module_name:
             module = sys.modules[module_name]
             if module.__doc__:
@@ -207,15 +207,15 @@ class APIFlask(Flask):
         if tags is None:
             # auto-generate tags from blueprints
             blueprints = []
-            for rule in current_app.url_map.iter_rules():
-                view_func = current_app.view_functions[rule.endpoint]
+            for rule in self.url_map.iter_rules():
+                view_func = self.view_functions[rule.endpoint]
                 if hasattr(view_func, '_spec'):
                     if '.' in rule.endpoint:
                         blueprint = rule.endpoint.split('.', 1)[0]
                         if blueprint not in blueprints:
                             blueprints.append(blueprint)
             tags = []
-            for name, blueprint in current_app.blueprints.items():
+            for name, blueprint in self.blueprints.items():
                 if name not in blueprints:
                     continue
                 module = sys.modules[blueprint.import_name]
@@ -245,8 +245,8 @@ class APIFlask(Flask):
         # security schemes
         auth_schemes = []
         auth_names = []
-        for rule in current_app.url_map.iter_rules():
-            view_func = current_app.view_functions[rule.endpoint]
+        for rule in self.url_map.iter_rules():
+            view_func = self.view_functions[rule.endpoint]
             if hasattr(view_func, '_spec'):
                 auth = view_func._spec.get('auth')
                 if auth is not None and auth not in auth_schemes:
@@ -296,11 +296,11 @@ class APIFlask(Flask):
 
         # paths
         paths = {}
-        rules = list(current_app.url_map.iter_rules())
+        rules = list(self.url_map.iter_rules())
         rules = sorted(rules, key=lambda rule: len(rule.rule))
         for rule in rules:
             operations = {}
-            view_func = current_app.view_functions[rule.endpoint]
+            view_func = self.view_functions[rule.endpoint]
             if rule.endpoint.startswith('apiflask') or \
                rule.endpoint.startswith('static'):
                 continue
