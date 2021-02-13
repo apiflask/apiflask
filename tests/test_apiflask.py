@@ -457,3 +457,32 @@ class TestAPIFlask(unittest.TestCase):
         assert rv.json['paths']['/pet']['put']['summary'] == 'Test Put'
         assert rv.json['paths']['/pet']['patch']['summary'] == 'Test Patch'
         assert rv.json['paths']['/pet']['delete']['summary'] == 'Test Delete'
+
+    def test_view_function_arguments(self):
+        app = self.create_app()
+
+        class QuerySchema(ma.Schema):
+            foo = ma.Str(required=True)
+            bar = ma.Str(required=True)
+
+        class PetSchema(ma.Schema):
+            name = ma.Str(required=True)
+            age = ma.Integer(default=123)
+
+        @app.post('/pets/<int:pet_id>/toys/<int:toy_id>')
+        @arguments(QuerySchema)
+        @body(PetSchema)
+        def test_args(pet_id, toy_id, args, body):
+            return {'pet_id': pet_id, 'toy_id': toy_id,
+                    'foo': args['foo'], 'bar': args['bar'], **body}
+
+        client = app.test_client()
+        rv = client.post('/pets/1/toys/3?foo=yes&bar=no',
+                         json={'name': 'dodge', 'age': 5})
+        assert rv.status_code == 200
+        assert rv.json['pet_id'] == 1
+        assert rv.json['toy_id'] == 3
+        assert rv.json['foo'] == 'yes'
+        assert rv.json['bar'] == 'no'
+        assert rv.json['name'] == 'dodge'
+        assert rv.json['age'] == 5
