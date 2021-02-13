@@ -1,9 +1,17 @@
 # APIFlask Change Log
 
+## Version 0.2.0
+Released: -
+
+- Require Python 3.7 to use ordered dict ([commit](https://github.com/greyli/apiflask/commit/557a7e649b64aef8f4b8596a4af175524d108ff4))
+- Pass view args to view function as positional arguments ([commit](https://github.com/greyli/apiflask/commit/15c66f3ba97310ed10c851721177e6c504a87317))
+- Add shortcuts for app.route: app.get(), app.post(), etc. ([commit](https://github.com/greyli/apiflask/commit/48bc1246628e53573c811def4a909be0faa9dcfb))
+- Not an extension any more ([commit](https://github.com/greyli/apiflask/commit/ecaec37544524deb8b2ce445d4a3cbf990ff95cb))
+
 ## Version 0.1.0
 Released: 2021-1-27
 
-- Add view functions without reponse schema into spec ([commit](https://github.com/greyli/apiflask/commit/aabf427590227001e0e443d8d6a3bf5f56dc5964))       
+- Add view functions without response schema into spec ([commit](https://github.com/greyli/apiflask/commit/aabf427590227001e0e443d8d6a3bf5f56dc5964))       
 - Set default response descriptions ([commit](https://github.com/greyli/apiflask/commit/b9edf9e8f5731a8f45b359f6a101b4d39ba3f2f5))
 - Stop rely on Flask-Marshmallow ([commit](https://github.com/greyli/apiflask/commit/cce7a0b8b97f345e087973b127c6d25c884dbc8f))
 - Change default spec path to openapi.json ([commit](https://github.com/greyli/apiflask/commit/09d0d278a1fc27fa5868ef5848f3931bd8f76ef4))

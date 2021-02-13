@@ -42,10 +42,10 @@ def create_pet(pet):
     pass
 
 
-@app.put('/pets')
+@app.put('/pets/<int:pet_id>')
 @body(PetSchema)
 @response(PetSchema)
-def update_pet(updated_pet, pet_id):
+def update_pet(pet_id, updated_pet):
     pass
 ```
 
