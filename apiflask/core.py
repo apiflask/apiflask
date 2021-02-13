@@ -3,6 +3,7 @@ import re
 import sys
 
 from flask import Flask
+from flask.globals import _request_ctx_stack
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Blueprint, render_template
@@ -71,6 +72,24 @@ class APIFlask(Flask):
         def http_error(error):
             return self.error_handler_callback(error.status_code,
                                                error.messages)
+
+    def dispatch_request(self):
+        """Overwrite the default dispatch method to pass view arguments as positional
+        arguments.
+        """
+        req = _request_ctx_stack.top.request
+        if req.routing_exception is not None:
+            self.raise_routing_exception(req)
+        rule = req.url_rule
+        # if we provide automatic options for this URL and the
+        # request came with the OPTIONS method, reply automatically
+        if (
+            getattr(rule, "provide_automatic_options", False)
+            and req.method == "OPTIONS"
+        ):
+            return self.make_default_options_response()
+        # otherwise dispatch to the handler for that endpoint
+        return self.view_functions[rule.endpoint](*req.view_args.values())
 
     @property
     def title(self):
