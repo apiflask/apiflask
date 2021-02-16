@@ -31,7 +31,9 @@ class APIFlask(Flask):
             'OPENAPI_SPEC_PATH': '/openapi.json',
             'SWAGGER_UI_PATH': '/docs',
             'REDOC_PATH': '/redoc',
-            'OPENAPI_TAGS': None
+            'OPENAPI_TAGS': None,
+            '200_RESPONSE_DESCRIPTION': 'Successful response',
+            '204_RESPONSE_DESCRIPTION': 'Empty response',
         }
     )
 
@@ -343,11 +345,12 @@ class APIFlask(Flask):
                         }
                     }
                     operation['responses'][code]['description'] = \
-                        view_func._spec['description'] or 'Successful response'
+                        view_func._spec['description'] or \
+                        self.config['200_RESPONSE_DESCRIPTION']
                 else:
                     operation['responses'] = {'204': {}}
                     operation['responses']['204']['description'] = \
-                        'Empty response'
+                        self.config['204_RESPONSE_DESCRIPTION']
 
                 if view_func._spec.get('other_responses'):
                     for status_code, description in view_func._spec.get(
