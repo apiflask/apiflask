@@ -486,3 +486,49 @@ class TestAPIFlask(unittest.TestCase):
         assert rv.json['bar'] == 'no'
         assert rv.json['name'] == 'dodge'
         assert rv.json['age'] == 5
+
+    def test_default_openapi_response(self):
+        app = self.create_app()
+
+        @app.get('/foo')
+        @body(Schema)
+        def only_body_schema():
+            pass
+
+        @app.get('/bar')
+        def no_schema():
+            pass
+
+        client = app.test_client()
+        rv = client.get('/openapi.json')
+        assert rv.status_code == 200
+        validate_spec(rv.json)
+        assert '204' in rv.json['paths']['/foo']['get']['responses']
+        assert '200' in rv.json['paths']['/bar']['get']['responses']
+        assert rv.json['paths']['/foo']['get']['responses'][
+            '204']['description'] == 'Empty response'
+        assert rv.json['paths']['/bar']['get']['responses'][
+            '200']['description'] == 'Successful response'
+
+    def test_default_openapi_response_description(self):
+        app = self.create_app()
+        app.config['200_RESPONSE_DESCRIPTION'] = 'It works'
+        app.config['204_RESPONSE_DESCRIPTION'] = 'Nothing'
+
+        @app.get('/foo')
+        @body(Schema)
+        def only_body_schema():
+            pass
+
+        @app.get('/bar')
+        def no_schema():
+            pass
+
+        client = app.test_client()
+        rv = client.get('/openapi.json')
+        assert rv.status_code == 200
+        validate_spec(rv.json)
+        assert rv.json['paths']['/foo']['get']['responses'][
+            '204']['description'] == 'Nothing'
+        assert rv.json['paths']['/bar']['get']['responses'][
+            '200']['description'] == 'It works'
