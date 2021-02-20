@@ -1,10 +1,10 @@
 # APIFlask
 
-[![Build status](https://github.com/greyli/apiflask/workflows/build/badge.svg)](https://github.com/greyli/apiflask/actions) [![codecov](https://codecov.io/gh/greyli/apiflask/branch/master/graph/badge.svg)](https://codecov.io/gh/greyli/apiflask)
+[![Build status](https://github.com/greyli/apiflask/workflows/build/badge.svg)](https://github.com/greyli/apiflask/actions)
 
 A lightweight Web API framework, based on Flask, marshmallow-code projects and other Flask extensions.
 
-**Currently this project is in plan/experimental stage, break changes are expected. Improvement and suggestions are welcome!**
+**Currently this project is in plan/experimental stage, break changes are expected. Improvement and suggestions are w
 
 ## Installation
 
