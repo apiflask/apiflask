@@ -15,3 +15,7 @@ class APIException(Exception):
 
 class ValidationError(APIException):
     pass
+
+
+def api_abort(status_code, detail=None, headers=None):
+    raise APIException(status_code, detail, headers)
