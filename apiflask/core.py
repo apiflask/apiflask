@@ -129,44 +129,28 @@ class APIFlask(Flask):
         return {'messages': messages}, status_code
 
     def get(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            options['methods'] = ['GET']
-            self.add_url_rule(rule, endpoint, f, **options)
-            return f
-        return decorator
+        return self.route(rule, **options, methods=['GET'])
 
     def post(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            options['methods'] = ['POST']
-            self.add_url_rule(rule, endpoint, f, **options)
-            return f
-        return decorator
+        return self.route(rule, **options, methods=['POST'])
 
     def put(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            options['methods'] = ['PUT']
-            self.add_url_rule(rule, endpoint, f, **options)
-            return f
-        return decorator
+        return self.route(rule, **options, methods=['PUT'])
 
     def patch(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            options['methods'] = ['PATCH']
-            self.add_url_rule(rule, endpoint, f, **options)
-            return f
-        return decorator
+        return self.route(rule, **options, methods=['PATCH'])
 
     def delete(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            options['methods'] = ['DELETE']
-            self.add_url_rule(rule, endpoint, f, **options)
-            return f
-        return decorator
+        return self.route(rule, **options, methods=['DELETE'])
+
+    def head(self, rule, **options):
+        return self.route(rule, **options, methods=['HEAD'])
+
+    def options(self, rule, **options):
+        return self.route(rule, **options, methods=['OPTIONS'])
+
+    def trace(self, rule, **options):
+        return self.route(rule, **options, methods=['TRACE'])
 
     @property
     def apispec(self):
