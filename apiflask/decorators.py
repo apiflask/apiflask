@@ -1,18 +1,17 @@
 from functools import wraps
 
-from flask import Response, jsonify
+from flask import Response, jsonify, current_app
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
 from apiflask.exceptions import ValidationError
 
 
 class FlaskParser(BaseFlaskParser):
-    DEFAULT_VALIDATION_STATUS = 400
 
     def handle_error(self, error, req, schema, *, error_status_code,
                      error_headers):
         raise ValidationError(
-            error_status_code or self.DEFAULT_VALIDATION_STATUS,
+            error_status_code or current_app.config['VALIDATION_ERROR_CODE'],
             error.messages)
 
 

@@ -20,6 +20,7 @@ except ImportError:  # pragma: no cover
     HTTPTokenAuth = None
 
 from .exceptions import ValidationError
+from .schemas import validation_error_response_schema
 
 
 class APIFlask(Flask):
@@ -34,6 +35,8 @@ class APIFlask(Flask):
             'OPENAPI_TAGS': None,
             '200_RESPONSE_DESCRIPTION': 'Successful response',
             '204_RESPONSE_DESCRIPTION': 'Empty response',
+            'VALIDATION_ERROR_CODE': 400,
+            'VALIDATION_ERROR_DESCRIPTION': 'Validation error'
         }
     )
 
@@ -356,6 +359,19 @@ class APIFlask(Flask):
                         security[view_func._spec['auth']]: view_func._spec[
                             'roles']
                     }]
+
+                if view_func._spec.get('body') or view_func._spec.get('args'):
+                    code = self.config['VALIDATION_ERROR_CODE']
+                    operation['responses'][code] = {
+                        'content': {
+                            'application/json': {
+                                'schema': validation_error_response_schema
+                            }
+                        }
+                    }
+                    operation['responses'][code]['description'] = \
+                        self.config['VALIDATION_ERROR_DESCRIPTION']
+
                 operations[method.lower()] = operation
 
             path_arguments = re.findall(r'<(([^:]+:)?([^>]+))>', rule.rule)
