@@ -19,7 +19,7 @@ except ImportError:  # pragma: no cover
     HTTPBasicAuth = None
     HTTPTokenAuth = None
 
-from .exceptions import ValidationError
+from .exceptions import APIException
 from .schemas import validation_error_response_schema
 
 
@@ -73,10 +73,11 @@ class APIFlask(Flask):
         if self.apispec_path or self.swagger_ui_path or self.redoc_path:
             self.register_blueprint(bp)
 
-        @self.errorhandler(ValidationError)
+        @self.errorhandler(APIException)
         def http_error(error):
             return self.error_handler_callback(error.status_code,
-                                               error.messages)
+                                               error.detail,
+                                               error.headers)
 
     def dispatch_request(self):
         """Overwrite the default dispatch method to pass view arguments as positional
@@ -128,8 +129,9 @@ class APIFlask(Flask):
         self.error_handler_callback = f
         return f
 
-    def default_error_handler(self, status_code, messages):
-        return {'messages': messages}, status_code
+    def default_error_handler(self, status_code, detail, headers):
+        body = {'detail': detail, 'status_code': status_code}
+        return body, status_code, headers
 
     def get(self, rule, **options):
         return self.route(rule, **options, methods=['GET'])

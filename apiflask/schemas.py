@@ -4,7 +4,7 @@ from flask_marshmallow.schema import Schema    # noqa: F401
 validation_error_response_schema = {
     "type": "object",
     "properties": {
-        "messages": {
+        "detail": {
             "type": "object",
             "properties": {
                 "<location>": {

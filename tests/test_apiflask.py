@@ -57,17 +57,19 @@ class TestAPIFlask(unittest.TestCase):
         rv = client.post('/foo')
         assert rv.status_code == 400
         assert rv.json == {
-            'messages': {
+            'detail': {
                 'json': {'name': ['Missing data for required field.']}
-            }
+            },
+            'status_code': 400
         }
 
         rv = client.post('/foo', json={'id': 1})
         assert rv.status_code == 400
         assert rv.json == {
-            'messages': {
+            'detail': {
                 'json': {'name': ['Missing data for required field.']}
-            }
+            },
+            'status_code': 400
         }
 
         rv = client.post('/foo', json={'id': 1, 'name': 'bar'})
@@ -92,17 +94,19 @@ class TestAPIFlask(unittest.TestCase):
         rv = client.post('/foo')
         assert rv.status_code == 400
         assert rv.json == {
-            'messages': {
+            'detail': {
                 'query': {'name': ['Missing data for required field.']}
-            }
+            },
+            'status_code': 400
         }
 
         rv = client.post('/foo?id=1&name=bar')
         assert rv.status_code == 400
         assert rv.json == {
-            'messages': {
+            'detail': {
                 'query': {'name2': ['Missing data for required field.']}
-            }
+            },
+            'status_code': 400
         }
 
         rv = client.post('/foo?id=1&name=bar&id2=2&name2=baz')

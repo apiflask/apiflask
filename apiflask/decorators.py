@@ -3,7 +3,7 @@ from functools import wraps
 from flask import Response, jsonify, current_app
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
-from apiflask.exceptions import ValidationError
+from .exceptions import ValidationError
 
 
 class FlaskParser(BaseFlaskParser):
