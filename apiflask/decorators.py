@@ -80,7 +80,7 @@ def resp(schema, status_code=200, description=None):
             rv = f(*args, **kwargs)
             if isinstance(rv, Response):  # pragma: no cover
                 raise RuntimeError(
-                    'The @response decorator cannot handle Response objects.')
+                    'The @resp decorator cannot handle Response objects.')
             if isinstance(rv, tuple):
                 json = _jsonify(rv[0])
                 if len(rv) == 2:

@@ -2,21 +2,21 @@
 
 [![Build status](https://github.com/greyli/apiflask/workflows/build/badge.svg)](https://github.com/greyli/apiflask/actions)
 
-A lightweight Web API framework, based on Flask, marshmallow-code projects and other Flask extensions.
+A lightweight Python 3.7+ Web API framework, based on Flask, marshmallow-code projects and other Flask extensions.
 
-**Currently this project is in plan/experimental stage, break changes are expected. Improvement and suggestions are w
+**Currently this project is in plan/experimental stage, break changes are expected. Improvements and suggestions are welcome!
 
 ## Installation
 
 ```bash
-$ pip install -U apiflask
+$ pip install apiflask
 ```
 
 ## Example
 
 ```python
 from apiflask import APIFlask
-from apiflask.decorators import arguments, body, response
+from apiflask.decorators import args, body, resp
 from marshmallow import Schema
 
 app = APIFlask(__name__)
@@ -30,21 +30,21 @@ class PetSchema(Schema):
 
 
 @app.get('/pets/<int:pet_id>')
-@response(PetSchema)
+@resp(PetSchema)
 def get_pet(pet_id):
     pass
 
 
 @app.post('/pets')
 @body(PetSchema)
-@response(PetSchema)
+@resp(PetSchema)
 def create_pet(pet):
     pass
 
 
 @app.put('/pets/<int:pet_id>')
 @body(PetSchema)
-@response(PetSchema)
+@resp(PetSchema)
 def update_pet(pet_id, updated_pet):
     pass
 ```
