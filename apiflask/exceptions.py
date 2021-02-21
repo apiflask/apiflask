@@ -1,6 +1,6 @@
 from werkzeug.exceptions import default_exceptions
 
-class APIException(Exception):
+class HTTPException(Exception):
     def __init__(self, status_code, detail=None, headers=None):
         self.status_code = status_code
         self.detail = detail
@@ -13,9 +13,9 @@ class APIException(Exception):
                 self.detail = 'Unknown error'
 
 
-class ValidationError(APIException):
+class ValidationError(HTTPException):
     pass
 
 
 def api_abort(status_code, detail=None, headers=None):
-    raise APIException(status_code, detail, headers)
+    raise HTTPException(status_code, detail, headers)

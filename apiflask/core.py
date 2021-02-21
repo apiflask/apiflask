@@ -19,7 +19,7 @@ except ImportError:  # pragma: no cover
     HTTPBasicAuth = None
     HTTPTokenAuth = None
 
-from .exceptions import APIException
+from .exceptions import HTTPException
 from .schemas import validation_error_response_schema
 
 
@@ -73,7 +73,7 @@ class APIFlask(Flask):
         if self.apispec_path or self.swagger_ui_path or self.redoc_path:
             self.register_blueprint(bp)
 
-        @self.errorhandler(APIException)
+        @self.errorhandler(HTTPException)
         def http_error(error):
             return self.error_handler_callback(error.status_code,
                                                error.detail,
@@ -131,7 +131,10 @@ class APIFlask(Flask):
 
     def default_error_handler(self, status_code, detail, headers):
         body = {'detail': detail, 'status_code': status_code}
-        return body, status_code, headers
+        if headers:
+            return body, status_code, headers
+        else:
+            return body, status_code
 
     def get(self, rule, **options):
         return self.route(rule, **options, methods=['GET'])
