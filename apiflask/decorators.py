@@ -26,7 +26,7 @@ def _annotate(f, **kwargs):
         f._spec[key] = value
 
 
-def authenticate(auth, **kwargs):
+def auth(auth, **kwargs):
     def decorator(f):
         roles = kwargs.get('role')
         if not isinstance(roles, list):  # pragma: no cover
@@ -36,7 +36,7 @@ def authenticate(auth, **kwargs):
     return decorator
 
 
-def arguments(schema, location='query', **kwargs):
+def args(schema, location='query', **kwargs):
     if isinstance(schema, type):  # pragma: no cover
         schema = schema()
 
@@ -58,7 +58,7 @@ def body(schema, **kwargs):
     return decorator
 
 
-def response(schema, status_code=200, description=None):
+def resp(schema, status_code=200, description=None):
     if isinstance(schema, type):  # pragma: no cover
         schema = schema()
 
@@ -99,7 +99,7 @@ def response(schema, status_code=200, description=None):
     return decorator
 
 
-def other_responses(responses):
+def extra_resp(responses):
     def decorator(f):
         _annotate(f, other_responses=responses)
         return f
