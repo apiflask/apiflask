@@ -1,5 +1,6 @@
 from werkzeug.exceptions import default_exceptions
 
+
 class HTTPException(Exception):
     def __init__(self, status_code, detail=None, headers=None):
         self.status_code = status_code

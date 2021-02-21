@@ -295,7 +295,7 @@ class APIFlask(Flask):
                 continue
             if not hasattr(view_func, '_spec'):
                 view_func._spec = \
-                    dict(_response=True, status_code=200, description=None)
+                    dict(_response=True, status_code=200, response_description=None)
             tag = None
             if '.' in rule.endpoint:
                 tag = rule.endpoint.split('.', 1)[0].title()
@@ -308,47 +308,46 @@ class APIFlask(Flask):
                         for schema, location in view_func._spec.get('args', [])
                         if location != 'body'
                     ],
+                    'responses': {},
                 }
                 if tag:
                     operation['tags'] = [tag]
-                docs = (view_func.__doc__ or '').strip().split('\n')
-                if docs[0]:
-                    operation['summary'] = docs[0]
+
+                if view_func._spec.get('summary'):
+                    operation['summary'] = view_func._spec.get('summary')
+                    operation['description'] = view_func._spec.get('description')
                 else:
-                    operation['summary'] = ' '.join(
-                        view_func.__name__.split('_')).title()
-                if len(docs) > 1:
-                    operation['description'] = '\n'.join(docs[1:]).strip()
+                    docs = (view_func.__doc__ or '').strip().split('\n')
+                    if docs[0]:
+                        operation['summary'] = docs[0]
+                    else:
+                        operation['summary'] = ' '.join(
+                            view_func.__name__.split('_')).title()
+                    if len(docs) > 1:
+                        operation['description'] = '\n'.join(docs[1:]).strip()
+
+                if view_func._spec.get('responses'):
+                    for status_code, description in view_func._spec.get('responses').items():
+                        operation['responses'][status_code] = {'description': description}
+
                 if view_func._spec.get('response') or \
                    view_func._spec.get('_response'):
                     code = str(view_func._spec['status_code'])
-                    response = view_func._spec.get('response')
-                    if response:
-                        schema = response
-                    else:
-                        schema = {}
-                    operation['responses'] = {
-                        code: {
-                            'content': {
-                                'application/json': {
-                                    'schema': schema
-                                }
+                    schema = view_func._spec.get('response', {})
+                    operation['responses'][code] = {
+                        'content': {
+                            'application/json': {
+                                'schema': schema
                             }
                         }
                     }
                     operation['responses'][code]['description'] = \
-                        view_func._spec['description'] or \
+                        view_func._spec['response_description'] or \
                         self.config['200_RESPONSE_DESCRIPTION']
                 else:
                     operation['responses'] = {'204': {}}
                     operation['responses']['204']['description'] = \
                         self.config['204_RESPONSE_DESCRIPTION']
-
-                if view_func._spec.get('other_responses'):
-                    for status_code, description in view_func._spec.get(
-                            'other_responses').items():
-                        operation['responses'][status_code] = \
-                            {'description': description}
 
                 if view_func._spec.get('body'):
                     operation['requestBody'] = {

@@ -64,7 +64,7 @@ def resp(schema, status_code=200, description=None):
 
     def decorator(f):
         _annotate(f, response=schema, status_code=status_code,
-                  description=description)
+                  response_description=description)
 
         sentinel = object()
 
@@ -99,8 +99,8 @@ def resp(schema, status_code=200, description=None):
     return decorator
 
 
-def extra_resp(responses):
+def docs(summary=None, description=None, responses=None):
     def decorator(f):
-        _annotate(f, other_responses=responses)
+        _annotate(f, summary=summary, description=description, responses=responses)
         return f
     return decorator
