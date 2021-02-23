@@ -76,6 +76,7 @@ class APIFlask(Flask):
         @self.errorhandler(HTTPException)
         def http_error(error):
             return self.error_handler_callback(error.status_code,
+                                               error.message,
                                                error.detail,
                                                error.headers)
 
@@ -129,8 +130,8 @@ class APIFlask(Flask):
         self.error_handler_callback = f
         return f
 
-    def default_error_handler(self, status_code, detail, headers):
-        body = {'detail': detail, 'status_code': status_code}
+    def default_error_handler(self, status_code, message, detail, headers):
+        body = {'detail': detail, 'message': message, 'status_code': status_code}
         if headers:
             return body, status_code, headers
         else:

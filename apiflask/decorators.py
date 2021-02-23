@@ -12,6 +12,7 @@ class FlaskParser(BaseFlaskParser):
                      error_headers):
         raise ValidationError(
             error_status_code or current_app.config['VALIDATION_ERROR_CODE'],
+            current_app.config['VALIDATION_ERROR_DESCRIPTION'],
             error.messages)
 
 
