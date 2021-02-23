@@ -36,7 +36,8 @@ class APIFlask(Flask):
             '200_RESPONSE_DESCRIPTION': 'Successful response',
             '204_RESPONSE_DESCRIPTION': 'Empty response',
             'VALIDATION_ERROR_CODE': 400,
-            'VALIDATION_ERROR_DESCRIPTION': 'Validation error'
+            'VALIDATION_ERROR_DESCRIPTION': 'Validation error',
+            'HANDLE_BASIC_ERRORS': True
         }
     )
 
@@ -74,11 +75,20 @@ class APIFlask(Flask):
             self.register_blueprint(bp)
 
         @self.errorhandler(HTTPException)
-        def http_error(error):
+        def handle_http_error(error):
             return self.error_handler_callback(error.status_code,
                                                error.message,
                                                error.detail,
                                                error.headers)
+
+        if self.handle_basic_errrors:
+            @self.errorhandler(401)
+            @self.errorhandler(403)
+            @self.errorhandler(404)
+            @self.errorhandler(405)
+            @self.errorhandler(500)
+            def handle_basic_errrors(error):
+                return self.error_handler_callback(error.code, error.description)
 
     def dispatch_request(self):
         """Overwrite the default dispatch method to pass view arguments as positional
@@ -122,6 +132,10 @@ class APIFlask(Flask):
     def tags(self):
         return self.config['OPENAPI_TAGS']
 
+    @property
+    def handle_basic_errrors(self):
+        return self.config['HANDLE_BASIC_ERRORS']
+
     def process_apispec(self, f):
         self.apispec_callback = f
         return f
@@ -130,12 +144,14 @@ class APIFlask(Flask):
         self.error_handler_callback = f
         return f
 
-    def default_error_handler(self, status_code, message, detail, headers):
+    def default_error_handler(self, status_code, message, detail=None, headers=None):
+        if detail is None:
+            detail = {}
         body = {'detail': detail, 'message': message, 'status_code': status_code}
-        if headers:
-            return body, status_code, headers
-        else:
+        if headers is None:
             return body, status_code
+        else:
+            return body, status_code, headers
 
     def get(self, rule, **options):
         return self.route(rule, **options, methods=['GET'])
