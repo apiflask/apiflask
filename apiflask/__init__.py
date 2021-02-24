@@ -1,4 +1,4 @@
-from .core import APIFlask  # noqa: F401
+from .app import APIFlask  # noqa: F401
 from .decorators import auth_required, input, output, doc  # noqa: F401
 from .exceptions import HTTPException, abort  # noqa: F401
 
