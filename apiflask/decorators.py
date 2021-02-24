@@ -61,7 +61,7 @@ def output(schema, status_code=200, description=None):
                   response_description=description)
 
         sentinel = object()
- 
+
         def _jsonify(obj, many=sentinel, *args, **kwargs):
             """Copy from flask_marshmallow.schemas.Schema.jsonify"""
             if many is sentinel:
