@@ -27,7 +27,7 @@ def _annotate(f, **kwargs):
         f._spec[key] = value
 
 
-def auth(auth, **kwargs):
+def auth_required(auth, **kwargs):
     def decorator(f):
         roles = kwargs.get('role')
         if not isinstance(roles, list):  # pragma: no cover
@@ -37,29 +37,22 @@ def auth(auth, **kwargs):
     return decorator
 
 
-def args(schema, location='query', **kwargs):
+def input(schema, location='json', **kwargs):
     if isinstance(schema, type):  # pragma: no cover
         schema = schema()
 
     def decorator(f):
-        if not hasattr(f, '_spec') or f._spec.get('args') is None:
-            _annotate(f, args=[])
-        f._spec['args'].append((schema, location))
+        if location == 'json':
+            _annotate(f, body=schema)
+        else:
+            if not hasattr(f, '_spec') or f._spec.get('args') is None:
+                _annotate(f, args=[])
+            f._spec['args'].append((schema, location))
         return use_args(schema, location=location, **kwargs)(f)
     return decorator
 
 
-def body(schema, **kwargs):
-    if isinstance(schema, type):  # pragma: no cover
-        schema = schema()
-
-    def decorator(f):
-        _annotate(f, body=schema)
-        return use_args(schema, location='json', **kwargs)(f)
-    return decorator
-
-
-def resp(schema, status_code=200, description=None):
+def output(schema, status_code=200, description=None):
     if isinstance(schema, type):  # pragma: no cover
         schema = schema()
 
@@ -68,7 +61,7 @@ def resp(schema, status_code=200, description=None):
                   response_description=description)
 
         sentinel = object()
-
+ 
         def _jsonify(obj, many=sentinel, *args, **kwargs):
             """Copy from flask_marshmallow.schemas.Schema.jsonify"""
             if many is sentinel:
@@ -100,7 +93,7 @@ def resp(schema, status_code=200, description=None):
     return decorator
 
 
-def docs(summary=None, description=None, responses=None):
+def doc(summary=None, description=None, responses=None):
     def decorator(f):
         _annotate(f, summary=summary, description=description, responses=responses)
         return f
