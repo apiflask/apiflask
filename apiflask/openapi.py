@@ -23,17 +23,17 @@ from .schemas import validation_error_response_schema
 class _OpenAPIMixin:
 
     def register_openapi_blueprint(self):
-        bp = Blueprint('apiflask', __name__, template_folder='templates')
+        bp = Blueprint('openapi', __name__, template_folder='templates')
 
         if self.openapi_spec_path:
             @bp.route(self.openapi_spec_path)
-            def json():
+            def spec_json():
                 return dumps(self.apispec), 200, \
                     {'Content-Type': 'application/json'}
 
         if self.swagger_ui_path:
             @bp.route(self.swagger_ui_path)
-            def swagger():
+            def swagger_ui():
                 return render_template('apiflask/swagger_ui.html',
                                        title=self.openapi_title, version=self.openapi_version)
 
