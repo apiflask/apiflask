@@ -3,12 +3,14 @@ import re
 import sys
 
 from flask import Flask
+from flask import Blueprint
+from flask import render_template
 from flask.globals import _request_ctx_stack
+from flask.config import ConfigAttribute
+from werkzeug.datastructures import ImmutableDict
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-from flask import Blueprint, render_template
 from flask_marshmallow import fields
-from werkzeug.datastructures import ImmutableDict
 try:
     from flask_marshmallow import sqla
 except ImportError:
@@ -53,8 +55,8 @@ class APIFlask(Flask):
 
         bp = Blueprint('apiflask', __name__, template_folder='templates')
 
-        if self.apispec_path:
-            @bp.route(self.apispec_path)
+        if self.openapi_spec_path:
+            @bp.route(self.openapi_spec_path)
             def json():
                 return dumps(self.apispec), 200, \
                     {'Content-Type': 'application/json'}
@@ -63,15 +65,15 @@ class APIFlask(Flask):
             @bp.route(self.swagger_ui_path)
             def swagger():
                 return render_template('apiflask/swagger_ui.html',
-                                       title=self.title, version=self.version)
+                                       title=self.openapi_title, version=self.openapi_version)
 
         if self.redoc_path:
             @bp.route(self.redoc_path)
             def redoc():
                 return render_template('apiflask/redoc.html',
-                                       title=self.title, version=self.version)
+                                       title=self.openapi_title, version=self.openapi_version)
 
-        if self.apispec_path or self.swagger_ui_path or self.redoc_path:
+        if self.openapi_spec_path or self.swagger_ui_path or self.redoc_path:
             self.register_blueprint(bp)
 
         @self.errorhandler(HTTPException)
@@ -108,33 +110,14 @@ class APIFlask(Flask):
         # otherwise dispatch to the handler for that endpoint
         return self.view_functions[rule.endpoint](*req.view_args.values())
 
-    @property
-    def title(self):
-        return self.config['OPENAPI_TITLE']
-
-    @property
-    def version(self):
-        return self.config['OPENAPI_VERSION']
-
-    @property
-    def apispec_path(self):
-        return self.config['OPENAPI_SPEC_PATH']
-
-    @property
-    def swagger_ui_path(self):
-        return self.config['SWAGGER_UI_PATH']
-
-    @property
-    def redoc_path(self):
-        return self.config['REDOC_PATH']
-
-    @property
-    def tags(self):
-        return self.config['OPENAPI_TAGS']
-
-    @property
-    def handle_basic_errrors(self):
-        return self.config['HANDLE_BASIC_ERRORS']
+    # properties forwarding to built-in config variables
+    openapi_title = ConfigAttribute('OPENAPI_TITLE')
+    openapi_version = ConfigAttribute('OPENAPI_VERSION')
+    openapi_spec_path = ConfigAttribute('OPENAPI_SPEC_PATH')
+    swagger_ui_path = ConfigAttribute('SWAGGER_UI_PATH')
+    redoc_path = ConfigAttribute('REDOC_PATH')
+    openapi_tags = ConfigAttribute('OPENAPI_TAGS')
+    handle_basic_errrors = ConfigAttribute('HANDLE_BASIC_ERRORS')
 
     def process_apispec(self, f):
         self.apispec_callback = f
@@ -153,6 +136,7 @@ class APIFlask(Flask):
         else:
             return body, status_code, headers
 
+    # shortcuts for app.route
     def get(self, rule, **options):
         return self.route(rule, **options, methods=['GET'])
 
@@ -209,7 +193,7 @@ class APIFlask(Flask):
             module_name = module_name.rsplit('.', 1)[0]
 
         # tags
-        tags = self.tags
+        tags = self.openapi_tags
         if tags is None:
             # auto-generate tags from blueprints
             blueprints = []
@@ -232,8 +216,8 @@ class APIFlask(Flask):
 
         ma_plugin = MarshmallowPlugin(schema_name_resolver=resolver)
         spec = APISpec(
-            title=self.title,
-            version=self.version,
+            title=self.openapi_title,
+            version=self.openapi_version,
             openapi_version='3.0.3',
             plugins=[ma_plugin],
             info=info,
