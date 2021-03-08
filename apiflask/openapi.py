@@ -35,9 +35,11 @@ class _OpenAPIMixin:
             def spec():
                 if self.spec_path.endswith('.yaml') or \
                    self.spec_path.endswith('.yml'):
-                    return self.apispec
+                    return self.apispec.to_yaml(), 200, \
+                        {'Content-Type': 'text/vnd.yaml'}
+
                 else:
-                    return dumps(self.apispec), 200, \
+                    return dumps(self.apispec.to_dict()), 200, \
                         {'Content-Type': 'application/json'}
 
         if self.swagger_path:
@@ -62,7 +64,7 @@ class _OpenAPIMixin:
     @property
     def apispec(self):
         if self._apispec is None:
-            self._apispec = self._generate_apispec().to_dict()
+            self._apispec = self._generate_apispec()
             if self.apispec_callback:
                 self._apispec = self.apispec_callback(self._apispec)
         return self._apispec
