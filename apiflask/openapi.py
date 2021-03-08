@@ -27,9 +27,13 @@ class _OpenAPIMixin:
 
         if self.openapi_spec_path:
             @bp.route(self.openapi_spec_path)
-            def spec_json():
-                return dumps(self.apispec), 200, \
-                    {'Content-Type': 'application/json'}
+            def spec():
+                if self.openapi_spec_path.endswith('.yaml') or \
+                    self.openapi_spec_path.endswith('.yml'):
+                    return self.apispec
+                else: 
+                    return dumps(self.apispec), 200, \
+                        {'Content-Type': 'application/json'}
 
         if self.swagger_ui_path:
             @bp.route(self.swagger_ui_path)
