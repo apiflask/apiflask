@@ -8,28 +8,54 @@ from .exceptions import HTTPException
 
 
 class APIFlask(Flask, _OpenAPIMixin):
+    """
+    The Flask object with some Web API support.
 
+    :param import_name: the name of the application package
+    :param spec_path: The path to OpenAPI Spec documentation. It
+        defaults to ``/openapi.json```, if the path end with ``.yaml``
+        or ``.yml``, the YAML format of the OAS will be returned.
+    :param swagger_path: The path to Swagger UI documentation.
+    :param redoc_path: The path to Redoc documentation.
+    :param handle_errors: If True, APIFlask will return a JSON response
+        for basic errors including 401, 403, 404, 405, 500.
+    """
+    # Properties forwarding to built-in configuration variables.
+    openapi_title = ConfigAttribute('OPENAPI_TITLE')
+    openapi_version = ConfigAttribute('OPENAPI_VERSION')
+    openapi_tags = ConfigAttribute('OPENAPI_TAGS')
+
+    # Default configuration variables.
     api_default_config = ImmutableDict(
         {
             'OPENAPI_TITLE': 'APIFlask',
             'OPENAPI_VERSION': '1.0.0',
-            'OPENAPI_SPEC_PATH': '/openapi.json',
-            'SWAGGER_UI_PATH': '/docs',
-            'REDOC_PATH': '/redoc',
             'OPENAPI_TAGS': None,
-            '200_RESPONSE_DESCRIPTION': 'Successful response',
-            '204_RESPONSE_DESCRIPTION': 'Empty response',
+            '200_DESCRIPTION': 'Successful response',
+            '204_DESCRIPTION': 'Empty response',
             'VALIDATION_ERROR_CODE': 400,
             'VALIDATION_ERROR_DESCRIPTION': 'Validation error',
-            'HANDLE_BASIC_ERRORS': True
         }
     )
 
-    def __init__(self, import_name, **kwargs):
+    def __init__(
+        self,
+        import_name,
+        spec_path='/openapi.json',
+        swagger_path='/docs',
+        redoc_path='/redoc',
+        handle_basic_errors=True,
+        **kwargs
+    ):
         super(APIFlask, self).__init__(import_name, **kwargs)
+        _OpenAPIMixin.__init__(
+            self, spec_path=spec_path, swagger_path=swagger_path, redoc_path=redoc_path
+        )
 
-        # set default config
+        # Set default config
         self.config.update(self.api_default_config)
+
+        self.handle_basic_errors = handle_basic_errors
 
         self.apispec_callback = None
         self.error_handler_callback = self.default_error_handler
@@ -44,7 +70,7 @@ class APIFlask(Flask, _OpenAPIMixin):
                                                error.detail,
                                                error.headers)
 
-        if self.handle_basic_errrors:
+        if self.handle_basic_errors:
             @self.errorhandler(401)
             @self.errorhandler(403)
             @self.errorhandler(404)
@@ -70,15 +96,6 @@ class APIFlask(Flask, _OpenAPIMixin):
             return self.make_default_options_response()
         # otherwise dispatch to the handler for that endpoint
         return self.view_functions[rule.endpoint](*req.view_args.values())
-
-    # properties forwarding to built-in config variables
-    openapi_title = ConfigAttribute('OPENAPI_TITLE')
-    openapi_version = ConfigAttribute('OPENAPI_VERSION')
-    openapi_spec_path = ConfigAttribute('OPENAPI_SPEC_PATH')
-    swagger_ui_path = ConfigAttribute('SWAGGER_UI_PATH')
-    redoc_path = ConfigAttribute('REDOC_PATH')
-    openapi_tags = ConfigAttribute('OPENAPI_TAGS')
-    handle_basic_errrors = ConfigAttribute('HANDLE_BASIC_ERRORS')
 
     def error_handler(self, f):
         self.error_handler_callback = f

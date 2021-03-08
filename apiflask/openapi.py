@@ -22,21 +22,26 @@ from .schemas import validation_error_response_schema
 
 class _OpenAPIMixin:
 
+    def __init__(self, spec_path, swagger_path, redoc_path):
+        self.spec_path = spec_path
+        self.swagger_path = swagger_path
+        self.redoc_path = redoc_path
+
     def register_openapi_blueprint(self):
         bp = Blueprint('openapi', __name__, template_folder='templates')
 
-        if self.openapi_spec_path:
-            @bp.route(self.openapi_spec_path)
+        if self.spec_path:
+            @bp.route(self.spec_path)
             def spec():
-                if self.openapi_spec_path.endswith('.yaml') or \
-                    self.openapi_spec_path.endswith('.yml'):
+                if self.spec_path.endswith('.yaml') or \
+                   self.spec_path.endswith('.yml'):
                     return self.apispec
-                else: 
+                else:
                     return dumps(self.apispec), 200, \
                         {'Content-Type': 'application/json'}
 
-        if self.swagger_ui_path:
-            @bp.route(self.swagger_ui_path)
+        if self.swagger_path:
+            @bp.route(self.swagger_path)
             def swagger_ui():
                 return render_template('apiflask/swagger_ui.html',
                                        title=self.openapi_title, version=self.openapi_version)
@@ -47,7 +52,7 @@ class _OpenAPIMixin:
                 return render_template('apiflask/redoc.html',
                                        title=self.openapi_title, version=self.openapi_version)
 
-        if self.openapi_spec_path or self.swagger_ui_path or self.redoc_path:
+        if self.spec_path or self.swagger_path or self.redoc_path:
             self.register_blueprint(bp)
 
     def process_apispec(self, f):
@@ -241,11 +246,11 @@ class _OpenAPIMixin:
                     }
                     operation['responses'][code]['description'] = \
                         view_func._spec['response_description'] or \
-                        self.config['200_RESPONSE_DESCRIPTION']
+                        self.config['200_DESCRIPTION']
                 else:
                     operation['responses'] = {'204': {}}
                     operation['responses']['204']['description'] = \
-                        self.config['204_RESPONSE_DESCRIPTION']
+                        self.config['204_DESCRIPTION']
 
                 if view_func._spec.get('body'):
                     operation['requestBody'] = {
