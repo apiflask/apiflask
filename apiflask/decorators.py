@@ -93,8 +93,25 @@ def output(schema, status_code=200, description=None):
     return decorator
 
 
-def doc(summary=None, description=None, responses=None):
+def doc(summary=None, description=None, tag=None, responses=None):
+    """
+    Set up OpenAPI documentation for view function.
+
+    :param summary: The summary of this view function. If not set, the name of
+        the view function will be used. If your view function named with ``get_pet``,
+        then the summary will be "Get Pet". If the view function has docstring, then
+        the first line of the docstring will be used. The precedence will be:
+        @doc(summary='blah') > the frist line of docstring > the view functino name
+    :param description: The description of this view function. If not set, the lines
+        after the empty line of the docstring will be used.
+    :param tag: The tag of this view function, map the tag you passed in app.tags.
+        If app.tags not set, the blueprint name will be used as tag.
+    :param responses: The other responses for this view function, accept a dict in a format
+        of ``{400: 'Bad Request'}``.
+
+    .. versionadded:: 0.2.0
+    """
     def decorator(f):
-        _annotate(f, summary=summary, description=description, responses=responses)
+        _annotate(f, summary=summary, description=description, tag=tag, responses=responses)
         return f
     return decorator

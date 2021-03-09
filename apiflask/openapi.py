@@ -212,8 +212,8 @@ class _OpenAPIMixin:
                     dict(_response=True, status_code=200, response_description=None)
 
             tag = None
-            if '.' in rule.endpoint:
-                tag = rule.endpoint.split('.', 1)[0].title()
+            if view_func._spec.get('tag'):
+                tag = view_func._spec.get('tag')
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
                 if method not in rule.methods:
