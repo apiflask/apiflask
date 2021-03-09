@@ -204,7 +204,7 @@ class _OpenAPIMixin:
         for rule in rules:
             operations = {}
             view_func = self.view_functions[rule.endpoint]
-            if rule.endpoint.startswith('apiflask') or \
+            if rule.endpoint.startswith('openapi') or \
                rule.endpoint.startswith('static'):
                 continue
             if not hasattr(view_func, '_spec'):
