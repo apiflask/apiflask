@@ -1,6 +1,5 @@
 from flask import Flask
 from flask.globals import _request_ctx_stack
-from flask.config import ConfigAttribute
 from werkzeug.datastructures import ImmutableDict
 
 from .openapi import _OpenAPIMixin
@@ -11,7 +10,11 @@ class APIFlask(Flask, _OpenAPIMixin):
     """
     The Flask object with some Web API support.
 
-    :param import_name: the name of the application package
+    :param import_name: the name of the application package.
+    :param title: The title of the API, defaults to "APIFlask".
+        You can change it to the name of your API (e.g. "Pet API").
+    :param version: The version of the API, defaults to "1.0.0".
+    :param tags: The tags of the OpenAPI spec documentation, accept a list as value.
     :param spec_path: The path to OpenAPI Spec documentation. It
         defaults to ``/openapi.json```, if the path end with ``.yaml``
         or ``.yml``, the YAML format of the OAS will be returned.
@@ -20,17 +23,9 @@ class APIFlask(Flask, _OpenAPIMixin):
     :param handle_errors: If True, APIFlask will return a JSON response
         for basic errors including 401, 403, 404, 405, 500.
     """
-    # Properties forwarding to built-in configuration variables.
-    openapi_title = ConfigAttribute('OPENAPI_TITLE')
-    openapi_version = ConfigAttribute('OPENAPI_VERSION')
-    openapi_tags = ConfigAttribute('OPENAPI_TAGS')
-
-    # Default configuration variables.
+    #:  Default configuration variables.
     api_default_config = ImmutableDict(
         {
-            'OPENAPI_TITLE': 'APIFlask',
-            'OPENAPI_VERSION': '1.0.0',
-            'OPENAPI_TAGS': None,
             '200_DESCRIPTION': 'Successful response',
             '204_DESCRIPTION': 'Empty response',
             'VALIDATION_ERROR_CODE': 400,
@@ -41,6 +36,9 @@ class APIFlask(Flask, _OpenAPIMixin):
     def __init__(
         self,
         import_name,
+        title='APIFlask',
+        version='1.0.0',
+        tags=None,
         spec_path='/openapi.json',
         swagger_path='/docs',
         redoc_path='/redoc',
@@ -49,7 +47,13 @@ class APIFlask(Flask, _OpenAPIMixin):
     ):
         super(APIFlask, self).__init__(import_name, **kwargs)
         _OpenAPIMixin.__init__(
-            self, spec_path=spec_path, swagger_path=swagger_path, redoc_path=redoc_path
+            self,
+            title=title,
+            version=version,
+            tags=tags,
+            spec_path=spec_path,
+            swagger_path=swagger_path,
+            redoc_path=redoc_path
         )
 
         # Set default config

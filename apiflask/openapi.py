@@ -21,8 +21,19 @@ from .schemas import validation_error_response_schema
 
 
 class _OpenAPIMixin:
+    #: The title of the API, defaults to "APIFlask".
+    #: You can change it to the name of your API (e.g. "Pet API").
+    title = None
+    #: The version of the API, defaults to "1.0.0".
+    version = None
+    #: The tags of the OpenAPI spec documentation, accept a list as value.
+    # TODO add usage example
+    tags = None
 
-    def __init__(self, spec_path, swagger_path, redoc_path):
+    def __init__(self, title, version, tags, spec_path, swagger_path, redoc_path):
+        self.title = title
+        self.version = version
+        self.tags = tags
         self.spec_path = spec_path
         self.swagger_path = swagger_path
         self.redoc_path = redoc_path
@@ -46,13 +57,13 @@ class _OpenAPIMixin:
             @bp.route(self.swagger_path)
             def swagger_ui():
                 return render_template('apiflask/swagger_ui.html',
-                                       title=self.openapi_title, version=self.openapi_version)
+                                       title=self.title, version=self.version)
 
         if self.redoc_path:
             @bp.route(self.redoc_path)
             def redoc():
                 return render_template('apiflask/redoc.html',
-                                       title=self.openapi_title, version=self.openapi_version)
+                                       title=self.title, version=self.version)
 
         if self.spec_path or self.swagger_path or self.redoc_path:
             self.register_blueprint(bp)
@@ -93,7 +104,7 @@ class _OpenAPIMixin:
             module_name = module_name.rsplit('.', 1)[0]
 
         # tags
-        tags = self.openapi_tags
+        tags = self.tags
         if tags is None:
             # auto-generate tags from blueprints
             blueprints = []
@@ -116,8 +127,8 @@ class _OpenAPIMixin:
 
         ma_plugin = MarshmallowPlugin(schema_name_resolver=resolver)
         spec = APISpec(
-            title=self.openapi_title,
-            version=self.openapi_version,
+            title=self.title,
+            version=self.version,
             openapi_version='3.0.3',
             plugins=[ma_plugin],
             info=info,
