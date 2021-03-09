@@ -26,8 +26,19 @@ class _OpenAPIMixin:
     title = None
     #: The version of the API, defaults to "1.0.0".
     version = None
-    #: The tags of the OpenAPI spec documentation, accept a list as value.
-    # TODO add usage example
+    #: The tags of the OpenAPI spec documentation, accepts a list.
+    #: You can pass a simple list contains the tag name:
+    #:
+    #:     app.tags = ['foo', 'bar', 'baz']
+    #:
+    #: Or pass a standard OpenAPI tags:
+    #:
+    #:     app.tags = [
+    #:         {'name': 'foo', 'description': 'The description of foo'},
+    #:         {'name': 'bar', 'description': 'The description of bar'},
+    #:         {'name': 'baz', 'description': 'The description of baz'}
+    #:     ]
+    #:
     tags = None
 
     def __init__(self, title, version, tags, spec_path, swagger_path, redoc_path):
@@ -124,6 +135,11 @@ class _OpenAPIMixin:
                 if module.__doc__:
                     tag['description'] = module.__doc__.strip()
                 tags.append(tag)
+        else:
+            # Convert simple tags list into standard OpenAPI tags
+            if isinstance(tags[0], str):
+                for index, tag in enumerate(tags):
+                    tags[index] = {'name': tag}
 
         ma_plugin = MarshmallowPlugin(schema_name_resolver=resolver)
         spec = APISpec(

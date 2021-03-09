@@ -14,14 +14,15 @@ class APIFlask(Flask, _OpenAPIMixin):
     :param title: The title of the API, defaults to "APIFlask".
         You can change it to the name of your API (e.g. "Pet API").
     :param version: The version of the API, defaults to "1.0.0".
-    :param tags: The tags of the OpenAPI spec documentation, accept a list as value.
+    :param tags: The tags of the OpenAPI spec documentation, accepts a list.
+        See :attr:`tags` for more details.
     :param spec_path: The path to OpenAPI Spec documentation. It
         defaults to ``/openapi.json```, if the path end with ``.yaml``
         or ``.yml``, the YAML format of the OAS will be returned.
     :param swagger_path: The path to Swagger UI documentation.
     :param redoc_path: The path to Redoc documentation.
     :param handle_errors: If True, APIFlask will return a JSON response
-        for basic errors including 401, 403, 404, 405, 500.
+        for basic errors including 401, 403, 404, 405, and 500.
     """
     #:  Default configuration variables.
     api_default_config = ImmutableDict(
