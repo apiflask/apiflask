@@ -115,27 +115,40 @@ class APIFlask(Flask, _OpenAPIMixin):
         else:
             return body, status_code, headers
 
-    # shortcuts for app.route
+    # TODO Remove these shortcuts when pin Flask>=2.0
     def get(self, rule, **options):
-        return self.route(rule, **options, methods=['GET'])
+        """Shortcut for ``app.route()``.
+        
+        .. versionadded:: 0.2.0
+        """
+        return self.route(rule, methods=['GET'], **options)
 
+    #: Shortcut method for app.route(methods=['POST']).
     def post(self, rule, **options):
-        return self.route(rule, **options, methods=['POST'])
+        """Shortcut for ``app.route(methods=['POST'])``.
+        
+        .. versionadded:: 0.2.0
+        """
+        return self.route(rule, methods=['POST'], **options)
 
+    #: Shortcut method for app.route(methods=['PUT']).
     def put(self, rule, **options):
-        return self.route(rule, **options, methods=['PUT'])
+        """Shortcut for ``app.route(methods=['PUT'])``.
+        
+        .. versionadded:: 0.2.0
+        """
+        return self.route(rule, methods=['PUT'], **options)
 
     def patch(self, rule, **options):
-        return self.route(rule, **options, methods=['PATCH'])
+        """Shortcut for ``app.route(methods=['PATCH'])``.
+        
+        .. versionadded:: 0.2.0
+        """
+        return self.route(rule, methods=['PATCH'], **options)
 
     def delete(self, rule, **options):
-        return self.route(rule, **options, methods=['DELETE'])
-
-    def head(self, rule, **options):
-        return self.route(rule, **options, methods=['HEAD'])
-
-    def options(self, rule, **options):
-        return self.route(rule, **options, methods=['OPTIONS'])
-
-    def trace(self, rule, **options):
-        return self.route(rule, **options, methods=['TRACE'])
+        """Shortcut for ``app.route(methods=['DELETE'])``.
+        
+        .. versionadded:: 0.2.0
+        """
+        return self.route(rule, methods=['DELETE'], **options)
