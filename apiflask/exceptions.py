@@ -1,5 +1,5 @@
 from werkzeug.exceptions import default_exceptions
-
+from flask import current_app
 
 class HTTPException(Exception):
     status_code = None
@@ -22,7 +22,7 @@ class HTTPException(Exception):
             if status_code in default_exceptions:
                 self.message = default_exceptions[status_code].description
             else:
-                self.message = 'Unknown error'
+                self.message = current_app.config['UNKNOWN_ERROR_MESSAGE']
 
 
 class ValidationError(HTTPException):

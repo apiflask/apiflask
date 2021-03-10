@@ -32,6 +32,7 @@ class APIFlask(Flask, _OpenAPIMixin):
             '204_DESCRIPTION': 'Empty response',
             'VALIDATION_ERROR_CODE': 400,
             'VALIDATION_ERROR_DESCRIPTION': 'Validation error',
+            'UNKNOWN_ERROR_MESSAGE': 'Unknown error',
         }
     )
 
