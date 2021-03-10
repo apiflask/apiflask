@@ -1,6 +1,7 @@
 from flask import Flask
 from flask.globals import _request_ctx_stack
 from werkzeug.datastructures import ImmutableDict
+from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .openapi import _OpenAPIMixin
 from .exceptions import HTTPException
@@ -21,8 +22,8 @@ class APIFlask(Flask, _OpenAPIMixin):
         or ``.yml``, the YAML format of the OAS will be returned.
     :param swagger_path: The path to Swagger UI documentation.
     :param redoc_path: The path to Redoc documentation.
-    :param handle_errors: If True, APIFlask will return a JSON response
-        for basic errors including 401, 403, 404, 405, and 500.
+    :param json_errors: If True, APIFlask will return a JSON response
+        for HTTP errors.
     """
     #:  Default configuration variables.
     api_default_config = ImmutableDict(
@@ -43,7 +44,7 @@ class APIFlask(Flask, _OpenAPIMixin):
         spec_path='/openapi.json',
         swagger_path='/docs',
         redoc_path='/redoc',
-        handle_basic_errors=True,
+        json_errors=True,
         **kwargs
     ):
         super(APIFlask, self).__init__(import_name, **kwargs)
@@ -60,7 +61,7 @@ class APIFlask(Flask, _OpenAPIMixin):
         # Set default config
         self.config.update(self.api_default_config)
 
-        self.handle_basic_errors = handle_basic_errors
+        self.json_errors = json_errors
 
         self.apispec_callback = None
         self.error_handler_callback = self.default_error_handler
@@ -75,18 +76,23 @@ class APIFlask(Flask, _OpenAPIMixin):
                                                error.detail,
                                                error.headers)
 
-        if self.handle_basic_errors:
-            @self.errorhandler(401)
-            @self.errorhandler(403)
-            @self.errorhandler(404)
-            @self.errorhandler(405)
-            @self.errorhandler(500)
-            def handle_basic_errrors(error):
+        if self.json_errors:
+            @self.errorhandler(WerkzeugHTTPException)
+            def handle_werkzeug_errrors(error):
                 return self.error_handler_callback(error.code, error.description)
 
     def dispatch_request(self):
         """Overwrite the default dispatch method to pass view arguments as positional
-        arguments.
+        arguments. With this overwrite, the view function can accept the parameters in
+        a intuitive way (from top to bottom, from left to right):
+
+            @app.get('/pets/<name>/<int:pet_id>/<age>')  # -> name, pet_id, age
+            @input(QuerySchema)  # -> query
+            @output(PetSchema)  # -> pet
+            def get_pet(name, pet_id, age, query, pet):
+                pass
+
+        .. versionadded:: 0.2.0
         """
         req = _request_ctx_stack.top.request
         if req.routing_exception is not None:
