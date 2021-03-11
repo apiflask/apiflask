@@ -27,11 +27,11 @@ class _OpenAPIMixin:
     #: The version of the API, defaults to "1.0.0".
     version = None
     #: The tags of the OpenAPI spec documentation, accepts a list.
-    #: You can pass a simple list contains the tag name:
+    #: You can pass a simple list contains the tag name::
     #:
     #:     app.tags = ['foo', 'bar', 'baz']
     #:
-    #: Or pass a standard OpenAPI tags:
+    #: Or pass a standard OpenAPI tags::
     #:
     #:     app.tags = [
     #:         {'name': 'foo', 'description': 'The description of foo'},

@@ -65,7 +65,7 @@ class APIFlask(Flask, _OpenAPIMixin):
         self.json_errors = json_errors
 
         self.apispec_callback = None
-        self.error_handler_callback = self.default_error_handler
+        self.error_handler_func = self.default_error_handler
         self._apispec = None
 
         self.register_openapi_blueprint()
@@ -85,7 +85,7 @@ class APIFlask(Flask, _OpenAPIMixin):
     def dispatch_request(self):
         """Overwrite the default dispatch method to pass view arguments as positional
         arguments. With this overwrite, the view function can accept the parameters in
-        a intuitive way (from top to bottom, from left to right):
+        a intuitive way (from top to bottom, from left to right)::
 
             @app.get('/pets/<name>/<int:pet_id>/<age>')  # -> name, pet_id, age
             @input(QuerySchema)  # -> query
@@ -109,8 +109,51 @@ class APIFlask(Flask, _OpenAPIMixin):
         # otherwise dispatch to the handler for that endpoint
         return self.view_functions[rule.endpoint](*req.view_args.values())
 
-    def error_handler(self, f):
-        self.error_handler_callback = f
+    def errorhandler_callback(self, f):
+        """Registers a error handler callback function.
+        
+        The callback function will be called when validation error hanppend when
+        parse a request or an exception triggerd with exceptions.HTTPException or
+        :func:`exceptions.abort`. It must accept four positional arguments (i.e.
+        ``status_code, message, detail, headers``) and return a valid response::
+
+            @app.errorhandler_callback
+            def my_error_handler(status_code, message, detail, headers):
+                return {
+                    'status_code': status_code,
+                    'message': message,
+                    'detail': detail
+                    }, status_code, headers
+
+        The arguments are:
+        - status_code: If the error triggerd by validation error, the value will be
+            400 (default) or the value you passed in config ``VALIDATION_ERROR_CODE``.
+            If the error triggerd by HTTP, it will be the status code you passed.
+            Otherwise, it will be the status code set by Werkzueg when processing the request.
+        - message: The error description for this error, either you passed or grab from Werkzeug.
+        - detail: The detail of the error, it will be filled when validation error happaned, the
+            structure will be::
+
+                "<location>": {
+                    "<field_name>": ["<error_message>", ...],
+                    ...
+                },
+                ...
+
+            The value of ``location`` can be ``json`` (i.e. request body) or ``query``
+            (i.e. query string) depend on the palace the validation error happened.
+        - headers: The value will be None unless you pass it in HTTPException or abort.
+
+        If you want, you can rewrite the whole response body to anything you like::
+
+            @app.errorhandler_callback
+            def my_error_handler(status_code, message, detail, headers):
+                return {'error_detail': detail}, status_code, headers
+
+        However, I would recommend to keep the ``detail`` since it contains the detail
+        information about the validation error.
+        """
+        self.error_handler_func = f
         return f
 
     def default_error_handler(self, status_code, message, detail=None, headers=None):
