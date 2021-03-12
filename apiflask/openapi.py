@@ -4,6 +4,8 @@ from json import dumps
 
 from flask import Blueprint
 from flask import render_template
+from flask import current_app
+from flask.config import ConfigAttribute
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask_marshmallow import fields
@@ -21,17 +23,26 @@ from .schemas import validation_error_response_schema
 
 
 class _OpenAPIMixin:
-    #: The title of the API, defaults to "APIFlask".
+    #: The title of the API (openapi.info.title), defaults to "APIFlask".
     #: You can change it to the name of your API (e.g. "Pet API").
     title = None
-    #: The version of the API, defaults to "1.0.0".
+
+    #: The version of the API (openapi.info.version), defaults to "1.0.0".
     version = None
-    #: The tags of the OpenAPI spec documentation, accepts a list.
-    #: You can pass a simple list contains the tag name::
+
+    #: The description of the API (openapi.info.description).
+    #:
+    #: This attribute can also be configured from the config with the
+    #: ``DESCRIPTION`` configuration key. Defaults to ``None``.
+    description = ConfigAttribute('DESCRIPTION')
+
+    #: The tags of the OpenAPI spec documentation (openapi.tags), accepts a
+    #: list of dicts.
+    #: You can also pass a simple list contains the tag name::
     #:
     #:     app.tags = ['foo', 'bar', 'baz']
     #:
-    #: Or pass a standard OpenAPI tags::
+    #: A standard OpenAPI tags list will look like this::
     #:
     #:     app.tags = [
     #:         {'name': 'foo', 'description': 'The description of foo'},
@@ -39,12 +50,76 @@ class _OpenAPIMixin:
     #:         {'name': 'baz', 'description': 'The description of baz'}
     #:     ]
     #:
-    tags = None
+    #: If not set, the blueprint names will be used as tags.
+    #:
+    #: This attribute can also be configured from the config with the
+    #: ``TAGS`` configuration key. Defaults to ``None``.
+    tags = ConfigAttribute('TAGS')
 
-    def __init__(self, title, version, tags, spec_path, swagger_path, redoc_path):
+    #: The contact information of the API (openapi.info.contact).
+    #: Example value:
+    #:
+    #:    app.contact = {
+    #:        'name': 'API Support',
+    #:        'url': 'http://www.example.com/support',
+    #:        'email': 'support@example.com'
+    #:    }
+    #:
+    #: This attribute can also be configured from the config with the
+    #: ``CONTACT`` configuration key. Defaults to ``None``.
+    contact = ConfigAttribute('CONTACT')
+
+    #: The license of the API (openapi.info.license).
+    #: Example value:
+    #:
+    #:    app.license = {
+    #:        'name': 'Apache 2.0',
+    #:        'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    #:    }
+    #:
+    #: This attribute can also be configured from the config with the
+    #: ``LICENSE`` configuration key. Defaults to ``None``.
+    license = ConfigAttribute('LICENSE')
+
+    #: The servers information of the API (openapi.servers), accepts multiple
+    #: server dicts.
+    #: Example value:
+    #:
+    #:    app.servers = [
+    #:        {
+    #:            'name': 'Production Server',
+    #:            'url': 'http://api.example.com'
+    #:        }
+    #:    ]
+    #:
+    #: This attribute can also be configured from the config with the
+    #: ``SERVERS`` configuration key. Defaults to ``None``.
+    servers = ConfigAttribute('SERVERS')
+
+    #: The external documentation information of the API (openapi.externalDocs).
+    #: Example value:
+    #:
+    #:    app.external_docs = {
+    #:       'description': 'Find more info here',
+    #:       'url': 'http://docs.example.com'
+    #:    }
+    #:
+    #: This attribute can also be configured from the config with the
+    #: ``EXTERNAL_DOCS`` configuration key. Defaults to ``None``.
+    external_docs = ConfigAttribute('EXTERNAL_DOCS')
+
+    #: The terms of service URL of the API (openapi.info.termsOfService).
+    #: Example value:
+    #:
+    #:    app.terms_of_service = "http://example.com/terms/"
+    #:
+    #: This attribute can also be configured from the config with the
+    #: ``TERMS_OF_SERVICE`` configuration key. Defaults to ``None``.
+    terms_of_service = ConfigAttribute('TERMS_OF_SERVICE')
+
+    def __init__(self, title, version, spec_path, swagger_path, redoc_path):
         self.title = title
         self.version = version
-        self.tags = tags
         self.spec_path = spec_path
         self.swagger_path = swagger_path
         self.redoc_path = redoc_path
@@ -104,15 +179,25 @@ class _OpenAPIMixin:
 
         # info object
         info = {}
-        module_name = self.import_name
-        while module_name:
-            module = sys.modules[module_name]
-            if module.__doc__:
-                info['description'] = module.__doc__.strip()
-                break
-            if '.' not in module_name:
-                module_name = '.' + module_name
-            module_name = module_name.rsplit('.', 1)[0]
+        if self.contact:
+            info['contact'] = self.contact
+        if self.license:
+            info['license'] = self.license
+        if self.terms_of_service:
+            info['termsOfService'] = self.terms_of_service
+        if self.description:
+            info['description'] = self.description
+        else:
+            # auto-generate info.description from module doc
+            module_name = self.import_name
+            while module_name:
+                module = sys.modules[module_name]
+                if module.__doc__:
+                    info['description'] = module.__doc__.strip()
+                    break
+                if '.' not in module_name:
+                    module_name = '.' + module_name
+                module_name = module_name.rsplit('.', 1)[0]
 
         # tags
         tags = self.tags
@@ -141,6 +226,13 @@ class _OpenAPIMixin:
                 for index, tag in enumerate(tags):
                     tags[index] = {'name': tag}
 
+        # additional fields
+        kwargs = {}
+        if self.servers:
+            kwargs['servers'] = self.servers
+        if self.external_docs:
+            kwargs['externalDocs'] = self.external_docs
+
         ma_plugin = MarshmallowPlugin(schema_name_resolver=resolver)
         spec = APISpec(
             title=self.title,
@@ -149,6 +241,7 @@ class _OpenAPIMixin:
             plugins=[ma_plugin],
             info=info,
             tags=tags,
+            **kwargs 
         )
 
         # configure flask-marshmallow URL types

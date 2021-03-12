@@ -28,6 +28,13 @@ class APIFlask(Flask, _OpenAPIMixin):
     #:  Default configuration variables.
     api_default_config = ImmutableDict(
         {
+            'DESCRIPTION': None,
+            'TAGS': None,
+            'CONTACT': None,
+            'LICENSE': None,
+            'SERVERS': None,
+            'EXTERNAL_DOCS': None,
+            'TERMS_OF_SERVICE': None,
             '200_DESCRIPTION': 'Successful response',
             '204_DESCRIPTION': 'Empty response',
             'VALIDATION_ERROR_CODE': 400,
@@ -41,7 +48,6 @@ class APIFlask(Flask, _OpenAPIMixin):
         import_name,
         title='APIFlask',
         version='1.0.0',
-        tags=None,
         spec_path='/openapi.json',
         swagger_path='/docs',
         redoc_path='/redoc',
@@ -53,7 +59,6 @@ class APIFlask(Flask, _OpenAPIMixin):
             self,
             title=title,
             version=version,
-            tags=tags,
             spec_path=spec_path,
             swagger_path=swagger_path,
             redoc_path=redoc_path
