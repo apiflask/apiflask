@@ -323,6 +323,10 @@ class _OpenAPIMixin:
             tag = None
             if view_func._spec.get('tag'):
                 tag = view_func._spec.get('tag')
+            else:
+                # if tag not set, try to use blueprint name as tag
+                if '.' in rule.endpoint:
+                    tag = rule.endpoint.split('.', 1)[0].title()
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
                 if method not in rule.methods:
