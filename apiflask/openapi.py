@@ -22,6 +22,15 @@ except ImportError:  # pragma: no cover
 from .schemas import validation_error_response_schema
 
 
+_REDOC_STANDALONE_JS = 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/\
+redoc.standalone.js'
+_SWAGGER_UI_CSS = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css'
+_SWAGGER_UI_BUNDLE_JS = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/\
+swagger-ui-bundle.js'
+_SWAGGER_UI_STANDALONE_PRESET_JS = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/\
+swagger-ui-standalone-preset.js'
+
+
 class _OpenAPIMixin:
     #: The title of the API (openapi.info.title), defaults to "APIFlask".
     #: You can change it to the name of your API (e.g. "Pet API").
@@ -247,7 +256,7 @@ class _OpenAPIMixin:
             plugins=[ma_plugin],
             info=info,
             tags=tags,
-            **kwargs 
+            **kwargs
         )
 
         # configure flask-marshmallow URL types
@@ -343,7 +352,7 @@ class _OpenAPIMixin:
                     tag = rule.endpoint.split('.', 1)[0].title()
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
-                if view_func._spec.get('hide') == True:
+                if view_func._spec.get('hide'):
                     continue
                 if method not in rule.methods:
                     continue

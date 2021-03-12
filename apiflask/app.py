@@ -4,6 +4,10 @@ from werkzeug.datastructures import ImmutableDict
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .openapi import _OpenAPIMixin
+from .openapi import _REDOC_STANDALONE_JS
+from .openapi import _SWAGGER_UI_CSS
+from .openapi import _SWAGGER_UI_BUNDLE_JS
+from .openapi import _SWAGGER_UI_STANDALONE_PRESET_JS
 from .exceptions import HTTPException
 
 
@@ -43,10 +47,10 @@ class APIFlask(Flask, _OpenAPIMixin):
             'DOCS_HIDE_BLUEPRINTS': [],
             'DOCS_FAVICON': None,
             'DOCS_USE_GOOGLE_FONT': True,
-            'REDOC_STANDALONE_JS': 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js',
-            'SWAGGER_UI_CSS': 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css',
-            'SWAGGER_UI_BUNDLE_JS': 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-bundle.js',
-            'SWAGGER_UI_STANDALONE_PRESET_JS': 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-standalone-preset.js',
+            'REDOC_STANDALONE_JS': _REDOC_STANDALONE_JS,
+            'SWAGGER_UI_CSS': _SWAGGER_UI_CSS,
+            'SWAGGER_UI_BUNDLE_JS': _SWAGGER_UI_BUNDLE_JS,
+            'SWAGGER_UI_STANDALONE_PRESET_JS': _SWAGGER_UI_STANDALONE_PRESET_JS,
             'SWAGGER_UI_LAYOUT': 'BaseLayout',
             'SWAGGER_UI_OAUTH_CONFIG': None,
             'SWAGGER_UI_CONFIG': None,
@@ -126,7 +130,7 @@ class APIFlask(Flask, _OpenAPIMixin):
 
     def errorhandler_callback(self, f):
         """Registers a error handler callback function.
-        
+
         The callback function will be called when validation error hanppend when
         parse a request or an exception triggerd with exceptions.HTTPException or
         :func:`exceptions.abort`. It must accept four positional arguments (i.e.
@@ -183,7 +187,7 @@ class APIFlask(Flask, _OpenAPIMixin):
     # TODO Remove these shortcuts when pin Flask>=2.0
     def get(self, rule, **options):
         """Shortcut for ``app.route()``.
-        
+
         .. versionadded:: 0.2.0
         """
         return self.route(rule, methods=['GET'], **options)
@@ -191,7 +195,7 @@ class APIFlask(Flask, _OpenAPIMixin):
     #: Shortcut method for app.route(methods=['POST']).
     def post(self, rule, **options):
         """Shortcut for ``app.route(methods=['POST'])``.
-        
+
         .. versionadded:: 0.2.0
         """
         return self.route(rule, methods=['POST'], **options)
@@ -199,21 +203,21 @@ class APIFlask(Flask, _OpenAPIMixin):
     #: Shortcut method for app.route(methods=['PUT']).
     def put(self, rule, **options):
         """Shortcut for ``app.route(methods=['PUT'])``.
-        
+
         .. versionadded:: 0.2.0
         """
         return self.route(rule, methods=['PUT'], **options)
 
     def patch(self, rule, **options):
         """Shortcut for ``app.route(methods=['PATCH'])``.
-        
+
         .. versionadded:: 0.2.0
         """
         return self.route(rule, methods=['PATCH'], **options)
 
     def delete(self, rule, **options):
         """Shortcut for ``app.route(methods=['DELETE'])``.
-        
+
         .. versionadded:: 0.2.0
         """
         return self.route(rule, methods=['DELETE'], **options)

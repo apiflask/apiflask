@@ -1,6 +1,7 @@
 from werkzeug.exceptions import default_exceptions
 from flask import current_app
 
+
 class HTTPException(Exception):
     status_code = None
     message = None
