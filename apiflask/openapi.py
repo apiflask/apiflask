@@ -125,7 +125,13 @@ class _OpenAPIMixin:
         self.redoc_path = redoc_path
 
     def _register_openapi_blueprint(self):
-        bp = Blueprint('openapi', __name__, template_folder='templates')
+        bp = Blueprint(
+            'openapi',
+            __name__,
+            template_folder='templates',
+            static_folder='static',
+            static_url_path='/apiflask'
+        )
 
         if self.spec_path:
             @bp.route(self.spec_path)

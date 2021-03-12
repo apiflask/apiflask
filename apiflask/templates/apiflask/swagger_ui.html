@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ title }} {{ version }}</title>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css">
+    <link rel="stylesheet" type="text/css" href="{{ config.SWAGGER_UI_CSS }}">
+    <link rel="icon" type="image/png" href="{{ config.DOCS_FAVICON or url_for('openapi.static', filename='favicon.png') }}">
     <style>
         html {
             box-sizing: border-box;
@@ -28,8 +29,8 @@
 <body>
     <div id="swagger-ui"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-standalone-preset.js"></script>
+    <script src="{{ config.SWAGGER_UI_BUNDLE_JS }}"></script>
+    <script src="{{ config.SWAGGER_UI_STANDALONE_PRESET_JS }}"></script>
     <script>
         window.onload = function () {
             const ui = SwaggerUIBundle({
@@ -43,7 +44,7 @@
                 plugins: [
                     SwaggerUIBundle.plugins.DownloadUrl
                 ],
-                layout: "BaseLayout"
+                layout: "{{ config.SWAGGER_UI_LAYOUT }}"
             })
         }
     </script>

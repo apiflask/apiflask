@@ -4,16 +4,19 @@
     <title>{{ title }} {{ version }}</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if config.DOCS_USE_GOOGLE_FONT %}
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+    {% endif %}
+    <link rel="icon" type="image/png" href="{{ config.DOCS_FAVICON or url_for('openapi.static', filename='favicon.png') }}">
     <style>
         body {
-        margin: 0;
-        padding: 0;
+            margin: 0;
+            padding: 0;
         }
     </style>
 </head>
 <body>
     <redoc spec-url="{{ url_for('openapi.spec') }}"></redoc>
-    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>
+    <script src="{{ config.REDOC_STANDALONE_JS }}"> </script>
 </body>
 </html>
