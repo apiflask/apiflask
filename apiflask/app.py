@@ -56,7 +56,7 @@ class APIFlask(Flask, _OpenAPIMixin):
         self,
         import_name,
         title='APIFlask',
-        version='1.0.0',
+        version='0.1.0',
         spec_path='/openapi.json',
         docs_path='/docs',
         redoc_path='/redoc',
