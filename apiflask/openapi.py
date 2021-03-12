@@ -117,14 +117,14 @@ class _OpenAPIMixin:
     #: ``TERMS_OF_SERVICE`` configuration key. Defaults to ``None``.
     terms_of_service = ConfigAttribute('TERMS_OF_SERVICE')
 
-    def __init__(self, title, version, spec_path, swagger_path, redoc_path):
+    def __init__(self, title, version, spec_path, docs_path, redoc_path):
         self.title = title
         self.version = version
         self.spec_path = spec_path
-        self.swagger_path = swagger_path
+        self.docs_path = docs_path
         self.redoc_path = redoc_path
 
-    def register_openapi_blueprint(self):
+    def _register_openapi_blueprint(self):
         bp = Blueprint('openapi', __name__, template_folder='templates')
 
         if self.spec_path:
@@ -139,8 +139,8 @@ class _OpenAPIMixin:
                     return dumps(self.apispec.to_dict()), 200, \
                         {'Content-Type': 'application/json'}
 
-        if self.swagger_path:
-            @bp.route(self.swagger_path)
+        if self.docs_path:
+            @bp.route(self.docs_path)
             def swagger_ui():
                 return render_template('apiflask/swagger_ui.html',
                                        title=self.title, version=self.version)
@@ -151,7 +151,7 @@ class _OpenAPIMixin:
                 return render_template('apiflask/redoc.html',
                                        title=self.title, version=self.version)
 
-        if self.spec_path or self.swagger_path or self.redoc_path:
+        if self.spec_path or self.docs_path or self.redoc_path:
             self.register_blueprint(bp)
 
     def process_apispec(self, f):

@@ -49,7 +49,7 @@ class APIFlask(Flask, _OpenAPIMixin):
         title='APIFlask',
         version='1.0.0',
         spec_path='/openapi.json',
-        swagger_path='/docs',
+        docs_path='/docs',
         redoc_path='/redoc',
         json_errors=True,
         **kwargs
@@ -60,7 +60,7 @@ class APIFlask(Flask, _OpenAPIMixin):
             title=title,
             version=version,
             spec_path=spec_path,
-            swagger_path=swagger_path,
+            docs_path=docs_path,
             redoc_path=redoc_path
         )
 
@@ -73,7 +73,7 @@ class APIFlask(Flask, _OpenAPIMixin):
         self.error_handler_func = self.default_error_handler
         self._apispec = None
 
-        self.register_openapi_blueprint()
+        self._register_openapi_blueprint()
 
         @self.errorhandler(HTTPException)
         def handle_http_error(error):
