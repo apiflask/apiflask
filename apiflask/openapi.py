@@ -319,9 +319,16 @@ class _OpenAPIMixin:
         for rule in rules:
             operations = {}
             view_func = self.view_functions[rule.endpoint]
+            # skip endpoints from openapi blueprint and the built-in static endpoint
             if rule.endpoint.startswith('openapi') or \
                rule.endpoint.startswith('static'):
                 continue
+            # skip endpoints from blueprints in config DOCS_HIDE_BLUEPRINTS list
+            if '.' in rule.endpoint:
+                blueprint_name = rule.endpoint.split('.', 1)[0]
+                if blueprint_name in current_app.config['DOCS_HIDE_BLUEPRINTS']:
+                    continue
+            # register a default 200 response for bare views
             if not hasattr(view_func, '_spec'):
                 view_func._spec = \
                     dict(_response=True, status_code=200, response_description=None)

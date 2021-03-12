@@ -40,6 +40,7 @@ class APIFlask(Flask, _OpenAPIMixin):
             'VALIDATION_ERROR_CODE': 400,
             'VALIDATION_ERROR_DESCRIPTION': 'Validation error',
             'UNKNOWN_ERROR_MESSAGE': 'Unknown error',
+            'DOCS_HIDE_BLUEPRINTS': [],
             'DOCS_FAVICON': None,
             'DOCS_USE_GOOGLE_FONT': True,
             'REDOC_STANDALONE_JS': 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js',
