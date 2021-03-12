@@ -93,7 +93,14 @@ def output(schema, status_code=200, description=None):
     return decorator
 
 
-def doc(summary=None, description=None, tag=None, responses=None):
+def doc(
+    summary=None,
+    description=None,
+    tag=None,
+    responses=None,
+    deprecated=None,
+    hide=False
+):
     """
     Set up OpenAPI documentation for view function.
 
@@ -108,10 +115,20 @@ def doc(summary=None, description=None, tag=None, responses=None):
         attribute. If app.tags not set, the blueprint name will be used as tag name.
     :param responses: The other responses for this view function, accept a dict in a format
         of ``{400: 'Bad Request'}``.
+    :param deprecated: Flag this endpoint as deprecated in API docs. Defaults to ``None``.
+    :param hide: Hide this endpoint in API docs. Defaults to ``False``.
 
     .. versionadded:: 0.2.0
     """
     def decorator(f):
-        _annotate(f, summary=summary, description=description, tag=tag, responses=responses)
+        _annotate(
+            f,
+            summary=summary,
+            description=description,
+            tag=tag,
+            responses=responses,
+            deprecated=deprecated,
+            hide=hide
+        )
         return f
     return decorator

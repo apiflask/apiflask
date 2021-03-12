@@ -320,6 +320,7 @@ class _OpenAPIMixin:
                 view_func._spec = \
                     dict(_response=True, status_code=200, response_description=None)
 
+            # tag
             tag = None
             if view_func._spec.get('tag'):
                 tag = view_func._spec.get('tag')
@@ -329,6 +330,8 @@ class _OpenAPIMixin:
                     tag = rule.endpoint.split('.', 1)[0].title()
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
+                if view_func._spec.get('hide') == True:
+                    continue
                 if method not in rule.methods:
                     continue
                 operation = {
@@ -342,19 +345,29 @@ class _OpenAPIMixin:
                 if tag:
                     operation['tags'] = [tag]
 
+                # summary and description
                 if view_func._spec.get('summary'):
                     operation['summary'] = view_func._spec.get('summary')
                     operation['description'] = view_func._spec.get('description')
                 else:
+                    # auto-generate summary and description from dotstring
                     docs = (view_func.__doc__ or '').strip().split('\n')
                     if docs[0]:
+                        # Use the first line of docstring as summary
                         operation['summary'] = docs[0]
                     else:
+                        # Use the function name as summary
                         operation['summary'] = ' '.join(
                             view_func.__name__.split('_')).title()
                     if len(docs) > 1:
+                        # Use the remain lines of docstring as description
                         operation['description'] = '\n'.join(docs[1:]).strip()
 
+                # deprecated
+                if view_func._spec.get('deprecated'):
+                    operation['deprecated'] = view_func._spec.get('deprecated')
+
+                # responses
                 if view_func._spec.get('responses'):
                     for status_code, description in view_func._spec.get('responses').items():
                         operation['responses'][status_code] = {'description': description}
@@ -378,6 +391,7 @@ class _OpenAPIMixin:
                     operation['responses']['204']['description'] = \
                         self.config['204_DESCRIPTION']
 
+                # requestBody
                 if view_func._spec.get('body'):
                     operation['requestBody'] = {
                         'content': {
@@ -387,12 +401,14 @@ class _OpenAPIMixin:
                         }
                     }
 
+                # security
                 if view_func._spec.get('auth'):
                     operation['security'] = [{
                         security[view_func._spec['auth']]: view_func._spec[
                             'roles']
                     }]
 
+                # Add validation error response
                 if view_func._spec.get('body') or view_func._spec.get('args'):
                     code = self.config['VALIDATION_ERROR_CODE']
                     operation['responses'][code] = {
@@ -407,6 +423,7 @@ class _OpenAPIMixin:
 
                 operations[method.lower()] = operation
 
+            # parameters
             path_arguments = re.findall(r'<(([^:]+:)?([^>]+))>', rule.rule)
             if path_arguments:
                 arguments = []
