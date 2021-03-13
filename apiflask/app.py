@@ -52,6 +52,7 @@ class APIFlask(Flask, _OpenAPIMixin):
             'SWAGGER_UI_BUNDLE_JS': _SWAGGER_UI_BUNDLE_JS,
             'SWAGGER_UI_STANDALONE_PRESET_JS': _SWAGGER_UI_STANDALONE_PRESET_JS,
             'SWAGGER_UI_LAYOUT': 'BaseLayout',
+            'SWAGGER_UI_OAUTH2_REDIRECT_URL': '/docs/oauth2-redirect',
             'SWAGGER_UI_CONFIG': None,
             'SWAGGER_UI_OAUTH_CONFIG': None
         }

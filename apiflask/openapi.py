@@ -160,6 +160,11 @@ class _OpenAPIMixin:
                 return render_template('apiflask/swagger_ui.html',
                                        title=self.title, version=self.version)
 
+            @bp.route(self.docs_path + '/oauth2-redirect')
+            def swagger_ui_oauth_redirect():
+                return render_template('apiflask/swagger_ui_oauth2_redirect.html',
+                                       title=self.title, version=self.version)
+
         if self.redoc_path:
             @bp.route(self.redoc_path)
             def redoc():
