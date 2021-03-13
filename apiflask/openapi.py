@@ -452,7 +452,7 @@ class _OpenAPIMixin:
                 operations[method.lower()] = operation
 
             # parameters
-            path_arguments = re.findall(r'<(([^:]+:)?([^>]+))>', rule.rule)
+            path_arguments = re.findall(r'<(([^<:]+:)?([^>]+))>', rule.rule)
             if path_arguments:
                 arguments = []
                 for _, type, name in path_arguments:
@@ -469,7 +469,7 @@ class _OpenAPIMixin:
                     for method, operation in operations.items():
                         operation['parameters'].insert(0, arguments)
 
-            path = re.sub(r'<([^:]+:)?', '{', rule.rule).replace('>', '}')
+            path = re.sub(r'<([^<:]+:)?', '{', rule.rule).replace('>', '}')
             if path not in paths:
                 paths[path] = operations
             else:
