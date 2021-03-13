@@ -1,6 +1,5 @@
 import re
 import sys
-from json import dumps
 
 from flask import Blueprint
 from flask import render_template
@@ -147,12 +146,12 @@ class _OpenAPIMixin:
             def spec():
                 if self.spec_path.endswith('.yaml') or \
                    self.spec_path.endswith('.yml'):
+                    # YAML spec
                     return self.apispec.to_yaml(), 200, \
                         {'Content-Type': 'text/vnd.yaml'}
-
                 else:
-                    return dumps(self.apispec.to_dict()), 200, \
-                        {'Content-Type': 'application/json'}
+                    # JSON spec
+                    return self.apispec.to_dict()
 
         if self.docs_path:
             @bp.route(self.docs_path)
