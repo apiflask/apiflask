@@ -342,9 +342,10 @@ class _OpenAPIMixin:
                 if blueprint_name in current_app.config['DOCS_HIDE_BLUEPRINTS']:
                     continue
             # register a default 200 response for bare views
-            if not hasattr(view_func, '_spec'):
-                view_func._spec = \
-                    dict(_response=True, status_code=200, response_description=None)
+            if self.config['AUTO_200_RESPONSE']:
+                if not hasattr(view_func, '_spec'):
+                    view_func._spec = \
+                        dict(_response=True, status_code=200, response_description=None)
 
             # tag
             tag = None
@@ -413,9 +414,10 @@ class _OpenAPIMixin:
                         view_func._spec['response_description'] or \
                         self.config['200_DESCRIPTION']
                 else:
-                    operation['responses'] = {'204': {}}
-                    operation['responses']['204']['description'] = \
-                        self.config['204_DESCRIPTION']
+                    if self.config['AUTO_204_RESPONSE']:
+                        operation['responses'] = {'204': {}}
+                        operation['responses']['204']['description'] = \
+                            self.config['204_DESCRIPTION']
 
                 # requestBody
                 if view_func._spec.get('body'):

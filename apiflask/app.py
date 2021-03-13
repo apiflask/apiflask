@@ -39,6 +39,8 @@ class APIFlask(Flask, _OpenAPIMixin):
             'SERVERS': None,
             'EXTERNAL_DOCS': None,
             'TERMS_OF_SERVICE': None,
+            'AUTO_200_RESPONSE': True,
+            'AUTO_204_RESPONSE': True,
             '200_DESCRIPTION': 'Successful response',
             '204_DESCRIPTION': 'Empty response',
             'VALIDATION_ERROR_CODE': 400,
