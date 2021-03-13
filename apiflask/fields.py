@@ -5,7 +5,3 @@ from marshmallow.fields import (Field, Raw, Nested, Mapping, Dict, List, Tuple, 
                                 Time, Date, TimeDelta, URL, Email, IP, IPv4,  # noqa: F401
                                 IPv6, Method, Function, Constant, Pluck)  # noqa: F401
 from flask_marshmallow.fields import URLFor, AbsoluteURLFor, Hyperlinks  # noqa: F401
-
-
-class FlaskConfig(fields.Field):
-    pass

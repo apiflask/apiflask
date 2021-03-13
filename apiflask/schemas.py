@@ -1,5 +1,4 @@
-from flask_marshmallow.schema import Schema    # noqa: F401
-
+from marshmallow.schema import Schema  # noqa: F401
 
 validation_error_response_schema = {
     "type": "object",
@@ -22,7 +21,3 @@ validation_error_response_schema = {
         }
     }
 }
-
-
-class PaginationSchema(Schema):
-    pass
