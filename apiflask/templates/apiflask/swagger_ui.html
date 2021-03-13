@@ -32,20 +32,31 @@
     <script src="{{ config.SWAGGER_UI_BUNDLE_JS }}"></script>
     <script src="{{ config.SWAGGER_UI_STANDALONE_PRESET_JS }}"></script>
     <script>
+        var baseConfig = {
+            url: "{{ url_for('openapi.spec') }}",
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            plugins: [
+                SwaggerUIBundle.plugins.DownloadUrl
+            ],
+            layout: "{{ config.SWAGGER_UI_LAYOUT }}",
+            oauth2RedirectUrl: "{{ config.SWAGGER_UI_OAUTH2_REDIRECT_URL }}"
+        }
+        {% if config.SWAGGER_UI_CONFIG %}
+        var userConfig = {{ config.SWAGGER_UI_CONFIG|tojson }}
+        for (var attr in userConfig) {
+            baseConfig[attr] = userConfig[attr]
+        }
+        {% endif %}
         window.onload = function () {
-            const ui = SwaggerUIBundle({
-                url: "{{ url_for('openapi.spec') }}",
-                dom_id: '#swagger-ui',
-                deepLinking: true,
-                presets: [
-                    SwaggerUIBundle.presets.apis,
-                    SwaggerUIStandalonePreset
-                ],
-                plugins: [
-                    SwaggerUIBundle.plugins.DownloadUrl
-                ],
-                layout: "{{ config.SWAGGER_UI_LAYOUT }}"
-            })
+            const ui = SwaggerUIBundle(baseConfig)
+            {% if config.SWAGGER_UI_OAUTH_CONFIG %}
+            ui.initOAuth({{ config.SWAGGER_UI_OAUTH_CONFIG|tojson }})
+            {% endif %}
         }
     </script>
 </body>
