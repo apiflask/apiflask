@@ -456,18 +456,20 @@ class _OpenAPIMixin:
             if path_arguments:
                 arguments = []
                 for _, type, name in path_arguments:
-                    arguments = {
+                    argument = {
                         'in': 'path',
                         'name': name,
                     }
                     if type == 'int:':
-                        arguments['schema'] = {'type': 'integer'}
+                        argument['schema'] = {'type': 'integer'}
                     elif type == 'float:':
-                        arguments['schema'] = {'type': 'number'}
+                        argument['schema'] = {'type': 'number'}
                     else:
-                        arguments['schema'] = {'type': 'string'}
-                    for method, operation in operations.items():
-                        operation['parameters'].insert(0, arguments)
+                        argument['schema'] = {'type': 'string'}
+                    arguments.append(argument)
+
+                for method, operation in operations.items():
+                    operation['parameters'] = arguments + operation['parameters']
 
             path = re.sub(r'<([^<:]+:)?', '{', rule.rule).replace('>', '}')
             if path not in paths:
