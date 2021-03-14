@@ -94,15 +94,17 @@ class APIFlask(Flask, _OpenAPIMixin):
 
         @self.errorhandler(HTTPException)
         def handle_http_error(error):
-            return self.error_handler_callback(error.status_code,
-                                               error.message,
-                                               error.detail,
-                                               error.headers)
+            return self.error_handler_func(
+                error.status_code,
+                error.message,
+                error.detail,
+                error.headers
+            )
 
         if self.json_errors:
             @self.errorhandler(WerkzeugHTTPException)
             def handle_werkzeug_errrors(error):
-                return self.error_handler_callback(error.code, error.description)
+                return self.error_handler_func(error.code, error.description)
 
     def dispatch_request(self):
         """Overwrite the default dispatch method to pass view arguments as positional

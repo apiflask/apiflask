@@ -147,11 +147,11 @@ class _OpenAPIMixin:
                 if self.spec_path.endswith('.yaml') or \
                    self.spec_path.endswith('.yml'):
                     # YAML spec
-                    return self.apispec.to_yaml(), 200, \
+                    return self._generate_apispec().to_yaml(), 200, \
                         {'Content-Type': 'text/vnd.yaml'}
                 else:
                     # JSON spec
-                    return self.apispec.to_dict()
+                    return self.apispec
 
         if self.docs_path:
             @bp.route(self.docs_path)
@@ -180,7 +180,7 @@ class _OpenAPIMixin:
     @property
     def apispec(self):
         if self._apispec is None:
-            self._apispec = self._generate_apispec()
+            self._apispec = self._generate_apispec().to_dict()
             if self.apispec_callback:
                 self._apispec = self.apispec_callback(self._apispec)
         return self._apispec
