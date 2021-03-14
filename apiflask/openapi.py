@@ -365,7 +365,7 @@ class _OpenAPIMixin:
                     'parameters': [
                         {'in': location, 'schema': schema}
                         for schema, location in view_func._spec.get('args', [])
-                        if location != 'body'
+                        if location != 'body'  # prevent adding "body" location from OpenAPI 2
                     ],
                     'responses': {},
                 }

@@ -301,7 +301,7 @@ def test_path_arguments_order(app, client):
         'parameters'][1]['name'] == 'bar'
 
 
-def test_query_arguments(app, client):
+def test_parameters_registration(app, client):
 
     @app.route('/foo')
     @input(QuerySchema, 'query')
@@ -328,7 +328,7 @@ def test_query_arguments(app, client):
     assert rv.json['paths']['/foo']['get'][
         'parameters'][0]['name'] == 'id'
     assert len(rv.json['paths']['/foo']['get']['parameters']) == 1
-    assert len(rv.json['paths']['/bar']['get']['parameters']) == 3
+    assert len(rv.json['paths']['/bar']['get']['parameters']) == 4
     rv = client.get('/bar')
     assert rv.status_code == 200
     assert rv.json['query'] == 1
