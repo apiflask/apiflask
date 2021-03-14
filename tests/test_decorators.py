@@ -100,7 +100,7 @@ def test_response(app, client):
             return {'name': 'baz'}, {'Location': '/baz'}
         elif query['id'] == 3:
             return {'name': 'baz'}, 202, {'Location': '/baz'}
-        return {'name': 'baz'}
+        return ({'name': 'baz'},)
 
     rv = client.get('/foo')
     assert rv.status_code == 200

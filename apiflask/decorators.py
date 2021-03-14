@@ -85,7 +85,7 @@ def output(schema, status_code=200, description=None):
                 elif len(rv) >= 3:
                     rv = (json, rv[1], rv[2])
                 else:
-                    rv = json
+                    rv = (json, status_code)
                 return rv
             else:
                 return _jsonify(rv), status_code
