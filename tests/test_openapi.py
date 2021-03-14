@@ -10,7 +10,7 @@ def test_apispec(app, client):
 
     auth = HTTPBasicAuth()
 
-    @app.process_apispec
+    @app.apispec_processor
     def edit_apispec(apispec):
         assert apispec['openapi'] == '3.0.3'
         apispec['openapi'] = '3.0.2'

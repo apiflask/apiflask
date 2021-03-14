@@ -87,14 +87,14 @@ class APIFlask(Flask, _OpenAPIMixin):
         self.json_errors = json_errors
 
         self.apispec_callback = None
-        self.error_handler_func = self.default_error_handler
+        self.error_callback = self.default_error_handler
         self._apispec = None
 
         self._register_openapi_blueprint()
 
         @self.errorhandler(HTTPException)
         def handle_http_error(error):
-            return self.error_handler_func(
+            return self.error_callback(
                 error.status_code,
                 error.message,
                 error.detail,
@@ -104,7 +104,7 @@ class APIFlask(Flask, _OpenAPIMixin):
         if self.json_errors:
             @self.errorhandler(WerkzeugHTTPException)
             def handle_werkzeug_errrors(error):
-                return self.error_handler_func(error.code, error.description)
+                return self.error_callback(error.code, error.description)
 
     def dispatch_request(self):
         """Overwrite the default dispatch method to pass view arguments as positional
@@ -133,7 +133,7 @@ class APIFlask(Flask, _OpenAPIMixin):
         # otherwise dispatch to the handler for that endpoint
         return self.view_functions[rule.endpoint](*req.view_args.values())
 
-    def errorhandler_callback(self, f):
+    def error_processor(self, f):
         """Registers a error handler callback function.
 
         The callback function will be called when validation error hanppend when
@@ -141,7 +141,7 @@ class APIFlask(Flask, _OpenAPIMixin):
         :func:`exceptions.abort`. It must accept four positional arguments (i.e.
         ``status_code, message, detail, headers``) and return a valid response::
 
-            @app.errorhandler_callback
+            @app.error_processor
             def my_error_handler(status_code, message, detail, headers):
                 return {
                     'status_code': status_code,
@@ -177,7 +177,7 @@ class APIFlask(Flask, _OpenAPIMixin):
         However, I would recommend to keep the ``detail`` since it contains the detail
         information about the validation error.
         """
-        self.error_handler_func = f
+        self.error_callback = f
         return f
 
     def default_error_handler(self, status_code, message, detail=None, headers=None):

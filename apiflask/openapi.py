@@ -173,7 +173,7 @@ class _OpenAPIMixin:
         if self.spec_path or self.docs_path or self.redoc_path:
             self.register_blueprint(bp)
 
-    def process_apispec(self, f):
+    def apispec_processor(self, f):
         self.apispec_callback = f
         return f
 
