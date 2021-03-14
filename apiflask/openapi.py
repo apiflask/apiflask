@@ -365,7 +365,7 @@ class _OpenAPIMixin:
                     'parameters': [
                         {'in': location, 'schema': schema}
                         for schema, location in view_func._spec.get('args', [])
-                        if location == 'query'
+                        if location != 'body'
                     ],
                     'responses': {},
                 }
