@@ -46,9 +46,10 @@ def input(schema, location='json', **kwargs):
             'json', 'query', 'headers', 'cookies', 'files', 'form', 'querystring'
         ]:
             raise RuntimeError(
-                '''
+                f'''
                 Unknown input location. The supported locations are: 'json', 'files',
-                'form', 'cookies', 'headers', 'query' (same as 'querystring').
+                'form', 'cookies', 'headers', 'query' (same as 'querystring'). Got
+                '{location}' instead.
                 '''
             )
         if location == 'json':
