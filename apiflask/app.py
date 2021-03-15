@@ -8,7 +8,7 @@ from .openapi import _REDOC_STANDALONE_JS
 from .openapi import _SWAGGER_UI_CSS
 from .openapi import _SWAGGER_UI_BUNDLE_JS
 from .openapi import _SWAGGER_UI_STANDALONE_PRESET_JS
-from .exceptions import HTTPException
+from .exceptions import HTTPError
 
 
 class APIFlask(Flask, _OpenAPIMixin):
@@ -92,7 +92,7 @@ class APIFlask(Flask, _OpenAPIMixin):
 
         self._register_openapi_blueprint()
 
-        @self.errorhandler(HTTPException)
+        @self.errorhandler(HTTPError)
         def handle_http_error(error):
             return self.error_callback(
                 error.status_code,
@@ -137,7 +137,7 @@ class APIFlask(Flask, _OpenAPIMixin):
         """Registers a error handler callback function.
 
         The callback function will be called when validation error hanppend when
-        parse a request or an exception triggerd with exceptions.HTTPException or
+        parse a request or an exception triggerd with exceptions.HTTPError or
         :func:`exceptions.abort`. It must accept four positional arguments (i.e.
         ``status_code, message, detail, headers``) and return a valid response::
 
@@ -147,7 +147,7 @@ class APIFlask(Flask, _OpenAPIMixin):
                     'status_code': status_code,
                     'message': message,
                     'detail': detail
-                    }, status_code, headers
+                }, status_code, headers
 
         The arguments are:
         - status_code: If the error triggerd by validation error, the value will be
@@ -166,7 +166,7 @@ class APIFlask(Flask, _OpenAPIMixin):
 
             The value of ``location`` can be ``json`` (i.e. request body) or ``query``
             (i.e. query string) depend on the palace the validation error happened.
-        - headers: The value will be None unless you pass it in HTTPException or abort.
+        - headers: The value will be None unless you pass it in HTTPError or abort.
 
         If you want, you can rewrite the whole response body to anything you like::
 

@@ -2,7 +2,7 @@ from werkzeug.exceptions import default_exceptions
 from flask import current_app
 
 
-class HTTPException(Exception):
+class HTTPError(Exception):
     status_code = None
     message = None
     detail = None
@@ -26,9 +26,9 @@ class HTTPException(Exception):
                 self.message = current_app.config['UNKNOWN_ERROR_MESSAGE']
 
 
-class ValidationError(HTTPException):
+class ValidationError(HTTPError):
     pass
 
 
 def abort(status_code, detail=None, headers=None):
-    raise HTTPException(status_code, detail, headers)
+    raise HTTPError(status_code, detail, headers)
