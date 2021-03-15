@@ -104,7 +104,12 @@ class APIFlask(Flask, _OpenAPIMixin):
         if self.json_errors:
             @self.errorhandler(WerkzeugHTTPException)
             def handle_werkzeug_errrors(error):
-                return self.error_callback(error.code, error.description)
+                return self.error_callback(
+                    error.code,
+                    error.name,
+                    detail=None,
+                    headers=None
+                )
 
     def dispatch_request(self):
         """Overwrite the default dispatch method to pass view arguments as positional
