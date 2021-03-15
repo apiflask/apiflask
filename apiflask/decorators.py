@@ -42,6 +42,15 @@ def input(schema, location='json', **kwargs):
         schema = schema()
 
     def decorator(f):
+        if location not in [
+            'json', 'query', 'headers', 'cookies', 'files', 'form', 'querystring'
+        ]:
+            raise RuntimeError(
+                '''
+                Unknown input location. The supported locations are: 'json', 'files',
+                'form', 'cookies', 'headers', 'query' (same as 'querystring').
+                '''
+            )
         if location == 'json':
             _annotate(f, body=schema)
         else:
