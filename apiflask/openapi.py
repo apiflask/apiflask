@@ -265,26 +265,46 @@ class _OpenAPIMixin:
         # security schemes
         auth_schemes = []
         auth_names = []
+        auth_blueprints = {}
+
+        def update_auth_schemas_names(auth):
+            auth_schemes.append(auth)
+            if isinstance(auth, HTTPBasicAuth):
+                name = 'BasicAuth'
+            elif isinstance(auth, HTTPTokenAuth):
+                if auth.scheme == 'Bearer' and auth.header is None:
+                    name = 'BearerAuth'
+                else:
+                    name = 'ApiKeyAuth'
+            else:
+                raise RuntimeError('Unknown authentication scheme')
+            if name in auth_names:
+                v = 2
+                new_name = f'{name}_{v}'
+                while new_name in auth_names:
+                    v += 1
+                    new_name = f'{name}_{v}'
+                name = new_name
+            auth_names.append(name)
+
+        # detect auth_required on before_request functions
+        for blueprint_name, funcs in self.before_request_funcs.items():
+            for f in funcs:
+                if hasattr(f, '_spec'):
+                    auth = f._spec.get('auth')
+                    if auth is not None and auth not in auth_schemes:
+                        auth_blueprints[blueprint_name] = {
+                            'auth': auth,
+                            'roles': f._spec.get('roles')
+                        }
+                        update_auth_schemas_names(auth)
+
         for rule in self.url_map.iter_rules():
             view_func = self.view_functions[rule.endpoint]
             if hasattr(view_func, '_spec'):
                 auth = view_func._spec.get('auth')
                 if auth is not None and auth not in auth_schemes:
-                    auth_schemes.append(auth)
-                    if isinstance(auth, HTTPBasicAuth):
-                        name = 'basic_auth'
-                    elif isinstance(auth, HTTPTokenAuth):
-                        name = 'api_key'
-                    else:
-                        raise RuntimeError('Unknown authentication scheme')
-                    if name in auth_names:
-                        v = 2
-                        new_name = f'{name}_{v}'
-                        while new_name in auth_names:
-                            v += 1
-                            new_name = f'{name}_{v}'
-                        name = new_name
-                    auth_names.append(name)
+                    update_auth_schemas_names(auth)
 
         security = {}
         security_schemes = {}
@@ -332,6 +352,9 @@ class _OpenAPIMixin:
                 blueprint_name = rule.endpoint.split('.', 1)[0]
                 if blueprint_name in current_app.config['DOCS_HIDE_BLUEPRINTS']:
                     continue
+            else:
+                blueprint_name = None
+
             # register a default 200 response for bare views
             if self.config['AUTO_200_RESPONSE']:
                 if not hasattr(view_func, '_spec'):
@@ -420,10 +443,15 @@ class _OpenAPIMixin:
                     }
 
                 # security
+                if blueprint_name is not None and blueprint_name in auth_blueprints:
+                    operation['security'] = [{
+                        security[auth_blueprints[blueprint_name]['auth']]:
+                            auth_blueprints[blueprint_name]['roles']
+                    }]
+
                 if view_func._spec.get('auth'):
                     operation['security'] = [{
-                        security[view_func._spec['auth']]: view_func._spec[
-                            'roles']
+                        security[view_func._spec['auth']]: view_func._spec['roles']
                     }]
 
                 # Add validation error response
