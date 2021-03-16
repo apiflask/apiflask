@@ -1,13 +1,8 @@
 from flask import Flask
 from flask.globals import _request_ctx_stack
-from werkzeug.datastructures import ImmutableDict
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .openapi import _OpenAPIMixin
-from .openapi import _REDOC_STANDALONE_JS
-from .openapi import _SWAGGER_UI_CSS
-from .openapi import _SWAGGER_UI_BUNDLE_JS
-from .openapi import _SWAGGER_UI_STANDALONE_PRESET_JS
 from .exceptions import HTTPError
 
 
@@ -29,36 +24,6 @@ class APIFlask(Flask, _OpenAPIMixin):
     :param json_errors: If True, APIFlask will return a JSON response
         for HTTP errors.
     """
-    #:  Default configuration variables.
-    api_default_config = ImmutableDict(
-        {
-            'DESCRIPTION': None,
-            'TAGS': None,
-            'CONTACT': None,
-            'LICENSE': None,
-            'SERVERS': None,
-            'EXTERNAL_DOCS': None,
-            'TERMS_OF_SERVICE': None,
-            'AUTO_200_RESPONSE': True,
-            'AUTO_204_RESPONSE': True,
-            '200_DESCRIPTION': 'Successful response',
-            '204_DESCRIPTION': 'Empty response',
-            'VALIDATION_ERROR_CODE': 400,
-            'VALIDATION_ERROR_DESCRIPTION': 'Validation error',
-            'UNKNOWN_ERROR_MESSAGE': 'Unknown error',
-            'DOCS_HIDE_BLUEPRINTS': [],
-            'DOCS_FAVICON': None,
-            'DOCS_USE_GOOGLE_FONT': True,
-            'REDOC_STANDALONE_JS': _REDOC_STANDALONE_JS,
-            'SWAGGER_UI_CSS': _SWAGGER_UI_CSS,
-            'SWAGGER_UI_BUNDLE_JS': _SWAGGER_UI_BUNDLE_JS,
-            'SWAGGER_UI_STANDALONE_PRESET_JS': _SWAGGER_UI_STANDALONE_PRESET_JS,
-            'SWAGGER_UI_LAYOUT': 'BaseLayout',
-            'SWAGGER_UI_OAUTH2_REDIRECT_URL': '/docs/oauth2-redirect',
-            'SWAGGER_UI_CONFIG': None,
-            'SWAGGER_UI_OAUTH_CONFIG': None
-        }
-    )
 
     def __init__(
         self,
@@ -82,14 +47,11 @@ class APIFlask(Flask, _OpenAPIMixin):
         )
 
         # Set default config
-        self.config.update(self.api_default_config)
-
+        self.config.from_object('apiflask.settings')
         self.json_errors = json_errors
-
         self.apispec_callback = None
         self.error_callback = self.default_error_handler
         self._apispec = None
-
         self._register_openapi_blueprint()
 
         @self.errorhandler(HTTPError)

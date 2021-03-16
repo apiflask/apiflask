@@ -209,8 +209,8 @@ def test_default_openapi_response(app, client):
 
 def test_default_openapi_response_description(app, client):
 
-    app.config['200_DESCRIPTION'] = 'It works'
-    app.config['204_DESCRIPTION'] = 'Nothing'
+    app.config['DESCRIPTION_FOR_200'] = 'It works'
+    app.config['DESCRIPTION_FOR_204'] = 'Nothing'
 
     @app.get('/foo')
     @input(FooSchema)

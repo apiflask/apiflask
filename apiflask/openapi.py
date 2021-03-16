@@ -21,15 +21,6 @@ except ImportError:  # pragma: no cover
 from .schemas import validation_error_response_schema
 
 
-_REDOC_STANDALONE_JS = 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/\
-redoc.standalone.js'
-_SWAGGER_UI_CSS = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css'
-_SWAGGER_UI_BUNDLE_JS = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/\
-swagger-ui-bundle.js'
-_SWAGGER_UI_STANDALONE_PRESET_JS = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/\
-swagger-ui-standalone-preset.js'
-
-
 class _OpenAPIMixin:
     #: The title of the API (openapi.info.title), defaults to "APIFlask".
     #: You can change it to the name of your API (e.g. "Pet API").
@@ -411,12 +402,12 @@ class _OpenAPIMixin:
                     }
                     operation['responses'][code]['description'] = \
                         view_func._spec['response_description'] or \
-                        self.config['200_DESCRIPTION']
+                        self.config['DESCRIPTION_FOR_200']
                 else:
                     if self.config['AUTO_204_RESPONSE']:
                         operation['responses'] = {'204': {}}
                         operation['responses']['204']['description'] = \
-                            self.config['204_DESCRIPTION']
+                            self.config['DESCRIPTION_FOR_204']
 
                 # requestBody
                 if view_func._spec.get('body'):
