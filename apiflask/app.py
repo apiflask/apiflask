@@ -4,9 +4,10 @@ from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .openapi import _OpenAPIMixin
 from .exceptions import HTTPError
+from .scaffold import Scaffold
 
 
-class APIFlask(Flask, _OpenAPIMixin):
+class APIFlask(Flask, Scaffold, _OpenAPIMixin):
     """
     The Flask object with some Web API support.
 
@@ -34,9 +35,28 @@ class APIFlask(Flask, _OpenAPIMixin):
         docs_path='/docs',
         redoc_path='/redoc',
         json_errors=True,
-        **kwargs
+        static_url_path=None,
+        static_folder='static',
+        static_host=None,
+        host_matching=False,
+        subdomain_matching=False,
+        template_folder='templates',
+        instance_path=None,
+        instance_relative_config=False,
+        root_path=None
     ):
-        super(APIFlask, self).__init__(import_name, **kwargs)
+        super(APIFlask, self).__init__(
+            import_name,
+            static_url_path=static_url_path,
+            static_folder=static_folder,
+            static_host=static_host,
+            host_matching=host_matching,
+            subdomain_matching=subdomain_matching,
+            template_folder=template_folder,
+            instance_path=instance_path,
+            instance_relative_config=instance_relative_config,
+            root_path=root_path
+        )
         _OpenAPIMixin.__init__(
             self,
             title=title,
@@ -155,41 +175,3 @@ class APIFlask(Flask, _OpenAPIMixin):
             return body, status_code
         else:
             return body, status_code, headers
-
-    # TODO Remove these shortcuts when pin Flask>=2.0
-    def get(self, rule, **options):
-        """Shortcut for ``app.route()``.
-
-        .. versionadded:: 0.2.0
-        """
-        return self.route(rule, methods=['GET'], **options)
-
-    #: Shortcut method for app.route(methods=['POST']).
-    def post(self, rule, **options):
-        """Shortcut for ``app.route(methods=['POST'])``.
-
-        .. versionadded:: 0.2.0
-        """
-        return self.route(rule, methods=['POST'], **options)
-
-    #: Shortcut method for app.route(methods=['PUT']).
-    def put(self, rule, **options):
-        """Shortcut for ``app.route(methods=['PUT'])``.
-
-        .. versionadded:: 0.2.0
-        """
-        return self.route(rule, methods=['PUT'], **options)
-
-    def patch(self, rule, **options):
-        """Shortcut for ``app.route(methods=['PATCH'])``.
-
-        .. versionadded:: 0.2.0
-        """
-        return self.route(rule, methods=['PATCH'], **options)
-
-    def delete(self, rule, **options):
-        """Shortcut for ``app.route(methods=['DELETE'])``.
-
-        .. versionadded:: 0.2.0
-        """
-        return self.route(rule, methods=['DELETE'], **options)

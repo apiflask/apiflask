@@ -1,4 +1,5 @@
 from .app import APIFlask  # noqa: F401
+from .blueprint import Blueprint  # noqa: F401
 from .decorators import auth_required, input, output, doc  # noqa: F401
 from .exceptions import HTTPError, abort  # noqa: F401
 from .schemas import Schema  # noqa: F401
