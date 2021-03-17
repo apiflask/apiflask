@@ -14,6 +14,7 @@ class Blueprint(BaseBlueprint, Scaffold):
         self,
         name,
         import_name,
+        tag=None,
         static_folder=None,
         static_url_path=None,
         template_folder=None,
@@ -35,3 +36,4 @@ class Blueprint(BaseBlueprint, Scaffold):
             root_path=root_path,
             cli_group=cli_group,
         )
+        self.tag=tag

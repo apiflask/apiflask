@@ -3,7 +3,6 @@ import sys
 
 from flask import Blueprint
 from flask import render_template
-from flask import current_app
 from flask.config import ConfigAttribute
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
@@ -211,24 +210,22 @@ class _OpenAPIMixin:
 
         # tags
         tags = self.tags
-        if tags is None:
+        if tags is None and self.config['AUTO_TAGS']:
             # auto-generate tags from blueprints
-            blueprints = []
-            for rule in self.url_map.iter_rules():
-                view_func = self.view_functions[rule.endpoint]
-                if hasattr(view_func, '_spec'):
-                    if '.' in rule.endpoint:
-                        blueprint = rule.endpoint.split('.', 1)[0]
-                        if blueprint not in blueprints:
-                            blueprints.append(blueprint)
             tags = []
             for name, blueprint in self.blueprints.items():
-                if name not in blueprints:
+                if name == 'openapi' or name in self.config['DOCS_HIDE_BLUEPRINTS']:
                     continue
-                module = sys.modules[blueprint.import_name]
-                tag = {'name': name.title()}
-                if module.__doc__:
-                    tag['description'] = module.__doc__.strip()
+                if hasattr(blueprint, 'tag') and blueprint.tag is not None:
+                    if isinstance(blueprint.tag, dict):
+                        tag = blueprint.tag
+                    else:
+                        tag = {'name': blueprint.tag}
+                else:
+                    tag = {'name': name.title()}
+                    module = sys.modules[blueprint.import_name]
+                    if module.__doc__:
+                        tag['description'] = module.__doc__.strip()
                 tags.append(tag)
         else:
             # Convert simple tags list into standard OpenAPI tags
@@ -350,7 +347,7 @@ class _OpenAPIMixin:
             # skip endpoints from blueprints in config DOCS_HIDE_BLUEPRINTS list
             if '.' in rule.endpoint:
                 blueprint_name = rule.endpoint.split('.', 1)[0]
-                if blueprint_name in current_app.config['DOCS_HIDE_BLUEPRINTS']:
+                if blueprint_name in self.config['DOCS_HIDE_BLUEPRINTS']:
                     continue
             else:
                 blueprint_name = None
@@ -367,8 +364,17 @@ class _OpenAPIMixin:
                 tag = view_func._spec.get('tag')
             else:
                 # if tag not set, try to use blueprint name as tag
-                if '.' in rule.endpoint:
-                    tag = rule.endpoint.split('.', 1)[0].title()
+                if self.tags is None and self.config['AUTO_TAGS']:
+                    if blueprint_name is not None:
+                        blueprint = self.blueprints[blueprint_name]
+                        if hasattr(blueprint, 'tag'):
+                            if blueprint.tag is not None:
+                                if isinstance(blueprint.tag, dict):
+                                    tag = blueprint.tag['name']
+                                else:
+                                    tag = blueprint.tag   
+                            else:
+                                tag = blueprint_name.title()
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
                 if view_func._spec.get('hide'):
