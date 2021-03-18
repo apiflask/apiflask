@@ -14,19 +14,19 @@ class _AuthBase:
 
     @property
     def current_user(self):
-        if hasattr(g, 'flask_httpauth_user'):
+        if hasattr(g, 'flask_httpauth_user'):  # pragma: no cover
             return g.flask_httpauth_user
 
 
 class HTTPBasicAuth(BaseHTTPBasicAuth, _AuthBase):
 
-    def __init__(self, *args, **kwargs):
-        super(HTTPBasicAuth, self).__init__(*args, **kwargs)
+    def __init__(self, scheme=None, realm=None):
+        super(HTTPBasicAuth, self).__init__(scheme=scheme, realm=realm)
         _AuthBase.__init__(self)
 
 
 class HTTPTokenAuth(BaseHTTPTokenAuth, _AuthBase):
 
-    def __init__(self, *args, **kwargs):
-        super(HTTPTokenAuth, self).__init__(*args, **kwargs)
+    def __init__(self, scheme='Bearer', realm=None, header=None):
+        super(HTTPTokenAuth, self).__init__(scheme=scheme, realm=realm, header=header)
         _AuthBase.__init__(self)

@@ -11,12 +11,8 @@ try:
     from flask_marshmallow import sqla
 except ImportError:
     sqla = None
-try:
-    from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
-except ImportError:  # pragma: no cover
-    HTTPBasicAuth = None
-    HTTPTokenAuth = None
 
+from .security import HTTPBasicAuth, HTTPTokenAuth
 from .schemas import validation_error_response_schema
 
 
@@ -178,7 +174,7 @@ class _OpenAPIMixin:
     def _generate_apispec(self):
         def resolver(schema):
             name = schema.__class__.__name__
-            if name.endswith("Schema"):
+            if name.endswith('Schema'):
                 name = name[:-6] or name
             if schema.many:
                 name += 'List'
