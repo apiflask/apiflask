@@ -36,4 +36,4 @@ class Blueprint(BaseBlueprint, Scaffold):
             root_path=root_path,
             cli_group=cli_group,
         )
-        self.tag=tag
+        self.tag = tag
