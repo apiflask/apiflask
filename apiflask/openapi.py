@@ -251,7 +251,7 @@ class _OpenAPIMixin:
         ma_plugin.converter.field_mapping[fields.URLFor] = ('string', 'url')
         ma_plugin.converter.field_mapping[fields.AbsoluteURLFor] = \
             ('string', 'url')
-        if sqla is not None:
+        if sqla is not None:  # pragma: no cover
             ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = \
                 ('string', 'url')
 
@@ -360,9 +360,9 @@ class _OpenAPIMixin:
                 continue
 
             # tag
-            tag = None
-            if view_func._spec.get('tag'):
-                tag = view_func._spec.get('tag')
+            tags = None
+            if view_func._spec.get('tags'):
+                tags = view_func._spec.get('tags')
             else:
                 # if tag not set, try to use blueprint name as tag
                 if self.tags is None and self.config['AUTO_TAGS']:
@@ -371,11 +371,11 @@ class _OpenAPIMixin:
                         if hasattr(blueprint, 'tag'):
                             if blueprint.tag is not None:
                                 if isinstance(blueprint.tag, dict):
-                                    tag = blueprint.tag['name']
+                                    tags = blueprint.tag['name']
                                 else:
-                                    tag = blueprint.tag   
+                                    tags = blueprint.tag   
                             else:
-                                tag = blueprint_name.title()
+                                tags = blueprint_name.title()
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
                 if method not in rule.methods:
@@ -387,8 +387,11 @@ class _OpenAPIMixin:
                     ],
                     'responses': {},
                 }
-                if tag:
-                    operation['tags'] = [tag]
+                if tags:
+                    if isinstance(tags, list):
+                        operation['tags'] = tags
+                    else:
+                        operation['tags'] = [tags]
 
                 # summary
                 if view_func._spec.get('summary'):

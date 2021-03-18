@@ -4,6 +4,7 @@ from flask import Response, jsonify, current_app
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
 from .exceptions import ValidationError
+from .scaffold import _sentinel
 
 
 class FlaskParser(BaseFlaskParser):
@@ -70,11 +71,9 @@ def output(schema, status_code=200, description=None):
         _annotate(f, response=schema, status_code=status_code,
                   response_description=description)
 
-        sentinel = object()
-
-        def _jsonify(obj, many=sentinel, *args, **kwargs):
+        def _jsonify(obj, many=_sentinel, *args, **kwargs):  # pragma: no cover
             """Copy from flask_marshmallow.schemas.Schema.jsonify"""
-            if many is sentinel:
+            if many is _sentinel:
                 many = schema.many
             data = schema.dump(obj, many=many)
             return jsonify(data, *args, **kwargs)
@@ -106,7 +105,7 @@ def output(schema, status_code=200, description=None):
 def doc(
     summary=None,
     description=None,
-    tag=None,
+    tags=None,
     responses=None,
     deprecated=None,
     hide=False
@@ -122,7 +121,8 @@ def doc(
     :param description: The description of this view function. If not set, the lines
         after the empty line of the docstring will be used.
     :param tag: The tag of this view function, map the tag you passed in the :attr:`tags`
-        attribute. If app.tags not set, the blueprint name will be used as tag name.
+        attribute. You can also pass a list of tag names. If app.tags not set, the blueprint
+        name will be used as tag name.
     :param responses: The other responses for this view function, accept a dict in a format
         of ``{400: 'Bad Request'}``.
     :param deprecated: Flag this endpoint as deprecated in API docs. Defaults to ``None``.
@@ -135,7 +135,7 @@ def doc(
             f,
             summary=summary,
             description=description,
-            tag=tag,
+            tags=tags,
             responses=responses,
             deprecated=deprecated,
             hide=hide
