@@ -206,28 +206,29 @@ class _OpenAPIMixin:
 
         # tags
         tags = self.tags
-        if tags is None and self.config['AUTO_TAGS']:
-            # auto-generate tags from blueprints
-            tags = []
-            for name, blueprint in self.blueprints.items():
-                if name == 'openapi' or name in self.config['DOCS_HIDE_BLUEPRINTS']:
-                    continue
-                if hasattr(blueprint, 'tag') and blueprint.tag is not None:
-                    if isinstance(blueprint.tag, dict):
-                        tag = blueprint.tag
-                    else:
-                        tag = {'name': blueprint.tag}
-                else:
-                    tag = {'name': name.title()}
-                    module = sys.modules[blueprint.import_name]
-                    if module.__doc__:
-                        tag['description'] = module.__doc__.strip()
-                tags.append(tag)
-        else:
+        if tags is not None:
             # Convert simple tags list into standard OpenAPI tags
             if isinstance(tags[0], str):
                 for index, tag in enumerate(tags):
                     tags[index] = {'name': tag}
+        else:
+            tags = []
+            if self.config['AUTO_TAGS']:
+                # auto-generate tags from blueprints
+                for name, blueprint in self.blueprints.items():
+                    if name == 'openapi' or name in self.config['DOCS_HIDE_BLUEPRINTS']:
+                        continue
+                    if hasattr(blueprint, 'tag') and blueprint.tag is not None:
+                        if isinstance(blueprint.tag, dict):
+                            tag = blueprint.tag
+                        else:
+                            tag = {'name': blueprint.tag}
+                    else:
+                        tag = {'name': name.title()}
+                        module = sys.modules[blueprint.import_name]
+                        if module.__doc__:
+                            tag['description'] = module.__doc__.strip()
+                    tags.append(tag)
 
         # additional fields
         kwargs = {}
@@ -348,13 +349,15 @@ class _OpenAPIMixin:
             else:
                 blueprint_name = None
             # register a default 200 response for bare views
-            if self.config['AUTO_200_RESPONSE']:
-                if not hasattr(view_func, '_spec'):
+            if not hasattr(view_func, '_spec'):
+                if self.config['AUTO_200_RESPONSE']:
                     view_func._spec = {
                         '_response': True,
                         'status_code': 200,
                         'response_description': None
                     }
+                else:
+                    continue  # pragma: no cover
             # skip views flagged with @doc(hide=-True)
             if view_func._spec.get('hide'):
                 continue
@@ -368,14 +371,13 @@ class _OpenAPIMixin:
                 if self.tags is None and self.config['AUTO_TAGS']:
                     if blueprint_name is not None:
                         blueprint = self.blueprints[blueprint_name]
-                        if hasattr(blueprint, 'tag'):
-                            if blueprint.tag is not None:
-                                if isinstance(blueprint.tag, dict):
-                                    tags = blueprint.tag['name']
-                                else:
-                                    tags = blueprint.tag   
+                        if hasattr(blueprint, 'tag') and blueprint.tag is not None:
+                            if isinstance(blueprint.tag, dict):
+                                tags = blueprint.tag['name']
                             else:
-                                tags = blueprint_name.title()
+                                tags = blueprint.tag
+                        else:
+                            tags = blueprint_name.title()
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
                 if method not in rule.methods:
