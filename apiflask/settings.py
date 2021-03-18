@@ -7,6 +7,7 @@ SERVERS = None
 EXTERNAL_DOCS = None
 TERMS_OF_SERVICE = None
 AUTO_TAGS = True
+SPEC_FORMAT = 'json'
 # Response customization
 AUTO_200_RESPONSE = True
 AUTO_204_RESPONSE = True

@@ -133,11 +133,11 @@ class _OpenAPIMixin:
                 if self.spec_path.endswith('.yaml') or \
                    self.spec_path.endswith('.yml'):
                     # YAML spec
-                    return self._generate_apispec().to_yaml(), 200, \
+                    return self.get_apispec('yaml'), 200, \
                         {'Content-Type': 'text/vnd.yaml'}
                 else:
                     # JSON spec
-                    return self.apispec
+                    return self.get_apispec('json')
 
         if self.docs_path:
             @bp.route(self.docs_path)
@@ -159,17 +159,25 @@ class _OpenAPIMixin:
         if self.spec_path or self.docs_path or self.redoc_path:
             self.register_blueprint(bp)
 
+    def get_apispec(self, spec_format=None):
+        if spec_format is None:
+            spec_format = self.config['SPEC_FORMAT'].lower()
+        if self._apispec is None:
+            if spec_format == 'json':
+                self._apispec = self._generate_apispec().to_dict()
+            else:
+                self._apispec = self._generate_apispec().to_yaml()
+            if self.apispec_callback:
+                self._apispec = self.apispec_callback(self._apispec)
+        return self._apispec
+
     def apispec_processor(self, f):
         self.apispec_callback = f
         return f
 
     @property
     def apispec(self):
-        if self._apispec is None:
-            self._apispec = self._generate_apispec().to_dict()
-            if self.apispec_callback:
-                self._apispec = self.apispec_callback(self._apispec)
-        return self._apispec
+        return self.get_apispec()
 
     def _generate_apispec(self):
         def resolver(schema):
