@@ -387,12 +387,11 @@ class _OpenAPIMixin:
                 if tag:
                     operation['tags'] = [tag]
 
-                # summary and description
+                # summary
                 if view_func._spec.get('summary'):
                     operation['summary'] = view_func._spec.get('summary')
-                    operation['description'] = view_func._spec.get('description')
                 else:
-                    # auto-generate summary and description from dotstring
+                    # auto-generate summary from dotstring or view function name
                     docs = (view_func.__doc__ or '').strip().split('\n')
                     if docs[0]:
                         # Use the first line of docstring as summary
@@ -401,6 +400,13 @@ class _OpenAPIMixin:
                         # Use the function name as summary
                         operation['summary'] = ' '.join(
                             view_func.__name__.split('_')).title()
+
+                # description
+                if view_func._spec.get('description'):
+                    operation['description'] = view_func._spec.get('description')
+                else:
+                    # auto-generate description from dotstring
+                    docs = (view_func.__doc__ or '').strip().split('\n')
                     if len(docs) > 1:
                         # Use the remain lines of docstring as description
                         operation['description'] = '\n'.join(docs[1:]).strip()
