@@ -347,12 +347,17 @@ class _OpenAPIMixin:
                     continue
             else:
                 blueprint_name = None
-
             # register a default 200 response for bare views
             if self.config['AUTO_200_RESPONSE']:
                 if not hasattr(view_func, '_spec'):
-                    view_func._spec = \
-                        dict(_response=True, status_code=200, response_description=None)
+                    view_func._spec = {
+                        '_response': True,
+                        'status_code': 200,
+                        'response_description': None
+                    }
+            # skip views flagged with @doc(hide=-True)
+            if view_func._spec.get('hide'):
+                continue
 
             # tag
             tag = None
@@ -373,8 +378,6 @@ class _OpenAPIMixin:
                                 tag = blueprint_name.title()
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
-                if view_func._spec.get('hide'):
-                    continue
                 if method not in rule.methods:
                     continue
                 operation = {
