@@ -112,11 +112,11 @@ class APIFlask(Flask, Scaffold, _OpenAPIMixin):
         rule = req.url_rule
         # if we provide automatic options for this URL and the
         # request came with the OPTIONS method, reply automatically
-        if (
+        if (  # pragma: no cover
             getattr(rule, "provide_automatic_options", False)
             and req.method == "OPTIONS"
         ):
-            return self.make_default_options_response()
+            return self.make_default_options_response()  # pragma: no cover
         # otherwise dispatch to the handler for that endpoint
         return self.view_functions[rule.endpoint](*req.view_args.values())
 
