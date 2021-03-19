@@ -6,11 +6,15 @@ LICENSE = None
 SERVERS = None
 EXTERNAL_DOCS = None
 TERMS_OF_SERVICE = None
-AUTO_TAGS = True
 SPEC_FORMAT = 'json'
-# Response customization
+# Automation behaviour control
+AUTO_TAGS = True
+AUTO_DESCRIPTION = True
+AUTO_PATH_SUMMARY = True
+AUTO_PATH_DESCRIPTION = True
 AUTO_200_RESPONSE = True
 AUTO_204_RESPONSE = True
+# Response customization
 DESCRIPTION_FOR_200 = 'Successful response'
 DESCRIPTION_FOR_204 = 'Empty response'
 VALIDATION_ERROR_CODE = 400
