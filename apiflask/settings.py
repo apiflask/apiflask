@@ -15,7 +15,6 @@ DESCRIPTION_FOR_200 = 'Successful response'
 DESCRIPTION_FOR_204 = 'Empty response'
 VALIDATION_ERROR_CODE = 400
 VALIDATION_ERROR_DESCRIPTION = 'Validation error'
-UNKNOWN_ERROR_MESSAGE = 'Unknown error'
 # Swagger UI and Redoc
 DOCS_HIDE_BLUEPRINTS = []
 DOCS_FAVICON = None
