@@ -3,7 +3,7 @@ from flask.globals import _request_ctx_stack
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .openapi import _OpenAPIMixin
-from .exceptions import HTTPError, default_error_handler
+from .errors import HTTPError, default_error_handler
 from .scaffold import Scaffold
 
 

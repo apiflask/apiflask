@@ -3,7 +3,7 @@ from functools import wraps
 from flask import Response, jsonify, current_app
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
-from .exceptions import ValidationError
+from .errors import ValidationError
 from .scaffold import _sentinel
 
 
