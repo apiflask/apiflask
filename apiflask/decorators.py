@@ -120,9 +120,9 @@ def doc(
         @doc(summary='blah') > the frist line of docstring > the view functino name
     :param description: The description of this view function. If not set, the lines
         after the empty line of the docstring will be used.
-    :param tag: The tag of this view function, map the tag you passed in the :attr:`tags`
-        attribute. You can also pass a list of tag names. If app.tags not set, the blueprint
-        name will be used as tag name.
+    :param tags: The tag list of this view function, map the tags you passed in the :attr:`tags`
+        attribute. You can pass a list of tag names or just a single tag string. If ``app.tags``
+        not set, the blueprint name will be used as tag name.
     :param responses: The other responses for this view function, accept a dict in a format
         of ``{400: 'Bad Request'}``.
     :param deprecated: Flag this endpoint as deprecated in API docs. Defaults to ``None``.
