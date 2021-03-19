@@ -22,7 +22,7 @@ VALIDATION_ERROR_DESCRIPTION = 'Validation error'
 # Swagger UI and Redoc
 DOCS_HIDE_BLUEPRINTS = []
 DOCS_FAVICON = None
-DOCS_USE_GOOGLE_FONT = True
+REDOC_USE_GOOGLE_FONT = True
 REDOC_STANDALONE_JS = 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/\
 redoc.standalone.js'
 SWAGGER_UI_CSS = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css'
