@@ -69,9 +69,9 @@ class APIFlask(Flask, Scaffold, _OpenAPIMixin):
         # Set default config
         self.config.from_object('apiflask.settings')
         self.json_errors = json_errors
-        self.apispec_callback = None
+        self.spec_callback = None
         self.error_callback = self.default_error_handler
-        self._apispec = None
+        self._spec = None
         self._register_openapi_blueprint()
 
         @self.errorhandler(HTTPError)
