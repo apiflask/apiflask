@@ -13,10 +13,7 @@ class HTTPError(Exception):
         if message is not None:
             self.message = message
         else:
-            self.message = HTTP_STATUS_CODES.get(
-                status_code,
-                current_app.config['UNKNOWN_ERROR_MESSAGE']
-            )
+            self.message = _get_error_message(status_code)
 
 
 class ValidationError(HTTPError):
@@ -25,3 +22,22 @@ class ValidationError(HTTPError):
 
 def abort(status_code, message=None, detail=None, headers=None):
     raise HTTPError(status_code, message, detail, headers)
+
+
+def _get_error_message(status_code):
+    return HTTP_STATUS_CODES.get(
+                status_code,
+                current_app.config['UNKNOWN_ERROR_MESSAGE']
+            )
+
+
+def default_error_handler(status_code, message=None, detail=None, headers=None):
+    if message is None:
+        message = _get_error_message(status_code)
+    if detail is None:
+        detail = {}
+    body = {'detail': detail, 'message': message, 'status_code': status_code}
+    if headers is None:
+        return body, status_code
+    else:
+        return body, status_code, headers

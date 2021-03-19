@@ -3,7 +3,7 @@ from flask.globals import _request_ctx_stack
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .openapi import _OpenAPIMixin
-from .exceptions import HTTPError
+from .exceptions import HTTPError, default_error_handler
 from .scaffold import Scaffold
 
 
@@ -73,7 +73,7 @@ class APIFlask(Flask, Scaffold, _OpenAPIMixin):
         self.config.from_object('apiflask.settings')
         self.json_errors = json_errors
         self.spec_callback = None
-        self.error_callback = self.default_error_handler
+        self.error_callback = default_error_handler
         self._spec = None
         self._register_openapi_blueprint()
 
@@ -169,12 +169,3 @@ class APIFlask(Flask, Scaffold, _OpenAPIMixin):
         """
         self.error_callback = f
         return f
-
-    def default_error_handler(self, status_code, message, detail=None, headers=None):
-        if detail is None:
-            detail = {}
-        body = {'detail': detail, 'message': message, 'status_code': status_code}
-        if headers is None:
-            return body, status_code
-        else:
-            return body, status_code, headers
