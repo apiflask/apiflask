@@ -1,8 +1,8 @@
-from flask import g
+from flask import g, current_app
 from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 
-from .exceptions import HTTPError
+from .exceptions import default_error_handler
 
 
 class _AuthBase:
@@ -10,25 +10,34 @@ class _AuthBase:
     def __init__(self, description=None):
         self.description = description
 
-        @self.error_handler
-        def handle_auth_error(status_code):
-            raise HTTPError(status_code)
-
     @property
     def current_user(self):
         if hasattr(g, 'flask_httpauth_user'):  # pragma: no cover
             return g.flask_httpauth_user
 
 
-class HTTPBasicAuth(BaseHTTPBasicAuth, _AuthBase):
+class _AuthErrorMixin:
+
+    def __init__(self):
+        @self.error_handler
+        def handle_auth_error(status_code):
+            if current_app.json_errors:
+                return default_error_handler(status_code)
+            else:
+                return 'Unauthorized Access', status_code
+
+
+class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth, _AuthErrorMixin):
 
     def __init__(self, scheme=None, realm=None, description=None):
-        super(HTTPBasicAuth, self).__init__(scheme=scheme, realm=realm)
-        _AuthBase.__init__(self, description=description)
+        super(HTTPBasicAuth, self).__init__(description=description)
+        BaseHTTPBasicAuth.__init__(self, scheme=scheme, realm=realm)
+        _AuthErrorMixin.__init__(self)
 
 
-class HTTPTokenAuth(BaseHTTPTokenAuth, _AuthBase):
+class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, _AuthErrorMixin):
 
     def __init__(self, scheme='Bearer', realm=None, header=None, description=None):
-        super(HTTPTokenAuth, self).__init__(scheme=scheme, realm=realm, header=header)
-        _AuthBase.__init__(self, description=description)
+        super(HTTPTokenAuth, self).__init__(description=description)
+        BaseHTTPTokenAuth.__init__(self, scheme=scheme, realm=realm, header=header)
+        _AuthErrorMixin.__init__(self)
