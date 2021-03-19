@@ -24,6 +24,7 @@ class APIFlask(Flask, Scaffold, _OpenAPIMixin):
     :param redoc_path: The path to Redoc documentation.
     :param json_errors: If True, APIFlask will return a JSON response
         for HTTP errors.
+    :param enable_openapi: If False, will disable OpenAPI spec and docs views.
     """
 
     def __init__(
@@ -35,6 +36,7 @@ class APIFlask(Flask, Scaffold, _OpenAPIMixin):
         docs_path='/docs',
         redoc_path='/redoc',
         json_errors=True,
+        enable_openapi=True,
         static_url_path=None,
         static_folder='static',
         static_host=None,
@@ -63,7 +65,8 @@ class APIFlask(Flask, Scaffold, _OpenAPIMixin):
             version=version,
             spec_path=spec_path,
             docs_path=docs_path,
-            redoc_path=redoc_path
+            redoc_path=redoc_path,
+            enable_openapi=enable_openapi
         )
 
         # Set default config

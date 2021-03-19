@@ -111,12 +111,13 @@ class _OpenAPIMixin:
     #: ``TERMS_OF_SERVICE`` configuration key. Defaults to ``None``.
     terms_of_service = ConfigAttribute('TERMS_OF_SERVICE')
 
-    def __init__(self, title, version, spec_path, docs_path, redoc_path):
+    def __init__(self, title, version, spec_path, docs_path, redoc_path, enable_openapi):
         self.title = title
         self.version = version
         self.spec_path = spec_path
         self.docs_path = docs_path
         self.redoc_path = redoc_path
+        self.enable_openapi = enable_openapi
 
     def _register_openapi_blueprint(self):
         bp = Blueprint(
@@ -156,7 +157,9 @@ class _OpenAPIMixin:
                 return render_template('apiflask/redoc.html',
                                        title=self.title, version=self.version)
 
-        if self.spec_path or self.docs_path or self.redoc_path:
+        if self.enable_openapi and (
+            self.spec_path or self.docs_path or self.redoc_path
+        ):
             self.register_blueprint(bp)
 
     def get_spec(self, spec_format=None):
