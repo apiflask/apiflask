@@ -7,7 +7,9 @@ from .exceptions import HTTPError
 
 class _AuthBase:
 
-    def __init__(self):
+    def __init__(self, description=None):
+        self.description = description
+
         @self.error_handler
         def handle_auth_error(status_code):
             raise HTTPError(status_code)
@@ -20,13 +22,13 @@ class _AuthBase:
 
 class HTTPBasicAuth(BaseHTTPBasicAuth, _AuthBase):
 
-    def __init__(self, scheme=None, realm=None):
+    def __init__(self, scheme=None, realm=None, description=None):
         super(HTTPBasicAuth, self).__init__(scheme=scheme, realm=realm)
-        _AuthBase.__init__(self)
+        _AuthBase.__init__(self, description=description)
 
 
 class HTTPTokenAuth(BaseHTTPTokenAuth, _AuthBase):
 
-    def __init__(self, scheme='Bearer', realm=None, header=None):
+    def __init__(self, scheme='Bearer', realm=None, header=None, description=None):
         super(HTTPTokenAuth, self).__init__(scheme=scheme, realm=realm, header=header)
-        _AuthBase.__init__(self)
+        _AuthBase.__init__(self, description=description)

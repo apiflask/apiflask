@@ -292,7 +292,7 @@ class _OpenAPIMixin:
         # detect auth_required on before_request functions
         for blueprint_name, funcs in self.before_request_funcs.items():
             for f in funcs:
-                if hasattr(f, '_spec'):
+                if hasattr(f, '_spec'):  # pragma: no cover
                     auth = f._spec.get('auth')
                     if auth is not None and auth not in auth_schemes:
                         auth_blueprints[blueprint_name] = {
@@ -329,11 +329,9 @@ class _OpenAPIMixin:
                     'type': 'http',
                     'scheme': 'Basic',
                 }
-            if auth.__doc__:
-                security_schemes[name]['description'] = auth.__doc__.strip()
-            elif auth.__class__.__doc__:
-                security_schemes[name]['description'] = \
-                    auth.__class__.__doc__.strip()
+
+            if hasattr(auth, 'description') and auth.description is not None:
+                security_schemes[name]['description'] = auth.description
 
         for name, scheme in security_schemes.items():
             spec.components.security_scheme(name, scheme)
