@@ -55,7 +55,12 @@
         window.onload = function () {
             const ui = SwaggerUIBundle(baseConfig)
             {% if config.SWAGGER_UI_OAUTH_CONFIG %}
-            ui.initOAuth({{ config.SWAGGER_UI_OAUTH_CONFIG|tojson }})
+            oauthConfig = {}
+            var userOauthConfig = {{ config.SWAGGER_UI_OAUTH_CONFIG|tojson }}
+            for (var attr in userOauthConfig) {
+                oauthConfig[attr] = userOauthConfig[attr]
+            }
+            ui.initOAuth(oauthConfig)
             {% endif %}
         }
     </script>
