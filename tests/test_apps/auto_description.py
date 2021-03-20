@@ -5,7 +5,6 @@ from apiflask import APIFlask
 
 
 app = APIFlask(__name__)
-app.config['AUTO_DESCRIPTION'] = False
 
 
 @app.get('/')

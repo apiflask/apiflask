@@ -1,49 +1,85 @@
-from openapi_spec_validator import validate_spec
+import pytest
 
-from apiflask import input
-from .schemas import FooSchema
+from apiflask.errors import abort, HTTPError, default_error_handler, get_error_message
 
 
-def test_register_validation_error_response(app, client):
-
-    error_code = str(app.config['VALIDATION_ERROR_CODE'])
-
-    @app.post('/foo')
-    @input(FooSchema)
+@pytest.mark.parametrize('kwargs', [
+    {},
+    {'message': 'bad'},
+    {'message': 'bad', 'detail': {'location': 'json'}},
+    {'message': 'bad', 'detail': {'location': 'json'}, 'headers': {'X-FOO': 'bar'}}
+])
+def test_httperror(app, client, kwargs):
+    @app.get('/foo')
     def foo():
-        pass
+        raise HTTPError(400, **kwargs)
 
+    rv = client.get('/foo')
+    assert rv.status_code == 400
+    if 'message' not in kwargs:
+        assert rv.json['message'] == 'Bad Request'
+    else:
+        assert rv.json['message'] == 'bad'
+    if 'detail' not in kwargs:
+        assert rv.json['detail'] == {}
+    else:
+        assert rv.json['detail'] == {'location': 'json'}
+    if 'headers' in kwargs:
+        assert rv.headers['X-FOO'] == 'bar'
+
+
+@pytest.mark.parametrize('kwargs', [
+    {},
+    {'message': 'missing'},
+    {'message': 'missing', 'detail': {'location': 'query'}},
+    {'message': 'missing', 'detail': {'location': 'query'}, 'headers': {'X-BAR': 'foo'}}
+])
+def test_abort(app, client, kwargs):
     @app.get('/bar')
-    @input(FooSchema, 'query')
     def bar():
-        pass
+        abort(404, **kwargs)
 
-    rv = client.get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert rv.json['paths']['/foo']['post']['responses'][
-        error_code] is not None
-    assert rv.json['paths']['/foo']['post']['responses'][
-        error_code]['description'] == 'Validation error'
-    assert rv.json['paths']['/bar']['get']['responses'][
-        error_code] is not None
-    assert rv.json['paths']['/bar']['get']['responses'][
-        error_code]['description'] == 'Validation error'
+    rv = client.get('/bar')
+    assert rv.status_code == 404
+    if 'message' not in kwargs:
+        assert rv.json['message'] == 'Not Found'
+    else:
+        assert rv.json['message'] == 'missing'
+    if 'detail' not in kwargs:
+        assert rv.json['detail'] == {}
+    else:
+        assert rv.json['detail'] == {'location': 'query'}
+    if 'headers' in kwargs:
+        assert rv.headers['X-BAR'] == 'foo'
 
 
-def test_validation_error_config(app, client):
+@pytest.mark.parametrize('code', [400, 404, 456, 4123])
+def test_get_error_message(code):
+    rv = get_error_message(code)
+    if code == 400:
+        assert rv == 'Bad Request'
+    elif code == 404:
+        assert rv == 'Not Found'
+    else:
+        assert rv == 'Unknown error'
 
-    app.config['VALIDATION_ERROR_CODE'] = 422
-    app.config['VALIDATION_ERROR_DESCRIPTION'] = 'Bad'
 
-    @app.post('/foo')
-    @input(FooSchema)
-    def foo():
-        pass
-
-    rv = client.get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert rv.json['paths']['/foo']['post']['responses']['422'] is not None
-    assert rv.json['paths']['/foo']['post']['responses'][
-        '422']['description'] == 'Bad'
+@pytest.mark.parametrize('kwargs', [
+    {},
+    {'message': 'bad'},
+    {'message': 'bad', 'detail': {'location': 'json'}},
+    {'message': 'bad', 'detail': {'location': 'json'}, 'headers': {'X-FOO': 'bar'}}
+])
+def test_default_error_handler(app, kwargs):
+    rv = default_error_handler(400, **kwargs)
+    assert rv[1] == 400
+    if 'message' not in kwargs:
+        assert rv[0]['message'] == 'Bad Request'
+    else:
+        assert rv[0]['message'] == 'bad'
+    if 'detail' not in kwargs:
+        assert rv[0]['detail'] == {}
+    else:
+        assert rv[0]['detail'] == {'location': 'json'}
+    if 'headers' in kwargs:
+        assert rv[2]['X-FOO'] == 'bar'

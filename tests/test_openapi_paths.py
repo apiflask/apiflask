@@ -1,89 +1,10 @@
-from flask_httpauth import HTTPBasicAuth
 from openapi_spec_validator import validate_spec
 
-from apiflask import input, output, auth_required, doc
-from .schemas import FooSchema, BarSchema, BazSchema, QuerySchema, \
-    PaginationSchema, HeaderSchema
+from apiflask import input, output
+from .schemas import FooSchema, QuerySchema, PaginationSchema, HeaderSchema
 
 
-def test_apispec(app, client):
-
-    auth = HTTPBasicAuth()
-
-    @app.apispec_processor
-    def edit_apispec(apispec):
-        assert apispec['openapi'] == '3.0.3'
-        apispec['openapi'] = '3.0.2'
-        return apispec
-
-    @auth.verify_password
-    def verify_password(username, password):
-        if username == 'foo' and password == 'bar':
-            return {'user': 'foo'}
-        elif username == 'bar' and password == 'foo':
-            return {'user': 'bar'}
-
-    @auth.get_user_roles
-    def get_roles(user):
-        if user['user'] == 'bar':
-            return 'admin'
-        return 'normal'
-
-    @app.route('/foo')
-    @auth_required(auth)
-    @input(QuerySchema, location='query')
-    @input(FooSchema)
-    @output(FooSchema)
-    @doc(responses={404: 'foo not found'})
-    def foo():
-        return {'id': 123, 'name': auth.current_user()['user']}
-
-    rv = client.get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert app.title == 'Foo'
-    assert rv.json['openapi'] == '3.0.2'
-    assert rv.json['info']['title'] == 'Foo'
-    assert rv.json['info']['version'] == '1.0'
-
-    assert app.apispec is app.apispec
-
-    rv = client.get('/docs')
-    assert rv.status_code == 200
-    assert b'swagger-ui-standalone-preset.js' in rv.data
-
-    rv = client.get('/redoc')
-    assert rv.status_code == 200
-    assert b'redoc.standalone.js' in rv.data
-
-
-def test_apispec_schemas(app, client):
-
-    @app.route('/foo')
-    @output(FooSchema(partial=True))
-    def foo():
-        pass
-
-    @app.route('/bar')
-    @output(BarSchema(many=True))
-    def bar():
-        pass
-
-    @app.route('/baz')
-    @output(BazSchema)
-    def baz():
-        pass
-
-    with app.app_context():
-        apispec = app.apispec
-    assert len(apispec['components']['schemas']) == 3
-    assert 'FooUpdate' in apispec['components']['schemas']
-    assert 'BarList' in apispec['components']['schemas']
-    assert 'Baz' in apispec['components']['schemas']
-
-
-def test_apispec_path_summary_description_from_docs(app, client):
-
+def test_spec_path_summary_description_from_docs(app, client):
     @app.route('/users')
     @output(FooSchema)
     def get_users():
@@ -110,8 +31,7 @@ def test_apispec_path_summary_description_from_docs(app, client):
         'Update a user with specified ID.'
 
 
-def test_apispec_path_parameters_registration(app, client):
-
+def test_spec_path_parameters_registration(app, client):
     @app.route('/strings/<some_string>')
     @output(FooSchema)
     def get_string(some_string):
@@ -151,8 +71,7 @@ def test_apispec_path_parameters_registration(app, client):
         'get']['parameters'][1]['name'] == 'article_id'
 
 
-def test_apispec_path_summary_auto_generation(app, client):
-
+def test_spec_path_summary_auto_generation(app, client):
     @app.route('/users')
     @output(FooSchema)
     def get_users():
@@ -185,53 +104,7 @@ def test_apispec_path_summary_auto_generation(app, client):
         'Delete a user with specified ID.'
 
 
-def test_default_openapi_response(app, client):
-
-    @app.get('/foo')
-    @input(FooSchema)
-    def only_body_schema():
-        pass
-
-    @app.get('/bar')
-    def no_schema():
-        pass
-
-    rv = client.get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert '204' in rv.json['paths']['/foo']['get']['responses']
-    assert '200' in rv.json['paths']['/bar']['get']['responses']
-    assert rv.json['paths']['/foo']['get']['responses'][
-        '204']['description'] == 'Empty response'
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '200']['description'] == 'Successful response'
-
-
-def test_default_openapi_response_description(app, client):
-
-    app.config['DESCRIPTION_FOR_200'] = 'It works'
-    app.config['DESCRIPTION_FOR_204'] = 'Nothing'
-
-    @app.get('/foo')
-    @input(FooSchema)
-    def only_body_schema(foo):
-        pass
-
-    @app.get('/bar')
-    def no_schema():
-        pass
-
-    rv = client.get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert rv.json['paths']['/foo']['get']['responses'][
-        '204']['description'] == 'Nothing'
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '200']['description'] == 'It works'
-
-
 def test_path_arguments_detection(app, client):
-
     @app.route('/foo/<bar>')
     @output(FooSchema)
     def pattern1(bar):
@@ -274,7 +147,6 @@ def test_path_arguments_detection(app, client):
 
 
 def test_path_arguments_order(app, client):
-
     @app.route('/<foo>/bar')
     @input(QuerySchema, 'query')
     @output(FooSchema)
@@ -302,7 +174,6 @@ def test_path_arguments_order(app, client):
 
 
 def test_parameters_registration(app, client):
-
     @app.route('/foo')
     @input(QuerySchema, 'query')
     @output(FooSchema)
@@ -335,3 +206,29 @@ def test_parameters_registration(app, client):
     assert rv.json['pagination']['page'] == 1
     assert rv.json['pagination']['per_page'] == 10
     assert rv.json['foo'] == 'bar'
+
+
+def test_register_validation_error_response(app, client):
+    error_code = str(app.config['VALIDATION_ERROR_CODE'])
+
+    @app.post('/foo')
+    @input(FooSchema)
+    def foo():
+        pass
+
+    @app.get('/bar')
+    @input(FooSchema, 'query')
+    def bar():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['post']['responses'][
+        error_code] is not None
+    assert rv.json['paths']['/foo']['post']['responses'][
+        error_code]['description'] == 'Validation error'
+    assert rv.json['paths']['/bar']['get']['responses'][
+        error_code] is not None
+    assert rv.json['paths']['/bar']['get']['responses'][
+        error_code]['description'] == 'Validation error'

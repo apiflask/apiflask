@@ -1,64 +1,36 @@
-from openapi_spec_validator import validate_spec
-
-from apiflask import input, output
+from apiflask import APIFlask, input
 from apiflask import Schema
 from apiflask.fields import Integer, String
-from .schemas import FooSchema, PaginationSchema
+from .schemas import PaginationSchema
 
 
-def test_route_shortcuts(app, client):
-
-    @app.get('/pet')
-    @output(FooSchema)
-    def test_get():
-        return {'name': 'get'}
-
-    @app.post('/pet')
-    @output(FooSchema)
-    def test_post():
-        return {'name': 'post'}
-
-    @app.put('/pet')
-    @output(FooSchema)
-    def test_put():
-        return {'name': 'put'}
-
-    @app.patch('/pet')
-    @output(FooSchema)
-    def test_patch():
-        return {'name': 'patch'}
-
-    @app.delete('/pet')
-    @output(FooSchema)
-    def test_delete():
-        return {'name': 'delete'}
-
-    rv = client.get('/pet')
-    assert rv.json['name'] == 'get'
-
-    rv = client.post('/pet')
-    assert rv.json['name'] == 'post'
-
-    rv = client.put('/pet')
-    assert rv.json['name'] == 'put'
-
-    rv = client.patch('/pet')
-    assert rv.json['name'] == 'patch'
-
-    rv = client.delete('/pet')
-    assert rv.json['name'] == 'delete'
-
-    rv = client.get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert rv.json['paths']['/pet']['get']['summary'] == 'Test Get'
-    assert rv.json['paths']['/pet']['post']['summary'] == 'Test Post'
-    assert rv.json['paths']['/pet']['put']['summary'] == 'Test Put'
-    assert rv.json['paths']['/pet']['patch']['summary'] == 'Test Patch'
-    assert rv.json['paths']['/pet']['delete']['summary'] == 'Test Delete'
+def test_app_init(app):
+    assert app
+    assert hasattr(app, 'import_name')
+    assert hasattr(app, 'title')
+    assert 'SPEC_FORMAT' in app.config
+    assert 'openapi' in app.blueprints
 
 
-def test_view_function_arguments(app, client):
+def test_json_errors(app, client):
+    assert app.json_errors is True
+
+    rv = client.get('/not-exist')
+    assert rv.status_code == 404
+    assert rv.headers['Content-Type'] == 'application/json'
+    assert 'message' in rv.json
+    assert 'detail' in rv.json
+    assert rv.json['status_code'] == 404
+
+    app = APIFlask(__name__, json_errors=False)
+    assert app.json_errors is False
+    rv = app.test_client().get('/not-exist')
+    assert rv.status_code == 404
+    assert rv.headers['Content-Type'] == 'text/html; charset=utf-8'
+    assert b'!DOCTYPE' in rv.data
+
+
+def test_view_function_arguments_order(app, client):
 
     class QuerySchema(Schema):
         foo = String(required=True)
@@ -87,3 +59,24 @@ def test_view_function_arguments(app, client):
     assert rv.json['age'] == 5
     assert rv.json['pagination']['page'] == 1
     assert rv.json['pagination']['per_page'] == 10
+
+
+def test_error_callback(app, client):
+    @app.error_processor
+    def custom_error_handler(status_code, message, detail, headers):
+        return {'message': 'something was wrong'}, 200
+
+    @app.get('/')
+    def error():
+        print(a)  # noqa: F821
+        return ''
+
+    rv = client.get('/not-exist')
+    assert rv.status_code == 200
+    assert 'message' in rv.json
+    assert rv.json['message'] == 'something was wrong'
+
+    rv = client.get('/')
+    assert rv.status_code == 200
+    assert 'message' in rv.json
+    assert rv.json['message'] == 'something was wrong'
