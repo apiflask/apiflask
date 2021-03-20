@@ -4,7 +4,7 @@ from .scaffold import Scaffold
 from .scaffold import _sentinel
 
 
-class Blueprint(BaseBlueprint, Scaffold):
+class APIBlueprint(BaseBlueprint, Scaffold):
     """Flask's Blueprint with some API support.
 
     .. versionadded:: 0.2.0
@@ -24,7 +24,7 @@ class Blueprint(BaseBlueprint, Scaffold):
         root_path=None,
         cli_group=_sentinel,
     ):
-        super(Blueprint, self).__init__(
+        super(APIBlueprint, self).__init__(
             name,
             import_name,
             static_folder=static_folder,

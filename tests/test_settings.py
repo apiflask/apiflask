@@ -1,7 +1,7 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import Blueprint, input
+from apiflask import APIBlueprint, input
 
 from .schemas import QuerySchema, FooSchema
 
@@ -74,7 +74,7 @@ def test_spec_format(app, spec_format):
 
 
 def test_auto_tags(app, client):
-    bp = Blueprint('foo', __name__)
+    bp = APIBlueprint('foo', __name__)
     app.config['AUTO_TAGS'] = False
 
     @bp.get('/')
@@ -211,7 +211,7 @@ def test_validation_error_config(app, client):
 
 
 def test_docs_hide_blueprints(app, client):
-    bp = Blueprint('foo', __name__, tag='test')
+    bp = APIBlueprint('foo', __name__, tag='test')
 
     @bp.get('/foo')
     def foo():

@@ -19,7 +19,7 @@ class ValidationError(HTTPError):
     pass
 
 
-def abort(status_code, message=None, detail=None, headers=None):
+def api_abort(status_code, message=None, detail=None, headers=None):
     raise HTTPError(status_code, message, detail, headers)
 
 

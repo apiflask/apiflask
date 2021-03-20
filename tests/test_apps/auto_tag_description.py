@@ -1,11 +1,11 @@
 """
 Some description for my tag from module doc.
 """
-from apiflask import APIFlask, Blueprint
+from apiflask import APIFlask, APIBlueprint
 
 
 app = APIFlask(__name__)
-bp = Blueprint('foo', __name__)
+bp = APIBlueprint('foo', __name__)
 
 
 @bp.get('/')

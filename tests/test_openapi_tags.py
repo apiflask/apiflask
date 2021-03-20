@@ -1,7 +1,7 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import Blueprint
+from apiflask import APIBlueprint
 
 
 def test_tags(app, client):
@@ -43,7 +43,7 @@ def test_simple_tags(app, client):
 
 
 def test_simple_tag_from_blueprint(app, client):
-    bp = Blueprint('test', __name__, tag='foo')
+    bp = APIBlueprint('test', __name__, tag='foo')
     app.register_blueprint(bp)
 
     rv = client.get('/openapi.json')
@@ -62,7 +62,7 @@ def test_tag_from_blueprint(app, client):
             'url': 'https://docs.example.com/'
         }
     }
-    bp = Blueprint('test', __name__, tag=tag)
+    bp = APIBlueprint('test', __name__, tag=tag)
     app.register_blueprint(bp)
 
     rv = client.get('/openapi.json')
@@ -76,7 +76,7 @@ def test_tag_from_blueprint(app, client):
 
 
 def test_auto_tag_from_blueprint(app, client):
-    bp = Blueprint('foo', __name__)
+    bp = APIBlueprint('foo', __name__)
     app.register_blueprint(bp)
 
     rv = client.get('/openapi.json')
@@ -87,7 +87,7 @@ def test_auto_tag_from_blueprint(app, client):
 
 
 def test_skip_tag_from_blueprint(app, client):
-    bp = Blueprint('foo', __name__)
+    bp = APIBlueprint('foo', __name__)
     app.config['DOCS_HIDE_BLUEPRINTS'] = ['foo']
     app.register_blueprint(bp)
 
@@ -110,7 +110,7 @@ def test_auto_tag_description_from_blueprint_module_doc(test_apps):
 
 
 def test_path_tags(app, client):
-    bp = Blueprint('foo', __name__)
+    bp = APIBlueprint('foo', __name__)
 
     @bp.get('/')
     def foo():
@@ -126,7 +126,7 @@ def test_path_tags(app, client):
 
 @pytest.mark.parametrize('tag', ['test', {'name': 'test'}])
 def test_path_tags_with_blueprint_tag(app, client, tag):
-    bp = Blueprint('foo', __name__, tag=tag)
+    bp = APIBlueprint('foo', __name__, tag=tag)
 
     @bp.get('/')
     def foo():

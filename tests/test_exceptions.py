@@ -1,6 +1,6 @@
 import pytest
 
-from apiflask.errors import abort, HTTPError, default_error_handler, get_error_message
+from apiflask.errors import api_abort, HTTPError, default_error_handler, get_error_message
 
 
 @pytest.mark.parametrize('kwargs', [
@@ -34,10 +34,10 @@ def test_httperror(app, client, kwargs):
     {'message': 'missing', 'detail': {'location': 'query'}},
     {'message': 'missing', 'detail': {'location': 'query'}, 'headers': {'X-BAR': 'foo'}}
 ])
-def test_abort(app, client, kwargs):
+def test_api_abort(app, client, kwargs):
     @app.get('/bar')
     def bar():
-        abort(404, **kwargs)
+        api_abort(404, **kwargs)
 
     rv = client.get('/bar')
     assert rv.status_code == 404

@@ -1,7 +1,7 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import Blueprint, input, output, auth_required, doc
+from apiflask import APIBlueprint, input, output, auth_required, doc
 from apiflask.security import HTTPBasicAuth, HTTPTokenAuth
 
 from .schemas import FooSchema, BarSchema, QuerySchema
@@ -53,7 +53,7 @@ def test_auth_required(app, client):
 
 
 def test_auth_required_at_blueprint_before_request(app, client):
-    bp = Blueprint('test', __name__)
+    bp = APIBlueprint('test', __name__)
 
     auth = HTTPTokenAuth()
 
