@@ -111,12 +111,22 @@ class _OpenAPIMixin:
     #: ``TERMS_OF_SERVICE`` configuration key. Defaults to ``None``.
     terms_of_service = ConfigAttribute('TERMS_OF_SERVICE')
 
-    def __init__(self, title, version, spec_path, docs_path, redoc_path, enable_openapi):
+    def __init__(
+        self,
+        title,
+        version,
+        spec_path,
+        docs_path,
+        redoc_path,
+        docs_oauth2_redirect_path,
+        enable_openapi
+    ):
         self.title = title
         self.version = version
         self.spec_path = spec_path
         self.docs_path = docs_path
         self.redoc_path = redoc_path
+        self.docs_oauth2_redirect_path = docs_oauth2_redirect_path
         self.enable_openapi = enable_openapi
 
     def _register_openapi_blueprint(self):
@@ -146,10 +156,11 @@ class _OpenAPIMixin:
                 return render_template('apiflask/swagger_ui.html',
                                        title=self.title, version=self.version)
 
-            @bp.route(self.docs_path + '/oauth2-redirect')
-            def swagger_ui_oauth_redirect():
-                return render_template('apiflask/swagger_ui_oauth2_redirect.html',
-                                       title=self.title, version=self.version)
+            if self.docs_oauth2_redirect_path:
+                @bp.route(self.docs_oauth2_redirect_path)
+                def swagger_ui_oauth_redirect():
+                    return render_template('apiflask/swagger_ui_oauth2_redirect.html',
+                                           title=self.title, version=self.version)
 
         if self.redoc_path:
             @bp.route(self.redoc_path)

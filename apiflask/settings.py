@@ -31,6 +31,5 @@ swagger-ui-bundle.js'
 SWAGGER_UI_STANDALONE_PRESET_JS = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/\
 swagger-ui-standalone-preset.js'
 SWAGGER_UI_LAYOUT = 'BaseLayout'
-SWAGGER_UI_OAUTH2_REDIRECT_URL = '/docs/oauth2-redirect'
 SWAGGER_UI_CONFIG = None
 SWAGGER_UI_OAUTH_CONFIG = None

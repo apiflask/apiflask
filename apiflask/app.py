@@ -34,6 +34,7 @@ class APIFlask(Flask, Scaffold, _OpenAPIMixin):
         version='0.1.0',
         spec_path='/openapi.json',
         docs_path='/docs',
+        docs_oauth2_redirect_path='/docs/oauth2-redirect',
         redoc_path='/redoc',
         json_errors=True,
         enable_openapi=True,
@@ -65,6 +66,7 @@ class APIFlask(Flask, Scaffold, _OpenAPIMixin):
             version=version,
             spec_path=spec_path,
             docs_path=docs_path,
+            docs_oauth2_redirect_path=docs_oauth2_redirect_path,
             redoc_path=redoc_path,
             enable_openapi=enable_openapi
         )
