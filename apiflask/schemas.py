@@ -1,4 +1,4 @@
-from marshmallow.schema import Schema  # noqa: F401
+from flask_marshmallow import Schema  # noqa: F401
 
 validation_error_response_schema = {
     "type": "object",
