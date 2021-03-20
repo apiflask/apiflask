@@ -132,5 +132,7 @@ dmypy.json
 .vscode/
 .idea/
 
-# local test app
+# custom
 /app.py
+/test.py
+/scripts
