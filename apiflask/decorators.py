@@ -72,7 +72,7 @@ def output(schema, status_code=200, description=None):
                   response_description=description)
 
         def _jsonify(obj, many=_sentinel, *args, **kwargs):  # pragma: no cover
-            """Copy from flask_marshmallow.schemas.Schema.jsonify"""
+            """From Flask-Marshmallow, see NOTICE file for license informaiton."""
             if many is _sentinel:
                 many = schema.many
             data = schema.dump(obj, many=many)
