@@ -108,7 +108,7 @@ class APIFlask(Flask, Scaffold, _OpenAPIMixin):
             @output(PetSchema)  # -> pet
             def get_pet(name, pet_id, age, query, pet):
                 pass
-        
+
         From Flask, see NOTICE file for license informaiton.
 
         .. versionadded:: 0.2.0

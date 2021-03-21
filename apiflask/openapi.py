@@ -379,7 +379,7 @@ class _OpenAPIMixin:
                     }
                 else:
                     continue  # pragma: no cover
-            # skip views flagged with @doc(hide=-True)
+            # skip views flagged with @doc(hide=True)
             if view_func._spec.get('hide'):
                 continue
 
@@ -447,29 +447,48 @@ class _OpenAPIMixin:
                     operation['deprecated'] = view_func._spec.get('deprecated')
 
                 # responses
-                if view_func._spec.get('responses'):
-                    for status_code, description in view_func._spec.get('responses').items():
-                        operation['responses'][status_code] = {'description': description}
+                descriptions = {
+                    '200': self.config['DEFAULT_200_DESCRIPTION'],
+                    '204': self.config['DEFAULT_204_DESCRIPTION'],
+                }
 
-                if view_func._spec.get('response') or \
-                   view_func._spec.get('_response'):
-                    code = str(view_func._spec['status_code'])
-                    schema = view_func._spec.get('response', {})
-                    operation['responses'][code] = {
+                def update_responses(status_code, schema, description):
+                    operation['responses'][status_code] = {
                         'content': {
                             'application/json': {
                                 'schema': schema
                             }
                         }
                     }
-                    operation['responses'][code]['description'] = \
-                        view_func._spec['response_description'] or \
-                        self.config['DESCRIPTION_FOR_200']
+                    operation['responses'][status_code]['description'] = description
+
+                if view_func._spec.get('response') or view_func._spec.get('_response'):
+                    status_code = str(view_func._spec['status_code'])
+                    schema = view_func._spec.get('response', {})
+                    description = view_func._spec['response_description'] \
+                        or descriptions[status_code]
+                    update_responses(status_code, schema, description)
                 else:
-                    if self.config['AUTO_204_RESPONSE']:
-                        operation['responses'] = {'204': {}}
-                        operation['responses']['204']['description'] = \
-                            self.config['DESCRIPTION_FOR_204']
+                    # add a default 200 response for views without using @output
+                    # or @doc(responses={...})
+                    if view_func._spec.get('responses') is None and \
+                       self.config['AUTO_200_RESPONSE']:
+                        update_responses('200', {}, descriptions['200'])
+
+                # Add validation error response
+                if view_func._spec.get('body') or view_func._spec.get('args'):
+                    status_code = str(self.config['VALIDATION_ERROR_CODE'])
+                    schema = validation_error_response_schema
+                    description = self.config['VALIDATION_ERROR_DESCRIPTION']
+                    update_responses(status_code, validation_error_response_schema, description)
+
+                if view_func._spec.get('responses'):
+                    for status_code, description in view_func._spec.get('responses').items():
+                        status_code = str(status_code)
+                        if status_code in operation['responses']:
+                            operation['responses'][status_code]['description'] = description
+                        else:
+                            operation['responses'][status_code] = {'description': description}
 
                 # requestBody
                 if view_func._spec.get('body'):
@@ -492,19 +511,6 @@ class _OpenAPIMixin:
                     operation['security'] = [{
                         security[view_func._spec['auth']]: view_func._spec['roles']
                     }]
-
-                # Add validation error response
-                if view_func._spec.get('body') or view_func._spec.get('args'):
-                    code = self.config['VALIDATION_ERROR_CODE']
-                    operation['responses'][code] = {
-                        'content': {
-                            'application/json': {
-                                'schema': validation_error_response_schema
-                            }
-                        }
-                    }
-                    operation['responses'][code]['description'] = \
-                        self.config['VALIDATION_ERROR_DESCRIPTION']
 
                 operations[method.lower()] = operation
 

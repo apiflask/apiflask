@@ -3,7 +3,7 @@ from openapi_spec_validator import validate_spec
 
 from apiflask import Schema as BaseSchema
 from apiflask.fields import Integer
-from apiflask import input, output
+from apiflask import input, output, doc
 from .schemas import FooSchema, BarSchema, BazSchema
 
 
@@ -119,22 +119,38 @@ def test_servers_and_externaldocs(app):
     ]
 
 
-def test_default_openapi_response(app, client):
+def test_auth_200_response(app, client):
     @app.get('/foo')
-    @input(FooSchema)
-    def only_body_schema():
+    def bare():
         pass
 
     @app.get('/bar')
-    def no_schema():
+    @input(FooSchema)
+    def only_input():
+        pass
+
+    @app.get('/baz')
+    @doc(summary='some summary')
+    def only_doc():
+        pass
+
+    @app.get('/eggs')
+    @output(FooSchema, 204)
+    def output_204():
+        pass
+
+    @app.get('/spam')
+    @doc(responses={204: 'empty'})
+    def doc_responses():
         pass
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert '204' in rv.json['paths']['/foo']['get']['responses']
+    assert '200' in rv.json['paths']['/foo']['get']['responses']
     assert '200' in rv.json['paths']['/bar']['get']['responses']
-    assert rv.json['paths']['/foo']['get']['responses'][
-        '204']['description'] == 'Empty response'
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '200']['description'] == 'Successful response'
+    assert '200' in rv.json['paths']['/baz']['get']['responses']
+    assert '200' not in rv.json['paths']['/eggs']['get']['responses']
+    assert '200' not in rv.json['paths']['/spam']['get']['responses']
+    assert rv.json['paths']['/spam']['get']['responses'][
+        '204']['description'] == 'empty'

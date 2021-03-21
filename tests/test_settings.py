@@ -1,7 +1,8 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import APIBlueprint, input
+from apiflask import APIBlueprint, input, output
+from apiflask.schemas import EmptySchema
 
 from .schemas import QuerySchema, FooSchema
 
@@ -142,7 +143,7 @@ def test_auto_path_description(app, client, config_value):
 
 
 @pytest.mark.parametrize('config_value', [True, False])
-def test_auto_200_response(app, client, config_value):
+def test_auto_200_response_for_bare_views(app, client, config_value):
     app.config['AUTO_200_RESPONSE'] = config_value
 
     @app.get('/foo')
@@ -156,24 +157,24 @@ def test_auto_200_response(app, client, config_value):
 
 
 @pytest.mark.parametrize('config_value', [True, False])
-def test_auto_204_response(app, client, config_value):
-    app.config['AUTO_204_RESPONSE'] = config_value
+def test_auto_200_response_for_no_output_views(app, client, config_value):
+    app.config['AUTO_200_RESPONSE'] = config_value
 
-    @app.get('/foo')
+    @app.get('/bar')
     @input(QuerySchema, 'query')
-    def foo():
+    def bar():
         pass
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert '/foo' in rv.json['paths']
-    assert bool('204' in rv.json['paths']['/foo']['get']['responses']) is config_value
+    assert '/bar' in rv.json['paths']
+    assert bool('200' in rv.json['paths']['/bar']['get']['responses']) is config_value
 
 
 def test_response_description_config(app, client):
-    app.config['DESCRIPTION_FOR_200'] = 'It works'
-    app.config['DESCRIPTION_FOR_204'] = 'Nothing'
+    app.config['DEFAULT_200_DESCRIPTION'] = 'It works'
+    app.config['DEFAULT_204_DESCRIPTION'] = 'Nothing'
 
     @app.get('/foo')
     @input(FooSchema)
@@ -181,6 +182,7 @@ def test_response_description_config(app, client):
         pass
 
     @app.get('/bar')
+    @output(EmptySchema)
     def no_schema():
         pass
 
@@ -188,9 +190,9 @@ def test_response_description_config(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['get']['responses'][
-        '204']['description'] == 'Nothing'
-    assert rv.json['paths']['/bar']['get']['responses'][
         '200']['description'] == 'It works'
+    assert rv.json['paths']['/bar']['get']['responses'][
+        '204']['description'] == 'Nothing'
 
 
 def test_validation_error_config(app, client):

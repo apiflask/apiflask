@@ -13,10 +13,9 @@ AUTO_DESCRIPTION = True
 AUTO_PATH_SUMMARY = True
 AUTO_PATH_DESCRIPTION = True
 AUTO_200_RESPONSE = True
-AUTO_204_RESPONSE = True
 # Response customization
-DESCRIPTION_FOR_200 = 'Successful response'
-DESCRIPTION_FOR_204 = 'Empty response'
+DEFAULT_200_DESCRIPTION = 'Successful response'
+DEFAULT_204_DESCRIPTION = 'Empty response'
 VALIDATION_ERROR_CODE = 400
 VALIDATION_ERROR_DESCRIPTION = 'Validation error'
 # Swagger UI and Redoc
