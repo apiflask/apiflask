@@ -5,6 +5,7 @@ from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
 from .errors import ValidationError
 from .scaffold import _sentinel
+from .schemas import EmptySchema
 
 
 class FlaskParser(BaseFlaskParser):
@@ -66,6 +67,9 @@ def input(schema, location='json', **kwargs):
 def output(schema, status_code=200, description=None):
     if isinstance(schema, type):  # pragma: no cover
         schema = schema()
+
+    if isinstance(schema, EmptySchema):
+        status_code = 204
 
     def decorator(f):
         _annotate(f, response=schema, status_code=status_code,

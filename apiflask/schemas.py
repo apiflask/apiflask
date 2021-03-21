@@ -21,3 +21,7 @@ validation_error_response_schema = {
         }
     }
 }
+
+
+class EmptySchema(Schema):
+    pass
