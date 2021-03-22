@@ -72,8 +72,11 @@ def output(schema, status_code=200, description=None):
         status_code = 204
 
     def decorator(f):
-        _annotate(f, response=schema, status_code=status_code,
-                  response_description=description)
+        _annotate(f, response={
+            'schema': schema,
+            'status_code': status_code,
+            'description': description
+        })
 
         def _jsonify(obj, many=_sentinel, *args, **kwargs):  # pragma: no cover
             """From Flask-Marshmallow, see NOTICE file for license informaiton."""

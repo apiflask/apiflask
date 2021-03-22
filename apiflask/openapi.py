@@ -369,14 +369,11 @@ class _OpenAPIMixin:
                     continue
             else:
                 blueprint_name = None
-            # register a default 200 response for bare views
+            # add a default 200 response for bare views
+            default_response = {'schema': {}, 'status_code': 200, 'description': None}
             if not hasattr(view_func, '_spec'):
                 if self.config['AUTO_200_RESPONSE']:
-                    view_func._spec = {
-                        '_response': True,
-                        'status_code': 200,
-                        'response_description': None
-                    }
+                    view_func._spec = {'response': default_response}
                 else:
                     continue  # pragma: no cover
             # skip views flagged with @doc(hide=True)
@@ -452,7 +449,7 @@ class _OpenAPIMixin:
                     '204': self.config['DEFAULT_204_DESCRIPTION'],
                 }
 
-                def update_responses(status_code, schema, description):
+                def add_response(status_code, schema, description):
                     operation['responses'][status_code] = {
                         'content': {
                             'application/json': {
@@ -462,25 +459,23 @@ class _OpenAPIMixin:
                     }
                     operation['responses'][status_code]['description'] = description
 
-                if view_func._spec.get('response') or view_func._spec.get('_response'):
-                    status_code = str(view_func._spec['status_code'])
-                    schema = view_func._spec.get('response', {})
-                    description = view_func._spec['response_description'] \
+                if view_func._spec.get('response'):
+                    status_code = str(view_func._spec.get('response')['status_code'])
+                    schema = view_func._spec.get('response')['schema']
+                    description = view_func._spec.get('response')['description'] \
                         or descriptions[status_code]
-                    update_responses(status_code, schema, description)
+                    add_response(status_code, schema, description)
                 else:
                     # add a default 200 response for views without using @output
                     # or @doc(responses={...})
-                    if view_func._spec.get('responses') is None and \
-                       self.config['AUTO_200_RESPONSE']:
-                        update_responses('200', {}, descriptions['200'])
+                    if not view_func._spec.get('responses') and self.config['AUTO_200_RESPONSE']:
+                        add_response('200', {}, descriptions['200'])
 
-                # Add validation error response
+                # add validation error response
                 if view_func._spec.get('body') or view_func._spec.get('args'):
                     status_code = str(self.config['VALIDATION_ERROR_CODE'])
-                    schema = validation_error_response_schema
                     description = self.config['VALIDATION_ERROR_DESCRIPTION']
-                    update_responses(status_code, validation_error_response_schema, description)
+                    add_response(status_code, validation_error_response_schema, description)
 
                 if view_func._spec.get('responses'):
                     for status_code, description in view_func._spec.get('responses').items():
@@ -488,7 +483,7 @@ class _OpenAPIMixin:
                         if status_code in operation['responses']:
                             operation['responses'][status_code]['description'] = description
                         else:
-                            operation['responses'][status_code] = {'description': description}
+                            add_response(status_code, {}, description)
 
                 # requestBody
                 if view_func._spec.get('body'):

@@ -119,7 +119,7 @@ def test_servers_and_externaldocs(app):
     ]
 
 
-def test_auth_200_response(app, client):
+def test_auto_200_response(app, client):
     @app.get('/foo')
     def bare():
         pass
