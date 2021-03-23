@@ -2,9 +2,9 @@ import pytest
 from openapi_spec_validator import validate_spec
 
 from apiflask import APIBlueprint, input, output
-from apiflask.schemas import EmptySchema
+from apiflask.schemas import EmptySchema, http_error_schema
 
-from .schemas import QuerySchema, FooSchema
+from .schemas import QuerySchema, FooSchema, ValidationErrorSchema
 
 
 def test_openapi_fields(app, client):
@@ -195,8 +195,28 @@ def test_response_description_config(app, client):
         '204']['description'] == 'Nothing'
 
 
-def test_validation_error_config(app, client):
-    app.config['VALIDATION_ERROR_CODE'] = 422
+@pytest.mark.parametrize('config_value', [True, False])
+def test_auto_validation_error_response(app, client, config_value):
+    app.config['AUTO_VALIDATION_ERROR_RESPONSE'] = config_value
+
+    @app.post('/foo')
+    @input(FooSchema)
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert bool('400' in rv.json['paths']['/foo']['post']['responses']) is config_value
+    assert bool('ValidationError' in rv.json['components']['schemas']) is config_value
+    if config_value:
+        assert '#/components/schemas/ValidationError' in \
+            rv.json['paths']['/foo']['post']['responses']['400'][
+                'content']['application/json']['schema']['$ref']
+
+
+def test_validation_error_status_code_and_description(app, client):
+    app.config['VALIDATION_ERROR_STATUS_CODE'] = 422
     app.config['VALIDATION_ERROR_DESCRIPTION'] = 'Bad'
 
     @app.post('/foo')
@@ -210,6 +230,39 @@ def test_validation_error_config(app, client):
     assert rv.json['paths']['/foo']['post']['responses']['422'] is not None
     assert rv.json['paths']['/foo']['post']['responses'][
         '422']['description'] == 'Bad'
+
+
+@pytest.mark.parametrize('schema', [
+    http_error_schema,
+    ValidationErrorSchema
+])
+def test_validation_error_schema(app, client, schema):
+    app.config['VALIDATION_ERROR_SCHEMA'] = schema
+
+    @app.post('/foo')
+    @input(FooSchema)
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['post']['responses']['400']
+    assert rv.json['paths']['/foo']['post']['responses']['400'][
+        'description'] == 'Validation error'
+    assert 'ValidationError' in rv.json['components']['schemas']
+
+
+def test_validation_error_schema_bad_type(app):
+    app.config['VALIDATION_ERROR_SCHEMA'] = 'schema'
+
+    @app.post('/foo')
+    @input(FooSchema)
+    def foo():
+        pass
+
+    with pytest.raises(RuntimeError):
+        app.spec
 
 
 def test_docs_hide_blueprints(app, client):

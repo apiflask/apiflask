@@ -13,7 +13,6 @@ except ImportError:
     sqla = None
 
 from .security import HTTPBasicAuth, HTTPTokenAuth
-from .schemas import validation_error_response_schema
 
 
 class _OpenAPIMixin:
@@ -472,10 +471,24 @@ class _OpenAPIMixin:
                         add_response('200', {}, descriptions['200'])
 
                 # add validation error response
-                if view_func._spec.get('body') or view_func._spec.get('args'):
-                    status_code = str(self.config['VALIDATION_ERROR_CODE'])
-                    description = self.config['VALIDATION_ERROR_DESCRIPTION']
-                    add_response(status_code, validation_error_response_schema, description)
+                if self.config['AUTO_VALIDATION_ERROR_RESPONSE']:
+                    if view_func._spec.get('body') or view_func._spec.get('args'):
+                        status_code = str(self.config['VALIDATION_ERROR_STATUS_CODE'])
+                        description = self.config['VALIDATION_ERROR_DESCRIPTION']
+                        schema = self.config['VALIDATION_ERROR_SCHEMA']
+                        if isinstance(schema, type):
+                            schema = schema()
+                            add_response(status_code, schema, description)
+                        elif isinstance(schema, dict):
+                            if 'ValidationError' not in spec.components._schemas:
+                                spec.components.schema('ValidationError', schema)
+                            schema_ref = {'$ref': '#/components/schemas/ValidationError'}
+                            add_response(status_code, schema_ref, description)
+                        else:
+                            raise RuntimeError(
+                                'The schema must be a Marshamallow schema \
+                                class or an OpenAPI schema dict.'
+                            )
 
                 if view_func._spec.get('responses'):
                     for status_code, description in view_func._spec.get('responses').items():
@@ -513,14 +526,14 @@ class _OpenAPIMixin:
             path_arguments = re.findall(r'<(([^<:]+:)?([^>]+))>', rule.rule)
             if path_arguments:
                 arguments = []
-                for _, type, name in path_arguments:
+                for _, argument_type, argument_name in path_arguments:
                     argument = {
                         'in': 'path',
-                        'name': name,
+                        'name': argument_name,
                     }
-                    if type == 'int:':
+                    if argument_type == 'int:':
                         argument['schema'] = {'type': 'integer'}
-                    elif type == 'float:':
+                    elif argument_type == 'float:':
                         argument['schema'] = {'type': 'number'}
                     else:
                         argument['schema'] = {'type': 'string'}

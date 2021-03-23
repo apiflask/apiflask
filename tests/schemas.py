@@ -44,3 +44,8 @@ class HeaderSchema(Schema):
         unknown = EXCLUDE
 
     foo = String(missing='bar')
+
+
+class ValidationErrorSchema(Schema):
+    status_code = String(required=True)
+    message = String(required=True)

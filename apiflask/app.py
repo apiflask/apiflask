@@ -145,7 +145,7 @@ class APIFlask(Flask, Scaffold, _OpenAPIMixin):
 
         The arguments are:
         - status_code: If the error triggerd by validation error, the value will be
-            400 (default) or the value you passed in config ``VALIDATION_ERROR_CODE``.
+            400 (default) or the value you passed in config ``VALIDATION_ERROR_STATUS_CODE``.
             If the error triggerd by HTTP, it will be the status code you passed.
             Otherwise, it will be the status code set by Werkzueg when processing the request.
         - message: The error description for this error, either you passed or grab from Werkzeug.

@@ -1,3 +1,6 @@
+from .schemas import http_error_schema
+
+
 # OpenAPI fields
 DESCRIPTION = None
 TAGS = None
@@ -16,8 +19,10 @@ AUTO_200_RESPONSE = True
 # Response customization
 DEFAULT_200_DESCRIPTION = 'Successful response'
 DEFAULT_204_DESCRIPTION = 'Empty response'
-VALIDATION_ERROR_CODE = 400
+AUTO_VALIDATION_ERROR_RESPONSE = True
+VALIDATION_ERROR_STATUS_CODE = 400
 VALIDATION_ERROR_DESCRIPTION = 'Validation error'
+VALIDATION_ERROR_SCHEMA = http_error_schema
 # Swagger UI and Redoc
 DOCS_HIDE_BLUEPRINTS = []
 DOCS_FAVICON = None

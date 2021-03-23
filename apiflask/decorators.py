@@ -13,7 +13,7 @@ class FlaskParser(BaseFlaskParser):
     def handle_error(self, error, req, schema, *, error_status_code,
                      error_headers):
         raise ValidationError(
-            error_status_code or current_app.config['VALIDATION_ERROR_CODE'],
+            error_status_code or current_app.config['VALIDATION_ERROR_STATUS_CODE'],
             current_app.config['VALIDATION_ERROR_DESCRIPTION'],
             error.messages)
 

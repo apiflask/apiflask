@@ -1,6 +1,7 @@
-from flask_marshmallow import Schema  # noqa: F401
+from flask_marshmallow import Schema
 
-validation_error_response_schema = {
+
+validation_error_schema = {
     "type": "object",
     "properties": {
         "detail": {
@@ -20,6 +21,20 @@ validation_error_response_schema = {
             }
         }
     }
+}
+
+
+http_error_schema = {
+    "properties": {
+        "detail": validation_error_schema["properties"]["detail"],
+        "message": {
+            "type": "string"
+        },
+        "status_code": {
+            "type": "integer"
+        }
+    },
+    "type": "object"
 }
 
 

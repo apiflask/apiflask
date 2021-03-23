@@ -209,7 +209,7 @@ def test_parameters_registration(app, client):
 
 
 def test_register_validation_error_response(app, client):
-    error_code = str(app.config['VALIDATION_ERROR_CODE'])
+    error_code = str(app.config['VALIDATION_ERROR_STATUS_CODE'])
 
     @app.post('/foo')
     @input(FooSchema)
