@@ -476,7 +476,7 @@ class _OpenAPIMixin:
                         schema = schema()
                         add_response(status_code, schema, description)
                     elif isinstance(schema, dict):
-                        if schema_name not in spec.components._schemas:
+                        if schema_name not in spec.components.schemas:
                             spec.components.schema(schema_name, schema)
                         schema_ref = {'$ref': f'#/components/schemas/{schema_name}'}
                         add_response(status_code, schema_ref, description)

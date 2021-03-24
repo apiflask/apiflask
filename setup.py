@@ -26,7 +26,7 @@ setuptools.setup(
         'flask-marshmallow',
         'webargs>=6',
         'flask-httpauth>=4',
-        'apispec>=4',
+        'apispec>=4.2.0',
     ],
     tests_require=[
         'openapi-spec-validator',
