@@ -1,10 +1,12 @@
+from apiflask.decorators import auth_required
 import pytest
 from openapi_spec_validator import validate_spec
 
 from apiflask import APIBlueprint, input, output
 from apiflask.schemas import EmptySchema, http_error_schema
+from apiflask.security import HTTPBasicAuth
 
-from .schemas import QuerySchema, FooSchema, ValidationErrorSchema
+from .schemas import QuerySchema, FooSchema, ValidationErrorSchema, AuthorizationErrorSchema
 
 
 def test_openapi_fields(app, client):
@@ -208,8 +210,8 @@ def test_auto_validation_error_response(app, client, config_value):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert bool('400' in rv.json['paths']['/foo']['post']['responses']) is config_value
-    assert bool('ValidationError' in rv.json['components']['schemas']) is config_value
     if config_value:
+        assert 'ValidationError' in rv.json['components']['schemas']
         assert '#/components/schemas/ValidationError' in \
             rv.json['paths']['/foo']['post']['responses']['400'][
                 'content']['application/json']['schema']['$ref']
@@ -258,6 +260,80 @@ def test_validation_error_schema_bad_type(app):
 
     @app.post('/foo')
     @input(FooSchema)
+    def foo():
+        pass
+
+    with pytest.raises(RuntimeError):
+        app.spec
+
+
+@pytest.mark.parametrize('config_value', [True, False])
+def test_auto_auth_error_response(app, client, config_value):
+    app.config['AUTO_AUTH_ERROR_RESPONSE'] = config_value
+    auth = HTTPBasicAuth()
+
+    @app.post('/foo')
+    @auth_required(auth)
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert bool('401' in rv.json['paths']['/foo']['post']['responses']) is config_value
+    if config_value:
+        assert 'AuthorizationError' in rv.json['components']['schemas']
+        assert '#/components/schemas/AuthorizationError' in \
+            rv.json['paths']['/foo']['post']['responses']['401'][
+                'content']['application/json']['schema']['$ref']
+
+
+def test_auth_error_status_code_and_description(app, client):
+    app.config['AUTH_ERROR_STATUS_CODE'] = 403
+    app.config['AUTH_ERROR_DESCRIPTION'] = 'Bad'
+    auth = HTTPBasicAuth()
+
+    @app.post('/foo')
+    @auth_required(auth)
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['post']['responses']['403'] is not None
+    assert rv.json['paths']['/foo']['post']['responses'][
+        '403']['description'] == 'Bad'
+
+
+@pytest.mark.parametrize('schema', [
+    http_error_schema,
+    AuthorizationErrorSchema
+])
+def test_auth_error_schema(app, client, schema):
+    app.config['AUTH_ERROR_SCHEMA'] = schema
+    auth = HTTPBasicAuth()
+
+    @app.post('/foo')
+    @auth_required(auth)
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['post']['responses']['401']
+    assert rv.json['paths']['/foo']['post']['responses']['401'][
+        'description'] == 'Authorization error'
+    assert 'AuthorizationError' in rv.json['components']['schemas']
+
+
+def test_auth_error_schema_bad_type(app):
+    app.config['AUTH_ERROR_SCHEMA'] = 'schema'
+    auth = HTTPBasicAuth()
+
+    @app.post('/foo')
+    @auth_required(auth)
     def foo():
         pass
 

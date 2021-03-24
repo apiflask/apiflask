@@ -470,25 +470,42 @@ class _OpenAPIMixin:
                     if not view_func._spec.get('responses') and self.config['AUTO_200_RESPONSE']:
                         add_response('200', {}, descriptions['200'])
 
+                def add_response_and_schema(status_code, schema, schema_name, description):
+                    if isinstance(schema, type):
+                        schema = schema()
+                        add_response(status_code, schema, description)
+                    elif isinstance(schema, dict):
+                        if schema_name not in spec.components._schemas:
+                            spec.components.schema(schema_name, schema)
+                        schema_ref = {'$ref': f'#/components/schemas/{schema_name}'}
+                        add_response(status_code, schema_ref, description)
+                    else:
+                        raise RuntimeError(
+                            'The schema must be a Marshamallow schema \
+                            class or an OpenAPI schema dict.'
+                        )
+
                 # add validation error response
                 if self.config['AUTO_VALIDATION_ERROR_RESPONSE']:
                     if view_func._spec.get('body') or view_func._spec.get('args'):
                         status_code = str(self.config['VALIDATION_ERROR_STATUS_CODE'])
                         description = self.config['VALIDATION_ERROR_DESCRIPTION']
                         schema = self.config['VALIDATION_ERROR_SCHEMA']
-                        if isinstance(schema, type):
-                            schema = schema()
-                            add_response(status_code, schema, description)
-                        elif isinstance(schema, dict):
-                            if 'ValidationError' not in spec.components._schemas:
-                                spec.components.schema('ValidationError', schema)
-                            schema_ref = {'$ref': '#/components/schemas/ValidationError'}
-                            add_response(status_code, schema_ref, description)
-                        else:
-                            raise RuntimeError(
-                                'The schema must be a Marshamallow schema \
-                                class or an OpenAPI schema dict.'
-                            )
+                        add_response_and_schema(
+                            status_code, schema, 'ValidationError', description
+                        )
+
+                # add authorization error response
+                if self.config['AUTO_AUTH_ERROR_RESPONSE']:
+                    if view_func._spec.get('auth') or (
+                        blueprint_name is not None and blueprint_name in auth_blueprints
+                    ):
+                        status_code = str(self.config['AUTH_ERROR_STATUS_CODE'])
+                        description = self.config['AUTH_ERROR_DESCRIPTION']
+                        schema = self.config['AUTH_ERROR_SCHEMA']
+                        add_response_and_schema(
+                            status_code, schema, 'AuthorizationError', description
+                        )
 
                 if view_func._spec.get('responses'):
                     for status_code, description in view_func._spec.get('responses').items():
