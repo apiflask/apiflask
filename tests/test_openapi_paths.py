@@ -1,6 +1,6 @@
 from openapi_spec_validator import validate_spec
 
-from apiflask import input, output, doc
+from apiflask import input, output
 from .schemas import FooSchema, QuerySchema, PaginationSchema, HeaderSchema
 
 
@@ -232,20 +232,3 @@ def test_register_validation_error_response(app, client):
         error_code] is not None
     assert rv.json['paths']['/bar']['get']['responses'][
         error_code]['description'] == 'Validation error'
-
-
-def test_responses_description_update(app, client):
-    @app.post('/foo')
-    @output(FooSchema, 200, 'success response')
-    @doc(responses={200: 'updated success', 400: 'updated error'})
-    def foo():
-        pass
-
-    rv = client.get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert rv.json['paths']['/foo']['post']['responses']['200'] is not None
-    assert rv.json['paths']['/foo']['post']['responses']['200']['description'] \
-        == 'updated success'
-    assert rv.json['paths']['/foo']['post']['responses']['400']['description'] \
-        == 'updated error'

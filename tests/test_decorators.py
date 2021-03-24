@@ -299,9 +299,17 @@ def test_doc_deprecated(app, client):
 
 def test_doc_responses(app, client):
     @app.route('/foo')
+    @input(FooSchema)
     @output(FooSchema)
-    @doc(responses={400: 'bad', 404: 'not found', 500: 'server error'})
+    @doc(responses={200: 'success', 400: 'bad', 404: 'not found', 500: 'server error'})
     def foo():
+        pass
+
+    @app.route('/bar')
+    @input(FooSchema)
+    @output(FooSchema)
+    @doc(responses=[200, 400, 404, 500])
+    def bar():
         pass
 
     rv = client.get('/openapi.json')
@@ -309,8 +317,27 @@ def test_doc_responses(app, client):
     validate_spec(rv.json)
     assert '200' in rv.json['paths']['/foo']['get']['responses']
     assert '400' in rv.json['paths']['/foo']['get']['responses']
-    assert rv.json['paths']['/foo']['get']['responses']['400']['description'] == 'bad'
+    # don't overwrite exist error description
+    assert rv.json['paths']['/foo']['get']['responses'][
+        '200']['description'] == 'Successful response'
+    assert rv.json['paths']['/foo']['get']['responses'][
+        '400']['description'] == 'Validation error'
     assert '404' in rv.json['paths']['/foo']['get']['responses']
-    assert rv.json['paths']['/foo']['get']['responses']['404']['description'] == 'not found'
+    assert rv.json['paths']['/foo']['get']['responses'][
+        '404']['description'] == 'not found'
     assert '500' in rv.json['paths']['/foo']['get']['responses']
-    assert rv.json['paths']['/foo']['get']['responses']['500']['description'] == 'server error'
+    assert rv.json['paths']['/foo']['get']['responses'][
+        '500']['description'] == 'server error'
+
+    assert '200' in rv.json['paths']['/bar']['get']['responses']
+    assert '400' in rv.json['paths']['/bar']['get']['responses']
+    assert rv.json['paths']['/bar']['get']['responses'][
+        '200']['description'] == 'Successful response'
+    assert rv.json['paths']['/bar']['get']['responses'][
+        '400']['description'] == 'Validation error'
+    assert '404' in rv.json['paths']['/foo']['get']['responses']
+    assert rv.json['paths']['/bar']['get']['responses'][
+        '404']['description'] == 'Not Found'
+    assert '500' in rv.json['paths']['/bar']['get']['responses']
+    assert rv.json['paths']['/bar']['get']['responses'][
+        '500']['description'] == 'Internal Server Error'

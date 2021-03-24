@@ -407,6 +407,7 @@ def test_http_error_schema_bad_type(app):
     with pytest.raises(RuntimeError):
         app.spec
 
+
 def test_docs_hide_blueprints(app, client):
     bp = APIBlueprint('foo', __name__, tag='test')
 

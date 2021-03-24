@@ -13,6 +13,7 @@ except ImportError:
     sqla = None
 
 from .security import HTTPBasicAuth, HTTPTokenAuth
+from .errors import get_error_message
 
 
 class _OpenAPIMixin:
@@ -508,20 +509,24 @@ class _OpenAPIMixin:
                         )
 
                 if view_func._spec.get('responses'):
-                    for status_code, description in view_func._spec.get('responses').items():
+                    responses = view_func._spec.get('responses')
+                    if isinstance(responses, list):
+                        responses = {}
+                        for status_code in view_func._spec.get('responses'):
+                            responses[status_code] = get_error_message(status_code)
+                    for status_code, description in responses.items():
                         status_code = str(status_code)
                         if status_code in operation['responses']:
-                            operation['responses'][status_code]['description'] = description
+                            continue
+                        if self.config['AUTO_HTTP_ERROR_RESPONSE'] and (
+                            status_code.startswith('4') or status_code.startswith('5')
+                        ):
+                            schema = self.config['HTTP_ERROR_SCHEMA']
+                            add_response_and_schema(
+                                status_code, schema, 'HTTPError', description
+                            )
                         else:
-                            if self.config['AUTO_HTTP_ERROR_RESPONSE'] and (
-                                status_code.startswith('4') or status_code.startswith('5')
-                            ):
-                                schema = self.config['HTTP_ERROR_SCHEMA']
-                                add_response_and_schema(
-                                    status_code, schema, 'HTTPError', description
-                                )
-                            else:
-                                add_response(status_code, {}, description)
+                            add_response(status_code, {}, description)
 
                 # requestBody
                 if view_func._spec.get('body'):
