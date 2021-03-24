@@ -446,6 +446,7 @@ class _OpenAPIMixin:
                 # responses
                 descriptions = {
                     '200': self.config['DEFAULT_200_DESCRIPTION'],
+                    '201': self.config['DEFAULT_201_DESCRIPTION'],
                     '204': self.config['DEFAULT_204_DESCRIPTION'],
                 }
 
@@ -462,8 +463,8 @@ class _OpenAPIMixin:
                 if view_func._spec.get('response'):
                     status_code = str(view_func._spec.get('response')['status_code'])
                     schema = view_func._spec.get('response')['schema']
-                    description = view_func._spec.get('response')['description'] \
-                        or descriptions[status_code]
+                    description = view_func._spec.get('response')['description'] or \
+                        descriptions.get(status_code, self.config['DEFAULT_2XX_DESCRIPTION'])
                     add_response(status_code, schema, description)
                 else:
                     # add a default 200 response for views without using @output

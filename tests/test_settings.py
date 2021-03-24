@@ -176,7 +176,9 @@ def test_auto_200_response_for_no_output_views(app, client, config_value):
 
 
 def test_response_description_config(app, client):
+    app.config['DEFAULT_2XX_DESCRIPTION'] = 'Default'
     app.config['DEFAULT_200_DESCRIPTION'] = 'It works'
+    app.config['DEFAULT_201_DESCRIPTION'] = 'Created'
     app.config['DEFAULT_204_DESCRIPTION'] = 'Nothing'
 
     @app.get('/foo')
@@ -185,8 +187,18 @@ def test_response_description_config(app, client):
         pass
 
     @app.get('/bar')
+    @output(FooSchema, 201)
+    def create():
+        pass
+
+    @app.get('/baz')
     @output(EmptySchema)
     def no_schema():
+        pass
+
+    @app.get('/spam')
+    @output(FooSchema, 206)
+    def spam():
         pass
 
     rv = client.get('/openapi.json')
@@ -195,7 +207,12 @@ def test_response_description_config(app, client):
     assert rv.json['paths']['/foo']['get']['responses'][
         '200']['description'] == 'It works'
     assert rv.json['paths']['/bar']['get']['responses'][
+        '201']['description'] == 'Created'
+    assert rv.json['paths']['/baz']['get']['responses'][
         '204']['description'] == 'Nothing'
+    # will use default description
+    assert rv.json['paths']['/spam']['get']['responses'][
+        '206']['description'] == 'Default'
 
 
 @pytest.mark.parametrize('config_value', [True, False])
