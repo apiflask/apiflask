@@ -513,7 +513,15 @@ class _OpenAPIMixin:
                         if status_code in operation['responses']:
                             operation['responses'][status_code]['description'] = description
                         else:
-                            add_response(status_code, {}, description)
+                            if self.config['AUTO_HTTP_ERROR_RESPONSE'] and (
+                                status_code.startswith('4') or status_code.startswith('5')
+                            ):
+                                schema = self.config['HTTP_ERROR_SCHEMA']
+                                add_response_and_schema(
+                                    status_code, schema, 'HTTPError', description
+                                )
+                            else:
+                                add_response(status_code, {}, description)
 
                 # requestBody
                 if view_func._spec.get('body'):

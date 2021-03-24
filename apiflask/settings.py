@@ -1,4 +1,4 @@
-from .schemas import http_error_schema
+from .schemas import http_error_schema, validation_error_schema
 
 
 # OpenAPI fields
@@ -22,11 +22,13 @@ DEFAULT_204_DESCRIPTION = 'Empty response'
 AUTO_VALIDATION_ERROR_RESPONSE = True
 VALIDATION_ERROR_STATUS_CODE = 400
 VALIDATION_ERROR_DESCRIPTION = 'Validation error'
-VALIDATION_ERROR_SCHEMA = http_error_schema
+VALIDATION_ERROR_SCHEMA = validation_error_schema
 AUTO_AUTH_ERROR_RESPONSE = True
 AUTH_ERROR_STATUS_CODE = 401
 AUTH_ERROR_DESCRIPTION = 'Authorization error'
 AUTH_ERROR_SCHEMA = http_error_schema
+AUTO_HTTP_ERROR_RESPONSE = True
+HTTP_ERROR_SCHEMA = http_error_schema
 # Swagger UI and Redoc
 DOCS_HIDE_BLUEPRINTS = []
 DOCS_FAVICON = None

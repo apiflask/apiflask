@@ -2,11 +2,12 @@ from apiflask.decorators import auth_required
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import APIBlueprint, input, output
+from apiflask import APIBlueprint, input, output, doc
 from apiflask.schemas import EmptySchema, http_error_schema
 from apiflask.security import HTTPBasicAuth
 
-from .schemas import QuerySchema, FooSchema, ValidationErrorSchema, AuthorizationErrorSchema
+from .schemas import QuerySchema, FooSchema
+from .schemas import ValidationErrorSchema, AuthorizationErrorSchema, HTTPErrorSchema
 
 
 def test_openapi_fields(app, client):
@@ -340,6 +341,71 @@ def test_auth_error_schema_bad_type(app):
     with pytest.raises(RuntimeError):
         app.spec
 
+
+@pytest.mark.parametrize('config_value', [True, False])
+def test_http_auth_error_response(app, client, config_value):
+    app.config['AUTO_HTTP_ERROR_RESPONSE'] = config_value
+
+    @app.get('/foo')
+    @output(FooSchema)
+    @doc(responses={204: 'empty', 400: 'bad', 404: 'not found', 500: 'server error'})
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    if config_value:
+        assert 'HTTPError' in rv.json['components']['schemas']
+        assert '#/components/schemas/HTTPError' in \
+            rv.json['paths']['/foo']['get']['responses']['404'][
+                'content']['application/json']['schema']['$ref']
+        assert '#/components/schemas/HTTPError' in \
+            rv.json['paths']['/foo']['get']['responses']['500'][
+                'content']['application/json']['schema']['$ref']
+        assert rv.json['paths']['/foo']['get']['responses']['204'][
+                'content']['application/json']['schema'] == {}
+    else:
+        assert 'HTTPError' not in rv.json['components']['schemas']
+        assert rv.json['paths']['/foo']['get']['responses']['404'][
+                'content']['application/json']['schema'] == {}
+        assert rv.json['paths']['/foo']['get']['responses']['500'][
+                'content']['application/json']['schema'] == {}
+        assert rv.json['paths']['/foo']['get']['responses']['204'][
+                'content']['application/json']['schema'] == {}
+
+
+@pytest.mark.parametrize('schema', [
+    http_error_schema,
+    HTTPErrorSchema
+])
+def test_http_error_schema(app, client, schema):
+    app.config['HTTP_ERROR_SCHEMA'] = schema
+
+    @app.get('/foo')
+    @output(FooSchema)
+    @doc(responses={400: 'bad', 404: 'not found', 500: 'server error'})
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['get']['responses']['404']
+    assert 'HTTPError' in rv.json['components']['schemas']
+
+
+def test_http_error_schema_bad_type(app):
+    app.config['HTTP_ERROR_SCHEMA'] = 'schema'
+
+    @app.get('/foo')
+    @output(FooSchema)
+    @doc(responses={400: 'bad', 404: 'not found', 500: 'server error'})
+    def foo():
+        pass
+
+    with pytest.raises(RuntimeError):
+        app.spec
 
 def test_docs_hide_blueprints(app, client):
     bp = APIBlueprint('foo', __name__, tag='test')
