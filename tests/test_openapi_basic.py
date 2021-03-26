@@ -75,7 +75,7 @@ def test_spec_schemas(app):
         spec = app.spec
     assert len(spec['components']['schemas']) == 5
     assert 'FooUpdate' in spec['components']['schemas']
-    assert 'BarList' in spec['components']['schemas']
+    assert 'Bar' in spec['components']['schemas']
     assert 'Baz' in spec['components']['schemas']
     assert 'Spam' in spec['components']['schemas']
     assert 'Schema' in spec['components']['schemas']
