@@ -32,11 +32,11 @@ For Windows:
 
 When the application is running, now you can visit the interactive API documentation at http://localhost:5000/docs. Inside the detail tab of each endpoints, you can click the "Try it out" button to test the APIs:
 
-![](assets/try-it-out.png)
+![](_assets/try-it-out.png)
 
 Then click the "Execute" button, it will send a request to the related endpoint and retrieve the response back:
 
-![](assets/execute.png)
+![](_assets/execute.png)
 
 ## Do some experiment
 

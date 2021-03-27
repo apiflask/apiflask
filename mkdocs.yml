@@ -1,12 +1,12 @@
 site_name: APIFlask
 site_description: Web APIs for Flask.
 site_url: https://apiflask.com
-docs_dir: src
+docs_dir: docs
 theme:
   name: material
-  custom_dir: templates
-  logo: assets/white-logo.png
-  favicon: assets/favicon.png
+  custom_dir: docs/_templates
+  logo: _assets/white-logo.png
+  favicon: _assets/favicon.png
   palette:
     primary: deep orange
   icon:
