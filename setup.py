@@ -17,7 +17,12 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     platforms='any',
-    url='https://github.com/greyli/apiflask',
+    url='https://apiflask.com',
+    project_urls={
+        'Documentation': 'https://apiflask.com',
+        'Source': 'https://github.com/greyli/apiflask',
+        'Changelog': 'https://apiflask.com/changelog',
+    },
     packages=setuptools.find_packages(exclude=['tests']),
     package_data={'apiflask': ['templates/apiflask/*.html']},
     include_package_data=True,
@@ -31,11 +36,15 @@ setuptools.setup(
     tests_require=[
         'openapi-spec-validator',
     ],
+    extras_require={
+        'dotenv': ['python-dotenv'],
+        'yaml': ['pyyaml'],
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
-        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',

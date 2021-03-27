@@ -1,58 +1,58 @@
 # APIFlask Change Log
 
 ## Version 0.2.0
-Released: -
+Released: 2021-3-27
 
 - Fix various bugs.
 - Refactor the package and tests (100% coverage).
 - Rename most of the APIs.
 - Add new APIs:
-  - `APIFlask`
-  - `APIBlueprint`
-  - `HTTPError`
-  - `api_json`
-  - `HTTPTokenAuth`
-  - `HTTPBasicAuth`
-  - `@doc`
-  - `EmptySchema`
+    - `APIFlask`
+    - `APIBlueprint`
+    - `HTTPError`
+    - `api_json`
+    - `HTTPTokenAuth`
+    - `HTTPBasicAuth`
+    - `@doc`
+    - `EmptySchema`
 - Add a bunch of new configuration variables:
-  - `DESCRIPTION`
-  - `TAGS`
-  - `CONTACT`
-  - `LICENSE`
-  - `SERVERS`
-  - `EXTERNAL_DOCS`
-  - `TERMS_OF_SERVICE`
-  - `SPEC_FORMAT`
-  - `AUTO_TAGS`
-  - `AUTO_DESCRIPTION`
-  - `AUTO_PATH_SUMMARY`
-  - `AUTO_PATH_DESCRIPTION`
-  - `AUTO_200_RESPONSE`
-  - `DEFAULT_2XX_DESCRIPTION`
-  - `DEFAULT_200_DESCRIPTION`
-  - `DEFAULT_201_DESCRIPTION`
-  - `DEFAULT_204_DESCRIPTION`
-  - `AUTO_VALIDATION_ERROR_RESPONSE`
-  - `VALIDATION_ERROR_STATUS_CODE`
-  - `VALIDATION_ERROR_DESCRIPTION`
-  - `VALIDATION_ERROR_SCHEMA`
-  - `AUTO_AUTH_ERROR_RESPONSE`
-  - `AUTH_ERROR_STATUS_CODE`
-  - `AUTH_ERROR_DESCRIPTION`
-  - `AUTH_ERROR_SCHEMA`
-  - `AUTO_HTTP_ERROR_RESPONSE`
-  - `HTTP_ERROR_SCHEMA`
-  - `DOCS_HIDE_BLUEPRINTS`
-  - `DOCS_FAVICON`
-  - `REDOC_USE_GOOGLE_FONT`
-  - `REDOC_STANDALONE_JS`
-  - `SWAGGER_UI_CSS`
-  - `SWAGGER_UI_BUNDLE_JS`
-  - `SWAGGER_UI_STANDALONE_PRESET_JS`
-  - `SWAGGER_UI_LAYOUT`
-  - `SWAGGER_UI_CONFIG`
-  - `SWAGGER_UI_OAUTH_CONFIG`
+    - `DESCRIPTION`
+    - `TAGS`
+    - `CONTACT`
+    - `LICENSE`
+    - `SERVERS`
+    - `EXTERNAL_DOCS`
+    - `TERMS_OF_SERVICE`
+    - `SPEC_FORMAT`
+    - `AUTO_TAGS`
+    - `AUTO_DESCRIPTION`
+    - `AUTO_PATH_SUMMARY`
+    - `AUTO_PATH_DESCRIPTION`
+    - `AUTO_200_RESPONSE`
+    - `DEFAULT_2XX_DESCRIPTION`
+    - `DEFAULT_200_DESCRIPTION`
+    - `DEFAULT_201_DESCRIPTION`
+    - `DEFAULT_204_DESCRIPTION`
+    - `AUTO_VALIDATION_ERROR_RESPONSE`
+    - `VALIDATION_ERROR_STATUS_CODE`
+    - `VALIDATION_ERROR_DESCRIPTION`
+    - `VALIDATION_ERROR_SCHEMA`
+    - `AUTO_AUTH_ERROR_RESPONSE`
+    - `AUTH_ERROR_STATUS_CODE`
+    - `AUTH_ERROR_DESCRIPTION`
+    - `AUTH_ERROR_SCHEMA`
+    - `AUTO_HTTP_ERROR_RESPONSE`
+    - `HTTP_ERROR_SCHEMA`
+    - `DOCS_HIDE_BLUEPRINTS`
+    - `DOCS_FAVICON`
+    - `REDOC_USE_GOOGLE_FONT`
+    - `REDOC_STANDALONE_JS`
+    - `SWAGGER_UI_CSS`
+    - `SWAGGER_UI_BUNDLE_JS`
+    - `SWAGGER_UI_STANDALONE_PRESET_JS`
+    - `SWAGGER_UI_LAYOUT`
+    - `SWAGGER_UI_CONFIG`
+    - `SWAGGER_UI_OAUTH_CONFIG`
 - Support to hide blueprint from API docs with config `DOCS_HIDE_BLUEPRINTS` ([commit](https://github.com/greyli/apiflask/commit/3b2cc0097defaabf0b916e00930dda1da8226430))
 - Support to deprecate and hide an endpoint with `doc(hide=True, deprecated=True)`([commit](https://github.com/greyli/apiflask/commit/82d181a7080bd4088ee8db929e81431a723cda93))
 - Support to customize the API docs with various configuration variables. ([commit](https://github.com/greyli/apiflask/commit/294379428f5032c6c8228841a836a37860012c0f))

@@ -39,7 +39,7 @@ For Windows:
 ## Links
 
 - Website: <https://apiflask.com>
-- Documentation: <https://apiflask.com/docs>
+- Documentation: <https://apiflask.com>
 - PyPI Releases: <https://pypi.python.org/pypi/APIFlask>
 - Change Log: <https://apiflask.com/changelog>
 - Source Code: <https://github.com/greyli/apiflask>

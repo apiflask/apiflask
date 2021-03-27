@@ -6,4 +6,4 @@ from .schemas import Schema  # noqa: F401
 from .fields import fields  # noqa: F401
 from .security import HTTPBasicAuth, HTTPTokenAuth  # noqa: F401
 
-__version__ = '0.2.0dev'
+__version__ = '0.2.0'
