@@ -1,5 +1,5 @@
 
-![](https://apiflask.com/assets/apiflask-logo.png)
+![](https://apiflask.com/_assets/apiflask-logo.png)
 
 # APIFlask
 
@@ -104,11 +104,11 @@ $ flask run
 
 Now visit the interactive API documentation (Swagger UI) at <http://localhost:5000/docs>:
 
-![](https://apiflask.com/assets/swagger-ui.png)
+![](https://apiflask.com/_assets/swagger-ui.png)
 
 Or you can visit the alternative API documentation (Redoc) at <http://localhost:5000/redoc>:
 
-![](https://apiflask.com/assets/redoc.png)
+![](https://apiflask.com/_assets/redoc.png)
 
 The auto-generated OpenAPI spec file is available at <http://localhost:5000/openapi.json>.
 
