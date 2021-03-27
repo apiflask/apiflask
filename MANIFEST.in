@@ -1,0 +1,11 @@
+include README.md
+include CHANGES.md
+include tox.ini
+include requirements.txt
+graft apiflask/templates/apiflask
+graft apiflask/static
+graft docs
+graft examples
+graft tests
+prune docs/site
+global-exclude *.pyc

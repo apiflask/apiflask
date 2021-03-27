@@ -11,9 +11,10 @@ with open('README.md', 'r') as fh:
 setuptools.setup(
     name='APIFlask',
     version=version,
+    license='MIT',
     author='Grey Li',
     author_email='withlihui@gmail.com',
-    description='A lightweight Web API framework based on Flask and marshmallow-code projects.',
+    description='A lightweight web API framework based on Flask and marshmallow-code projects.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     platforms='any',
@@ -23,8 +24,13 @@ setuptools.setup(
         'Source': 'https://github.com/greyli/apiflask',
         'Changelog': 'https://apiflask.com/changelog',
     },
-    packages=setuptools.find_packages(exclude=['tests']),
-    package_data={'apiflask': ['templates/apiflask/*.html']},
+    packages=['apiflask'],
+    package_data={
+        'apiflask': [
+            'templates/apiflask/*.html',
+            'static/favicon.png'
+        ]
+    },
     include_package_data=True,
     install_requires=[
         'flask>=1.1.0',
