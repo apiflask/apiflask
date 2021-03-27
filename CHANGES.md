@@ -1,5 +1,8 @@
 # APIFlask Change Log
 
+## Version 0.3.0
+Released: -
+
 ## Version 0.2.0
 Released: 2021-3-27
 
