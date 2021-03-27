@@ -1,5 +1,5 @@
 
-![](docs/src/assets/apiflask-logo.png)
+![](assets/apiflask-logo.png)
 
 # APIFlask
 
@@ -7,7 +7,7 @@
 
 APIFlask is a lightweight Python web API framework based on [Flask](https://github.com/pallets/flask/) and [marshmallow-code](https://github.com/marshmallow-code) projects. It's easy to use, high customizable, and 100% compatible with the Flask ecosystem. It starts as a fork of [APIFairy](https://github.com/miguelgrinberg/APIFairy) and inspired by [FastAPI](https://github.com/tiangolo/fastapi).
 
-With APIFlask, you will have:
+With APIFlask, you will have: 
 
 - More sugars for view function (`@app.get()`, `@app.post()`, `@input()`, `@output()`, `@doc()` and more)
 - Automatic request validation and serialization (with [Webargs](https://github.com/marshmallow-code/webargs))
@@ -16,8 +16,6 @@ With APIFlask, you will have:
 - Automatic interactive API documentation (with [Swagger UI](https://github.com/swagger-api/swagger-ui) and [Redoc](https://github.com/Redocly/redoc))
 - API Authorization support (with [Flask-HTTPAuth](https://github.com/migulgrinberg/flask-httpauth))
 - Automatic JSON response for HTTP errors
-
-*Currently this project is in active development stage, bugs and break changes are expected. Welcome to leave any suggestions or feedbacks in [this issue](https://github.com/greyli/apiflask/issues/1) or just submit a pull request to improve it.*
 
 ## Requirements
 
@@ -40,14 +38,14 @@ For Windows:
 
 ## Links
 
-- Website: https://apiflask.com
-- Documentation: https://apiflask.com/docs
-- PyPI Releases: https://pypi.python.org/pypi/APIFlask
-- Change Log: https://apiflask.com/changelog
-- Source Code: https://github.com/greyli/apiflask
-- Issue Tracker: https://github.com/greyli/apiflask/issues
-- Discussion: https://github.com/greyli/apiflask/discussions
-- Twitter: https://twitter.com/apiflask
+- Website: <https://apiflask.com>
+- Documentation: <https://apiflask.com/docs>
+- PyPI Releases: <https://pypi.python.org/pypi/APIFlask>
+- Change Log: <https://apiflask.com/changelog>
+- Source Code: <https://github.com/greyli/apiflask>
+- Issue Tracker: <https://github.com/greyli/apiflask/issues>
+- Discussion: <https://github.com/greyli/apiflask/discussions>
+- Twitter: <https://twitter.com/apiflask>
 
 ## Example
 
@@ -104,11 +102,11 @@ $ flask run
 
 Now visit the interactive API documentation (Swagger UI) at <http://localhost:5000/docs>:
 
-![](docs/src/assets/swagger-ui.png)
+![](assets/swagger-ui.png)
 
 Or you can visit the alternative API documentation (Redoc) at <http://localhost:5000/redoc>:
 
-![](docs/src/assets/redoc.png)
+![](assets/redoc.png)
 
 The auto-generated OpenAPI spec file is available at <http://localhost:5000/openapi.json>.
 
@@ -134,7 +132,7 @@ def hello():
     return f'Hello, {escape(name)}'
 ```
 
-Now change to APIFlask:
+now change to APIFlask:
 
 ```python
 from apiflask import APIFlask  # step one

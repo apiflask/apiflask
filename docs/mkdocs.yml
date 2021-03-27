@@ -1,0 +1,42 @@
+site_name: APIFlask
+site_description: Web APIs for Flask.
+site_url: https://apiflask.com
+docs_dir: src
+theme:
+  name: material
+  custom_dir: templates
+  logo: assets/white-logo.png
+  favicon: assets/favicon.png
+  palette:
+    primary: deep orange
+  icon:
+    repo: fontawesome/brands/github
+  language: en
+repo_url: https://github.com/greyli/apiflask
+repo_name: greyli/apiflask
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/greyli/apiflask
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/apiflask
+copyright: Copyright &copy; 2021 <a href="https://greyli.com/en" target="_blank" rel="noopener">Grey Li</a>
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.snippets
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Configuration: configuration.md
+  - Tutorial: tutorial/index.md
+  - Examples: examples.md
+  - Snippets: snippets/index.md
+  - External Tools: tools/index.md
+  - Contributing: contributing.md
+  - Origins and Inspiration: acknowledgement.md
+  - Changelog: changelog.md
+  - Authors: authors.md
+  - API Reference: api.md
+plugins:
+  - mkdocstrings
