@@ -1,0 +1,10 @@
+pip-tools
+tox
+# test
+pytest
+pytest-cov
+flake8
+openapi-spec-validator
+# docs
+mkdocs-material
+mkdocstrings
