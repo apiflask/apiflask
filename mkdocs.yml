@@ -25,6 +25,8 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
   - pymdownx.snippets
+  - toc:
+        permalink: True
 nav:
   - Home: index.md
   - Quickstart: quickstart.md
@@ -39,4 +41,5 @@ nav:
   - Authors: authors.md
   - API Reference: api.md
 plugins:
+  - search
   - mkdocstrings
