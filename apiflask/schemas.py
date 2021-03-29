@@ -1,7 +1,9 @@
+from typing import Dict, Any
+
 from flask_marshmallow import Schema
 
 
-validation_error_detail_schema = {
+validation_error_detail_schema: Dict[str, Any] = {
     "type": "object",
     "properties": {
         "<location>": {
@@ -19,7 +21,7 @@ validation_error_detail_schema = {
 }
 
 
-validation_error_schema = {
+validation_error_schema: Dict[str, Any] = {
     "properties": {
         "detail": validation_error_detail_schema,
         "message": {
@@ -33,7 +35,7 @@ validation_error_schema = {
 }
 
 
-http_error_schema = {
+http_error_schema: Dict[str, Any] = {
     "properties": {
         "detail": {
             "type": "object"

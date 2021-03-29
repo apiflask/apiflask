@@ -1,9 +1,15 @@
-from .app import APIFlask  # noqa: F401
-from .blueprint import APIBlueprint  # noqa: F401
-from .decorators import auth_required, input, output, doc  # noqa: F401
-from .errors import HTTPError, api_abort  # noqa: F401
-from .schemas import Schema  # noqa: F401
-from .fields import fields  # noqa: F401
-from .security import HTTPBasicAuth, HTTPTokenAuth  # noqa: F401
+# flake8: noqa
+from .app import APIFlask
+from .blueprint import APIBlueprint
+from .decorators import input
+from .decorators import output
+from .decorators import doc
+from .decorators import auth_required
+from .errors import api_abort
+from .errors import HTTPError
+from .schemas import Schema
+from . import fields
+from .security import HTTPBasicAuth
+from .security import HTTPTokenAuth
 
 __version__ = '0.3.0dev'

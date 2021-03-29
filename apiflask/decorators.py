@@ -1,45 +1,73 @@
+from typing import Callable, Union, List, Optional, Dict, Any, Type, Mapping
 from functools import wraps
 
-from flask import Response, jsonify, current_app
+from flask import Response
+from flask import jsonify
+from flask import current_app
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
+from marshmallow import ValidationError as MarshmallowValidationError
+from marshmallow import Schema as MarshmallowSchema
 
 from .errors import ValidationError
-from .scaffold import _sentinel
+from .utils import _sentinel
 from .schemas import EmptySchema
+from .security import HTTPBasicAuth
+from .security import HTTPTokenAuth
+from .types import DecoratedType
+from .types import ResponseType
+from .types import RequestType
 
 
 class FlaskParser(BaseFlaskParser):
 
-    def handle_error(self, error, req, schema, *, error_status_code,
-                     error_headers):
+    def handle_error(  # type: ignore
+        self,
+        error: MarshmallowValidationError,
+        req: RequestType,
+        schema: MarshmallowSchema,
+        *,
+        error_status_code: int,
+        error_headers: Mapping[str, str]
+    ) -> None:
         raise ValidationError(
             error_status_code or current_app.config['VALIDATION_ERROR_STATUS_CODE'],
             current_app.config['VALIDATION_ERROR_DESCRIPTION'],
-            error.messages)
+            error.messages,
+            error_headers
+        )
 
 
-parser = FlaskParser()
-use_args = parser.use_args
+parser: FlaskParser = FlaskParser()
+use_args: Callable = parser.use_args
 
 
-def _annotate(f, **kwargs):
+def _annotate(f: Any, **kwargs: Any) -> None:
     if not hasattr(f, '_spec'):
         f._spec = {}
     for key, value in kwargs.items():
         f._spec[key] = value
 
 
-def auth_required(auth, **kwargs):
+def auth_required(
+    auth: Union[Type[HTTPBasicAuth], Type[HTTPTokenAuth]],
+    role: Optional[Union[list, str]] = None,
+    optional: Optional[str] = None
+) -> Callable[[DecoratedType], DecoratedType]:
+    roles = role
+    if not isinstance(role, list):  # pragma: no cover
+        roles = [role] if role is not None else []
+
     def decorator(f):
-        roles = kwargs.get('role')
-        if not isinstance(roles, list):  # pragma: no cover
-            roles = [roles] if roles is not None else []
         _annotate(f, auth=auth, roles=roles)
-        return auth.login_required(**kwargs)(f)
+        return auth.login_required(role=role, optional=optional)(f)
     return decorator
 
 
-def input(schema, location='json', **kwargs):
+def input(
+    schema: MarshmallowSchema,
+    location: str = 'json',
+    **kwargs: Any
+) -> Callable[[DecoratedType], DecoratedType]:
     if isinstance(schema, type):  # pragma: no cover
         schema = schema()
 
@@ -64,7 +92,11 @@ def input(schema, location='json', **kwargs):
     return decorator
 
 
-def output(schema, status_code=200, description=None):
+def output(
+    schema: MarshmallowSchema,
+    status_code: int = 200,
+    description: Optional[str] = None
+) -> Callable[[DecoratedType], DecoratedType]:
     if isinstance(schema, type):  # pragma: no cover
         schema = schema()
 
@@ -86,7 +118,7 @@ def output(schema, status_code=200, description=None):
             return jsonify(data, *args, **kwargs)
 
         @wraps(f)
-        def _response(*args, **kwargs):
+        def _response(*args: Any, **kwargs: Any) -> ResponseType:
             rv = f(*args, **kwargs)
             if isinstance(rv, Response):  # pragma: no cover
                 raise RuntimeError(
@@ -110,30 +142,34 @@ def output(schema, status_code=200, description=None):
 
 
 def doc(
-    summary=None,
-    description=None,
-    tags=None,
-    responses=None,
-    deprecated=None,
-    hide=False
-):
+    summary: Optional[str] = None,
+    description: Optional[str] = None,
+    tags: Optional[Union[List[str], List[Dict[str, Any]]]] = None,
+    responses: Optional[Union[List[int], Dict[int, str]]] = None,
+    deprecated: Optional[bool] = False,
+    hide: Optional[bool] = False
+) -> Callable[[DecoratedType], DecoratedType]:
     """
     Set up OpenAPI documentation for view function.
 
-    :param summary: The summary of this view function. If not set, the name of
-        the view function will be used. If your view function named with ``get_pet``,
-        then the summary will be "Get Pet". If the view function has docstring, then
-        the first line of the docstring will be used. The precedence will be:
-        @doc(summary='blah') > the frist line of docstring > the view functino name
-    :param description: The description of this view function. If not set, the lines
-        after the empty line of the docstring will be used.
-    :param tags: The tag list of this view function, map the tags you passed in the :attr:`tags`
-        attribute. You can pass a list of tag names or just a single tag string. If ``app.tags``
-        not set, the blueprint name will be used as tag name.
-    :param responses: The other responses for this view function, accept a dict in a format
-        of ``{400: 'Bad Request'}``.
-    :param deprecated: Flag this endpoint as deprecated in API docs. Defaults to ``None``.
-    :param hide: Hide this endpoint in API docs. Defaults to ``False``.
+    Arguments:
+        summary: The summary of this view function. If not set, the name of
+            the view function will be used. If your view function named with `get_pet`,
+            then the summary will be "Get Pet". If the view function has docstring, then
+            the first line of the docstring will be used. The precedence will be:
+            @doc(summary='blah') > the frist line of docstring > the view functino name
+        description: The description of this view function. If not set, the lines
+            after the empty line of the docstring will be used.
+        tags: The tag list of this view function, map the tags you passed in the :attr:`tags`
+            attribute. You can pass a list of tag names or just a single tag string. If `app.tags`
+            not set, the blueprint name will be used as tag name.
+        responses: The other responses for this view function, accept a dict in a format
+            of `{400: 'Bad Request'}`.
+        deprecated: Flag this endpoint as deprecated in API docs. Defaults to `False`.
+        hide: Hide this endpoint in API docs. Defaults to `False`.
+
+    .. versionchanged:: 0.3.0
+    Change the default value of deprecated from `None` to `False`.
 
     .. versionadded:: 0.2.0
     """

@@ -1,10 +1,12 @@
-from flask import Blueprint as BaseBlueprint
+from typing import Optional, Union
+from flask import Blueprint
 
-from .scaffold import Scaffold
-from .scaffold import _sentinel
+from .utils import route_shortcuts
+from .utils import _sentinel
 
 
-class APIBlueprint(BaseBlueprint, Scaffold):
+@route_shortcuts
+class APIBlueprint(Blueprint):
     """Flask's Blueprint with some API support.
 
     .. versionadded:: 0.2.0
@@ -12,18 +14,18 @@ class APIBlueprint(BaseBlueprint, Scaffold):
 
     def __init__(
         self,
-        name,
-        import_name,
-        tag=None,
-        static_folder=None,
-        static_url_path=None,
-        template_folder=None,
-        url_prefix=None,
-        subdomain=None,
-        url_defaults=None,
-        root_path=None,
-        cli_group=_sentinel,
-    ):
+        name: str,
+        import_name: str,
+        tag: Optional[Union[str, dict]] = None,
+        static_folder: Optional[str] = None,
+        static_url_path: Optional[str] = None,
+        template_folder: Optional[str] = None,
+        url_prefix: Optional[str] = None,
+        subdomain: Optional[str] = None,
+        url_defaults: Optional[dict] = None,
+        root_path: Optional[str] = None,
+        cli_group: Union[Optional[str]] = _sentinel  # type: ignore
+    ) -> None:
         super(APIBlueprint, self).__init__(
             name,
             import_name,
