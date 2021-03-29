@@ -1,7 +1,6 @@
-from typing import Union, List, Optional, Type, Dict
+from typing import Union, List, Optional, Dict
 
-from marshmallow import Schema
-
+from .schemas import Schema
 from .schemas import http_error_schema
 from .schemas import validation_error_schema
 
@@ -29,13 +28,13 @@ DEFAULT_204_DESCRIPTION: str = 'Empty response'
 AUTO_VALIDATION_ERROR_RESPONSE: bool = True
 VALIDATION_ERROR_STATUS_CODE: int = 400
 VALIDATION_ERROR_DESCRIPTION: str = 'Validation error'
-VALIDATION_ERROR_SCHEMA: Union[Type[Schema], dict] = validation_error_schema
+VALIDATION_ERROR_SCHEMA: Union[Schema, dict] = validation_error_schema
 AUTO_AUTH_ERROR_RESPONSE: bool = True
 AUTH_ERROR_STATUS_CODE: int = 401
 AUTH_ERROR_DESCRIPTION: str = 'Authorization error'
-AUTH_ERROR_SCHEMA: Union[Type[Schema], dict] = http_error_schema
+AUTH_ERROR_SCHEMA: Union[Schema, dict] = http_error_schema
 AUTO_HTTP_ERROR_RESPONSE: bool = True
-HTTP_ERROR_SCHEMA: Union[Type[Schema], dict] = http_error_schema
+HTTP_ERROR_SCHEMA: Union[Schema, dict] = http_error_schema
 # Swagger UI and Redoc
 DOCS_HIDE_BLUEPRINTS: List[str] = []
 DOCS_FAVICON: Optional[str] = None

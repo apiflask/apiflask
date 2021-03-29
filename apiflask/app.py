@@ -10,7 +10,6 @@ from flask.globals import _request_ctx_stack
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-from marshmallow import Schema as MarshmallowSchema
 from flask_marshmallow import fields
 try:
     from flask_marshmallow import sqla
@@ -23,6 +22,7 @@ from .utils import route_shortcuts
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
 from .errors import get_error_message
+from .schemas import Schema
 from .types import ResponseType
 from .types import ErrorCallbackType
 from .types import SpecCallbackType
@@ -365,7 +365,7 @@ class APIFlask(Flask):
         return self.get_spec()
 
     def _generate_spec(self) -> APISpec:
-        def resolver(schema: MarshmallowSchema) -> str:
+        def resolver(schema: Schema) -> str:
             name = schema.__class__.__name__
             if name.endswith('Schema'):
                 name = name[:-6] or name
@@ -623,7 +623,7 @@ class APIFlask(Flask):
 
                 def add_response(
                     status_code: str,
-                    schema: Union[MarshmallowSchema, dict],
+                    schema: Union[Schema, dict],
                     description: str
                 ) -> None:
                     operation['responses'][status_code] = {
@@ -649,7 +649,7 @@ class APIFlask(Flask):
 
                 def add_response_and_schema(
                     status_code: str,
-                    schema: Union[MarshmallowSchema, dict],
+                    schema: Union[Schema, dict],
                     schema_name: str,
                     description: str
                 ) -> None:
@@ -677,7 +677,7 @@ class APIFlask(Flask):
                             'VALIDATION_ERROR_DESCRIPTION'
                         ]
                         schema: Union[  # type: ignore
-                            MarshmallowSchema, dict
+                            Schema, dict
                         ] = self.config['VALIDATION_ERROR_SCHEMA']
                         add_response_and_schema(
                             status_code, schema, 'ValidationError', description
@@ -693,7 +693,7 @@ class APIFlask(Flask):
                         )
                         description: str = self.config['AUTH_ERROR_DESCRIPTION']  # type: ignore
                         schema: Union[  # type: ignore
-                            MarshmallowSchema, dict
+                            Schema, dict
                         ] = self.config['AUTH_ERROR_SCHEMA']
                         add_response_and_schema(
                             status_code, schema, 'AuthorizationError', description
@@ -717,7 +717,7 @@ class APIFlask(Flask):
                             status_code.startswith('5')  # type: ignore
                         ):
                             schema: Union[  # type: ignore
-                                MarshmallowSchema, dict
+                                Schema, dict
                             ] = self.config['HTTP_ERROR_SCHEMA']
                             add_response_and_schema(
                                 status_code, schema, 'HTTPError', description

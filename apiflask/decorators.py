@@ -6,10 +6,10 @@ from flask import jsonify
 from flask import current_app
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 from marshmallow import ValidationError as MarshmallowValidationError
-from marshmallow import Schema as MarshmallowSchema
 
 from .errors import ValidationError
 from .utils import _sentinel
+from .schemas import Schema
 from .schemas import EmptySchema
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
@@ -24,7 +24,7 @@ class FlaskParser(BaseFlaskParser):
         self,
         error: MarshmallowValidationError,
         req: RequestType,
-        schema: MarshmallowSchema,
+        schema: Schema,
         *,
         error_status_code: int,
         error_headers: Mapping[str, str]
@@ -64,7 +64,7 @@ def auth_required(
 
 
 def input(
-    schema: MarshmallowSchema,
+    schema: Schema,
     location: str = 'json',
     **kwargs: Any
 ) -> Callable[[DecoratedType], DecoratedType]:
@@ -93,7 +93,7 @@ def input(
 
 
 def output(
-    schema: MarshmallowSchema,
+    schema: Schema,
     status_code: int = 200,
     description: Optional[str] = None
 ) -> Callable[[DecoratedType], DecoratedType]:

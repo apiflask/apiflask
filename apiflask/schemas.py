@@ -1,6 +1,6 @@
 from typing import Dict, Any
 
-from flask_marshmallow import Schema
+from marshmallow import Schema
 
 
 validation_error_detail_schema: Dict[str, Any] = {
