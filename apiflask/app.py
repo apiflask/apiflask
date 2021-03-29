@@ -554,8 +554,8 @@ class APIFlask(Flask):
 
             # tag
             operation_tags: Optional[Union[str, List[str]]] = None
-            if view_func._spec.get('tags'):
-                operation_tags = view_func._spec.get('tags')
+            if view_func._spec.get('tag'):
+                operation_tags = view_func._spec.get('tag')
             else:
                 # if tag not set, try to use blueprint name as tag
                 if self.tags is None and self.config['AUTO_TAGS'] and blueprint_name is not None:

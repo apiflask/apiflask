@@ -144,7 +144,7 @@ def output(
 def doc(
     summary: Optional[str] = None,
     description: Optional[str] = None,
-    tags: Optional[Union[List[str], List[Dict[str, Any]]]] = None,
+    tag: Optional[Union[List[str], List[Dict[str, Any]]]] = None,
     responses: Optional[Union[List[int], Dict[int, str]]] = None,
     deprecated: Optional[bool] = False,
     hide: Optional[bool] = False
@@ -160,7 +160,7 @@ def doc(
             @doc(summary='blah') > the frist line of docstring > the view functino name
         description: The description of this view function. If not set, the lines
             after the empty line of the docstring will be used.
-        tags: The tag list of this view function, map the tags you passed in the :attr:`tags`
+        tag: The tag list of this view function, map the tags you passed in the :attr:`tags`
             attribute. You can pass a list of tag names or just a single tag string. If `app.tags`
             not set, the blueprint name will be used as tag name.
         responses: The other responses for this view function, accept a dict in a format
@@ -169,7 +169,8 @@ def doc(
         hide: Hide this endpoint in API docs. Defaults to `False`.
 
     .. versionchanged:: 0.3.0
-    Change the default value of deprecated from `None` to `False`.
+    - Change the default value of `deprecated` from `None` to `False`.
+    - Rename `tags` to `tag`.
 
     .. versionadded:: 0.2.0
     """
@@ -178,7 +179,7 @@ def doc(
             f,
             summary=summary,
             description=description,
-            tags=tags,
+            tag=tag,
             responses=responses,
             deprecated=deprecated,
             hide=hide

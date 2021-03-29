@@ -245,12 +245,12 @@ def test_doc_tags(app, client):
     app.tags = ['foo', 'bar']
 
     @app.route('/foo')
-    @doc(tags='foo')
+    @doc(tag='foo')
     def foo():
         pass
 
     @app.route('/bar')
-    @doc(tags=['foo', 'bar'])
+    @doc(tag=['foo', 'bar'])
     def bar():
         pass
 
