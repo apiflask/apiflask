@@ -3,6 +3,7 @@ from openapi_spec_validator import validate_spec
 
 from apiflask import APIBlueprint, input, output, auth_required, doc
 from apiflask.security import HTTPBasicAuth, HTTPTokenAuth
+from apiflask.fields import String
 
 from .schemas import FooSchema, BarSchema, QuerySchema
 
@@ -167,6 +168,81 @@ def test_bad_input_location(app):
         @input(QuerySchema, 'bad')
         def foo(query):
             pass
+
+
+def test_input_with_dict_schema(app, client):
+    dict_schema = {
+        'name': String(required=True)
+    }
+
+    @app.get('/foo')
+    @input(dict_schema, 'query')
+    def foo(query):
+        return query
+
+    @app.post('/bar')
+    @input(dict_schema, schema_name='MyName')
+    def bar(body):
+        return body
+
+    # test use dict schema without passing schema name
+    with pytest.raises(RuntimeError):
+        @app.post('/baz')
+        @input(dict_schema)
+        def baz(body):
+            return body
+
+    rv = client.get('/foo')
+    assert rv.status_code == 400
+    assert rv.json == {
+        'detail': {
+            'query': {'name': ['Missing data for required field.']}
+        },
+        'message': 'Validation error',
+        'status_code': 400
+    }
+
+    rv = client.get('/foo?name=grey')
+    assert rv.status_code == 200
+    assert rv.json == {'name': 'grey'}
+
+    rv = client.post('/bar')
+    assert rv.status_code == 400
+    assert rv.json == {
+        'detail': {
+            'json': {'name': ['Missing data for required field.']}
+        },
+        'message': 'Validation error',
+        'status_code': 400
+    }
+
+    rv = client.post('/bar', json={'name': 'grey'})
+    assert rv.status_code == 200
+    assert rv.json == {'name': 'grey'}
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['get']['parameters'][0] == {
+        'in': 'query',
+        'name': 'name',
+        'required': True,
+        'schema': {
+            'type': 'string'
+        }
+    }
+    # TODO check the excess item "'x-scope': ['']" in schema object
+    assert rv.json['paths']['/bar']['post']['requestBody'][
+        'content']['application/json']['schema']['$ref'] == '#/components/schemas/MyName'
+    assert rv.json['components']['schemas']['MyName'] == {
+        'properties': {
+            'name': {
+                'type': 'string'
+            }
+        },
+        'required': ['name'],
+        'type': 'object'
+    }
 
 
 def test_output(app, client):
