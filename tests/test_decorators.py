@@ -185,12 +185,15 @@ def test_input_with_dict_schema(app, client):
     def bar(body):
         return body
 
-    # test use dict schema without passing schema name
-    with pytest.raises(RuntimeError):
-        @app.post('/baz')
-        @input(dict_schema)
-        def baz(body):
-            return body
+    @app.post('/baz')
+    @input(dict_schema)
+    def baz(body):
+        return body
+
+    @app.post('/spam')
+    @input(dict_schema)
+    def spam(body):
+        return body
 
     rv = client.get('/foo')
     assert rv.status_code == 400
@@ -243,6 +246,11 @@ def test_input_with_dict_schema(app, client):
         'required': ['name'],
         'type': 'object'
     }
+    # default schema name is "Generated"
+    assert rv.json['paths']['/baz']['post']['requestBody'][
+        'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated'
+    assert rv.json['paths']['/spam']['post']['requestBody'][
+        'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated1'
 
 
 def test_output(app, client):
@@ -295,6 +303,66 @@ def test_output(app, client):
     assert rv.status_code == 201
     assert rv.json == {'id': 123, 'name': 'baz'}
     assert 'Location' not in rv.headers
+
+
+def test_output_with_dict_schema(app, client):
+    dict_schema = {
+        'name': String(default='grey')
+    }
+
+    @app.get('/foo')
+    @output(dict_schema, schema_name='MyName')
+    def foo():
+        return ''
+
+    @app.get('/bar')
+    @output(dict_schema, schema_name='MyName')
+    def bar():
+        return {'name': 'peter'}
+
+    @app.get('/baz')
+    @output(dict_schema)
+    def baz():
+        pass
+
+    @app.get('/spam')
+    @output(dict_schema)
+    def spam():
+        pass
+
+    @app.get('/eggs')
+    @output({})
+    def eggs():
+        pass
+
+    rv = client.get('/foo')
+    assert rv.status_code == 200
+    assert rv.json == {'name': 'grey'}
+
+    rv = client.get('/bar')
+    assert rv.status_code == 200
+    assert rv.json == {'name': 'peter'}
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['get']['responses']['200'][
+        'content']['application/json']['schema']['$ref'] == '#/components/schemas/MyName'
+    assert rv.json['components']['schemas']['MyName'] == {
+        'properties': {
+            'name': {
+                'type': 'string'
+            }
+        },
+        'type': 'object'
+    }
+    assert rv.json['paths']['/bar']['get']['responses']['200'][
+        'content']['application/json']['schema']['$ref'] == '#/components/schemas/MyName1'
+    # default schema name is "Generated"
+    assert rv.json['paths']['/baz']['get']['responses']['200'][
+        'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated'
+    assert rv.json['paths']['/spam']['get']['responses']['200'][
+        'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated1'
 
 
 def test_doc_summary_and_description(app, client):

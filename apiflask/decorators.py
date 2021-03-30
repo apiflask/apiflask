@@ -1,6 +1,6 @@
 from typing import Callable, Union, List, Optional, Dict, Any, Type, Mapping
 from functools import wraps
-from collections.abc import Mapping as ABCMApping
+from collections.abc import Mapping as ABCMapping
 
 from flask import Response
 from flask import jsonify
@@ -64,22 +64,20 @@ def auth_required(
     return decorator
 
 
+def _generate_schema_from_mapping(schema, schema_name):
+    if schema_name is None:
+        schema_name = 'GeneratedSchema'
+    return Schema.from_dict(schema, name=schema_name)()
+
+
 def input(
     schema: Schema,
     location: str = 'json',
     schema_name: Optional[str] = None,
     **kwargs: Any
 ) -> Callable[[DecoratedType], DecoratedType]:
-    if isinstance(schema, ABCMApping):
-        if schema_name is None:
-            if location == 'json':
-                raise RuntimeError(
-                    'When passing a dict schema, the "schema_name" argument is required,'
-                    ' this name will be used to generate the schema definition in OpenAPI spec.'
-                )
-            else:
-                schema_name = 'GeneratedSchema'
-        schema = Schema.from_dict(schema, name=schema_name)()
+    if isinstance(schema, ABCMapping):
+        schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
         schema = schema()
 
@@ -105,8 +103,11 @@ def input(
 def output(
     schema: Schema,
     status_code: int = 200,
-    description: Optional[str] = None
+    description: Optional[str] = None,
+    schema_name: Optional[str] = None,
 ) -> Callable[[DecoratedType], DecoratedType]:
+    if isinstance(schema, ABCMapping) and schema != {}:
+        schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
         schema = schema()
 
