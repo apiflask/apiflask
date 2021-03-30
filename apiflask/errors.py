@@ -1,6 +1,7 @@
 from typing import Any, Optional, Mapping, Union, Tuple
 
 from werkzeug.http import HTTP_STATUS_CODES
+from werkzeug.exceptions import default_exceptions
 
 
 class HTTPError(Exception):
@@ -13,6 +14,11 @@ class HTTPError(Exception):
         headers: Optional[Mapping[str, str]] = None
     ) -> None:
         super(HTTPError, self).__init__()
+        if status_code not in default_exceptions:
+            raise LookupError(
+                f'No exception for status code "{status_code}",' 
+                ' valid error status code are "4XX" and "5XX".'
+            )
         self.status_code = status_code
         self.detail = detail
         self.headers = headers

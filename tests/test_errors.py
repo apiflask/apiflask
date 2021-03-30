@@ -70,7 +70,7 @@ def test_get_error_message(code):
     {'message': 'bad', 'detail': {'location': 'json'}},
     {'message': 'bad', 'detail': {'location': 'json'}, 'headers': {'X-FOO': 'bar'}}
 ])
-def test_default_error_handler(app, kwargs):
+def test_default_error_handler(kwargs):
     rv = default_error_handler(400, **kwargs)
     assert rv[1] == 400
     if 'message' not in kwargs:
@@ -83,3 +83,11 @@ def test_default_error_handler(app, kwargs):
         assert rv[0]['detail'] == {'location': 'json'}
     if 'headers' in kwargs:
         assert rv[2]['X-FOO'] == 'bar'
+
+
+def test_invalid_error_status_code():
+    with pytest.raises(LookupError):
+        api_abort(200)
+
+    with pytest.raises(LookupError):
+        raise HTTPError(204)
