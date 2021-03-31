@@ -67,6 +67,3 @@ plugins:
         - apiflask
 extra_css:
   - _assets/extra.css
-google_analytics:
-  - G-Q5PZT7R39D
-  - auto
