@@ -1,4 +1,4 @@
-This documentation is still working in progress:
+The documentation is still working in progress:
 
 [=45% "45%"]
 

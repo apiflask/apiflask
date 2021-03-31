@@ -31,16 +31,21 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Basic Usage: usage.md
-  - Quickstart: quickstart.md
   - Configuration: configuration.md
+  - Migrating from Flask: flask.md
+  - OpenAPI: openapi.md
+  - Request Validation: request.md
+  - Schema and Fields: schema.md
+  - Security: security.md
+  - Swagger UI and Redoc: swagger.md
   - Tutorial: tutorial/index.md
   - Examples: examples.md
   - Snippets: snippets/index.md
   - External Tools: tools/index.md
   - Contributing: contributing.md
   - Acknowledgement: acknowledgement.md
-  - Changelog: changelog.md
   - Authors: authors.md
+  - Alternatives: alterinatives.md
   - API Reference:
     - APIFlask: api/app.md
     - APIBlueprint: api/blueprint.md
@@ -49,13 +54,7 @@ nav:
     - Schemas: api/schemas.md
     - Security: api/security.md
     - Utils: api/utils.md
-  - Alternatives: alterinatives.md
-  - Migrating from Flask: flask.md
-  - OpenAPI: openapi.md
-  - Request Validation: request.md
-  - Schema and Fields: schema.md
-  - Security: security.md
-  - Swagger UI and Redoc: swagger.md
+  - Changelog: changelog.md
 plugins:
   - search
   - mkdocstrings:
@@ -68,3 +67,6 @@ plugins:
         - apiflask
 extra_css:
   - _assets/extra.css
+google_analytics:
+  - G-Q5PZT7R39D
+  - auto

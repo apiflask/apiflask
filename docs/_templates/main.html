@@ -6,3 +6,30 @@ Welcome to leave any suggestions or feedbacks in <a href="https://github.com/gre
 or just submit a pull request to improve it. Thank you!
 Welcome to follow <a href="https://twitter.com/apiflask">@apiflask</a> on Twitter for updates.</i>
 {% endblock %}
+
+{% block extrahead %}
+{% set title = config.site_name %}
+{% if page and page.title and not page.is_homepage %}
+  {% set title = config.site_name ~ " - " ~ page.title | striptags %}
+{% endif %}
+<!-- The image needs to have an absolute URL -->
+{% set image = config.site_url ~ '_assets/banner.png' %}
+
+<!-- Open graph meta tags -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="{{ title }}" />
+<meta property="og:description" content="{{ config.site_description }}" />
+<meta property="og:url" content="{{ page.canonical_url }}" />
+<meta property="og:image" content="{{ image }}" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1280" />
+<meta property="og:image:height" content="640" />
+
+<!-- Twitter meta tags -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@apiflask" />
+<meta name="twitter:creator" content="@apiflask" />
+<meta name="twitter:title" content="{{ title }}" />
+<meta name="twitter:description" content="{{ config.site_description }}" />
+<meta name="twitter:image" content="{{ image }}" />
+{% endblock %}
