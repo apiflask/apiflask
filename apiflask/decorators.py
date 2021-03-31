@@ -20,6 +20,9 @@ from .types import RequestType
 
 
 class FlaskParser(BaseFlaskParser):
+    """Overwrite the default `webargs.FlaskParser.handle_error` to
+    change the default status code and the error description.
+    """
 
     def handle_error(  # type: ignore
         self,
@@ -54,6 +57,35 @@ def auth_required(
     role: Optional[Union[list, str]] = None,
     optional: Optional[str] = None
 ) -> Callable[[DecoratedType], DecoratedType]:
+    """Protect a view with provided authentication settings.
+
+    > Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
+    `app.post`, etc.).
+
+    Examples:
+
+    ```python
+    from apiflask import APIFlask, HTTPTokenAuth, auth_required
+
+    app = APIFlask(__name__)
+    auth = HTTPTokenAuth()
+
+    @app.get('/')
+    @auth_required(auth)
+    def hello():
+        return 'Hello'!
+    ```
+
+    Arguments:
+        auth: The `auth` object, an instance of [`HTTPBasicAuth`][apiflask.security.HTTPBasieAuth]
+            or [`HTTPTokenAuth`][apiflask.security.HTTPTokenAuth].
+        role: The selected role to allow to visit this view, accepts a string or a list.
+            See [Flask-HTTPAuth's documentation](role) for more details.
+        optional: To allow the view to execute even the authentication information
+            is not included with the request, in which case `auth.current_user` will be `None`.
+
+    [role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
+    """
     roles = role
     if not isinstance(role, list):  # pragma: no cover
         roles = [role] if role is not None else []
@@ -76,6 +108,38 @@ def input(
     schema_name: Optional[str] = None,
     **kwargs: Any
 ) -> Callable[[DecoratedType], DecoratedType]:
+    """Add input settings for view functions.
+
+    > Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
+    `app.post`, etc.).
+
+    If the validation passed, the data will be inject to view
+    function as a positional argument in the form of `dict`. Otherwise,
+    an error response with the detail of validation result will be returned.
+
+    Examples:
+
+    ```python
+    from apiflask import APIFlask, input
+
+    app = APIFlask(__name__)
+
+    @app.get('/')
+    @input(PetInSchema)
+    def hello(parsed_and_validated_input_data):
+        print(parsed_and_validated_input_data)
+        return 'Hello'!
+    ```
+
+    Arguments:
+        schema: The Marshmallow schema used to validate the input data.
+        location: The location of the input data, one of `'json'` (default),
+            `'files'`, `'form'`, `'cookies'`, `'headers'`, `'query'`
+            (same as `'querystring'`).
+        schema_name: The schema name for dict schema, only needed when you pass
+            a `dict` schema (e.g. `{'name': String(required=True)}`) for `json`
+            location.
+    """
     if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
@@ -106,6 +170,39 @@ def output(
     description: Optional[str] = None,
     schema_name: Optional[str] = None,
 ) -> Callable[[DecoratedType], DecoratedType]:
+    """Add output settings for view functions.
+
+    > Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
+    `app.post`, etc.).
+
+    The decorator will formatting the return value of your view
+    function with provided Marshmallow schema. You can just return a
+    dict or an object (such as a Model instance of ORMs). APIFlask will
+    handle the formatting and turn your return value into a JSON response.
+
+    P.S. The output data will not be validated, it's a design choice of Marshmallow.
+    This output validation may be supported in Marshmallow 4.0.
+
+    Examples:
+
+    ```python
+    from apiflask import APIFlask, output
+
+    app = APIFlask(__name__)
+
+    @app.get('/')
+    @output(PetOutSchema)
+    def hello():
+        return the_dict_or_object_match_petout_schema
+    ```
+
+    Arguments:
+        schema: The schemas of the output data.
+        status_code: The status code of the response, defaults to `200`.
+        description: The description of the response.
+        schema_name: The schema name for dict schema, only needed when you pass
+            a `dict` schema (e.g. `{'name': String()}`).
+    """
     if isinstance(schema, ABCMapping) and schema != {}:
         schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
@@ -160,30 +257,48 @@ def doc(
     deprecated: Optional[bool] = False,
     hide: Optional[bool] = False
 ) -> Callable[[DecoratedType], DecoratedType]:
-    """
-    Set up OpenAPI documentation for view function.
+    """Set up the OpenAPI Spec for view functions.
+
+    > Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
+    `app.post`, etc.).
+
+    Examples:
+
+    ```python
+    from apiflask import APIFlask, doc
+
+    app = APIFlask(__name__)
+
+    @app.get('/')
+    @doc(summary='Say hello', tag='Foo')
+    def hello():
+        return 'Hello'!
+    ```
 
     Arguments:
-        summary: The summary of this view function. If not set, the name of
-            the view function will be used. If your view function named with `get_pet`,
-            then the summary will be "Get Pet". If the view function has docstring, then
-            the first line of the docstring will be used. The precedence will be:
-            @doc(summary='blah') > the frist line of docstring > the view functino name
-        description: The description of this view function. If not set, the lines
-            after the empty line of the docstring will be used.
-        tag: The tag list of this view function, map the tags you passed in the :attr:`tags`
-            attribute. You can pass a list of tag names or just a single tag string. If `app.tags`
-            not set, the blueprint name will be used as tag name.
+        summary: The summary of this endpoint. If not set, the name of the view function
+            will be used. If your view function named with `get_pet`, then the summary
+            will be "Get Pet". If the view function has docstring, then the first line of
+            the docstring will be used. The precedence will be:
+            ```
+            @doc(summary='blah') > the first line of docstring > the view function name
+            ```
+        description: The description of this endpoint. If not set, the lines after the empty
+            line of the docstring will be used.
+        tag: The tag or tag list of this endpoint, map the tags you passed in the `app.tags`
+            attribute. You can pass a list of tag names or just a single tag name string.
+            If `app.tags` not set, the blueprint name will be used as tag name.
         responses: The other responses for this view function, accept a dict in a format
-            of `{400: 'Bad Request'}`.
+            of `{404: 'Not Found'}` or a list of status_code (`[404, 418]`).
         deprecated: Flag this endpoint as deprecated in API docs. Defaults to `False`.
         hide: Hide this endpoint in API docs. Defaults to `False`.
 
-    .. versionchanged:: 0.3.0
-    - Change the default value of `deprecated` from `None` to `False`.
-    - Rename `tags` to `tag`.
+    *Version changed: 0.3.0*
 
-    .. versionadded:: 0.2.0
+    - Change the default value of `deprecated` from `None` to `False`.
+    - Rename argument `tags` to `tag`.
+
+    *Version added: 0.2.0*
     """
     def decorator(f):
         _annotate(

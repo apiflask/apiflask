@@ -29,6 +29,7 @@ markdown_extensions:
         permalink: True
 nav:
   - Home: index.md
+  - Basic Usage: usage.md
   - Quickstart: quickstart.md
   - Configuration: configuration.md
   - Tutorial: tutorial/index.md
@@ -36,10 +37,31 @@ nav:
   - Snippets: snippets/index.md
   - External Tools: tools/index.md
   - Contributing: contributing.md
-  - Origins and Inspiration: acknowledgement.md
+  - Acknowledgement: acknowledgement.md
   - Changelog: changelog.md
   - Authors: authors.md
-  - API Reference: api.md
+  - API Reference:
+    - APIFlask: api/app.md
+    - APIBlueprint: api/blueprint.md
+    - Decorators: api/decorators.md
+    - Errors: api/errors.md
+    - Schemas: api/schemas.md
+    - Security: api/security.md
+    - Utils: api/utils.md
+  - Alternatives: alterinatives.md
+  - Migrating from Flask: flask.md
+  - OpenAPI: openapi.md
+  - Request Validation: request.md
+  - Schema and Fields: schema.md
+  - Security: security.md
+  - Swagger UI and Redoc: swagger.md
 plugins:
   - search
-  - mkdocstrings
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          rendering:
+            heading_level: 2
+      watch:
+        - apiflask

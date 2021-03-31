@@ -30,118 +30,135 @@ from .types import SpecCallbackType
 
 @route_shortcuts
 class APIFlask(Flask):
+    """The `Flask` object with some web API support.
+
+    Examples:
+
+    ```python
+    from apiflask import APIFlask
+
+    app = APIFlask(__name__)
+    ```
+
+    Attributes:
+        description: The description of the API (openapi.info.description).
+            This attribute can also be configured from the config with the
+            `DESCRIPTION` configuration key. Defaults to `None`.
+        tags: The tags of the OpenAPI spec documentation (openapi.tags), accepts a
+            list of dicts. You can also pass a simple list contains the tag name:
+
+            ```python
+            app.tags = ['foo', 'bar', 'baz']
+            ```
+
+            A standard OpenAPI tags list will look like this:
+
+            ```python
+            app.tags = [
+                {'name': 'foo', 'description': 'The description of foo'},
+                {'name': 'bar', 'description': 'The description of bar'},
+                {'name': 'baz', 'description': 'The description of baz'}
+            ]
+            ```
+
+            If not set, the blueprint names will be used as tags.
+
+            This attribute can also be configured from the config with the
+            `TAGS` configuration key. Defaults to `None`.
+        contact: The contact information of the API (openapi.info.contact). Example:
+
+            ```python
+            app.contact = {
+                'name': 'API Support',
+                'url': 'http://www.example.com/support',
+                'email': 'support@example.com'
+            }
+            ```
+
+            This attribute can also be configured from the config with the
+            `CONTACT` configuration key. Defaults to `None`.
+        license: The license of the API (openapi.info.license). Example:
+
+            ```python
+            app.license = {
+                'name': 'Apache 2.0',
+                'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
+            }
+            ```
+
+            This attribute can also be configured from the config with the
+            `LICENSE` configuration key. Defaults to `None`.
+        servers: The servers information of the API (openapi.servers), accepts
+            multiple server dicts. Example value:
+
+            ```python
+            app.servers = [
+                {
+                    'name': 'Production Server',
+                    'url': 'http://api.example.com'
+                }
+            ]
+            ```
+
+            This attribute can also be configured from the config with the
+            `SERVERS` configuration key. Defaults to `None`.
+        external_docs: The external documentation information of the API
+            (openapi.externalDocs). Example:
+
+            ```python
+            app.external_docs = {
+                'description': 'Find more info here',
+                'url': 'http://docs.example.com'
+            }
+            ```
+
+            This attribute can also be configured from the config with the
+            `EXTERNAL_DOCS` configuration key. Defaults to `None`.
+        terms_of_service: The terms of service URL of the API
+            (openapi.info.termsOfService). Example:
+
+            ```python
+            app.terms_of_service = "http://example.com/terms/"
+            ```
+
+            This attribute can also be configured from the config with the
+            `TERMS_OF_SERVICE` configuration key. Defaults to `None`.
+        spec_callback: It stores the function object registerd by
+            [`spec_processor`][apiflask.APIFlask.spec_processor]. You can also
+            pass a callback function to it directly without using `spec_processor`.
+            Example:
+
+            ```python
+            def update_spec(spec):
+                spec['title'] = 'Updated Title'
+                return spec
+
+            app.spec_callback = update_spec
+            ```
+
+        error_callback: It stores the function object registerd by
+            [`error_processor`][apiflask.APIFlask.error_processor]. You can also
+            pass a callback function to it directly without using `error_processor`.
+            Example:
+
+            ```python
+            def my_error_handler(status_code, message, detail, headers):
+                return {
+                    'status_code': status_code,
+                    'message': message,
+                    'detail': detail
+                }, status_code, headers
+
+            app.error_processor = my_error_handler
+            ```
     """
-    The Flask object with some Web API support.
-
-    Arguments:
-        import_name: the name of the application package.
-        title: The title of the API, defaults to "APIFlask".
-            You can change it to the name of your API (e.g. "Pet API").
-        version: The version of the API, defaults to "1.0.0".
-        tags: The tags of the OpenAPI spec documentation, accepts a list.
-            See :attr:`tags` for more details.
-        spec_path: The path to OpenAPI Spec documentation. It
-            defaults to `/openapi.json`, if the path end with `.yaml`
-            or `.yml`, the YAML format of the OAS will be returned.
-        swagger_path: The path to Swagger UI documentation.
-        redoc_path: The path to Redoc documentation.
-        json_errors: If True, APIFlask will return a JSON response
-            for HTTP errors.
-        enable_openapi: If False, will disable OpenAPI spec and docs views.
-    """
-    #: The title of the API (openapi.info.title), defaults to "APIFlask".
-    #: You can change it to the name of your API (e.g. "Pet API").
-    title: Optional[str] = None
-
-    #: The version of the API (openapi.info.version), defaults to "1.0.0".
-    version: Optional[str] = None
-
-    #: The description of the API (openapi.info.description).
-    #:
-    #: This attribute can also be configured from the config with the
-    #: ``DESCRIPTION`` configuration key. Defaults to ``None``.
     description: Optional[str] = ConfigAttribute('DESCRIPTION')  # type: ignore
-
-    #: The tags of the OpenAPI spec documentation (openapi.tags), accepts a
-    #: list of dicts.
-    #: You can also pass a simple list contains the tag name::
-    #:
-    #:     app.tags = ['foo', 'bar', 'baz']
-    #:
-    #: A standard OpenAPI tags list will look like this::
-    #:
-    #:     app.tags = [
-    #:         {'name': 'foo', 'description': 'The description of foo'},
-    #:         {'name': 'bar', 'description': 'The description of bar'},
-    #:         {'name': 'baz', 'description': 'The description of baz'}
-    #:     ]
-    #:
-    #: If not set, the blueprint names will be used as tags.
-    #:
-    #: This attribute can also be configured from the config with the
-    #: ``TAGS`` configuration key. Defaults to ``None``.
     tags: Optional[Union[List[str], List[Dict[str, str]]]
                    ] = ConfigAttribute('TAGS')  # type: ignore
-
-    #: The contact information of the API (openapi.info.contact).
-    #: Example value:
-    #:
-    #:    app.contact = {
-    #:        'name': 'API Support',
-    #:        'url': 'http://www.example.com/support',
-    #:        'email': 'support@example.com'
-    #:    }
-    #:
-    #: This attribute can also be configured from the config with the
-    #: ``CONTACT`` configuration key. Defaults to ``None``.
     contact: Optional[Dict[str, str]] = ConfigAttribute('CONTACT')  # type: ignore
-
-    #: The license of the API (openapi.info.license).
-    #: Example value:
-    #:
-    #:    app.license = {
-    #:        'name': 'Apache 2.0',
-    #:        'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
-    #:    }
-    #:
-    #: This attribute can also be configured from the config with the
-    #: ``LICENSE`` configuration key. Defaults to ``None``.
     license: Optional[Dict[str, str]] = ConfigAttribute('LICENSE')  # type: ignore
-
-    #: The servers information of the API (openapi.servers), accepts multiple
-    #: server dicts.
-    #: Example value:
-    #:
-    #:    app.servers = [
-    #:        {
-    #:            'name': 'Production Server',
-    #:            'url': 'http://api.example.com'
-    #:        }
-    #:    ]
-    #:
-    #: This attribute can also be configured from the config with the
-    #: ``SERVERS`` configuration key. Defaults to ``None``.
     servers: Optional[List[Dict[str, str]]] = ConfigAttribute('SERVERS')  # type: ignore
-
-    #: The external documentation information of the API (openapi.externalDocs).
-    #: Example value:
-    #:
-    #:    app.external_docs = {
-    #:       'description': 'Find more info here',
-    #:       'url': 'http://docs.example.com'
-    #:    }
-    #:
-    #: This attribute can also be configured from the config with the
-    #: ``EXTERNAL_DOCS`` configuration key. Defaults to ``None``.
     external_docs: Optional[Dict[str, str]] = ConfigAttribute('EXTERNAL_DOCS')  # type: ignore
-
-    #: The terms of service URL of the API (openapi.info.termsOfService).
-    #: Example value:
-    #:
-    #:    app.terms_of_service = "http://example.com/terms/"
-    #:
-    #: This attribute can also be configured from the config with the
-    #: ``TERMS_OF_SERVICE`` configuration key. Defaults to ``None``.
     terms_of_service: Optional[str] = ConfigAttribute('TERMS_OF_SERVICE')  # type: ignore
 
     def __init__(
@@ -165,6 +182,26 @@ class APIFlask(Flask):
         instance_relative_config: bool = False,
         root_path: Optional[str] = None
     ) -> None:
+        """Make a Flask app instance.
+
+        Arguments:
+            import_name: The name of the application package, usually
+                `__name__`. This helps locate the `root_path` for the
+                application.
+            title: The title of the API (openapi.info.title), defaults to "APIFlask".
+                You can change it to the name of your API (e.g. "Pet API").
+            version: The version of the API (openapi.info.version), defaults to "1.0.0".
+            spec_path: The path to OpenAPI Spec documentation. It
+                defaults to `/openapi.json`, if the path end with `.yaml`
+                or `.yml`, the YAML format of the OAS will be returned.
+            docs_path: The path to Swagger UI documentation, defaults to `/docs`.
+            docs_oauth2_redirect_path: The path to Swagger UI OAuth redirect.
+            redoc_path: The path to Redoc documentation, defaults to `/redoc`.
+            json_errors: If True, APIFlask will return a JSON response for HTTP errors.
+            enable_openapi: If False, will disable OpenAPI spec and API docs views.
+
+        Other keyword arguments are directly pass to `flask.Flask`.
+        """
         super(APIFlask, self).__init__(
             import_name,
             static_url_path=static_url_path,
@@ -188,8 +225,8 @@ class APIFlask(Flask):
         self.redoc_path = redoc_path
         self.docs_oauth2_redirect_path = docs_oauth2_redirect_path
         self.enable_openapi = enable_openapi
-
         self.json_errors = json_errors
+
         self.spec_callback: Optional[SpecCallbackType] = None  # type: ignore
         self.error_callback: ErrorCallbackType = default_error_handler  # type: ignore
         self._spec: Optional[Union[dict, str]] = None
@@ -221,17 +258,21 @@ class APIFlask(Flask):
     def dispatch_request(self) -> ResponseType:
         """Overwrite the default dispatch method to pass view arguments as positional
         arguments. With this overwrite, the view function can accept the parameters in
-        a intuitive way (from top to bottom, from left to right)::
+        a intuitive way (from top to bottom, from left to right).
 
-            @app.get('/pets/<name>/<int:pet_id>/<age>')  # -> name, pet_id, age
-            @input(QuerySchema)  # -> query
-            @output(PetSchema)  # -> pet
-            def get_pet(name, pet_id, age, query, pet):
-                pass
+        Examples:
+
+        ```python
+        @app.get('/pets/<name>/<int:pet_id>/<age>')  # -> name, pet_id, age
+        @input(QuerySchema)  # -> query
+        @output(PetSchema)  # -> pet
+        def get_pet(name, pet_id, age, query, pet):
+            pass
+        ```
 
         From Flask, see NOTICE file for license informaiton.
 
-        .. versionadded:: 0.2.0
+        *Version added: 0.2.0*
         """
         req = _request_ctx_stack.top.request
         if req.routing_exception is not None:
@@ -251,53 +292,71 @@ class APIFlask(Flask):
         self,
         f: ErrorCallbackType
     ) -> ErrorCallbackType:
-        """Registers a error handler callback function.
+        """A decorator used to register a error handler callback function.
 
         The callback function will be called when validation error hanppend when
         parse a request or an exception triggerd with exceptions.HTTPError or
         :func:`exceptions.abort`. It must accept four positional arguments (i.e.
-        ``status_code, message, detail, headers``) and return a valid response::
+        `status_code, message, detail, headers`) and return a valid response.
 
-            @app.error_processor
-            def my_error_handler(status_code, message, detail, headers):
-                return {
-                    'status_code': status_code,
-                    'message': message,
-                    'detail': detail
-                }, status_code, headers
+        Examples:
+
+        ```python
+        @app.error_processor
+        def my_error_handler(status_code, message, detail, headers):
+            return {
+                'status_code': status_code,
+                'message': message,
+                'detail': detail
+            }, status_code, headers
+        ```
 
         The arguments are:
+
         - status_code: If the error triggerd by validation error, the value will be
-            400 (default) or the value you passed in config ``VALIDATION_ERROR_STATUS_CODE``.
+            400 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
             If the error triggerd by HTTP, it will be the status code you passed.
             Otherwise, it will be the status code set by Werkzueg when processing the request.
         - message: The error description for this error, either you passed or grab from Werkzeug.
         - detail: The detail of the error, it will be filled when validation error happaned, the
-            structure will be::
+            structure will be:
 
-                "<location>": {
-                    "<field_name>": ["<error_message>", ...],
-                    ...
-                },
+            ```python
+            "<location>": {
+                "<field_name>": ["<error_message>", ...],
+                "<field_name>": ["<error_message>", ...],
                 ...
+            },
+            "<location>": {
+                ...
+            },
+            ...
+            ```
 
-            The value of ``location`` can be ``json`` (i.e. request body) or ``query``
+            The value of `location` can be `json` (i.e. request body) or `query`
             (i.e. query string) depend on the palace the validation error happened.
         - headers: The value will be None unless you pass it in HTTPError or abort.
 
-        If you want, you can rewrite the whole response body to anything you like::
+        If you want, you can rewrite the whole response body to anything you like:
 
-            @app.errorhandler_callback
-            def my_error_handler(status_code, message, detail, headers):
-                return {'error_detail': detail}, status_code, headers
+        ```python
+        @app.errorhandler_callback
+        def my_error_handler(status_code, message, detail, headers):
+            return {'error_detail': detail}, status_code, headers
+        ```
 
-        However, I would recommend to keep the ``detail`` since it contains the detail
+        However, I would recommend to keep the `detail` since it contains the detail
         information about the validation error.
         """
         self.error_callback = f
         return f
 
     def _register_openapi_blueprint(self) -> None:
+        """Register a bluepint for OpenAPI support.
+
+        The name of the blueprint is "openapi". This blueprint will hold the view
+        functions for spec file, Swagger UI and Redoc.
+        """
         bp = Blueprint(
             'openapi',
             __name__,
@@ -345,6 +404,14 @@ class APIFlask(Flask):
             self.register_blueprint(bp)
 
     def get_spec(self, spec_format: Optional[str] = None) -> Union[dict, str]:
+        """
+        Get the current OAS document file.
+
+        Arguments:
+            spec_format: The format of the spec file, one of `'json'` and `'yaml'`,
+                defaults to `None`. If not set, the value of configuration variable
+                `SPEC_FORMAT` will be used (defaults to `'json'`).
+        """
         if spec_format is None:
             spec_format = self.config['SPEC_FORMAT'].lower()
         if self._spec is None:
@@ -357,14 +424,41 @@ class APIFlask(Flask):
         return self._spec
 
     def spec_processor(self, f: SpecCallbackType) -> SpecCallbackType:
+        """A decorator used to register a spec handler callback function.
+
+        You can register a function to update the spec. The callback function
+        should accept the spec as argument and return it in the end. The callback
+        function will be called when generating the spec file.
+
+        Examples:
+
+        ```python
+        @app.spec_processor
+        def update_spec(spec):
+            spec['title'] = 'Updated Title'
+            return spec
+        ```
+
+        Notice the format of the spec is depends on the the value of configuration
+        variable `SPEC_FORMAT` (defaults to `'json'`):
+
+        - `'json'` -> dictionary
+        - `'yaml'` -> string
+        """
         self.spec_callback = f
         return f
 
     @property
     def spec(self) -> Union[dict, str]:
+        """Get the current OAS document file.
+        
+        This property will call [get_spec][apiflask.APIFlask.get_spec] method.
+        """
         return self.get_spec()
 
     def _generate_spec(self) -> APISpec:
+        """Generate the spec, return an instance of `apispec.APISpec`.
+        """
         def resolver(schema: Schema) -> str:
             name = schema.__class__.__name__
             if name.endswith('Schema'):

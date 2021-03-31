@@ -1,0 +1,3 @@
+# `APIFlask`
+
+::: apiflask.APIFlask

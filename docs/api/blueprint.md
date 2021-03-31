@@ -1,0 +1,3 @@
+# `APIBlueprint`
+
+::: apiflask.APIBlueprint
