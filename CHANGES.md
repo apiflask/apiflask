@@ -1,7 +1,25 @@
 # APIFlask Change Log
 
 ## Version 0.3.0
-Released: -
+Released: 2021/3/31
+
+- First public version.
+- Add type annotations and enable type check in tox ([commit](https://github.com/greyli/apiflask/commit/5cbf27ecbb4318a9fd177307a52146aa993f86c8)).
+- Refactor the APIs ([commit](https://github.com/greyli/apiflask/commit/d149c0c0ee90a7120e6ede1c3e09715c944bb704)):
+    - Change base class `scaffold.Scaffold` to class decorator `utils.route_shortcuts`.
+    - Merge the `_OpenAPIMixin` class into `APIFlask` class.
+    - Turn `security._AuthErrorMixin` into `handle_auth_error` function.
+    - Add explicit argument `role` and `optional` for `@auth_required` decorator.
+    - Rename module `errors` to `exceptions`.
+    - Rename `api_abort()` to `abort_json()`.
+    - Rename `get_error_message()` to `get_reason_phrase()` and move it to `utils` module.
+    - Update the default value of config `AUTH_ERROR_DESCRIPTION`.
+    - Add `validators` module.
+    - Change `@doc(tags)` to `@doc(tag)`.
+- Support to pass a dict schema in `@output` decorator ([commit](https://github.com/greyli/apiflask/commit/e82fd168faf5f04871e549ebe22c63e66270bd1b)).
+- Support to pass a dict schema in `@input` decorator ([commit](https://github.com/greyli/apiflask/commit/f9c2c441363ddf4720800e0d3fc3d0e9cc28fe81)).
+- Check if the status code is valid for `abort_json` and `HTTPError` ([commit](https://github.com/greyli/apiflask/commit/20077dea0e82f123a3d2fc50c2ec529346215789)).
+- Add basic docstrings to generate the API reference documentation ([commit](https://github.com/greyli/apiflask/commit/6d65a25ab4de9d623e22575d4d5476abdc50cbc0)).
 
 ## Version 0.2.0
 Released: 2021-3-27
