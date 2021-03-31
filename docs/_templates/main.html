@@ -34,9 +34,11 @@ Welcome to follow <a href="https://twitter.com/apiflask">@apiflask</a> on Twitte
 {% block analytics %}
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q5PZT7R39D"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-Q5PZT7R39D');
+if (window.location.hostname != "localhost") {
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Q5PZT7R39D');
+}
 </script>
 {% endblock %}
