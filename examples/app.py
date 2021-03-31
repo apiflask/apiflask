@@ -19,8 +19,8 @@ pets = [
 
 
 class PetInSchema(Schema):
-    name = String(required=True, validators=Length(0, 10))
-    category = String(required=True, validators=OneOf(['dog', 'cat']))
+    name = String(required=True, validate=Length(0, 10))
+    category = String(required=True, validate=OneOf(['dog', 'cat']))
 
 
 class PetOutSchema(Schema):

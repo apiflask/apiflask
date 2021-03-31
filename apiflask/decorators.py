@@ -77,7 +77,7 @@ def auth_required(
     ```
 
     Arguments:
-        auth: The `auth` object, an instance of [`HTTPBasicAuth`][apiflask.security.HTTPBasieAuth]
+        auth: The `auth` object, an instance of [`HTTPBasicAuth`][apiflask.security.HTTPBasicAuth]
             or [`HTTPTokenAuth`][apiflask.security.HTTPTokenAuth].
         role: The selected role to allow to visit this view, accepts a string or a list.
             See [Flask-HTTPAuth's documentation](role) for more details.
