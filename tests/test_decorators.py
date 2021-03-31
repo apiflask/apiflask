@@ -253,6 +253,26 @@ def test_input_with_dict_schema(app, client):
         'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated1'
 
 
+def test_input_body_example(app, client):
+    @app.post('/foo')
+    @input(FooSchema, example=['foo', 'bar', 'baz'])
+    def foo():
+        pass
+
+    @app.post('/bar')
+    @input(FooSchema, example={'name': 'foo', 'age': 20})
+    def bar():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['post']['requestBody'][
+        'content']['application/json']['example'] == ['foo', 'bar', 'baz']
+    assert rv.json['paths']['/bar']['post']['requestBody'][
+        'content']['application/json']['example'] == {'name': 'foo', 'age': 20}
+
+
 def test_output(app, client):
     @app.route('/foo')
     @output(FooSchema)
@@ -363,6 +383,26 @@ def test_output_with_dict_schema(app, client):
         'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated'
     assert rv.json['paths']['/spam']['get']['responses']['200'][
         'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated1'
+
+
+def test_output_body_example(app, client):
+    @app.get('/foo')
+    @output(FooSchema, example=['foo', 'bar', 'baz'])
+    def foo():
+        pass
+
+    @app.get('/bar')
+    @output(FooSchema, example={'name': 'foo', 'age': 20})
+    def bar():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['get']['responses']['200'][
+        'content']['application/json']['example'] == ['foo', 'bar', 'baz']
+    assert rv.json['paths']['/bar']['get']['responses']['200'][
+        'content']['application/json']['example'] == {'name': 'foo', 'age': 20}
 
 
 def test_doc_summary_and_description(app, client):

@@ -106,6 +106,7 @@ def input(
     schema: Schema,
     location: str = 'json',
     schema_name: Optional[str] = None,
+    example: Optional[Any] = None,
     **kwargs: Any
 ) -> Callable[[DecoratedType], DecoratedType]:
     """Add input settings for view functions.
@@ -139,6 +140,7 @@ def input(
         schema_name: The schema name for dict schema, only needed when you pass
             a `dict` schema (e.g. `{'name': String(required=True)}`) for `json`
             location.
+        example: The example data for request body.
     """
     if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
@@ -155,10 +157,11 @@ def input(
                 f' Got "{location}" instead.'
             )
         if location == 'json':
-            _annotate(f, body=schema)
+            _annotate(f, body=schema, body_example=example)
         else:
             if not hasattr(f, '_spec') or f._spec.get('args') is None:
                 _annotate(f, args=[])
+            # Todo: Support set example for request parameters
             f._spec['args'].append((schema, location))
         return use_args(schema, location=location, **kwargs)(f)
     return decorator
@@ -169,6 +172,7 @@ def output(
     status_code: int = 200,
     description: Optional[str] = None,
     schema_name: Optional[str] = None,
+    example: Optional[Any] = None
 ) -> Callable[[DecoratedType], DecoratedType]:
     """Add output settings for view functions.
 
@@ -202,6 +206,7 @@ def output(
         description: The description of the response.
         schema_name: The schema name for dict schema, only needed when you pass
             a `dict` schema (e.g. `{'name': String()}`).
+        example: The example data for response.
     """
     if isinstance(schema, ABCMapping) and schema != {}:
         schema = _generate_schema_from_mapping(schema, schema_name)
@@ -215,7 +220,8 @@ def output(
         _annotate(f, response={
             'schema': schema,
             'status_code': status_code,
-            'description': description
+            'description': description,
+            'example': example
         })
 
         def _jsonify(obj, many=_sentinel, *args, **kwargs):  # pragma: no cover
