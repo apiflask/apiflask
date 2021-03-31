@@ -16,12 +16,12 @@ try:
 except ImportError:
     sqla = None
 
-from .errors import HTTPError
-from .errors import default_error_handler
+from .exceptions import HTTPError
+from .exceptions import default_error_handler
 from .utils import route_shortcuts
+from .utils import get_reason_phrase
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
-from .errors import get_error_message
 from .schemas import Schema
 from .types import ResponseType
 from .types import ErrorCallbackType
@@ -451,7 +451,7 @@ class APIFlask(Flask):
     @property
     def spec(self) -> Union[dict, str]:
         """Get the current OAS document file.
-        
+
         This property will call [get_spec][apiflask.APIFlask.get_spec] method.
         """
         return self.get_spec()
@@ -547,7 +547,7 @@ class APIFlask(Flask):
         auth_names: List[str] = []
         auth_blueprints: Dict[str, Dict[str, Any]] = {}
 
-        def update_auth_schemas_names(
+        def add_auth_schemes_and_names(
             auth: Union[Type[HTTPBasicAuth], Type[HTTPTokenAuth]]
         ) -> None:
             auth_schemes.append(auth)
@@ -579,14 +579,14 @@ class APIFlask(Flask):
                             'auth': auth,
                             'roles': f._spec.get('roles')  # type: ignore
                         }
-                        update_auth_schemas_names(auth)
+                        add_auth_schemes_and_names(auth)
 
         for rule in self.url_map.iter_rules():
             view_func = self.view_functions[rule.endpoint]
             if hasattr(view_func, '_spec'):
                 auth = view_func._spec.get('auth')
                 if auth is not None and auth not in auth_schemes:
-                    update_auth_schemas_names(auth)
+                    add_auth_schemes_and_names(auth)
 
         security: Dict[Union[Type[HTTPBasicAuth], Type[HTTPTokenAuth]], str] = {}
         security_schemes: Dict[str, Dict[str, str]] = {}
@@ -729,19 +729,7 @@ class APIFlask(Flask):
                     }
                     operation['responses'][status_code]['description'] = description
 
-                if view_func._spec.get('response'):
-                    status_code: str = str(view_func._spec.get('response')['status_code'])
-                    schema = view_func._spec.get('response')['schema']
-                    description: str = view_func._spec.get('response')['description'] or \
-                        descriptions.get(status_code, self.config['DEFAULT_2XX_DESCRIPTION'])
-                    add_response(status_code, schema, description)
-                else:
-                    # add a default 200 response for views without using @output
-                    # or @doc(responses={...})
-                    if not view_func._spec.get('responses') and self.config['AUTO_200_RESPONSE']:
-                        add_response('200', {}, descriptions['200'])
-
-                def add_response_and_schema(
+                def add_response_with_schema(
                     status_code: str,
                     schema: Union[Schema, dict],
                     schema_name: str,
@@ -761,6 +749,18 @@ class APIFlask(Flask):
                             class or an OpenAPI schema dict.'
                         )
 
+                if view_func._spec.get('response'):
+                    status_code: str = str(view_func._spec.get('response')['status_code'])
+                    schema = view_func._spec.get('response')['schema']
+                    description: str = view_func._spec.get('response')['description'] or \
+                        descriptions.get(status_code, self.config['DEFAULT_2XX_DESCRIPTION'])
+                    add_response(status_code, schema, description)
+                else:
+                    # add a default 200 response for views without using @output
+                    # or @doc(responses={...})
+                    if not view_func._spec.get('responses') and self.config['AUTO_200_RESPONSE']:
+                        add_response('200', {}, descriptions['200'])
+
                 # add validation error response
                 if self.config['AUTO_VALIDATION_ERROR_RESPONSE']:
                     if view_func._spec.get('body') or view_func._spec.get('args'):
@@ -773,7 +773,7 @@ class APIFlask(Flask):
                         schema: Union[  # type: ignore
                             Schema, dict
                         ] = self.config['VALIDATION_ERROR_SCHEMA']
-                        add_response_and_schema(
+                        add_response_with_schema(
                             status_code, schema, 'ValidationError', description
                         )
 
@@ -789,7 +789,7 @@ class APIFlask(Flask):
                         schema: Union[  # type: ignore
                             Schema, dict
                         ] = self.config['AUTH_ERROR_SCHEMA']
-                        add_response_and_schema(
+                        add_response_with_schema(
                             status_code, schema, 'AuthorizationError', description
                         )
 
@@ -801,7 +801,7 @@ class APIFlask(Flask):
                         for status_code in view_func._spec.get('responses'):
                             responses[  # type: ignore
                                 status_code
-                            ] = get_error_message(int(status_code))
+                            ] = get_reason_phrase(int(status_code))
                     for status_code, description in responses.items():  # type: ignore
                         status_code: str = str(status_code)  # type: ignore
                         if status_code in operation['responses']:
@@ -813,7 +813,7 @@ class APIFlask(Flask):
                             schema: Union[  # type: ignore
                                 Schema, dict
                             ] = self.config['HTTP_ERROR_SCHEMA']
-                            add_response_and_schema(
+                            add_response_with_schema(
                                 status_code, schema, 'HTTPError', description
                             )
                         else:

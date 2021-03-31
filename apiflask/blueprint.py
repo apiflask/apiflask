@@ -44,7 +44,7 @@ class APIBlueprint(Blueprint):
                 blueprint.
             tag: The tag of this blueprint. If not set, the
                 `<blueprint name>.title()` will be used (`'foo'` -> `'Foo'`).
-                Accepts a tag name string or a complete OpenAPI tag dict.
+                Accepts a tag name string or an OpenAPI tag dict.
                 Example:
 
                 ```python

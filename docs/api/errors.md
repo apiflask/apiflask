@@ -1,3 +1,0 @@
-# Errors
-
-::: apiflask.errors

@@ -1,5 +1,7 @@
 from typing import Any
 
+from werkzeug.http import HTTP_STATUS_CODES
+
 _sentinel = object()
 
 
@@ -63,3 +65,12 @@ def route_shortcuts(cls):
     cls.patch = patch
     cls.delete = delete
     return cls
+
+
+def get_reason_phrase(status_code: int) -> str:
+    """A helper function used to get the reason phrase of given status code.
+
+    Arguments:
+        status_code: A standard HTTP status code.
+    """
+    return HTTP_STATUS_CODES.get(status_code, 'Unknown error')

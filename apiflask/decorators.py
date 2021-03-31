@@ -8,7 +8,7 @@ from flask import current_app
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 from marshmallow import ValidationError as MarshmallowValidationError
 
-from .errors import ValidationError
+from .exceptions import ValidationError
 from .utils import _sentinel
 from .schemas import Schema
 from .schemas import EmptySchema

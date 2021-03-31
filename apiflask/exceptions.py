@@ -1,7 +1,8 @@
 from typing import Any, Optional, Mapping, Union, Tuple
 
-from werkzeug.http import HTTP_STATUS_CODES
 from werkzeug.exceptions import default_exceptions
+
+from .utils import get_reason_phrase
 
 
 class HTTPError(Exception):
@@ -54,15 +55,16 @@ class HTTPError(Exception):
         if message is not None:
             self.message = message
         else:
-            self.message = get_error_message(status_code)
+            self.message = get_reason_phrase(status_code)
 
 
 class ValidationError(HTTPError):
-    """The exception used when request validation error happened."""
+    """The exception used when request validation error happened.
+    """
     pass
 
 
-def api_abort(
+def abort_json(
     status_code: int,
     message: Optional[str] = None,
     detail: Optional[Any] = None,
@@ -74,7 +76,7 @@ def api_abort(
     Examples:
 
     ```python
-    from apiflask import APIFlask, api_abort
+    from apiflask import APIFlask, abort_json
     from flask import escape
 
     app = APIFlask(__name__)
@@ -82,7 +84,7 @@ def api_abort(
     @app.get('/<name>')
     def hello(name):
         if name == 'Foo':
-            api_abort(404, 'This man is missing.')
+            abort_json(404, 'This man is missing.')
         return f'Hello, escape{name}'!
     ```
 
@@ -99,15 +101,6 @@ def api_abort(
         headers: A dict of headers used in error response.
     """
     raise HTTPError(status_code, message, detail, headers)
-
-
-def get_error_message(status_code: int) -> str:
-    """A help function used to get the reason phrase of given status code.
-
-    Arguments:
-        status_code: A standard HTTP status code.
-    """
-    return HTTP_STATUS_CODES.get(status_code, 'Unknown error')
 
 
 def default_error_handler(
@@ -128,7 +121,7 @@ def default_error_handler(
         headers: A dict of headers used in error response.
     """
     if message is None:
-        message = get_error_message(status_code)
+        message = get_reason_phrase(status_code)
     if detail is None:
         detail = {}
     body = {'detail': detail, 'message': message, 'status_code': status_code}

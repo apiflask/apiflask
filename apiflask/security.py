@@ -4,7 +4,7 @@ from flask import g, current_app
 from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 
-from .errors import default_error_handler
+from .exceptions import default_error_handler
 
 
 class _AuthBase:

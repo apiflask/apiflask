@@ -44,7 +44,7 @@ nav:
     - APIFlask: api/app.md
     - APIBlueprint: api/blueprint.md
     - Decorators: api/decorators.md
-    - Errors: api/errors.md
+    - Exceptions: api/exceptions.md
     - Schemas: api/schemas.md
     - Security: api/security.md
     - Utils: api/utils.md

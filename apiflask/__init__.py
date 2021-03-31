@@ -5,11 +5,12 @@ from .decorators import input
 from .decorators import output
 from .decorators import doc
 from .decorators import auth_required
-from .errors import api_abort
-from .errors import HTTPError
+from .exceptions import abort_json
+from .exceptions import HTTPError
 from .schemas import Schema
-from . import fields
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
+from . import fields
+from . import validators
 
 __version__ = '0.3.0dev'

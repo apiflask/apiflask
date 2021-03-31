@@ -1,6 +1,7 @@
 import pytest
 
-from apiflask.errors import api_abort, HTTPError, default_error_handler, get_error_message
+from apiflask.exceptions import abort_json, HTTPError, default_error_handler
+from apiflask.utils import get_reason_phrase
 
 
 @pytest.mark.parametrize('kwargs', [
@@ -34,10 +35,10 @@ def test_httperror(app, client, kwargs):
     {'message': 'missing', 'detail': {'location': 'query'}},
     {'message': 'missing', 'detail': {'location': 'query'}, 'headers': {'X-BAR': 'foo'}}
 ])
-def test_api_abort(app, client, kwargs):
+def test_abort_json(app, client, kwargs):
     @app.get('/bar')
     def bar():
-        api_abort(404, **kwargs)
+        abort_json(404, **kwargs)
 
     rv = client.get('/bar')
     assert rv.status_code == 404
@@ -55,7 +56,7 @@ def test_api_abort(app, client, kwargs):
 
 @pytest.mark.parametrize('code', [400, 404, 456, 4123])
 def test_get_error_message(code):
-    rv = get_error_message(code)
+    rv = get_reason_phrase(code)
     if code == 400:
         assert rv == 'Bad Request'
     elif code == 404:
@@ -87,7 +88,7 @@ def test_default_error_handler(kwargs):
 
 def test_invalid_error_status_code():
     with pytest.raises(LookupError):
-        api_abort(200)
+        abort_json(200)
 
     with pytest.raises(LookupError):
         raise HTTPError(204)

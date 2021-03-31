@@ -342,7 +342,7 @@ def test_auth_error_schema(app, client, schema):
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['post']['responses']['401']
     assert rv.json['paths']['/foo']['post']['responses']['401'][
-        'description'] == 'Authorization error'
+        'description'] == 'Authentication error'
     assert 'AuthorizationError' in rv.json['components']['schemas']
 
 
