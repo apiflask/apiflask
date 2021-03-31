@@ -4,8 +4,7 @@ include tox.ini
 include requirements.txt
 graft apiflask/templates/apiflask
 graft apiflask/static
-graft docs
 graft examples
 graft tests
-prune docs/site
+prune site
 global-exclude *.pyc

@@ -20,6 +20,7 @@ Released: 2021/3/31
 - Support to pass a dict schema in `@input` decorator ([commit](https://github.com/greyli/apiflask/commit/f9c2c441363ddf4720800e0d3fc3d0e9cc28fe81)).
 - Check if the status code is valid for `abort_json` and `HTTPError` ([commit](https://github.com/greyli/apiflask/commit/20077dea0e82f123a3d2fc50c2ec529346215789)).
 - Add basic docstrings to generate the API reference documentation ([commit](https://github.com/greyli/apiflask/commit/6d65a25ab4de9d623e22575d4d5476abdc50cbc0)).
+- Support to set custom example for request/response body ([commit](https://github.com/greyli/apiflask/commit/638fa9c5680944d6454a4dbafe8abb152525d91c)).
 
 ## Version 0.2.0
 Released: 2021-3-27
