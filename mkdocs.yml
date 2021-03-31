@@ -25,6 +25,7 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
   - pymdownx.snippets
+  - pymdownx.progressbar
   - toc:
         permalink: True
 nav:
@@ -65,3 +66,5 @@ plugins:
             heading_level: 2
       watch:
         - apiflask
+extra_css:
+  - _assets/extra.css
