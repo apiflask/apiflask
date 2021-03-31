@@ -3,7 +3,7 @@
 
 # APIFlask
 
-[![Build status](https://github.com/greyli/apiflask/workflows/build/badge.svg)](https://github.com/greyli/apiflask/actions)
+[![Build status](https://github.com/greyli/apiflask/workflows/build/badge.svg)](https://github.com/greyli/apiflask/actions) [![codecov](https://codecov.io/gh/greyli/apiflask/branch/master/graph/badge.svg?token=2CFPCZ1DMY)](https://codecov.io/gh/greyli/apiflask)
 
 APIFlask is a lightweight Python web API framework based on [Flask](https://github.com/pallets/flask/) and [marshmallow-code](https://github.com/marshmallow-code) projects. It's easy to use, high customizable, and 100% compatible with the Flask ecosystem. It starts as a fork of [APIFairy](https://github.com/miguelgrinberg/APIFairy) and inspired by [FastAPI](https://github.com/tiangolo/fastapi).
 
