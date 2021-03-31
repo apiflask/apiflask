@@ -46,7 +46,7 @@ nav:
     - Security: api/security.md
     - Utils: api/utils.md
   - Changelog: changelog.md
-  - IN WRITING:
+  - WIP:
     - Configuration: configuration.md
     - Migrating from Flask: flask.md
     - OpenAPI: openapi.md
