@@ -86,7 +86,7 @@ class PetOutSchema(Schema):
 @app.get('/pets/<int:pet_id>')
 @output(PetSchema)
 def get_pet(pet_id):
-    if pet_id > len(pets):
+    if pet_id > len(pets) - 1:
         abort_json(404)
     return pets[pet_id]
 
@@ -95,7 +95,7 @@ def get_pet(pet_id):
 @input(PetSchema)
 @output(PetSchema)
 def update_pet(pet_id, pet):
-    if pet_id > len(pets):
+    if pet_id > len(pets) - 1:
         abort_json(404)
     pet['id'] = pet_id
     pets[pet_id] = pet
