@@ -22,7 +22,12 @@ extra:
       link: https://twitter.com/apiflask
 copyright: Copyright &copy; 2021 <a href="https://greyli.com/en" target="_blank" rel="noopener">Grey Li</a>
 markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
   - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed
   - pymdownx.superfences
   - pymdownx.snippets
   - pymdownx.progressbar
@@ -31,21 +36,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Basic Usage: usage.md
-  - Configuration: configuration.md
-  - Migrating from Flask: flask.md
-  - OpenAPI: openapi.md
-  - Request Validation: request.md
-  - Schema and Fields: schema.md
-  - Security: security.md
-  - Swagger UI and Redoc: swagger.md
-  - Tutorial: tutorial/index.md
   - Examples: examples.md
-  - Snippets: snippets/index.md
-  - External Tools: tools/index.md
-  - Contributing: contributing.md
-  - Acknowledgement: acknowledgement.md
-  - Authors: authors.md
-  - Alternatives: alterinatives.md
   - API Reference:
     - APIFlask: api/app.md
     - APIBlueprint: api/blueprint.md
@@ -55,6 +46,21 @@ nav:
     - Security: api/security.md
     - Utils: api/utils.md
   - Changelog: changelog.md
+  - IN WRITING:
+    - Configuration: configuration.md
+    - Migrating from Flask: flask.md
+    - OpenAPI: openapi.md
+    - Request Validation: request.md
+    - Schema and Fields: schema.md
+    - Security: security.md
+    - Swagger UI and Redoc: swagger.md
+    - Tutorial: tutorial/index.md
+    - Snippets: snippets/index.md
+    - External Tools: tools/index.md
+    - Contributing: contributing.md
+    - Acknowledgement: acknowledgement.md
+    - Authors: authors.md
+    - Alternatives: alterinatives.md
 plugins:
   - search
   - mkdocstrings:

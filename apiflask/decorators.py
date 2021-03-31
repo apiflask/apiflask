@@ -278,7 +278,7 @@ def doc(
     @app.get('/')
     @doc(summary='Say hello', tag='Foo')
     def hello():
-        return 'Hello'!
+        return 'Hello'
     ```
 
     Arguments:
@@ -294,8 +294,8 @@ def doc(
         tag: The tag or tag list of this endpoint, map the tags you passed in the `app.tags`
             attribute. You can pass a list of tag names or just a single tag name string.
             If `app.tags` not set, the blueprint name will be used as tag name.
-        responses: The other responses for this view function, accept a dict in a format
-            of `{404: 'Not Found'}` or a list of status_code (`[404, 418]`).
+        responses: The other responses for this view function, accepts a dict in a format
+            of `{404: 'Not Found'}` or a list of status code (`[404, 418]`).
         deprecated: Flag this endpoint as deprecated in API docs. Defaults to `False`.
         hide: Hide this endpoint in API docs. Defaults to `False`.
 
