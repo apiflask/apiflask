@@ -9,15 +9,15 @@ APIFlask is a lightweight Python web API framework based on [Flask](https://gith
 
 With APIFlask, you will have:
 
-- More sugars for view function (`@app.get()`, `@app.post()`, `@input()`, `@output()`, `@doc()` and more)
-- Automatic request validation and serialization (with [Webargs](https://github.com/marshmallow-code/webargs))
-- Automatic response validation and deserialization (with [Marshmallow](https://github.com/marshmallow-code/marshmallow))
+- More sugars for view function (`@input()`, `@output()`, `@app.get()`, `@app.post()` and more)
+- Automatic request validation and deserialization (with [Webargs](https://github.com/marshmallow-code/webargs))
+- Automatic response formatting and serialization (with [Marshmallow](https://github.com/marshmallow-code/marshmallow))
 - Automatic [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) (OAS, formerly Swagger Specification) document generation (with [APISpec](https://github.com/marshmallow-code/apispec))
 - Automatic interactive API documentation (with [Swagger UI](https://github.com/swagger-api/swagger-ui) and [Redoc](https://github.com/Redocly/redoc))
-- API Authorization support (with [Flask-HTTPAuth](https://github.com/migulgrinberg/flask-httpauth))
+- API authentication support (with [Flask-HTTPAuth](https://github.com/migulgrinberg/flask-httpauth))
 - Automatic JSON response for HTTP errors
 
-*Currently this project is in active development stage, bugs and break changes are expected. Welcome to leave any suggestions or feedbacks in [this issue](https://github.com/greyli/apiflask/issues/1) or just submit a pull request to improve it.*
+*Currently this project is in active development stage, bugs and break changes are expected. Welcome to leave any suggestions or feedbacks in [this issue](https://github.com/greyli/apiflask/issues/1) or just submit a pull request to improve it. Thank you!*
 
 ## Requirements
 
@@ -40,20 +40,21 @@ For Windows:
 
 ## Links
 
-- Website: https://apiflask.com
-- Documentation: https://apiflask.com
-- PyPI Releases: https://pypi.python.org/pypi/APIFlask
-- Change Log: https://apiflask.com/changelog
-- Source Code: https://github.com/greyli/apiflask
-- Issue Tracker: https://github.com/greyli/apiflask/issues
-- Discussion: https://github.com/greyli/apiflask/discussions
-- Twitter: https://twitter.com/apiflask
+- Website: <https://apiflask.com>
+- Documentation: <https://apiflask.com>
+- PyPI Releases: <https://pypi.python.org/pypi/APIFlask>
+- Change Log: <https://apiflask.com/changelog>
+- Source Code: <https://github.com/greyli/apiflask>
+- Issue Tracker: <https://github.com/greyli/apiflask/issues>
+- Discussion: <https://github.com/greyli/apiflask/discussions>
+- Twitter: <https://twitter.com/apiflask>
 
 ## Example
 
 ```python
-from apiflask import APIFlask, input, output, Schema, api_abort
+from apiflask import APIFlask, Schema, input, output, abort_json
 from apiflask.fields import Integer, String
+from apiflask.validators import Length, OneOf
 
 app = APIFlask(__name__)
 
@@ -71,17 +72,22 @@ pets = [
 ]
 
 
-class PetSchema(Schema):
-    id = Integer(required=True, dump_only=True)
-    name = String(required=True)
-    category = String(required=True)
+class PetInSchema(Schema):
+    name = String(required=True, validate=Length(0, 10))
+    category = String(required=True, validate=OneOf(['dog', 'cat']))
+
+
+class PetOutSchema(Schema):
+    id = Integer()
+    name = String()
+    category = String()
 
 
 @app.get('/pets/<int:pet_id>')
 @output(PetSchema)
 def get_pet(pet_id):
     if pet_id > len(pets):
-        api_abort(404)
+        abort_json(404)
     return pets[pet_id]
 
 
@@ -90,7 +96,7 @@ def get_pet(pet_id):
 @output(PetSchema)
 def update_pet(pet_id, pet):
     if pet_id > len(pets):
-        api_abort(404)
+        abort_json(404)
     pet['id'] = pet_id
     pets[pet_id] = pet
     return pet
