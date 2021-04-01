@@ -84,7 +84,7 @@ class PetOutSchema(Schema):
 
 
 @app.get('/pets/<int:pet_id>')
-@output(PetSchema)
+@output(PetOutSchema)
 def get_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort_json(404)
@@ -92,8 +92,8 @@ def get_pet(pet_id):
 
 
 @app.post('/pets/<int:pet_id>')
-@input(PetSchema)
-@output(PetSchema)
+@input(PetInSchema)
+@output(PetOutSchema)
 def update_pet(pet_id, pet):
     if pet_id > len(pets) - 1:
         abort_json(404)
