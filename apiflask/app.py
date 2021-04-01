@@ -5,6 +5,7 @@ import sys
 from flask import Flask
 from flask import Blueprint
 from flask import render_template
+from flask import jsonify
 from flask.config import ConfigAttribute
 from flask.globals import _request_ctx_stack
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
@@ -118,7 +119,7 @@ class APIFlask(Flask):
             (openapi.info.termsOfService). Example:
 
             ```python
-            app.terms_of_service = "http://example.com/terms/"
+            app.terms_of_service = 'http://example.com/terms/'
             ```
 
             This attribute can also be configured from the config with the
@@ -352,7 +353,7 @@ class APIFlask(Flask):
         return f
 
     def _register_openapi_blueprint(self) -> None:
-        """Register a bluepint for OpenAPI support.
+        """Register a blueprint for OpenAPI support.
 
         The name of the blueprint is "openapi". This blueprint will hold the view
         functions for spec file, Swagger UI and Redoc.
@@ -367,53 +368,55 @@ class APIFlask(Flask):
 
         if self.spec_path:
             @bp.route(self.spec_path)
-            def spec() -> Union[
-                Union[Dict[Any, Any], str],
-                Tuple[Union[Dict[Any, Any], str], int, Dict[str, str]]
-            ]:
+            def spec() -> Tuple[Union[dict, str], int, Dict[str, str]]:
                 if self.spec_path.endswith('.yaml') or \
                    self.spec_path.endswith('.yml'):
-                    # YAML spec
                     return self.get_spec('yaml'), 200, \
-                        {'Content-Type': 'text/vnd.yaml'}
+                        {'Content-Type': self.config['YAML_SPEC_MIMETYPE']}
                 else:
-                    # JSON spec
-                    return self.get_spec('json')
+                    response = jsonify(self.get_spec('json'))
+                    response.mimetype = self.config['JSON_SPEC_MIMETYPE']
+                    return response
 
         if self.docs_path:
             @bp.route(self.docs_path)
             def swagger_ui() -> str:
-                return render_template('apiflask/swagger_ui.html',
-                                       title=self.title, version=self.version)
+                return render_template(
+                    'apiflask/swagger_ui.html',
+                    title=self.title,
+                    version=self.version
+                )
 
             if self.docs_oauth2_redirect_path:
                 @bp.route(self.docs_oauth2_redirect_path)
                 def swagger_ui_oauth_redirect() -> str:
-                    return render_template('apiflask/swagger_ui_oauth2_redirect.html',
-                                           title=self.title, version=self.version)
+                    return render_template(
+                        'apiflask/swagger_ui_oauth2_redirect.html',
+                        title=self.title,
+                        version=self.version
+                    )
 
         if self.redoc_path:
             @bp.route(self.redoc_path)
             def redoc() -> str:
-                return render_template('apiflask/redoc.html',
-                                       title=self.title, version=self.version)
+                return render_template(
+                    'apiflask/redoc.html',
+                    title=self.title,
+                    version=self.version
+                )
 
         if self.enable_openapi and (
             self.spec_path or self.docs_path or self.redoc_path
         ):
             self.register_blueprint(bp)
 
-    def get_spec(self, spec_format: Optional[str] = None) -> Union[dict, str]:
-        """
-        Get the current OAS document file.
+    def get_spec(self, spec_format: str = 'json') -> Union[dict, str]:
+        """Get the current OAS document file.
 
         Arguments:
-            spec_format: The format of the spec file, one of `'json'` and `'yaml'`,
-                defaults to `None`. If not set, the value of configuration variable
-                `SPEC_FORMAT` will be used (defaults to `'json'`).
+            spec_format: The format of the spec file, one of `'json'`, `'yaml'`
+                and `'yml'`, defaults to `'json'`.
         """
-        if spec_format is None:
-            spec_format = self.config['SPEC_FORMAT'].lower()
         if self._spec is None:
             if spec_format == 'json':
                 self._spec = self._generate_spec().to_dict()

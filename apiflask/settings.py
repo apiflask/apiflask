@@ -13,7 +13,8 @@ LICENSE: Optional[Dict[str, str]] = None
 SERVERS: Optional[List[Dict[str, str]]] = None
 EXTERNAL_DOCS: Optional[Dict[str, str]] = None
 TERMS_OF_SERVICE: Optional[str] = None
-SPEC_FORMAT: str = 'json'
+YAML_SPEC_MIMETYPE: str = 'text/vnd.yaml'
+JSON_SPEC_MIMETYPE: str = 'application/json'
 # Automation behaviour control
 AUTO_TAGS: bool = True
 AUTO_DESCRIPTION: bool = True
