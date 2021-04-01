@@ -191,7 +191,7 @@ class APIFlask(Flask):
                 application.
             title: The title of the API (openapi.info.title), defaults to "APIFlask".
                 You can change it to the name of your API (e.g. "Pet API").
-            version: The version of the API (openapi.info.version), defaults to "1.0.0".
+            version: The version of the API (openapi.info.version), defaults to "0.1.0".
             spec_path: The path to OpenAPI Spec documentation. It
                 defaults to `/openapi.json`, if the path end with `.yaml`
                 or `.yml`, the YAML format of the OAS will be returned.
