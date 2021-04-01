@@ -13,4 +13,4 @@ from .security import HTTPTokenAuth
 from . import fields
 from . import validators
 
-__version__ = '0.3.1dev'
+__version__ = '0.4.0dev'

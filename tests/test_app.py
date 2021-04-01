@@ -8,7 +8,7 @@ def test_app_init(app):
     assert app
     assert hasattr(app, 'import_name')
     assert hasattr(app, 'title')
-    assert 'SPEC_FORMAT' in app.config
+    assert 'TAGS' in app.config
     assert 'openapi' in app.blueprints
 
 

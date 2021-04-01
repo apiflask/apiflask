@@ -2,7 +2,7 @@ from apiflask.decorators import auth_required
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import APIBlueprint, input, output, doc
+from apiflask import APIFlask, APIBlueprint, input, output, doc
 from apiflask.schemas import EmptySchema, http_error_schema
 from apiflask.security import HTTPBasicAuth
 
@@ -67,14 +67,31 @@ def test_openapi_fields(app, client):
     assert rv.json['info']['termsOfService'] == terms_of_service
 
 
-@pytest.mark.parametrize('spec_format', ['json', 'yaml', 'yml'])
-def test_spec_format(app, spec_format):
-    app.config['SPEC_FORMAT'] = spec_format
-    spec = app.spec
-    if spec_format == 'json':
-        assert isinstance(spec, dict)
-    else:
-        assert 'title: APIFlask' in spec
+def test_json_spec_mimetype(app, client):
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    assert rv.mimetype == 'application/json'
+
+    app.config['JSON_SPEC_MIMETYPE'] = 'application/custom.json'
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    assert rv.mimetype == 'application/custom.json'
+
+
+def test_yaml_spec_mimetype():
+    app = APIFlask(__name__, spec_path='/openapi.yaml')
+    client = app.test_client()
+
+    rv = client.get('/openapi.yaml')
+    assert rv.status_code == 200
+    assert rv.mimetype == 'text/vnd.yaml'
+
+    app.config['YAML_SPEC_MIMETYPE'] = 'text/custom.yaml'
+
+    rv = client.get('/openapi.yaml')
+    assert rv.status_code == 200
+    assert rv.mimetype == 'text/custom.yaml'
 
 
 def test_auto_tags(app, client):
