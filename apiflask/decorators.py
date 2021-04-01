@@ -1,7 +1,7 @@
 from typing import (
     Callable, Union, List, Optional,
     Dict, Any, Type, Mapping
-) 
+)
 from functools import wraps
 from collections.abc import Mapping as ABCMapping
 

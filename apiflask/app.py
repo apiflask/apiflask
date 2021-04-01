@@ -1,7 +1,7 @@
 from typing import (
     Iterable, Union, List, Optional,
     Type, Tuple, Any, Dict
-) 
+)
 import re
 import sys
 
