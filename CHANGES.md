@@ -1,5 +1,12 @@
 # APIFlask Change Log
 
+## Version 0.4.0
+Released: -
+
+- Add new configuration variables `YAML_SPEC_MIMETYPE` and `JSON_SPEC_MIMETYPE` to support
+    to customize the MIME type of spec response [pull #3](https://github.com/greyli/apiflask/pull/3).
+- Remove configuration variable `SPEC_TYPE`.
+
 ## Version 0.3.0
 Released: 2021/3/31
 
