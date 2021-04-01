@@ -51,30 +51,30 @@ def get_pets():
 @app.post('/pets')
 @input(PetInSchema)
 @output(PetOutSchema, 201)
-def create_pet(pet):
-    pet['id'] = len(pets) + 1
-    pets.append(pet)
-    return pet
+def create_pet(data):
+    data['id'] = len(pets) + 1
+    pets.append(data)
+    return data
 
 
 @app.put('/pets/<int:pet_id>')
 @input(PetInSchema)
 @output(PetOutSchema)
-def update_pet(pet_id, pet):
+def update_pet(pet_id, data):
     if pet_id > len(pets) - 1:
         abort_json(404)
-    pet['id'] = pet_id
-    pets[pet_id] = pet
-    return pet
+    data['id'] = pet_id
+    pets[pet_id] = data
+    return data
 
 
 @app.patch('/pets/<int:pet_id>')
 @input(PetInSchema(partial=True))
 @output(PetOutSchema)
-def partial_update_pet(pet_id, pet):
+def partial_update_pet(pet_id, data):
     if pet_id > len(pets) - 1:
         abort_json(404)
-    for attr, value in pet:
+    for attr, value in data:
         pets[pet_id][attr] = value
     return pets[pet_id]
 
