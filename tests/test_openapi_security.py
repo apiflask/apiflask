@@ -1,7 +1,9 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import HTTPBasicAuth, HTTPTokenAuth, auth_required
+from apiflask import (
+    HTTPBasicAuth, HTTPTokenAuth, auth_required
+)
 
 
 def test_httpbasicauth_security_scheme(app, client):

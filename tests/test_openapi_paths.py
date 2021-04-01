@@ -1,7 +1,9 @@
 from openapi_spec_validator import validate_spec
 
 from apiflask import input, output
-from .schemas import FooSchema, QuerySchema, PaginationSchema, HeaderSchema
+from .schemas import (
+    FooSchema, QuerySchema, PaginationSchema, HeaderSchema
+)
 
 
 def test_spec_path_summary_description_from_docs(app, client):

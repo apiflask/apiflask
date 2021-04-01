@@ -1,6 +1,8 @@
 import pytest
 
-from apiflask.exceptions import abort_json, HTTPError, default_error_handler
+from apiflask.exceptions import (
+    abort_json, HTTPError, default_error_handler
+)
 from apiflask.utils import get_reason_phrase
 
 

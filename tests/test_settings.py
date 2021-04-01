@@ -7,7 +7,10 @@ from apiflask.schemas import EmptySchema, http_error_schema
 from apiflask.security import HTTPBasicAuth
 
 from .schemas import QuerySchema, FooSchema
-from .schemas import ValidationErrorSchema, AuthorizationErrorSchema, HTTPErrorSchema
+from .schemas import (
+    ValidationErrorSchema, AuthorizationErrorSchema,
+    HTTPErrorSchema
+)
 
 
 def test_openapi_fields(app, client):

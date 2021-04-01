@@ -1,7 +1,9 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import APIBlueprint, input, output, auth_required, doc
+from apiflask import (
+    APIBlueprint, input, output, auth_required, doc
+)
 from apiflask.security import HTTPBasicAuth, HTTPTokenAuth
 from apiflask.fields import String
 
