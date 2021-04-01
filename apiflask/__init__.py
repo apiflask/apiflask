@@ -7,4 +7,4 @@ from .schemas import Schema
 from .security import HTTPBasicAuth, HTTPTokenAuth
 from . import fields, validators
 
-__version__ = '0.3.1dev'
+__version__ = '0.4.0dev'
