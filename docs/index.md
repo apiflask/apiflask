@@ -1,5 +1,5 @@
-The documentation is still working in progress:
+Documentation progress:
 
-[=25% "25%"]
+[=25%]
 
 --8<-- 'README.md'
