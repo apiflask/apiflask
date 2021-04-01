@@ -1,4 +1,7 @@
-from typing import Any, Callable, TypeVar, Union, Dict, List, Tuple, Mapping
+from typing import (
+    Any, Callable, TypeVar, Union,
+    Dict, List, Tuple, Mapping
+)
 
 from flask.wrappers import Response
 

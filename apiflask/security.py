@@ -1,9 +1,11 @@
-from typing import Optional, Union, Tuple, Any, Mapping
-
+from typing import (
+    Optional, Union, Tuple, Any, Mapping
+)
 from flask import g, current_app
-from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
-from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
-
+from flask_httpauth import (
+    HTTPBasicAuth as BaseHTTPBasicAuth,
+    HTTPTokenAuth as BaseHTTPTokenAuth
+)
 from .exceptions import default_error_handler
 
 

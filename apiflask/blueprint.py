@@ -1,8 +1,7 @@
 from typing import Optional, Union
 from flask import Blueprint
 
-from .utils import route_shortcuts
-from .utils import _sentinel
+from .utils import route_shortcuts, _sentinel
 
 
 @route_shortcuts

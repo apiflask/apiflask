@@ -1,8 +1,10 @@
-from typing import Union, List, Optional, Dict
-
-from .schemas import Schema
-from .schemas import http_error_schema
-from .schemas import validation_error_schema
+from typing import (
+    Union, List, Optional, Dict
+)
+from .schemas import (
+    Schema, http_error_schema,
+    validation_error_schema
+)
 
 
 # OpenAPI fields

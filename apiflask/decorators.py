@@ -1,22 +1,21 @@
-from typing import Callable, Union, List, Optional, Dict, Any, Type, Mapping
+from typing import (
+    Callable, Union, List, Optional,
+    Dict, Any, Type, Mapping
+) 
 from functools import wraps
 from collections.abc import Mapping as ABCMapping
 
-from flask import Response
-from flask import jsonify
-from flask import current_app
+from flask import Response, jsonify, current_app
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 from marshmallow import ValidationError as MarshmallowValidationError
 
 from .exceptions import ValidationError
 from .utils import _sentinel
-from .schemas import Schema
-from .schemas import EmptySchema
-from .security import HTTPBasicAuth
-from .security import HTTPTokenAuth
-from .types import DecoratedType
-from .types import ResponseType
-from .types import RequestType
+from .schemas import Schema, EmptySchema
+from .security import HTTPBasicAuth, HTTPTokenAuth
+from .types import (
+    DecoratedType, ResponseType, RequestType
+)
 
 
 class FlaskParser(BaseFlaskParser):

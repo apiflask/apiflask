@@ -1,10 +1,11 @@
-from typing import Iterable, Union, List, Optional, Type, Tuple, Any, Dict
+from typing import (
+    Iterable, Union, List, Optional,
+    Type, Tuple, Any, Dict
+) 
 import re
 import sys
 
-from flask import Flask
-from flask import Blueprint
-from flask import render_template
+from flask import Flask, Blueprint, render_template
 from flask.config import ConfigAttribute
 from flask.globals import _request_ctx_stack
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
@@ -16,16 +17,13 @@ try:
 except ImportError:
     sqla = None
 
-from .exceptions import HTTPError
-from .exceptions import default_error_handler
-from .utils import route_shortcuts
-from .utils import get_reason_phrase
-from .security import HTTPBasicAuth
-from .security import HTTPTokenAuth
+from .exceptions import HTTPError, default_error_handler
+from .utils import route_shortcuts, get_reason_phrase
+from .security import HTTPBasicAuth, HTTPTokenAuth
 from .schemas import Schema
-from .types import ResponseType
-from .types import ErrorCallbackType
-from .types import SpecCallbackType
+from .types import (
+    ResponseType, ErrorCallbackType, SpecCallbackType
+)
 
 
 @route_shortcuts
