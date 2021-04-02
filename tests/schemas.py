@@ -51,11 +51,6 @@ class ValidationErrorSchema(Schema):
     message = String(required=True)
 
 
-class AuthorizationErrorSchema(Schema):
-    status_code = String(required=True)
-    message = String(required=True)
-
-
 class HTTPErrorSchema(Schema):
     status_code = String(required=True)
     message = String(required=True)

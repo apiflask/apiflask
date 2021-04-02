@@ -7,7 +7,7 @@ from apiflask.schemas import EmptySchema, http_error_schema
 from apiflask.security import HTTPBasicAuth
 
 from .schemas import QuerySchema, FooSchema
-from .schemas import ValidationErrorSchema, AuthorizationErrorSchema, HTTPErrorSchema
+from .schemas import ValidationErrorSchema, HTTPErrorSchema
 
 
 def test_openapi_fields(app, client):
@@ -313,8 +313,8 @@ def test_auto_auth_error_response(app, client, config_value):
     validate_spec(rv.json)
     assert bool('401' in rv.json['paths']['/foo']['post']['responses']) is config_value
     if config_value:
-        assert 'AuthorizationError' in rv.json['components']['schemas']
-        assert '#/components/schemas/AuthorizationError' in \
+        assert 'HTTPError' in rv.json['components']['schemas']
+        assert '#/components/schemas/HTTPError' in \
             rv.json['paths']['/foo']['post']['responses']['401'][
                 'content']['application/json']['schema']['$ref']
 
@@ -337,12 +337,7 @@ def test_auth_error_status_code_and_description(app, client):
         '403']['description'] == 'Bad'
 
 
-@pytest.mark.parametrize('schema', [
-    http_error_schema,
-    AuthorizationErrorSchema
-])
-def test_auth_error_schema(app, client, schema):
-    app.config['AUTH_ERROR_SCHEMA'] = schema
+def test_auth_error_schema(app, client):
     auth = HTTPBasicAuth()
 
     @app.post('/foo')
@@ -354,22 +349,7 @@ def test_auth_error_schema(app, client, schema):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['post']['responses']['401']
-    assert rv.json['paths']['/foo']['post']['responses']['401'][
-        'description'] == 'Authentication error'
-    assert 'AuthorizationError' in rv.json['components']['schemas']
-
-
-def test_auth_error_schema_bad_type(app):
-    app.config['AUTH_ERROR_SCHEMA'] = 'schema'
-    auth = HTTPBasicAuth()
-
-    @app.post('/foo')
-    @auth_required(auth)
-    def foo():
-        pass
-
-    with pytest.raises(RuntimeError):
-        app.spec
+    assert 'HTTPError' in rv.json['components']['schemas']
 
 
 def test_http_auth_error_response(app, client):

@@ -781,7 +781,7 @@ class APIFlask(Flask):
                             status_code, schema, 'ValidationError', description
                         )
 
-                # add authorization error response
+                # add authentication error response
                 if self.config['AUTO_AUTH_ERROR_RESPONSE']:
                     if view_func._spec.get('auth') or (
                         blueprint_name is not None and blueprint_name in auth_blueprints
@@ -792,9 +792,9 @@ class APIFlask(Flask):
                         description: str = self.config['AUTH_ERROR_DESCRIPTION']  # type: ignore
                         schema: Union[  # type: ignore
                             Schema, dict
-                        ] = self.config['AUTH_ERROR_SCHEMA']
+                        ] = self.config['HTTP_ERROR_SCHEMA']
                         add_response_with_schema(
-                            status_code, schema, 'AuthorizationError', description
+                            status_code, schema, 'HTTPError', description
                         )
 
                 if view_func._spec.get('responses'):
