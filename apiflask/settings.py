@@ -31,7 +31,6 @@ AUTO_AUTH_ERROR_RESPONSE: bool = True
 AUTH_ERROR_STATUS_CODE: int = 401
 AUTH_ERROR_DESCRIPTION: str = 'Authentication error'
 AUTH_ERROR_SCHEMA: Union[Schema, dict] = http_error_schema
-AUTO_HTTP_ERROR_RESPONSE: bool = True
 HTTP_ERROR_SCHEMA: Union[Schema, dict] = http_error_schema
 # Swagger UI and Redoc
 DOCS_HIDE_BLUEPRINTS: List[str] = []

@@ -810,10 +810,8 @@ class APIFlask(Flask):
                         status_code: str = str(status_code)  # type: ignore
                         if status_code in operation['responses']:
                             continue
-                        if self.config['AUTO_HTTP_ERROR_RESPONSE'] and (
-                            status_code.startswith('4') or
-                            status_code.startswith('5')  # type: ignore
-                        ):
+                        if status_code.startswith('4') or status_code.startswith('5'):
+                            # add error response schema for error responses
                             schema: Union[  # type: ignore
                                 Schema, dict
                             ] = self.config['HTTP_ERROR_SCHEMA']

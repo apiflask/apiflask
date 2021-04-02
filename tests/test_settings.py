@@ -372,10 +372,7 @@ def test_auth_error_schema_bad_type(app):
         app.spec
 
 
-@pytest.mark.parametrize('config_value', [True, False])
-def test_http_auth_error_response(app, client, config_value):
-    app.config['AUTO_HTTP_ERROR_RESPONSE'] = config_value
-
+def test_http_auth_error_response(app, client):
     @app.get('/foo')
     @output(FooSchema)
     @doc(responses={204: 'empty', 400: 'bad', 404: 'not found', 500: 'server error'})
@@ -385,24 +382,15 @@ def test_http_auth_error_response(app, client, config_value):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    if config_value:
-        assert 'HTTPError' in rv.json['components']['schemas']
-        assert '#/components/schemas/HTTPError' in \
-            rv.json['paths']['/foo']['get']['responses']['404'][
-                'content']['application/json']['schema']['$ref']
-        assert '#/components/schemas/HTTPError' in \
-            rv.json['paths']['/foo']['get']['responses']['500'][
-                'content']['application/json']['schema']['$ref']
-        assert rv.json['paths']['/foo']['get']['responses']['204'][
-                'content']['application/json']['schema'] == {}
-    else:
-        assert 'HTTPError' not in rv.json['components']['schemas']
-        assert rv.json['paths']['/foo']['get']['responses']['404'][
-                'content']['application/json']['schema'] == {}
-        assert rv.json['paths']['/foo']['get']['responses']['500'][
-                'content']['application/json']['schema'] == {}
-        assert rv.json['paths']['/foo']['get']['responses']['204'][
-                'content']['application/json']['schema'] == {}
+    assert 'HTTPError' in rv.json['components']['schemas']
+    assert '#/components/schemas/HTTPError' in \
+        rv.json['paths']['/foo']['get']['responses']['404'][
+            'content']['application/json']['schema']['$ref']
+    assert '#/components/schemas/HTTPError' in \
+        rv.json['paths']['/foo']['get']['responses']['500'][
+            'content']['application/json']['schema']['$ref']
+    assert rv.json['paths']['/foo']['get']['responses']['204'][
+            'content']['application/json']['schema'] == {}
 
 
 @pytest.mark.parametrize('schema', [
