@@ -21,15 +21,15 @@ AUTO_DESCRIPTION: bool = True
 AUTO_PATH_SUMMARY: bool = True
 AUTO_PATH_DESCRIPTION: bool = True
 AUTO_200_RESPONSE: bool = True
+AUTO_VALIDATION_ERROR_RESPONSE: bool = True
+AUTO_AUTH_ERROR_RESPONSE: bool = True
 # Response customization
 SUCCESS_DESCRIPTION: str = 'Successful response'
-AUTO_VALIDATION_ERROR_RESPONSE: bool = True
-VALIDATION_ERROR_STATUS_CODE: int = 400
 VALIDATION_ERROR_DESCRIPTION: str = 'Validation error'
-VALIDATION_ERROR_SCHEMA: Union[Schema, dict] = validation_error_schema
-AUTO_AUTH_ERROR_RESPONSE: bool = True
-AUTH_ERROR_STATUS_CODE: int = 401
 AUTH_ERROR_DESCRIPTION: str = 'Authentication error'
+VALIDATION_ERROR_STATUS_CODE: int = 400
+AUTH_ERROR_STATUS_CODE: int = 401
+VALIDATION_ERROR_SCHEMA: Union[Schema, dict] = validation_error_schema
 HTTP_ERROR_SCHEMA: Union[Schema, dict] = http_error_schema
 # Swagger UI and Redoc
 DOCS_HIDE_BLUEPRINTS: List[str] = []

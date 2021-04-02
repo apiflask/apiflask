@@ -87,6 +87,7 @@ def test_docs_oauth2_redirect_path(client):
     assert rv.status_code == 200
     assert b'oauth2RedirectUrl' not in rv.data
 
+
 def test_redoc_path(app):
     assert app.redoc_path
 
