@@ -52,7 +52,7 @@ def get_pets():
 @input(PetInSchema)
 @output(PetOutSchema, 201)
 def create_pet(data):
-    data['id'] = len(pets) + 1
+    data['id'] = len(pets)
     pets.append(data)
     return data
 
