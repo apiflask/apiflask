@@ -714,12 +714,6 @@ class APIFlask(Flask):
                     operation['deprecated'] = view_func._spec.get('deprecated')
 
                 # responses
-                descriptions: Dict[str, str] = {
-                    '200': self.config['DEFAULT_200_DESCRIPTION'],
-                    '201': self.config['DEFAULT_201_DESCRIPTION'],
-                    '204': self.config['DEFAULT_204_DESCRIPTION'],
-                }
-
                 def add_response(
                     status_code: str,
                     schema: Union[Schema, dict],
@@ -762,14 +756,14 @@ class APIFlask(Flask):
                     status_code: str = str(view_func._spec.get('response')['status_code'])
                     schema = view_func._spec.get('response')['schema']
                     description: str = view_func._spec.get('response')['description'] or \
-                        descriptions.get(status_code, self.config['DEFAULT_2XX_DESCRIPTION'])
+                        self.config['SUCCESS_DESCRIPTION']
                     example = view_func._spec.get('response')['example']
                     add_response(status_code, schema, description, example)
                 else:
                     # add a default 200 response for views without using @output
                     # or @doc(responses={...})
                     if not view_func._spec.get('responses') and self.config['AUTO_200_RESPONSE']:
-                        add_response('200', {}, descriptions['200'])
+                        add_response('200', {}, self.config['SUCCESS_DESCRIPTION'])
 
                 # add validation error response
                 if self.config['AUTO_VALIDATION_ERROR_RESPONSE']:

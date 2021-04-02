@@ -193,13 +193,10 @@ def test_auto_200_response_for_no_output_views(app, client, config_value):
 
 
 def test_response_description_config(app, client):
-    app.config['DEFAULT_2XX_DESCRIPTION'] = 'Default'
-    app.config['DEFAULT_200_DESCRIPTION'] = 'It works'
-    app.config['DEFAULT_201_DESCRIPTION'] = 'Created'
-    app.config['DEFAULT_204_DESCRIPTION'] = 'Nothing'
+    app.config['SUCCESS_DESCRIPTION'] = 'Success'
 
     @app.get('/foo')
-    @input(FooSchema)
+    @input(FooSchema)  # 200
     def only_body_schema(foo):
         pass
 
@@ -209,7 +206,7 @@ def test_response_description_config(app, client):
         pass
 
     @app.get('/baz')
-    @output(EmptySchema)
+    @output(EmptySchema)  # 204
     def no_schema():
         pass
 
@@ -222,14 +219,13 @@ def test_response_description_config(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['get']['responses'][
-        '200']['description'] == 'It works'
+        '200']['description'] == 'Success'
     assert rv.json['paths']['/bar']['get']['responses'][
-        '201']['description'] == 'Created'
+        '201']['description'] == 'Success'
     assert rv.json['paths']['/baz']['get']['responses'][
-        '204']['description'] == 'Nothing'
-    # will use default description
+        '204']['description'] == 'Success'
     assert rv.json['paths']['/spam']['get']['responses'][
-        '206']['description'] == 'Default'
+        '206']['description'] == 'Success'
 
 
 @pytest.mark.parametrize('config_value', [True, False])

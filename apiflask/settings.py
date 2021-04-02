@@ -22,10 +22,7 @@ AUTO_PATH_SUMMARY: bool = True
 AUTO_PATH_DESCRIPTION: bool = True
 AUTO_200_RESPONSE: bool = True
 # Response customization
-DEFAULT_2XX_DESCRIPTION: str = 'Successful response'
-DEFAULT_200_DESCRIPTION: str = 'Successful response'
-DEFAULT_201_DESCRIPTION: str = 'Resource created'
-DEFAULT_204_DESCRIPTION: str = 'Empty response'
+SUCCESS_DESCRIPTION: str = 'Successful response'
 AUTO_VALIDATION_ERROR_RESPONSE: bool = True
 VALIDATION_ERROR_STATUS_CODE: int = 400
 VALIDATION_ERROR_DESCRIPTION: str = 'Validation error'
