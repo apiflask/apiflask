@@ -384,17 +384,14 @@ class APIFlask(Flask):
                 return render_template(
                     'apiflask/swagger_ui.html',
                     title=self.title,
-                    version=self.version
+                    version=self.version,
+                    oauth2_redirect_path=self.docs_oauth2_redirect_path
                 )
 
             if self.docs_oauth2_redirect_path:
                 @bp.route(self.docs_oauth2_redirect_path)
                 def swagger_ui_oauth_redirect() -> str:
-                    return render_template(
-                        'apiflask/swagger_ui_oauth2_redirect.html',
-                        title=self.title,
-                        version=self.version
-                    )
+                    return render_template('apiflask/swagger_ui_oauth2_redirect.html')
 
         if self.redoc_path:
             @bp.route(self.redoc_path)

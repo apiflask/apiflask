@@ -63,11 +63,17 @@ def test_docs_oauth2_redirect_path(client):
     rv = client.get('/docs/oauth2-redirect')
     assert rv.status_code == 200
     assert b'<title>Swagger UI: OAuth2 Redirect</title>' in rv.data
+    rv = client.get('/docs')
+    assert rv.status_code == 200
+    assert b'oauth2RedirectUrl: "/docs/oauth2-redirect"' in rv.data
 
     app = APIFlask(__name__, docs_oauth2_redirect_path='/docs/oauth2/redirect')
     rv = app.test_client().get('/docs/oauth2/redirect')
     assert rv.status_code == 200
     assert b'<title>Swagger UI: OAuth2 Redirect</title>' in rv.data
+    rv = app.test_client().get('/docs')
+    assert rv.status_code == 200
+    assert b'oauth2RedirectUrl: "/docs/oauth2/redirect"' in rv.data
 
     app = APIFlask(__name__, docs_oauth2_redirect_path=None)
     assert app.docs_oauth2_redirect_path is None
@@ -77,7 +83,9 @@ def test_docs_oauth2_redirect_path(client):
     assert len(bp_endpoints) == 4
     assert 'openapi.swagger_ui' in bp_endpoints
     assert 'openapi.swagger_ui_oauth_redirect' not in bp_endpoints
-
+    rv = app.test_client().get('/docs')
+    assert rv.status_code == 200
+    assert b'oauth2RedirectUrl' not in rv.data
 
 def test_redoc_path(app):
     assert app.redoc_path
