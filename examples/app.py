@@ -74,8 +74,8 @@ def update_pet(pet_id, data):
 def partial_update_pet(pet_id, data):
     if pet_id > len(pets) - 1:
         abort_json(404)
-    for attr, value in data:
-        pets[pet_id][attr] = value
+    for key in data:
+        pets[pet_id][key] = data[key]
     return pets[pet_id]
 
 
