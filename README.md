@@ -91,7 +91,7 @@ def get_pet(pet_id):
     return pets[pet_id]
 
 
-@app.post('/pets/<int:pet_id>')
+@app.put('/pets/<int:pet_id>')
 @input(PetInSchema)
 @output(PetOutSchema)
 def update_pet(pet_id, data):
