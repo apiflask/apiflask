@@ -397,16 +397,14 @@ def test_http_auth_error_response(app, client, config_value):
         assert '#/components/schemas/HTTPError' in \
             rv.json['paths']['/foo']['get']['responses']['500'][
                 'content']['application/json']['schema']['$ref']
-        assert rv.json['paths']['/foo']['get']['responses']['204'][
-                'content']['application/json']['schema'] == {}
+        assert 'content' not in rv.json['paths']['/foo']['get']['responses']['204']
     else:
         assert 'HTTPError' not in rv.json['components']['schemas']
         assert rv.json['paths']['/foo']['get']['responses']['404'][
                 'content']['application/json']['schema'] == {}
         assert rv.json['paths']['/foo']['get']['responses']['500'][
                 'content']['application/json']['schema'] == {}
-        assert rv.json['paths']['/foo']['get']['responses']['204'][
-                'content']['application/json']['schema'] == {}
+        assert 'content' not in rv.json['paths']['/foo']['get']['responses']['204']
 
 
 @pytest.mark.parametrize('schema', [

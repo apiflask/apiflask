@@ -208,7 +208,9 @@ def output(
             a `dict` schema (e.g. `{'name': String()}`).
         example: The example data for response.
     """
-    if isinstance(schema, ABCMapping) and schema != {}:
+    if schema == {}:
+        schema = EmptySchema
+    if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
         schema = schema()

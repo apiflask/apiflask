@@ -726,13 +726,13 @@ class APIFlask(Flask):
                     description: str,
                     example: Optional[Any] = None
                 ) -> None:
-                    operation['responses'][status_code] = {
-                        'content': {
+                    operation['responses'][status_code] = {}
+                    if status_code != '204':
+                        operation['responses'][status_code]['content'] = {
                             'application/json': {
                                 'schema': schema
                             }
                         }
-                    }
                     operation['responses'][status_code]['description'] = description
                     if example is not None:
                         operation['responses'][status_code]['content'][
