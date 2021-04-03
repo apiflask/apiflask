@@ -80,11 +80,11 @@ def auth_required(
         auth: The `auth` object, an instance of [`HTTPBasicAuth`][apiflask.security.HTTPBasicAuth]
             or [`HTTPTokenAuth`][apiflask.security.HTTPTokenAuth].
         role: The selected role to allow to visit this view, accepts a string or a list.
-            See [Flask-HTTPAuth's documentation](role) for more details.
+            See [Flask-HTTPAuth's documentation][role] for more details.
+            [role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
         optional: To allow the view to execute even the authentication information
             is not included with the request, in which case `auth.current_user` will be `None`.
 
-    [role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
     """
     roles = role
     if not isinstance(role, list):  # pragma: no cover
