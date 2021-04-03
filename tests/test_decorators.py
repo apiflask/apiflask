@@ -405,6 +405,21 @@ def test_output_body_example(app, client):
         'content']['application/json']['example'] == {'name': 'foo', 'age': 20}
 
 
+def test_output_with_empty_dict_as_schema(app, client):
+    @app.delete('/foo')
+    @output({}, 204)
+    def delete_foo():
+        return ''
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert 'content' not in rv.json['paths']['/foo']['delete']['responses']['204']
+
+    rv = client.delete('/foo')
+    assert rv.status_code == 204
+
+
 def test_doc_summary_and_description(app, client):
     @app.route('/foo')
     @doc(summary='summary from doc decorator')

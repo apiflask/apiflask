@@ -4,8 +4,12 @@
 Released: -
 
 - Add new configuration variables `YAML_SPEC_MIMETYPE` and `JSON_SPEC_MIMETYPE` to support
-    to customize the MIME type of spec response [pull #3](https://github.com/greyli/apiflask/pull/3).
+    to customize the MIME type of spec response ([pull #3][pull_3]).
 - Remove configuration variable `SPEC_TYPE`.
+- Fix the support to pass an empty dict as schema for 204 response ([pull #3][pull_13]).
+
+[pull_3]: https://github.com/greyli/apiflask/pull/3
+[pull_13]: https://github.com/greyli/apiflask/pull/13
 
 ## Version 0.3.0
 Released: 2021/3/31

@@ -53,7 +53,7 @@ def _annotate(f: Any, **kwargs: Any) -> None:
 
 
 def auth_required(
-    auth: Union[Type[HTTPBasicAuth], Type[HTTPTokenAuth]],
+    auth: Union[HTTPBasicAuth, HTTPTokenAuth],
     role: Optional[Union[list, str]] = None,
     optional: Optional[str] = None
 ) -> Callable[[DecoratedType], DecoratedType]:
@@ -80,11 +80,11 @@ def auth_required(
         auth: The `auth` object, an instance of [`HTTPBasicAuth`][apiflask.security.HTTPBasicAuth]
             or [`HTTPTokenAuth`][apiflask.security.HTTPTokenAuth].
         role: The selected role to allow to visit this view, accepts a string or a list.
-            See [Flask-HTTPAuth's documentation](role) for more details.
+            See [Flask-HTTPAuth's documentation][role] for more details.
+            [role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
         optional: To allow the view to execute even the authentication information
             is not included with the request, in which case `auth.current_user` will be `None`.
 
-    [role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
     """
     roles = role
     if not isinstance(role, list):  # pragma: no cover
@@ -103,7 +103,7 @@ def _generate_schema_from_mapping(schema, schema_name):
 
 
 def input(
-    schema: Schema,
+    schema: Type[Schema],
     location: str = 'json',
     schema_name: Optional[str] = None,
     example: Optional[Any] = None,
@@ -145,7 +145,7 @@ def input(
     if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
-        schema = schema()
+        schema = schema()  # type: ignore
 
     def decorator(f):
         if location not in [
@@ -168,7 +168,7 @@ def input(
 
 
 def output(
-    schema: Schema,
+    schema: Type[Schema],
     status_code: int = 200,
     description: Optional[str] = None,
     schema_name: Optional[str] = None,
@@ -208,10 +208,12 @@ def output(
             a `dict` schema (e.g. `{'name': String()}`).
         example: The example data for response.
     """
-    if isinstance(schema, ABCMapping) and schema != {}:
+    if schema == {}:
+        schema = EmptySchema
+    if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
-        schema = schema()
+        schema = schema()  # type: ignore
 
     if isinstance(schema, EmptySchema):
         status_code = 204
