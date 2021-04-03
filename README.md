@@ -83,6 +83,11 @@ class PetOutSchema(Schema):
     category = String()
 
 
+@app.get('/')
+def say_hello():
+    return {'message': 'Hello!'}
+
+
 @app.get('/pets/<int:pet_id>')
 @output(PetOutSchema)
 def get_pet(pet_id):
