@@ -52,7 +52,7 @@ def get_pets():
 @input(PetInSchema)
 @output(PetOutSchema, 201)
 def create_pet(data):
-    data['id'] = len(pets) + 1
+    data['id'] = len(pets)
     pets.append(data)
     return data
 
@@ -74,7 +74,7 @@ def update_pet(pet_id, data):
 def partial_update_pet(pet_id, data):
     if pet_id > len(pets) - 1:
         abort_json(404)
-    for attr, value in data:
+    for attr, value in data.items():
         pets[pet_id][attr] = value
     return pets[pet_id]
 
