@@ -462,7 +462,7 @@ class APIFlask(Flask):
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`.
         """
-        def resolver(schema: Schema) -> str:
+        def resolver(schema: Type[Schema]) -> str:
             name = schema.__class__.__name__
             if name.endswith('Schema'):
                 name = name[:-6] or name
@@ -526,8 +526,8 @@ class APIFlask(Flask):
         if self.external_docs:
             kwargs['externalDocs'] = self.external_docs
 
-        ma_plugin: Type[MarshmallowPlugin] = MarshmallowPlugin(schema_name_resolver=resolver)
-        spec: Type[APISpec] = APISpec(
+        ma_plugin: MarshmallowPlugin = MarshmallowPlugin(schema_name_resolver=resolver)
+        spec: APISpec = APISpec(
             title=self.title,
             version=self.version,
             openapi_version='3.0.3',
@@ -546,12 +546,12 @@ class APIFlask(Flask):
                 ('string', 'url')
 
         # security schemes
-        auth_schemes: List[Union[Type[HTTPBasicAuth], Type[HTTPTokenAuth]]] = []
+        auth_schemes: List[Union[HTTPBasicAuth, HTTPTokenAuth]] = []
         auth_names: List[str] = []
         auth_blueprints: Dict[str, Dict[str, Any]] = {}
 
         def add_auth_schemes_and_names(
-            auth: Union[Type[HTTPBasicAuth], Type[HTTPTokenAuth]]
+            auth: Union[HTTPBasicAuth, HTTPTokenAuth]
         ) -> None:
             auth_schemes.append(auth)
             if isinstance(auth, HTTPBasicAuth):
@@ -591,7 +591,7 @@ class APIFlask(Flask):
                 if auth is not None and auth not in auth_schemes:
                     add_auth_schemes_and_names(auth)
 
-        security: Dict[Union[Type[HTTPBasicAuth], Type[HTTPTokenAuth]], str] = {}
+        security: Dict[Union[HTTPBasicAuth, HTTPTokenAuth], str] = {}
         security_schemes: Dict[str, Dict[str, str]] = {}
         for name, auth in zip(auth_names, auth_schemes):
             security[auth] = name
@@ -722,7 +722,7 @@ class APIFlask(Flask):
 
                 def add_response(
                     status_code: str,
-                    schema: Union[Schema, dict],
+                    schema: Union[Type[Schema], dict],
                     description: str,
                     example: Optional[Any] = None
                 ) -> None:
@@ -740,12 +740,12 @@ class APIFlask(Flask):
 
                 def add_response_with_schema(
                     status_code: str,
-                    schema: Union[Schema, dict],
+                    schema: Union[Type[Schema], dict],
                     schema_name: str,
                     description: str
                 ) -> None:
                     if isinstance(schema, type):
-                        schema = schema()
+                        schema = schema()  # type: ignore
                         add_response(status_code, schema, description)
                     elif isinstance(schema, dict):
                         if schema_name not in spec.components.schemas:
@@ -781,7 +781,7 @@ class APIFlask(Flask):
                             'VALIDATION_ERROR_DESCRIPTION'
                         ]
                         schema: Union[  # type: ignore
-                            Schema, dict
+                            Type[Schema], dict
                         ] = self.config['VALIDATION_ERROR_SCHEMA']
                         add_response_with_schema(
                             status_code, schema, 'ValidationError', description
@@ -797,7 +797,7 @@ class APIFlask(Flask):
                         )
                         description: str = self.config['AUTH_ERROR_DESCRIPTION']  # type: ignore
                         schema: Union[  # type: ignore
-                            Schema, dict
+                            Type[Schema], dict
                         ] = self.config['AUTH_ERROR_SCHEMA']
                         add_response_with_schema(
                             status_code, schema, 'AuthorizationError', description
@@ -821,7 +821,7 @@ class APIFlask(Flask):
                             status_code.startswith('5')  # type: ignore
                         ):
                             schema: Union[  # type: ignore
-                                Schema, dict
+                                Type[Schema], dict
                             ] = self.config['HTTP_ERROR_SCHEMA']
                             add_response_with_schema(
                                 status_code, schema, 'HTTPError', description

@@ -53,7 +53,7 @@ def _annotate(f: Any, **kwargs: Any) -> None:
 
 
 def auth_required(
-    auth: Union[Type[HTTPBasicAuth], Type[HTTPTokenAuth]],
+    auth: Union[HTTPBasicAuth, HTTPTokenAuth],
     role: Optional[Union[list, str]] = None,
     optional: Optional[str] = None
 ) -> Callable[[DecoratedType], DecoratedType]:
@@ -103,7 +103,7 @@ def _generate_schema_from_mapping(schema, schema_name):
 
 
 def input(
-    schema: Schema,
+    schema: Type[Schema],
     location: str = 'json',
     schema_name: Optional[str] = None,
     example: Optional[Any] = None,
@@ -145,7 +145,7 @@ def input(
     if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
-        schema = schema()
+        schema = schema()  # type: ignore
 
     def decorator(f):
         if location not in [
@@ -168,7 +168,7 @@ def input(
 
 
 def output(
-    schema: Schema,
+    schema: Type[Schema],
     status_code: int = 200,
     description: Optional[str] = None,
     schema_name: Optional[str] = None,
@@ -213,7 +213,7 @@ def output(
     if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
-        schema = schema()
+        schema = schema()  # type: ignore
 
     if isinstance(schema, EmptySchema):
         status_code = 204
