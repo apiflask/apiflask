@@ -1,6 +1,13 @@
-from typing import Iterable, Union, List, Optional, Type, Tuple, Any, Dict
 import re
 import sys
+from typing import Iterable
+from typing import Union
+from typing import List
+from typing import Optional
+from typing import Type
+from typing import Tuple
+from typing import Any
+from typing import Dict
 
 from flask import Flask
 from flask import Blueprint
@@ -27,6 +34,9 @@ from .schemas import Schema
 from .types import ResponseType
 from .types import ErrorCallbackType
 from .types import SpecCallbackType
+from .types import SchemaType
+from .types import HTTPAuthType
+from .types import TagsType
 
 
 @route_shortcuts
@@ -228,7 +238,7 @@ class APIFlask(Flask):
         self.enable_openapi = enable_openapi
         self.json_errors = json_errors
 
-        self.spec_callback: Optional[SpecCallbackType] = None  # type: ignore
+        self.spec_callback: Optional[SpecCallbackType] = None
         self.error_callback: ErrorCallbackType = default_error_handler  # type: ignore
         self._spec: Optional[Union[dict, str]] = None
         self._register_openapi_blueprint()
@@ -252,8 +262,8 @@ class APIFlask(Flask):
                 return self.error_callback(
                     error.code,  # type: ignore
                     error.name,
-                    detail=None,  # type: ignore
-                    headers=None  # type: ignore
+                    detail=None,
+                    headers=None
                 )
 
     def dispatch_request(self) -> ResponseType:
@@ -494,7 +504,7 @@ class APIFlask(Flask):
                     module_name = module_name.rsplit('.', 1)[0]
 
         # tags
-        tags: Optional[Union[List[str], List[Dict[str, Any]]]] = self.tags
+        tags: Optional[TagsType] = self.tags
         if tags is not None:
             # Convert simple tags list into standard OpenAPI tags
             if isinstance(tags[0], str):
@@ -546,12 +556,12 @@ class APIFlask(Flask):
                 ('string', 'url')
 
         # security schemes
-        auth_schemes: List[Union[HTTPBasicAuth, HTTPTokenAuth]] = []
+        auth_schemes: List[HTTPAuthType] = []
         auth_names: List[str] = []
         auth_blueprints: Dict[str, Dict[str, Any]] = {}
 
         def add_auth_schemes_and_names(
-            auth: Union[HTTPBasicAuth, HTTPTokenAuth]
+            auth: HTTPAuthType
         ) -> None:
             auth_schemes.append(auth)
             if isinstance(auth, HTTPBasicAuth):
@@ -591,7 +601,7 @@ class APIFlask(Flask):
                 if auth is not None and auth not in auth_schemes:
                     add_auth_schemes_and_names(auth)
 
-        security: Dict[Union[HTTPBasicAuth, HTTPTokenAuth], str] = {}
+        security: Dict[HTTPAuthType, str] = {}
         security_schemes: Dict[str, Dict[str, str]] = {}
         for name, auth in zip(auth_names, auth_schemes):
             security[auth] = name
@@ -722,7 +732,7 @@ class APIFlask(Flask):
 
                 def add_response(
                     status_code: str,
-                    schema: Union[Type[Schema], dict],
+                    schema: SchemaType,
                     description: str,
                     example: Optional[Any] = None
                 ) -> None:
@@ -740,7 +750,7 @@ class APIFlask(Flask):
 
                 def add_response_with_schema(
                     status_code: str,
-                    schema: Union[Type[Schema], dict],
+                    schema: SchemaType,
                     schema_name: str,
                     description: str
                 ) -> None:
@@ -780,9 +790,7 @@ class APIFlask(Flask):
                         description: str = self.config[  # type: ignore
                             'VALIDATION_ERROR_DESCRIPTION'
                         ]
-                        schema: Union[  # type: ignore
-                            Type[Schema], dict
-                        ] = self.config['VALIDATION_ERROR_SCHEMA']
+                        schema: SchemaType = self.config['VALIDATION_ERROR_SCHEMA']  # type: ignore
                         add_response_with_schema(
                             status_code, schema, 'ValidationError', description
                         )
@@ -796,9 +804,7 @@ class APIFlask(Flask):
                             self.config['AUTH_ERROR_STATUS_CODE']
                         )
                         description: str = self.config['AUTH_ERROR_DESCRIPTION']  # type: ignore
-                        schema: Union[  # type: ignore
-                            Type[Schema], dict
-                        ] = self.config['AUTH_ERROR_SCHEMA']
+                        schema: SchemaType = self.config['AUTH_ERROR_SCHEMA']  # type: ignore
                         add_response_with_schema(
                             status_code, schema, 'AuthorizationError', description
                         )
@@ -818,11 +824,9 @@ class APIFlask(Flask):
                             continue
                         if self.config['AUTO_HTTP_ERROR_RESPONSE'] and (
                             status_code.startswith('4') or
-                            status_code.startswith('5')  # type: ignore
+                            status_code.startswith('5')
                         ):
-                            schema: Union[  # type: ignore
-                                Type[Schema], dict
-                            ] = self.config['HTTP_ERROR_SCHEMA']
+                            schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
                             add_response_with_schema(
                                 status_code, schema, 'HTTPError', description
                             )

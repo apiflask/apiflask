@@ -1,6 +1,8 @@
-from apiflask import APIFlask, input
+from apiflask import APIFlask
+from apiflask import input
 from apiflask import Schema
-from apiflask.fields import Integer, String
+from apiflask.fields import Integer
+from apiflask.fields import String
 from .schemas import PaginationSchema
 
 

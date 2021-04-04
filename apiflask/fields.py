@@ -1,4 +1,5 @@
 # flake8: noqa
+# Field aliases were skipped (e.g. Str, Int, Url, etc.)
 from marshmallow.fields import Field
 from marshmallow.fields import Raw
 from marshmallow.fields import Nested
