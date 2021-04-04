@@ -1,4 +1,11 @@
-from typing import Callable, Union, List, Optional, Dict, Any, Type, Mapping
+from typing import Callable
+from typing import Union
+from typing import List
+from typing import Optional
+from typing import Dict
+from typing import Any
+from typing import Type
+from typing import Mapping
 from functools import wraps
 from collections.abc import Mapping as ABCMapping
 
@@ -233,7 +240,7 @@ def output(
             """From Flask-Marshmallow, see NOTICE file for license informaiton."""
             if many is _sentinel:
                 many = schema.many
-            data = schema.dump(obj, many=many)  # type: ignore  
+            data = schema.dump(obj, many=many)  # type: ignore
             return jsonify(data, *args, **kwargs)
 
         @wraps(f)

@@ -3,8 +3,13 @@ from openapi_spec_validator import validate_spec
 
 from apiflask import Schema as BaseSchema
 from apiflask.fields import Integer
-from apiflask import input, output, doc
-from .schemas import FooSchema, BarSchema, BazSchema
+from apiflask import input
+from apiflask import output
+from apiflask import doc
+
+from .schemas import FooSchema
+from .schemas import BarSchema
+from .schemas import BazSchema
 
 
 def test_spec(app):

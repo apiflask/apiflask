@@ -1,6 +1,13 @@
-from typing import Iterable, Union, List, Optional, Type, Tuple, Any, Dict
 import re
 import sys
+from typing import Iterable
+from typing import Union
+from typing import List
+from typing import Optional
+from typing import Type
+from typing import Tuple
+from typing import Any
+from typing import Dict
 
 from flask import Flask
 from flask import Blueprint

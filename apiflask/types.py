@@ -1,4 +1,12 @@
-from typing import Any, Callable, TypeVar, Union, Dict, List, Tuple, Mapping, Type
+from typing import Any
+from typing import Callable
+from typing import TypeVar
+from typing import Union
+from typing import Dict
+from typing import List
+from typing import Tuple
+from typing import Mapping
+from typing import Type
 
 from flask.wrappers import Response
 

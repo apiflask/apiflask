@@ -2,6 +2,7 @@ import pytest
 from openapi_spec_validator import validate_spec
 
 from apiflask import output
+
 from .schemas import FooSchema
 
 

@@ -1,13 +1,21 @@
-from apiflask.decorators import auth_required
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import APIFlask, APIBlueprint, input, output, doc
-from apiflask.schemas import EmptySchema, http_error_schema
+from apiflask import APIFlask
+from apiflask import APIBlueprint
+from apiflask import input
+from apiflask import output
+from apiflask import auth_required
+from apiflask import doc
+from apiflask.schemas import EmptySchema
+from apiflask.schemas import http_error_schema
 from apiflask.security import HTTPBasicAuth
 
-from .schemas import QuerySchema, FooSchema
-from .schemas import ValidationErrorSchema, AuthorizationErrorSchema, HTTPErrorSchema
+from .schemas import QuerySchema
+from .schemas import FooSchema
+from .schemas import ValidationErrorSchema
+from .schemas import AuthorizationErrorSchema
+from .schemas import HTTPErrorSchema
 
 
 def test_openapi_fields(app, client):

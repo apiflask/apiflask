@@ -1,11 +1,18 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import APIBlueprint, input, output, auth_required, doc
-from apiflask.security import HTTPBasicAuth, HTTPTokenAuth
+from apiflask import APIBlueprint
+from apiflask import input
+from apiflask import output
+from apiflask import auth_required
+from apiflask import doc
+from apiflask.security import HTTPBasicAuth
+from apiflask.security import HTTPTokenAuth
 from apiflask.fields import String
 
-from .schemas import FooSchema, BarSchema, QuerySchema
+from .schemas import FooSchema
+from .schemas import BarSchema
+from .schemas import QuerySchema
 
 
 def test_auth_required(app, client):
