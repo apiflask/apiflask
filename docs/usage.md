@@ -16,9 +16,9 @@ This chapter will cover the basic usage of APIFlask.
     > pip install apiflask
     ```
 
-!!! tip "Python dependency managament tools"
-    The command above use [pip](_pip) to install APIFlask, you can also use other dependency
-    managament tools such as [Poetry](_poetry), [Pipenv](_pipenv), [PDM](_pdm), etc.
+!!! tip "Python dependency management tools"
+    The command above use [pip](_pip) to install APIFlask, you can also use other dependencies
+    management tools such as [Poetry](_poetry), [Pipenv](_pipenv), [PDM](_pdm), etc.
 
     [_pip]: https://pip.pypa.io/
     [_poetry]: https://python-poetry.org/
@@ -77,7 +77,7 @@ $ flask run --reload
         > pip install watchdog
         ```
 
-I highly recommend to enable "debug mode" when develop Flask application, see the note below
+I highly recommend enabling "debug mode" when developing Flask application, see the note below
 for the details.
 
 ??? note "Enabling the debug mode"
@@ -138,7 +138,7 @@ for the details.
 
 ## Interactive API documentation
 
-Once you have created the app instace, the interactive API documentation will be availabe 
+Once you have created the app instance, the interactive API documentation will be available
 at <http://localhost:5000/docs> and <http://localhost:5000/redoc>. On top of that,
 the OpenAPI spec file will be available at <http://localhost:5000/openapi.json>.
 
@@ -188,11 +188,11 @@ def delete_pet(pet_id):
 With APIFlask, instead of setting `methods` argument for each route, you can use the following
 shortcuts decorators:
 
-- `app.get()`: register a route which only accepts *GET* request.
-- `app.post()`: register a route which only accepts *POST* request.
-- `app.put()`: register a route which only accepts *PUT* request.
-- `app.patch()`: register a route which only accepts *PATCH* request.
-- `app.delete()`: register a route which only accepts *DELETE* request.
+- `app.get()`: register a route that only accepts *GET* request.
+- `app.post()`: register a route that only accepts *POST* request.
+- `app.put()`: register a route that only accepts *PUT* request.
+- `app.patch()`: register a route that only accepts *PATCH* request.
+- `app.delete()`: register a route that only accepts *DELETE* request.
 
 This is the same example with the route shortcuts:
 
@@ -234,15 +234,15 @@ def delete_pet(pet_id):
 
 !!! tip
 
-    If you want the view function to accepts multiple methods, you still need
+    If you want the view function to accept multiple methods, you still need
     to use `app.route()` decorator. You can mix the use of `app.route()` with the
     shortcuts.
 
 ## Using `@input` to validate and deserialize request data
 
 To validate and deserialize a request body or request query parameters, we need to create a
-resource schema class first. Think it as a way to describe the valid incoming data. If you
-already familiar with Markshmallow, then you already know how to write a resource schema.
+resource schema class first. Think of it as a way to describe the valid incoming data. If you
+already familiar with Marshmallow, then you already know how to write a resource schema.
 
 Here is a simple input schema for a Pet input resource:
 
@@ -261,7 +261,7 @@ class PetInSchema(Schema):
     See Schema and Fields chapter (WIP) for the details of how to write a schema and the
     examples for all the fields and validators.
 
-A schema class should inheritate the `apiflask.Schema` class:
+A schema class should inherit the `apiflask.Schema` class:
 
 ```python hl_lines="1 6"
 from apiflask import Schema
@@ -274,7 +274,7 @@ class PetInSchema(Schema):
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 ```
 
-fields are reprenseted with field classes in `apiflask.fields`:
+fields are represented with field classes in `apiflask.fields`:
 
 ```python hl_lines="2 7 8"
 from apiflask import Schema
@@ -287,8 +287,8 @@ class PetInSchema(Schema):
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 ```
 
-To validate a field with specific rule, you can pass a validator or a list of validators
-(import them from `apiflask.validators`) to the `validate` argument of field class:
+To validate a field with a specific rule, you can pass a validator or a list of validators
+(import them from `apiflask.validators`) to the `validate` argument of the field class:
 
 ```python hl_lines="3 7 8"
 from apiflask import Schema
@@ -302,8 +302,8 @@ class PetInSchema(Schema):
 ```
 
 !!! tip
-    Notice we mark the field as required field with `required` arugment. If you want to set
-    a default value for a input field when is missing in the input data, you can use
+    Notice we mark the field as a required field with `required` argument. If you want to set
+    a default value for an input field when is missing in the input data, you can use
     `missing` argument:
 
     ```python
@@ -319,7 +319,7 @@ With this schema, we announce the input request body should in the following for
 }
 ```
 
-Now let's add it to the view funciton which used to create a new pet:
+Now let's add it to the view function which used to create a new pet:
 
 ```python hl_lines="1 14"
 from apiflask import APIFlask, Schema, input
@@ -341,14 +341,14 @@ def create_pet(data):
     return {'message': 'created'}, 201
 ```
 
-You just need to pass the schema class to `@input` decorator. When a request
+You just need to pass the schema class to the `@input` decorator. When a request
 was received, APIFlask will validate the request body against the schema.
 
-If the validation passed, the data will be inject to the view
+If the validation passed, the data will be injected into the view
 function as a positional argument in the form of `dict`. Otherwise,
-an error response with the detail of validation result will be returned.
+an error response with the detail of the validation result will be returned.
 
-If you want mark the input with deffierent location, you can pass a `location`
+If you want to mark the input with a different location, you can pass a `location`
 argument for `@input()` decorator, the value can be:
 
 - Request JSON body: `'json'` (default)
@@ -386,7 +386,7 @@ schema.
     name = String(default='default name')
     ```
 
-Now add it to the view function which used to get pet:
+Now add it to the view function which used to get a pet resource:
 
 ```python hl_lines="1 14"
 from apiflask import APIFlask, output
@@ -449,10 +449,10 @@ def hello():
 ```
 
 As default, APIFlask will use the name of the view function as the value of summary.
-If your view function named with `get_pet`, then the summary will be "Get Pet".
+If your view function is named with `get_pet`, then the summary will be "Get Pet".
 
-If the view function has docstring, then the first line of the docstring will be used as summary,
-the lines after the empty line of the docstring will be used as description.
+If the view function has docstring, then the first line of the docstring will be used as the
+summary, the lines after the empty line of the docstring will be used as the description.
 
 !!! note "The precedence of summary setting"
     ```
@@ -480,7 +480,7 @@ Here are the other arguments for the `@doc` argument:
 
 - `tag`: The tag or tag list of this endpoint, map the tags you passed in the `app.tags`
             attribute. You can pass a list of tag names or just a single tag name string.
-            If `app.tags` not set, the blueprint name will be used as tag name.
+            If `app.tags` is not set, the blueprint name will be used as the tag name.
 - `responses`: The other responses for this view function, accepts a dict in a format
     of `{404: 'Not Found'}` or a list of status code (`[404, 418]`).
 - `deprecated`: Flag this endpoint as deprecated in API docs. Defaults to `False`.
@@ -507,7 +507,7 @@ def hello():
     return 'Hello'!
 ```
 
-See [Flask-HTTPAuth's documentation](_flask-httpauth) for more deatils (The chapter 
+See [Flask-HTTPAuth's documentation](_flask-httpauth) for more details (The chapter 
 of authentication support will be added soon).
 
 !!! warning
@@ -552,15 +552,15 @@ def hello(name):
     return {'hello': name}
 ```
 
-The `abort_json()` and `HTTPError` accept the following arugments:
+The `abort_json()` and `HTTPError` accept the following arguments:
 
 - `status_code`: The status code of the error (4XX and 5xx).
 - `message`: The simple description of the error. If not provided,
     the reason phrase of the status code will be used.
-- `detail`: The detail information of the error, it can be used to
-    provided addition information such as custom error code, documentation
+- `detail`: The detailed information of the error, it can be used to
+    provide additional information such as custom error code, documentation
     URL, etc.
-- `headers`: A dict of headers used in error response.
+- `headers`: A dict of headers used in the error response.
 
 ## Overview of `apiflask` package
 
@@ -569,7 +569,7 @@ In the end, let's unpack the whole `apiflask` package to check out what it shipp
 - `APIFlask`: A class used to create an application instance (A wrapper for Flask's `Flask` class).
 - `APIBlueprint`: A class used to create a blueprint instance (A wrapper for Flask's `Blueprint` class)..
 - `@input`: A docorator used to validate the input/request data from request body, query string, etc.
-- `@output`: A docorator used to formatting the response.
+- `@output`: A docorator used to format the response.
 - `@auth_required`: A docorator used to protect a view from unauthenticated users.
 - `@doc`: A docorator used to set up the OpenAPI spec for view functions.
 - `abort_json()`: A function used to abort the request handling process and return an error response. The
@@ -580,11 +580,11 @@ In the end, let's unpack the whole `apiflask` package to check out what it shipp
 - `Schema`: A base class for resource schemas (Will be a wrapper for Marshmallow's `Schema`).
 - `fields`: A module contains all the fields (from Marshmallow).
 - `validators`: A module contains all the field validators (from Marshmallow).
-- `app.get()`: A decorator used to register a route which only accepts *GET* request.
-- `app.post()`: A decorator used to register a route which only accepts *POST* request.
-- `app.put()`: A decorator used to register a route which only accepts *PUT* request.
-- `app.patch()`: A decorator used to register a route which only accepts *PATCH* request.
-- `app.delete()`: A decorator used to register a route which only accepts *DELETE* request.
+- `app.get()`: A decorator used to register a route that only accepts *GET* request.
+- `app.post()`: A decorator used to register a route that only accepts *POST* request.
+- `app.put()`: A decorator used to register a route that only accepts *PUT* request.
+- `app.patch()`: A decorator used to register a route that only accepts *PATCH* request.
+- `app.delete()`: A decorator used to register a route that only accepts *DELETE* request.
 
 You can learn the details of these APIs in the API reference, or you can continue to read the following
-chapters (when I finish them, they will appear on the left navigation :p).
+chapters (when I finished them, they will appear on the left navigation :p).
