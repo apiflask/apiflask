@@ -348,8 +348,8 @@ If the validation passed, the data will be inject to the view
 function as a positional argument in the form of `dict`. Otherwise,
 an error response with the detail of validation result will be returned.
 
-If you want mark the input with deffierent locaiotn, you can pass a `location`
-for `@input()` decorator, the value can be:
+If you want mark the input with deffierent location, you can pass a `location`
+argument for `@input()` decorator, the value can be:
 
 - Request JSON body: `'json'` (default)
 - Upload files: `'files'`
