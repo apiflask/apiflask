@@ -28,7 +28,8 @@ setuptools.setup(
     package_data={
         'apiflask': [
             'templates/apiflask/*.html',
-            'static/favicon.png'
+            'static/favicon.png',
+            'py.typed'
         ]
     },
     include_package_data=True,
