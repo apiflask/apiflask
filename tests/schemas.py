@@ -1,5 +1,6 @@
 from apiflask import Schema
-from apiflask.fields import Integer, String
+from apiflask.fields import Integer
+from apiflask.fields import String
 from marshmallow import EXCLUDE
 
 

@@ -1,6 +1,18 @@
-from typing import Any, Callable, TypeVar, Union, Dict, List, Tuple, Mapping
+from typing import Any
+from typing import Callable
+from typing import TypeVar
+from typing import Union
+from typing import Dict
+from typing import List
+from typing import Tuple
+from typing import Mapping
+from typing import Type
 
 from flask.wrappers import Response
+
+from .schemas import Schema
+from .security import HTTPBasicAuth
+from .security import HTTPTokenAuth
 
 DecoratedType = TypeVar('DecoratedType', bound=Callable[..., Any])
 RequestType = TypeVar('RequestType')
@@ -16,3 +28,7 @@ ResponseType = Union[
 ]
 SpecCallbackType = Callable[[Union[dict, str]], Union[dict, str]]
 ErrorCallbackType = Callable[[int, str, Any, Mapping[str, str]], ResponseType]
+
+SchemaType = Union[Type[Schema], dict]
+HTTPAuthType = Union[HTTPBasicAuth, HTTPTokenAuth]
+TagsType = Union[List[str], List[Dict[str, Any]]]

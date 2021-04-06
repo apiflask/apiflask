@@ -1,6 +1,7 @@
 from apiflask import APIFlask, Schema, input, output, abort_json
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
+from apiflask.schemas import EmptySchema
 
 app = APIFlask(__name__)
 
@@ -34,6 +35,11 @@ class PetOutSchema(Schema):
     category = String()
 
 
+@app.get('/')
+def say_hello():
+    return {'message': 'Hello!'}
+
+
 @app.get('/pets/<int:pet_id>')
 @output(PetOutSchema)
 def get_pet(pet_id):
@@ -52,7 +58,7 @@ def get_pets():
 @input(PetInSchema)
 @output(PetOutSchema, 201)
 def create_pet(data):
-    data['id'] = len(pets) + 1
+    data['id'] = len(pets)
     pets.append(data)
     return data
 
@@ -74,13 +80,13 @@ def update_pet(pet_id, data):
 def partial_update_pet(pet_id, data):
     if pet_id > len(pets) - 1:
         abort_json(404)
-    for attr, value in data:
+    for attr, value in data.items():
         pets[pet_id][attr] = value
     return pets[pet_id]
 
 
 @app.delete('/pets/<int:pet_id>')
-@output({}, 204)
+@output(EmptySchema, 204)
 def delete_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort_json(404)

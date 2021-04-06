@@ -1,4 +1,6 @@
-from typing import Optional, Union
+from typing import Optional
+from typing import Union
+
 from flask import Blueprint
 
 from .utils import route_shortcuts

@@ -1,4 +1,11 @@
-from typing import Callable, Union, List, Optional, Dict, Any, Type, Mapping
+from typing import Callable
+from typing import Union
+from typing import List
+from typing import Optional
+from typing import Dict
+from typing import Any
+from typing import Type
+from typing import Mapping
 from functools import wraps
 from collections.abc import Mapping as ABCMapping
 
@@ -12,11 +19,11 @@ from .exceptions import ValidationError
 from .utils import _sentinel
 from .schemas import Schema
 from .schemas import EmptySchema
-from .security import HTTPBasicAuth
-from .security import HTTPTokenAuth
 from .types import DecoratedType
 from .types import ResponseType
 from .types import RequestType
+from .types import HTTPAuthType
+from .types import SchemaType
 
 
 class FlaskParser(BaseFlaskParser):
@@ -53,7 +60,7 @@ def _annotate(f: Any, **kwargs: Any) -> None:
 
 
 def auth_required(
-    auth: Union[Type[HTTPBasicAuth], Type[HTTPTokenAuth]],
+    auth: HTTPAuthType,
     role: Optional[Union[list, str]] = None,
     optional: Optional[str] = None
 ) -> Callable[[DecoratedType], DecoratedType]:
@@ -80,11 +87,11 @@ def auth_required(
         auth: The `auth` object, an instance of [`HTTPBasicAuth`][apiflask.security.HTTPBasicAuth]
             or [`HTTPTokenAuth`][apiflask.security.HTTPTokenAuth].
         role: The selected role to allow to visit this view, accepts a string or a list.
-            See [Flask-HTTPAuth's documentation](role) for more details.
+            See [Flask-HTTPAuth's documentation][role] for more details.
+            [role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
         optional: To allow the view to execute even the authentication information
             is not included with the request, in which case `auth.current_user` will be `None`.
 
-    [role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
     """
     roles = role
     if not isinstance(role, list):  # pragma: no cover
@@ -96,14 +103,17 @@ def auth_required(
     return decorator
 
 
-def _generate_schema_from_mapping(schema, schema_name):
+def _generate_schema_from_mapping(
+    schema: dict,
+    schema_name: Optional[str]
+) -> Type[Schema]:
     if schema_name is None:
         schema_name = 'GeneratedSchema'
     return Schema.from_dict(schema, name=schema_name)()
 
 
 def input(
-    schema: Schema,
+    schema: SchemaType,
     location: str = 'json',
     schema_name: Optional[str] = None,
     example: Optional[Any] = None,
@@ -145,7 +155,7 @@ def input(
     if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
-        schema = schema()
+        schema = schema()  # type: ignore
 
     def decorator(f):
         if location not in [
@@ -168,7 +178,7 @@ def input(
 
 
 def output(
-    schema: Schema,
+    schema: SchemaType,
     status_code: int = 200,
     description: Optional[str] = None,
     schema_name: Optional[str] = None,
@@ -208,10 +218,12 @@ def output(
             a `dict` schema (e.g. `{'name': String()}`).
         example: The example data for response.
     """
-    if isinstance(schema, ABCMapping) and schema != {}:
+    if schema == {}:
+        schema = EmptySchema
+    if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
-        schema = schema()
+        schema = schema()  # type: ignore
 
     if isinstance(schema, EmptySchema):
         status_code = 204
@@ -228,7 +240,7 @@ def output(
             """From Flask-Marshmallow, see NOTICE file for license informaiton."""
             if many is _sentinel:
                 many = schema.many
-            data = schema.dump(obj, many=many)
+            data = schema.dump(obj, many=many)  # type: ignore
             return jsonify(data, *args, **kwargs)
 
         @wraps(f)
@@ -258,7 +270,7 @@ def output(
 def doc(
     summary: Optional[str] = None,
     description: Optional[str] = None,
-    tag: Optional[Union[List[str], List[Dict[str, Any]]]] = None,
+    tag: Optional[Union[str, List[str]]] = None,
     responses: Optional[Union[List[int], Dict[int, str]]] = None,
     deprecated: Optional[bool] = False,
     hide: Optional[bool] = False
