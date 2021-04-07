@@ -3,13 +3,22 @@
 ## Version 0.4.0
 Released: -
 
+- Merge the following configuration variables to `SUCCESS_DESCRIPTION` ([pull #7][pull_7]):
+    - `DEFAULT_2XX_DESCRIPTION`
+    - `DEFAULT_200_DESCRIPTION`
+    - `DEFAULT_201_DESCRIPTION`
+    - `DEFAULT_204_DESCRIPTION`
+- Remove the following configuration variables ([pull #7][pull_7]):
+    - `AUTO_HTTP_ERROR_RESPONSE`
+    - `AUTH_ERROR_SCHEMA`
 - Add new configuration variables `YAML_SPEC_MIMETYPE` and `JSON_SPEC_MIMETYPE` to support
     to customize the MIME type of spec response ([pull #3][pull_3]).
 - Remove configuration variable `SPEC_TYPE`.
-- Fix the support to pass an empty dict as schema for 204 response ([pull #3][pull_13]).
+- Fix the support to pass an empty dict as schema for 204 response ([pull #12][pull_12]).
 
 [pull_3]: https://github.com/greyli/apiflask/pull/3
-[pull_13]: https://github.com/greyli/apiflask/pull/13
+[pull_12]: https://github.com/greyli/apiflask/pull/12
+[pull_7]: https://github.com/greyli/apiflask/pull/7
 
 ## Version 0.3.0
 Released: 2021/3/31
