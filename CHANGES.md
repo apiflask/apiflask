@@ -1,5 +1,17 @@
 # APIFlask Change Log
 
+Upgrade to the latest version:
+
+```
+$ pip install -U apiflask
+```
+
+or check the current installed version first:
+
+```
+$ pip show apiflask
+```
+
 ## Version 0.4.0
 Released: -
 
