@@ -24,20 +24,15 @@ AUTO_DESCRIPTION: bool = True
 AUTO_PATH_SUMMARY: bool = True
 AUTO_PATH_DESCRIPTION: bool = True
 AUTO_200_RESPONSE: bool = True
-# Response customization
-DEFAULT_2XX_DESCRIPTION: str = 'Successful response'
-DEFAULT_200_DESCRIPTION: str = 'Successful response'
-DEFAULT_201_DESCRIPTION: str = 'Resource created'
-DEFAULT_204_DESCRIPTION: str = 'Empty response'
 AUTO_VALIDATION_ERROR_RESPONSE: bool = True
-VALIDATION_ERROR_STATUS_CODE: int = 400
-VALIDATION_ERROR_DESCRIPTION: str = 'Validation error'
-VALIDATION_ERROR_SCHEMA: SchemaType = validation_error_schema
 AUTO_AUTH_ERROR_RESPONSE: bool = True
-AUTH_ERROR_STATUS_CODE: int = 401
+# Response customization
+SUCCESS_DESCRIPTION: str = 'Successful response'
+VALIDATION_ERROR_DESCRIPTION: str = 'Validation error'
 AUTH_ERROR_DESCRIPTION: str = 'Authentication error'
-AUTH_ERROR_SCHEMA: SchemaType = http_error_schema
-AUTO_HTTP_ERROR_RESPONSE: bool = True
+VALIDATION_ERROR_STATUS_CODE: int = 400
+AUTH_ERROR_STATUS_CODE: int = 401
+VALIDATION_ERROR_SCHEMA: SchemaType = validation_error_schema
 HTTP_ERROR_SCHEMA: SchemaType = http_error_schema
 # Swagger UI and Redoc
 DOCS_HIDE_BLUEPRINTS: List[str] = []

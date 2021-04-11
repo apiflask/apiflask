@@ -14,7 +14,6 @@ from apiflask.security import HTTPBasicAuth
 from .schemas import QuerySchema
 from .schemas import FooSchema
 from .schemas import ValidationErrorSchema
-from .schemas import AuthorizationErrorSchema
 from .schemas import HTTPErrorSchema
 
 
@@ -201,13 +200,10 @@ def test_auto_200_response_for_no_output_views(app, client, config_value):
 
 
 def test_response_description_config(app, client):
-    app.config['DEFAULT_2XX_DESCRIPTION'] = 'Default'
-    app.config['DEFAULT_200_DESCRIPTION'] = 'It works'
-    app.config['DEFAULT_201_DESCRIPTION'] = 'Created'
-    app.config['DEFAULT_204_DESCRIPTION'] = 'Nothing'
+    app.config['SUCCESS_DESCRIPTION'] = 'Success'
 
     @app.get('/foo')
-    @input(FooSchema)
+    @input(FooSchema)  # 200
     def only_body_schema(foo):
         pass
 
@@ -217,7 +213,7 @@ def test_response_description_config(app, client):
         pass
 
     @app.get('/baz')
-    @output(EmptySchema)
+    @output(EmptySchema)  # 204
     def no_schema():
         pass
 
@@ -230,14 +226,13 @@ def test_response_description_config(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['get']['responses'][
-        '200']['description'] == 'It works'
+        '200']['description'] == 'Success'
     assert rv.json['paths']['/bar']['get']['responses'][
-        '201']['description'] == 'Created'
+        '201']['description'] == 'Success'
     assert rv.json['paths']['/baz']['get']['responses'][
-        '204']['description'] == 'Nothing'
-    # will use default description
+        '204']['description'] == 'Success'
     assert rv.json['paths']['/spam']['get']['responses'][
-        '206']['description'] == 'Default'
+        '206']['description'] == 'Success'
 
 
 @pytest.mark.parametrize('config_value', [True, False])
@@ -325,8 +320,8 @@ def test_auto_auth_error_response(app, client, config_value):
     validate_spec(rv.json)
     assert bool('401' in rv.json['paths']['/foo']['post']['responses']) is config_value
     if config_value:
-        assert 'AuthorizationError' in rv.json['components']['schemas']
-        assert '#/components/schemas/AuthorizationError' in \
+        assert 'HTTPError' in rv.json['components']['schemas']
+        assert '#/components/schemas/HTTPError' in \
             rv.json['paths']['/foo']['post']['responses']['401'][
                 'content']['application/json']['schema']['$ref']
 
@@ -349,12 +344,7 @@ def test_auth_error_status_code_and_description(app, client):
         '403']['description'] == 'Bad'
 
 
-@pytest.mark.parametrize('schema', [
-    http_error_schema,
-    AuthorizationErrorSchema
-])
-def test_auth_error_schema(app, client, schema):
-    app.config['AUTH_ERROR_SCHEMA'] = schema
+def test_auth_error_schema(app, client):
     auth = HTTPBasicAuth()
 
     @app.post('/foo')
@@ -366,28 +356,10 @@ def test_auth_error_schema(app, client, schema):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['post']['responses']['401']
-    assert rv.json['paths']['/foo']['post']['responses']['401'][
-        'description'] == 'Authentication error'
-    assert 'AuthorizationError' in rv.json['components']['schemas']
+    assert 'HTTPError' in rv.json['components']['schemas']
 
 
-def test_auth_error_schema_bad_type(app):
-    app.config['AUTH_ERROR_SCHEMA'] = 'schema'
-    auth = HTTPBasicAuth()
-
-    @app.post('/foo')
-    @auth_required(auth)
-    def foo():
-        pass
-
-    with pytest.raises(RuntimeError):
-        app.spec
-
-
-@pytest.mark.parametrize('config_value', [True, False])
-def test_http_auth_error_response(app, client, config_value):
-    app.config['AUTO_HTTP_ERROR_RESPONSE'] = config_value
-
+def test_http_auth_error_response(app, client):
     @app.get('/foo')
     @output(FooSchema)
     @doc(responses={204: 'empty', 400: 'bad', 404: 'not found', 500: 'server error'})
@@ -397,22 +369,14 @@ def test_http_auth_error_response(app, client, config_value):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    if config_value:
-        assert 'HTTPError' in rv.json['components']['schemas']
-        assert '#/components/schemas/HTTPError' in \
-            rv.json['paths']['/foo']['get']['responses']['404'][
-                'content']['application/json']['schema']['$ref']
-        assert '#/components/schemas/HTTPError' in \
-            rv.json['paths']['/foo']['get']['responses']['500'][
-                'content']['application/json']['schema']['$ref']
-        assert 'content' not in rv.json['paths']['/foo']['get']['responses']['204']
-    else:
-        assert 'HTTPError' not in rv.json['components']['schemas']
-        assert rv.json['paths']['/foo']['get']['responses']['404'][
-                'content']['application/json']['schema'] == {}
-        assert rv.json['paths']['/foo']['get']['responses']['500'][
-                'content']['application/json']['schema'] == {}
-        assert 'content' not in rv.json['paths']['/foo']['get']['responses']['204']
+    assert 'HTTPError' in rv.json['components']['schemas']
+    assert '#/components/schemas/HTTPError' in \
+        rv.json['paths']['/foo']['get']['responses']['404'][
+            'content']['application/json']['schema']['$ref']
+    assert '#/components/schemas/HTTPError' in \
+        rv.json['paths']['/foo']['get']['responses']['500'][
+            'content']['application/json']['schema']['$ref']
+    assert 'content' not in rv.json['paths']['/foo']['get']['responses']['204']
 
 
 @pytest.mark.parametrize('schema', [

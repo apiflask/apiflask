@@ -394,17 +394,14 @@ class APIFlask(Flask):
                 return render_template(
                     'apiflask/swagger_ui.html',
                     title=self.title,
-                    version=self.version
+                    version=self.version,
+                    oauth2_redirect_path=self.docs_oauth2_redirect_path
                 )
 
             if self.docs_oauth2_redirect_path:
                 @bp.route(self.docs_oauth2_redirect_path)
                 def swagger_ui_oauth_redirect() -> str:
-                    return render_template(
-                        'apiflask/swagger_ui_oauth2_redirect.html',
-                        title=self.title,
-                        version=self.version
-                    )
+                    return render_template('apiflask/swagger_ui_oauth2_redirect.html')
 
         if self.redoc_path:
             @bp.route(self.redoc_path)
@@ -724,12 +721,6 @@ class APIFlask(Flask):
                     operation['deprecated'] = view_func._spec.get('deprecated')
 
                 # responses
-                descriptions: Dict[str, str] = {
-                    '200': self.config['DEFAULT_200_DESCRIPTION'],
-                    '201': self.config['DEFAULT_201_DESCRIPTION'],
-                    '204': self.config['DEFAULT_204_DESCRIPTION'],
-                }
-
                 def add_response(
                     status_code: str,
                     schema: SchemaType,
@@ -772,14 +763,14 @@ class APIFlask(Flask):
                     status_code: str = str(view_func._spec.get('response')['status_code'])
                     schema = view_func._spec.get('response')['schema']
                     description: str = view_func._spec.get('response')['description'] or \
-                        descriptions.get(status_code, self.config['DEFAULT_2XX_DESCRIPTION'])
+                        self.config['SUCCESS_DESCRIPTION']
                     example = view_func._spec.get('response')['example']
                     add_response(status_code, schema, description, example)
                 else:
                     # add a default 200 response for views without using @output
                     # or @doc(responses={...})
                     if not view_func._spec.get('responses') and self.config['AUTO_200_RESPONSE']:
-                        add_response('200', {}, descriptions['200'])
+                        add_response('200', {}, self.config['SUCCESS_DESCRIPTION'])
 
                 # add validation error response
                 if self.config['AUTO_VALIDATION_ERROR_RESPONSE']:
@@ -795,7 +786,7 @@ class APIFlask(Flask):
                             status_code, schema, 'ValidationError', description
                         )
 
-                # add authorization error response
+                # add authentication error response
                 if self.config['AUTO_AUTH_ERROR_RESPONSE']:
                     if view_func._spec.get('auth') or (
                         blueprint_name is not None and blueprint_name in auth_blueprints
@@ -804,9 +795,9 @@ class APIFlask(Flask):
                             self.config['AUTH_ERROR_STATUS_CODE']
                         )
                         description: str = self.config['AUTH_ERROR_DESCRIPTION']  # type: ignore
-                        schema: SchemaType = self.config['AUTH_ERROR_SCHEMA']  # type: ignore
+                        schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
                         add_response_with_schema(
-                            status_code, schema, 'AuthorizationError', description
+                            status_code, schema, 'HTTPError', description
                         )
 
                 if view_func._spec.get('responses'):
@@ -822,10 +813,8 @@ class APIFlask(Flask):
                         status_code: str = str(status_code)  # type: ignore
                         if status_code in operation['responses']:
                             continue
-                        if self.config['AUTO_HTTP_ERROR_RESPONSE'] and (
-                            status_code.startswith('4') or
-                            status_code.startswith('5')
-                        ):
+                        if status_code.startswith('4') or status_code.startswith('5'):
+                            # add error response schema for error responses
                             schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
                             add_response_with_schema(
                                 status_code, schema, 'HTTPError', description

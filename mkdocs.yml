@@ -36,6 +36,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Basic Usage: usage.md
+  - Configuration: configuration.md
   - Examples: examples.md
   - API Reference:
     - APIFlask: api/app.md
@@ -47,7 +48,6 @@ nav:
     - Utils: api/utils.md
   - Changelog: changelog.md
   - WIP:
-    - Configuration: configuration.md
     - Migrating from Flask: flask.md
     - OpenAPI: openapi.md
     - Request Validation: request.md
