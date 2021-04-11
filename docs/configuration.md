@@ -285,6 +285,38 @@ Or:
 app.terms_of_service = 'http://example.com/terms/'
 ```
 
+#### `JSON_SPEC_MIMETYPE`
+
+The MIME type string for JSON OpenAPI spec response.
+
+- Type: `str`
+- Default value: `'application/json'`
+- Examples:
+
+```python
+app.config['JSON_SPEC_MIMETYPE'] = 'application/custom-json'
+```
+
+!!! warning "Version >= 0.4.0"
+
+    This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
+
+#### `YAML_SPEC_MIMETYPE`
+
+The MIME type string for YAML OpenAPI spec response.
+
+- Type: `str`
+- Default value: `'text/vnd.yaml'`
+- Examples:
+
+```python
+app.config['YAML_SPEC_MIMETYPE'] = 'text/x-yaml'
+```
+
+!!! warning "Version >= 0.4.0"
+
+    This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
+
 ### Automation behaviour control
 
 The following configuration variables used to control the automation behaviour of APIFlask.
@@ -403,6 +435,22 @@ app.config['AUTO_AUTH_ERROR_RESPONSE'] = False
 ### Response customization
 
 The following configuration variables used to customize auto responses.
+
+#### `SUCCESS_DESCRIPTION`
+
+The default description of the 2XX responses.
+
+- Type: `str`
+- Default value: `Successful response`
+- Examples:
+
+```python
+app.config['SUCCESS_DESCRIPTION'] = 'Success!'
+```
+
+!!! warning "Version >= 0.4.0"
+
+    This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
 
 #### `VALIDATION_ERROR_STATUS_CODE`
 
