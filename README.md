@@ -85,6 +85,7 @@ class PetOutSchema(Schema):
 
 @app.get('/')
 def say_hello():
+    # returning a dict equals to use jsonify()
     return {'message': 'Hello!'}
 
 
@@ -93,6 +94,7 @@ def say_hello():
 def get_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort_json(404)
+    # you can also return an ORM model class instance directly
     return pets[pet_id]
 
 
@@ -100,11 +102,12 @@ def get_pet(pet_id):
 @input(PetInSchema)
 @output(PetOutSchema)
 def update_pet(pet_id, data):
+    # the parsed input data (dict) will be injected into the view function
     if pet_id > len(pets) - 1:
         abort_json(404)
     data['id'] = pet_id
     pets[pet_id] = data
-    return data
+    return pets[pet_id]
 ```
 
 Save the file as `app.py`, then run it with:
