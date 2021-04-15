@@ -236,7 +236,7 @@ def delete_pet(pet_id):
 
     If you want the view function to accept multiple methods, you still need
     to use `app.route()` decorator. You can mix the use of `app.route()` with the
-    shortcuts.
+    shortcuts in your application.
 
 ## Using `@input` to validate and deserialize request data
 
@@ -348,6 +348,32 @@ If the validation passed, the data will be injected into the view
 function as a positional argument in the form of `dict`. Otherwise,
 an error response with the detail of the validation result will be returned.
 
+In the example above, I use `data` to accept the input data dict, you can change
+the argument name to whatever you like. Since this is a dict, you can do something like
+this to create an ORM model instance:
+
+```python hl_lines="5"
+@app.post('/pets')
+@input(PetInSchema)
+@output(PetOutSchema)
+def create_pet(pet_id, data):
+    pet = Pet(**data)
+    return pet
+```
+
+or update an ORM model class instance like this:
+
+```python hl_lines="6 7"
+@app.patch('/pets/<int:pet_id>')
+@input(PetInSchema)
+@output(PetOutSchema)
+def update_pet(pet_id, data):
+    pet = Pet.query.get(pet_id)
+    for attr, value in data.items():
+        setattr(pet, attr, value)
+    return pet
+```
+
 If you want to mark the input with a different location, you can pass a `location`
 argument for `@input()` decorator, the value can be:
 
@@ -359,8 +385,8 @@ argument for `@input()` decorator, the value can be:
 - Query string: `'query'` (same as `'querystring'`)
 
 !!! warning
-    Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
-    `app.post`, etc.).
+    Be sure to put the `@input` decorator under the routes decorators
+    (i.e. `app.route`, `app.get`, `app.post`, etc.).
 
 ## Using `@output` to formatting response data
 
@@ -413,7 +439,7 @@ def get_pet(pet_id):
 The default status code for output response is `200`, you can set a different status code
 with the `status_code` argument:
 
-```python
+```python hl_lines="3"
 @app.post('/pets')
 @input(PetInSchema)
 @output(PetOutSchema, status_code=201)
@@ -428,10 +454,161 @@ Or just:
 @output(PetOutSchema, 201)
 ```
 
-!!! warning
-    Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
-    `app.post`, etc.).
+If you want to return a 204 response, you can use the `EmptySchema` from `apiflask.schemas`:
 
+```python hl_lines="1 5"
+from apiflask.schemas import EmptySchema
+
+
+@app.delete('/pets/<int:pet_id>')
+@output(EmptySchema, 204)
+def delete_pet(pet_id):
+    return ''
+```
+
+From version 0.4.0, you can use a empty dict to represent empty schema:
+
+```python hl_lines="2"
+@app.delete('/pets/<int:pet_id>')
+@output({}, 204)
+def delete_pet(pet_id):
+    return ''
+```
+
+!!! warning "The `@output` decorator can only used once"
+
+    You can only defined one main success response for your view function,
+    which means you can only use one `@output` decorator. If you want to
+    add more alternative responses for a view in the OpenAPI spec, you can
+    use the `@doc` decorator and pass a list to `responses` argument.
+    For example:
+
+    ```python hl_lines="4"
+    @app.put('/pets/<int:pet_id>')
+    @input(PetInSchema)
+    @output(PetOutSchema)  # 200
+    @doc(responses=[204, 404])
+    def update_pet(pet_id, data):
+        pass
+    ```
+
+!!! warning
+    Be sure to put the `@output` decorator under the routes decorators
+    (i.e. `app.route`, `app.get`, `app.post`, etc.).
+
+## The return value of the view function
+
+When you are using a `@output(schema)` decorator, you should return a dict or object
+that matches the schema you passed. For example, here is your schema:
+
+```python
+from apiflask import Schema
+from apiflask.fields import String, Integer
+
+
+class PetOutSchema(Schema):
+    id = Integer()
+    name = String()
+    category = String()
+```
+
+Now you can return a dict:
+
+```python
+@app.get('/pets/<int:pet_id>')
+@output(PetOutSchema)
+def get_pet(pet_id):
+    return {
+        'id': 1,
+        'name': 'Coco',
+        'category: 'dog'
+    }
+```
+
+or you can return an ORM model instance directly:
+
+```python hl_lines="5"
+@app.get('/pets/<int:pet_id>')
+@output(PetOutSchema)
+def get_pet(pet_id):
+    pet = Pet.query.get(pet_id)
+    return pet
+```
+
+Notice your ORM model class should have the fields defined in the schema class:
+
+```python
+class Pet(Model):
+    id = Integer()
+    name = String()
+    category = String()
+```
+
+!!! tip "What if I want to use a different field name in the schema?"
+
+    For example, in your ORM model class, you have a `phone` field that
+    store the user's phone number:
+
+    ```python
+    class User(Model):
+        phone = String()
+    ```
+
+    Now you want to output the field with the name `phone_number`, then you
+    can use `data_key` argument to declare the actual key name to load from:
+
+    ```python
+    class UserOutSchema(Schema):
+        phone_number = String(data_key='phone')
+    ```
+
+The default status code is `200`, if you want to use a different status code,
+you can pass a `status_code` arguent in the `@output` decorator:
+
+```python hl_lines="3"
+@app.post('/pets')
+@input(PetInSchema)
+@output(PetOutSchema, 201)
+def create_pet(data)
+    # ...
+    return pet
+```
+
+You don't need to return the same status code in the end of the view function
+(i.e. `return data, 201`):
+
+```python hl_lines="8"
+@app.post('/pets')
+@input(PetInSchema)
+@output(PetOutSchema, 201)
+def create_pet(data)
+    # ...
+    # equals to:
+    # return pet, 201
+    return pet
+```
+
+When you want to pass a header dict, you can pass the dict as the second element
+of the return tuple:
+
+```python hl_lines="8"
+@app.post('/pets')
+@input(PetInSchema)
+@output(PetOutSchema, 201)
+def create_pet(data)
+    # ...
+    # equals to:
+    # return pet, 201, {'FOO': 'bar'}
+    return pet, {'FOO': 'bar'}
+```
+
+!!! tips
+
+    Be sure to always set the `status_code` argument in `@output` when you want
+    to use a non-200 status code. If there is a mismatch, the `status_code`
+    passed in `@output` will be used in OpenAPI spec, while the actual response
+    will use the status code you returned in the end of the view function.
+ 
 ## Using `@doc` to set up OpenAPI Spec
 
 The `@doc` decorator can be used to set up the OpenAPI Spec for view functions:
@@ -461,7 +638,7 @@ summary, the lines after the empty line of the docstring will be used as the des
 
 Hence the example above is equals to:
 
-```python hl_lines="6 8"
+```python hl_lines="8 10"
 from apiflask import APIFlask
 
 app = APIFlask(__name__)
@@ -487,8 +664,8 @@ Here are the other arguments for the `@doc` argument:
 - `hide`: Hide this endpoint in API docs. Defaults to `False`.
 
 !!! warning
-    Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
-    `app.post`, etc.).
+    Be sure to put the `@doc` decorator under the routes decorators
+    (i.e. `app.route`, `app.get`, `app.post`, etc.).
 
 ## Using `@auth_required` to protect your views
 
@@ -511,8 +688,8 @@ See [Flask-HTTPAuth's documentation](_flask-httpauth) for more details (The chap
 of authentication support will be added soon).
 
 !!! warning
-    Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
-    `app.post`, etc.).
+    Be sure to put the `@auth_required` decorator under the routes decorators
+    (i.e. `app.route`, `app.get`, `app.post`, etc.).
 
 [_flask-httpauth]: https://flask-httpauth.readthedocs.io/ 
 
@@ -568,10 +745,10 @@ In the end, let's unpack the whole `apiflask` package to check out what it shipp
 
 - `APIFlask`: A class used to create an application instance (A wrapper for Flask's `Flask` class).
 - `APIBlueprint`: A class used to create a blueprint instance (A wrapper for Flask's `Blueprint` class)..
-- `@input`: A docorator used to validate the input/request data from request body, query string, etc.
-- `@output`: A docorator used to format the response.
-- `@auth_required`: A docorator used to protect a view from unauthenticated users.
-- `@doc`: A docorator used to set up the OpenAPI spec for view functions.
+- `@input`: A decorator used to validate the input/request data from request body, query string, etc.
+- `@output`: A decorator used to format the response.
+- `@auth_required`: A decorator used to protect a view from unauthenticated users.
+- `@doc`: A decorator used to set up the OpenAPI spec for view functions.
 - `abort_json()`: A function used to abort the request handling process and return an error response. The
     JSON version of Flask's `abort()` function.
 - `HTTPError`: An exception used to return error response (used by `abort_json()`).
@@ -586,5 +763,4 @@ In the end, let's unpack the whole `apiflask` package to check out what it shipp
 - `app.patch()`: A decorator used to register a route that only accepts *PATCH* request.
 - `app.delete()`: A decorator used to register a route that only accepts *DELETE* request.
 
-You can learn the details of these APIs in the API reference, or you can continue to read the following
-chapters (when I finished them, they will appear on the left navigation :p).
+You can learn the details of these APIs in the API reference, or you can continue to read the following chapters (when I finished them, they will appear on the left navigation :p).
