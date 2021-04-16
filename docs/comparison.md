@@ -7,7 +7,7 @@ In a word, I try to provide an elegant (act as a framework, no need to instantia
 
 ## APIFlask vs APIFairy/flask-smorest
 
-### It's a framework!
+### It's a framework (and why?)
 
 Although APIFlask is a thin wrapper on top of Flask, it's actually a framework.
 Thus, there is no need to instantiate additional extension object:
@@ -27,6 +27,15 @@ from apiflask import APIFlask
 
 app = APIFlask(__name__)
 ```
+
+The key reasons behind making APIFlask a framework instead of a Flask
+extension is:
+
+- I have to rewrite the `Flask` class to ensure natural order of the arguments
+injected into the view function.
+- I have to rewrite the `Flask` and the `Blueprint` class to add route shortcuts.
+
+See the following two sections for more details.
 
 ### A natural order of view arguments
 
