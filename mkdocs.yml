@@ -35,6 +35,7 @@ markdown_extensions:
         permalink: True
 nav:
   - Home: index.md
+  - Comparison and Motivations: comparison.md
   - Basic Usage: usage.md
   - Configuration: configuration.md
   - Examples: examples.md
