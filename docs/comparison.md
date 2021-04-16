@@ -115,20 +115,21 @@ def create_pet():
 
 ## APIFlask vs FastAPI
 
-Some basic differences:
-
 - FastAPI is nearly three years old, while APIFlask is only three months old. The former
 is production-ready. The latter is still in the early stage.
-- For te web part, FastAPI builts on top of Starlette, while APIFlask builts on top of
+- For the web part, FastAPI builts on top of Starlette, while APIFlask builts on top of
 Flask.
-- For the data part (schema, OpenAPI support), FastAPI relies on Pydantic, while APIFlask
-uses marshmallow-code projects (Marshmallow, Webargs, APISpec).
-- APIFlask is built on top of Flask; thus it's compatible with Flask extensions.
-- FastAPI is fast, as it implied in its name, while APIFlask not. APIFlask will focus
-on a better user experience and keep it light and sweet.
-- FastAPI mixed docs translation in one repo and mixed questions in the issue tracker
-see [this issue](https://github.com/tiangolo/fastapi/issues/2487) for more details,
-while APIFlask will avoid this. Maybe FastAPI takes this as a way to grow the community, but in my opinion, it will lead to an unhealthy maintenance status.
+- For the data part (serialization/deserialization, OpenAPI support), FastAPI relies
+on Pydantic, while APIFlask uses marshmallow-code projects (Marshmallow, Webargs, APISpec).
+- APIFlask builts on top of Flask, so it's compatible with Flask extensions.
+- FastAPI is faster, and it has async support. APIFlask will try to provide a better
+user experience and keep it light and sweet.
+- APIFlask provides more decorators to help organize things better.
+- FastAPI injects the input data as an object, while APIFlask passes it as a dict.
+
+!!! tip
+    Flask 2.0 will have basic async support. I also consider support change the base Flask
+    to the async version of Flask, Quart.
 
 !!! note
     I have to admit, I know very little about FastAPI other than the introduction
