@@ -31,12 +31,15 @@ Released: -
 and `@iniput(examples=...)` ([pull #23][pull_23]).
 - Add `auth_required(roles=...)` and `doc(tags=...)` parameters for list value, `role` and
 `tag` parameter now only accept string value ([pull #26][pull_26]).
+- Add new configuration variable `OPENAPI_VERSION` to set the version of OAS
+([pull #27][pull_27]).
 
 [pull_3]: https://github.com/greyli/apiflask/pull/3
 [pull_12]: https://github.com/greyli/apiflask/pull/12
 [pull_7]: https://github.com/greyli/apiflask/pull/7
 [pull_23]: https://github.com/greyli/apiflask/pull/23
 [pull_26]: https://github.com/greyli/apiflask/pull/26
+[pull_27]: https://github.com/greyli/apiflask/pull/27
 
 ## Version 0.3.0
 Released: 2021/3/31

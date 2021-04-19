@@ -42,6 +42,7 @@ on:
 the usage of `HTTPBasicAuth` and `HTTPTokenAuth`.
 - **[Webargs](https://webargs.readthedocs.io/)**: Useful for contributors.
 - **[APISpec](https://apispec.readthedocs.io/)**: Useful for contributors.
-- **[OpenAPI](https://www.openapis.org/)**: The OpenAPI Specification.
+- **[OpenAPI](https://github.com/OAI/OpenAPI-Specification/tree/main/versions)**:
+The OpenAPI Specification.
 - **[JSON Schema](https://json-schema.org/)**: Useful when you want to set a custom
 error schema and you don't want to use schema.
