@@ -27,10 +27,13 @@ Released: -
     to customize the MIME type of spec response ([pull #3][pull_3]).
 - Remove configuration variable `SPEC_TYPE`.
 - Fix the support to pass an empty dict as schema for 204 response ([pull #12][pull_12]).
+- Support set multiple examples for request/response body with `@output(examples=...)`
+and `@iniput(examples=...)` ([pull #23][pull_23]).
 
 [pull_3]: https://github.com/greyli/apiflask/pull/3
 [pull_12]: https://github.com/greyli/apiflask/pull/12
 [pull_7]: https://github.com/greyli/apiflask/pull/7
+[pull_23]: https://github.com/greyli/apiflask/pull/23
 
 ## Version 0.3.0
 Released: 2021/3/31

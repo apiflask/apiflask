@@ -647,7 +647,11 @@ class APIFlask(Flask):
                     continue
             # add a default 200 response for bare views
             default_response = {
-                'schema': {}, 'status_code': 200, 'description': None, 'example': None
+                'schema': {},
+                'status_code': 200,
+                'description': None,
+                'example': None,
+                'examples': None
             }
             if not hasattr(view_func, '_spec'):
                 if self.config['AUTO_200_RESPONSE']:
@@ -725,7 +729,8 @@ class APIFlask(Flask):
                     status_code: str,
                     schema: SchemaType,
                     description: str,
-                    example: Optional[Any] = None
+                    example: Optional[Any] = None,
+                    examples: Optional[Dict[str, Any]] = None,
                 ) -> None:
                     operation['responses'][status_code] = {}
                     if status_code != '204':
@@ -738,6 +743,9 @@ class APIFlask(Flask):
                     if example is not None:
                         operation['responses'][status_code]['content'][
                             'application/json']['example'] = example
+                    if examples is not None:
+                        operation['responses'][status_code]['content'][
+                            'application/json']['examples'] = examples
 
                 def add_response_with_schema(
                     status_code: str,
@@ -765,7 +773,8 @@ class APIFlask(Flask):
                     description: str = view_func._spec.get('response')['description'] or \
                         self.config['SUCCESS_DESCRIPTION']
                     example = view_func._spec.get('response')['example']
-                    add_response(status_code, schema, description, example)
+                    examples = view_func._spec.get('response')['examples']
+                    add_response(status_code, schema, description, example, examples)
                 else:
                     # add a default 200 response for views without using @output
                     # or @doc(responses={...})
@@ -832,8 +841,13 @@ class APIFlask(Flask):
                         }
                     }
                     if view_func._spec.get('body_example'):
+                        example = view_func._spec.get('body_example')
                         operation['requestBody']['content'][
-                            'application/json']['example'] = view_func._spec.get('body_example')
+                            'application/json']['example'] = example
+                    if view_func._spec.get('body_examples'):
+                        examples = view_func._spec.get('body_examples')
+                        operation['requestBody']['content'][
+                            'application/json']['examples'] = examples
 
                 # security
                 if blueprint_name is not None and blueprint_name in auth_blueprints:
