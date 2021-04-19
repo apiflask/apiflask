@@ -1,9 +1,13 @@
 # Comparison and Motivations
 
 APIFlask starts as a fork of APIFairy (which share similar APIs with flask-smorest)
-and is inspired by FastAPI. So, what are the differences between APIFlask and APIFairy/flask-smorest/FastAPI?
+and is inspired by flask-smorest and FastAPI. So, what are the differences between
+APIFlask and APIFairy/flask-smorest/FastAPI?
 
-In a word, I try to provide an elegant (act as a framework, no need to instantiate additional extension object) and simple (more automation support for OpenAPI/API documentation) solution for creating web APIs with Flask. Here is a summary of the differences between APIFlask and similar projects.
+In a word, I try to provide an elegant (act as a framework, no need to instantiate
+additional extension object) and simple (more automation support for OpenAPI/API
+documentation) solution for creating web APIs with Flask. Here is a summary of the
+differences between APIFlask and similar projects.
 
 ## APIFlask vs APIFairy/flask-smorest
 
