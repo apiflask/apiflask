@@ -261,13 +261,25 @@ def test_input_with_dict_schema(app, client):
 
 
 def test_input_body_example(app, client):
+    example = {'name': 'foo', 'id': 2}
+    examples = {
+        'example foo': {
+            'summary': 'an example of foo',
+            'value': {'name': 'foo', 'id': 1}
+        },
+        'example bar': {
+            'summary': 'an example of bar',
+            'value': {'name': 'bar', 'id': 2}
+        },
+    }
+
     @app.post('/foo')
-    @input(FooSchema, example=['foo', 'bar', 'baz'])
+    @input(FooSchema, example=example)
     def foo():
         pass
 
     @app.post('/bar')
-    @input(FooSchema, example={'name': 'foo', 'age': 20})
+    @input(FooSchema, examples=examples)
     def bar():
         pass
 
@@ -275,9 +287,9 @@ def test_input_body_example(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['post']['requestBody'][
-        'content']['application/json']['example'] == ['foo', 'bar', 'baz']
+        'content']['application/json']['example'] == example
     assert rv.json['paths']['/bar']['post']['requestBody'][
-        'content']['application/json']['example'] == {'name': 'foo', 'age': 20}
+        'content']['application/json']['examples'] == examples
 
 
 def test_output(app, client):
@@ -393,13 +405,25 @@ def test_output_with_dict_schema(app, client):
 
 
 def test_output_body_example(app, client):
+    example = {'name': 'foo', 'id': 2}
+    examples = {
+        'example foo': {
+            'summary': 'an example of foo',
+            'value': {'name': 'foo', 'id': 1}
+        },
+        'example bar': {
+            'summary': 'an example of bar',
+            'value': {'name': 'bar', 'id': 2}
+        },
+    }
+
     @app.get('/foo')
-    @output(FooSchema, example=['foo', 'bar', 'baz'])
+    @output(FooSchema, example=example)
     def foo():
         pass
 
     @app.get('/bar')
-    @output(FooSchema, example={'name': 'foo', 'age': 20})
+    @output(FooSchema, examples=examples)
     def bar():
         pass
 
@@ -407,9 +431,9 @@ def test_output_body_example(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['get']['responses']['200'][
-        'content']['application/json']['example'] == ['foo', 'bar', 'baz']
+        'content']['application/json']['example'] == example
     assert rv.json['paths']['/bar']['get']['responses']['200'][
-        'content']['application/json']['example'] == {'name': 'foo', 'age': 20}
+        'content']['application/json']['examples'] == examples
 
 
 def test_output_with_empty_dict_as_schema(app, client):
