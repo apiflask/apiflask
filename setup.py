@@ -20,7 +20,7 @@ setuptools.setup(
     platforms='any',
     url='https://apiflask.com',
     project_urls={
-        'Documentation': 'https://apiflask.com',
+        'Documentation': 'https://apiflask.com/docs',
         'Source': 'https://github.com/greyli/apiflask',
         'Changelog': 'https://apiflask.com/changelog',
     },
