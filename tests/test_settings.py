@@ -18,6 +18,7 @@ from .schemas import HTTPErrorSchema
 
 
 def test_openapi_fields(app, client):
+    openapi_version = '3.0.2'
     description = 'My API'
     tags = [
         {
@@ -54,6 +55,7 @@ def test_openapi_fields(app, client):
             'description': 'Production server'
         }
     ]
+    app.config['OPENAPI_VERSION'] = openapi_version
     app.config['DESCRIPTION'] = description
     app.config['TAGS'] = tags
     app.config['CONTACT'] = contact
@@ -65,6 +67,7 @@ def test_openapi_fields(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
+    assert rv.json['openapi'] == openapi_version
     assert rv.json['tags'] == tags
     assert rv.json['servers'] == servers
     assert rv.json['externalDocs'] == external_docs

@@ -109,6 +109,27 @@ Below are all the built-in configuration variables in APIFlask.
 All the configurations of OpenAPI-related fields will be used when the OpenAPI spec was
 generated. They will also rendered by the API documentations.
 
+#### `OPENAPI_VERSION`
+
+The version of OpenAPI Specification (`openapi.openapi`). This configuration can also
+be configured from the `app.openapi_version` attribute.
+
+- Type: `str`
+- Default value: `'3.0.3'`
+- Examples:
+
+```python
+app.config['OPENAPI_VERSION'] = '3.0.2'
+```
+Or:
+```python
+app.openapi_version = '3.0.2'
+```
+
+!!! warning "Version >= 0.4.0"
+
+    This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
+
 #### `DESCRIPTION`
 
 The description of the API (`openapi.info.description`). This configuration can also
