@@ -49,6 +49,7 @@ nav:
     - Utils: api/utils.md
   - Changelog: changelog.md
   - Comparison and Motivations: comparison.md
+  - Donate to APIFlask: https://opencollective.com/apiflask
   - WIP:
     - Migrating from Flask: flask.md
     - OpenAPI: openapi.md
