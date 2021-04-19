@@ -95,7 +95,7 @@ def auth_required(
             is not included with the request, in which case `auth.current_user` will be `None`.
     """
     _roles = None
-    if role is not None and not isinstance(role, list):
+    if role is not None:
         _roles = [role]
     elif roles is not None:
         _roles = roles
@@ -355,7 +355,7 @@ def doc(
     *Version added: 0.2.0*
     """
     _tags = None
-    if tag is not None and not isinstance(tag, list):
+    if tag is not None:
         _tags = [tag]
     elif tags is not None:
         _tags = tags
