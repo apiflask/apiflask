@@ -9,6 +9,7 @@ from .types import TagsType
 
 
 # OpenAPI fields
+OPENAPI_VERSION: str = '3.0.3'
 DESCRIPTION: Optional[str] = None
 TAGS: Optional[TagsType] = None
 CONTACT: Optional[Dict[str, str]] = None

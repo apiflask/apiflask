@@ -52,6 +52,9 @@ class APIFlask(Flask):
     ```
 
     Attributes:
+        openapi_version: The version of OpenAPI Specification (openapi.openapi).
+            This attribute can also be configured from the config with the
+            `OPENAPI_VERSION` configuration key. Defaults to `'3.0.3'`.
         description: The description of the API (openapi.info.description).
             This attribute can also be configured from the config with the
             `DESCRIPTION` configuration key. Defaults to `None`.
@@ -163,6 +166,7 @@ class APIFlask(Flask):
             app.error_processor = my_error_handler
             ```
     """
+    openapi_version: str = ConfigAttribute('OPENAPI_VERSION')  # type: ignore
     description: Optional[str] = ConfigAttribute('DESCRIPTION')  # type: ignore
     tags: Optional[Union[List[str], List[Dict[str, str]]]
                    ] = ConfigAttribute('TAGS')  # type: ignore
@@ -537,7 +541,7 @@ class APIFlask(Flask):
         spec: APISpec = APISpec(
             title=self.title,
             version=self.version,
-            openapi_version='3.0.3',
+            openapi_version=self.config['OPENAPI_VERSION'],
             plugins=[ma_plugin],
             info=info,
             tags=tags,
