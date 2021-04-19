@@ -29,8 +29,8 @@ Released: -
 - Fix the support to pass an empty dict as schema for 204 response ([pull #12][pull_12]).
 - Support set multiple examples for request/response body with `@output(examples=...)`
 and `@iniput(examples=...)` ([pull #23][pull_23]).
-- Add `auth_required(roles=...)` and `doc(tags=...)` arguments for list value, `role` and
-`tag` argument now only accept string value ([pull #26][pull_26]).
+- Add `auth_required(roles=...)` and `doc(tags=...)` parameters for list value, `role` and
+`tag` parameter now only accept string value ([pull #26][pull_26]).
 
 [pull_3]: https://github.com/greyli/apiflask/pull/3
 [pull_12]: https://github.com/greyli/apiflask/pull/12
@@ -47,7 +47,7 @@ Released: 2021/3/31
     - Change base class `scaffold.Scaffold` to class decorator `utils.route_shortcuts`.
     - Merge the `_OpenAPIMixin` class into `APIFlask` class.
     - Turn `security._AuthErrorMixin` into `handle_auth_error` function.
-    - Add explicit argument `role` and `optional` for `@auth_required` decorator.
+    - Add explicit parameter `role` and `optional` for `@auth_required` decorator.
     - Rename module `errors` to `exceptions`.
     - Rename `api_abort()` to `abort_json()`.
     - Rename `get_error_message()` to `get_reason_phrase()` and move it to `utils` module.
