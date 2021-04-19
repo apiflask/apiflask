@@ -61,7 +61,8 @@ def _annotate(f: Any, **kwargs: Any) -> None:
 
 def auth_required(
     auth: HTTPAuthType,
-    role: Optional[Union[list, str]] = None,
+    role: Optional[str] = None,
+    roles: Optional[list] = None,
     optional: Optional[str] = None
 ) -> Callable[[DecoratedType], DecoratedType]:
     """Protect a view with provided authentication settings.
@@ -86,20 +87,22 @@ def auth_required(
     Arguments:
         auth: The `auth` object, an instance of [`HTTPBasicAuth`][apiflask.security.HTTPBasicAuth]
             or [`HTTPTokenAuth`][apiflask.security.HTTPTokenAuth].
-        role: The selected role to allow to visit this view, accepts a string or a list.
+        role: The selected role to allow to visit this view, accepts a string.
             See [Flask-HTTPAuth's documentation][role] for more details.
             [role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
+        roles: Similar to `role` but accepts a list of role names.
         optional: To allow the view to execute even the authentication information
             is not included with the request, in which case `auth.current_user` will be `None`.
-
     """
-    roles = role
-    if not isinstance(role, list):  # pragma: no cover
-        roles = [role] if role is not None else []
+    _roles = None
+    if role is not None and not isinstance(role, list):
+        _roles = [role]
+    elif roles is not None:
+        _roles = roles
 
     def decorator(f):
-        _annotate(f, auth=auth, roles=roles)
-        return auth.login_required(role=role, optional=optional)(f)
+        _annotate(f, auth=auth, roles=_roles or [])
+        return auth.login_required(role=_roles, optional=optional)(f)
     return decorator
 
 
@@ -302,7 +305,8 @@ def output(
 def doc(
     summary: Optional[str] = None,
     description: Optional[str] = None,
-    tag: Optional[Union[str, List[str]]] = None,
+    tag: Optional[str] = None,
+    tags: Optional[List[str]] = None,
     responses: Optional[Union[List[int], Dict[int, str]]] = None,
     deprecated: Optional[bool] = False,
     hide: Optional[bool] = False
@@ -335,9 +339,9 @@ def doc(
             ```
         description: The description of this endpoint. If not set, the lines after the empty
             line of the docstring will be used.
-        tag: The tag or tag list of this endpoint, map the tags you passed in the `app.tags`
-            attribute. You can pass a list of tag names or just a single tag name string.
-            If `app.tags` not set, the blueprint name will be used as tag name.
+        tag: The tag name of this endpoint, map the tags you passed in the `app.tags`
+            attribute. If `app.tags` not set, the blueprint name will be used as tag name.
+        tags: Similar to `tag` but accepts a list of tag names.
         responses: The other responses for this view function, accepts a dict in a format
             of `{404: 'Not Found'}` or a list of status code (`[404, 418]`).
         deprecated: Flag this endpoint as deprecated in API docs. Defaults to `False`.
@@ -350,12 +354,18 @@ def doc(
 
     *Version added: 0.2.0*
     """
+    _tags = None
+    if tag is not None and not isinstance(tag, list):
+        _tags = [tag]
+    elif tags is not None:
+        _tags = tags
+
     def decorator(f):
         _annotate(
             f,
             summary=summary,
             description=description,
-            tag=tag,
+            tags=_tags,
             responses=responses,
             deprecated=deprecated,
             hide=hide

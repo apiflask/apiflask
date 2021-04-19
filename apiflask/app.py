@@ -663,20 +663,20 @@ class APIFlask(Flask):
                 continue
 
             # tag
-            operation_tags: Optional[Union[str, List[str]]] = None
-            if view_func._spec.get('tag'):
-                operation_tags = view_func._spec.get('tag')
+            operation_tags: Optional[List[str]] = None
+            if view_func._spec.get('tags'):
+                operation_tags = view_func._spec.get('tags')
             else:
                 # if tag not set, try to use blueprint name as tag
                 if self.tags is None and self.config['AUTO_TAGS'] and blueprint_name is not None:
                     blueprint = self.blueprints[blueprint_name]
                     if hasattr(blueprint, 'tag') and blueprint.tag is not None:
                         if isinstance(blueprint.tag, dict):
-                            operation_tags = blueprint.tag['name']
+                            operation_tags = [blueprint.tag['name']]
                         else:
-                            operation_tags = blueprint.tag
+                            operation_tags = [blueprint.tag]
                     else:
-                        operation_tags = blueprint_name.title()
+                        operation_tags = [blueprint_name.title()]
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
                 if method not in rule.methods:
@@ -689,10 +689,7 @@ class APIFlask(Flask):
                     'responses': {},
                 }
                 if operation_tags:
-                    if isinstance(operation_tags, list):
-                        operation['tags'] = operation_tags
-                    else:
-                        operation['tags'] = [operation_tags]
+                    operation['tags'] = operation_tags
 
                 # summary
                 if view_func._spec.get('summary'):
