@@ -58,9 +58,10 @@ def get_pets():
 @input(PetInSchema)
 @output(PetOutSchema, 201)
 def create_pet(data):
-    data['id'] = len(pets)
+    pet_id = len(pets)
+    data['id'] = pet_id
     pets.append(data)
-    return data
+    return pets[pet_id]
 
 
 @app.put('/pets/<int:pet_id>')
@@ -71,7 +72,7 @@ def update_pet(pet_id, data):
         abort_json(404)
     data['id'] = pet_id
     pets[pet_id] = data
-    return data
+    return pets[pet_id]
 
 
 @app.patch('/pets/<int:pet_id>')
