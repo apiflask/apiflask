@@ -93,6 +93,9 @@ def auth_required(
         roles: Similar to `role` but accepts a list of role names.
         optional: To allow the view to execute even the authentication information
             is not included with the request, in which case `auth.current_user` will be `None`.
+
+    *Version changed: 0.4.0*
+    - Add parameter `roles`.
     """
     _roles = None
     if role is not None:
@@ -169,6 +172,9 @@ def input(
                     'value': {'name': 'bar', 'id': 2}
                 },
             }
+
+    *Version changed: 0.4.0*
+    - Add parameter `examples`.
     """
     if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
@@ -251,6 +257,9 @@ def output(
                 },
             }
             ```
+
+    *Version changed: 0.4.0*
+    - Add parameter `examples`.
     """
     if schema == {}:
         schema = EmptySchema
@@ -347,10 +356,12 @@ def doc(
         deprecated: Flag this endpoint as deprecated in API docs. Defaults to `False`.
         hide: Hide this endpoint in API docs. Defaults to `False`.
 
-    *Version changed: 0.3.0*
+    *Version changed: 0.4.0*
+    - Add parameter `tag`.
 
+    *Version changed: 0.3.0*
     - Change the default value of `deprecated` from `None` to `False`.
-    - Rename argument `tags` to `tag`.
+    - Rename parameter `tags` to `tag`.
 
     *Version added: 0.2.0*
     """
