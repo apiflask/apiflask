@@ -11,10 +11,10 @@ or check the current installed version first:
 ```
 $ pip show apiflask
 ```
+
 ## Version 0.5.0
 Released: -
 0.5.0 plan: https://github.com/greyli/apiflask/issues/25
-
 
 ## Version 0.4.0
 Released: 2021/4/20
