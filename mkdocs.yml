@@ -36,7 +36,9 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Documentation Index: docs.md
+  - Migrating from Flask: migrating.md
   - Basic Usage: usage.md
+  - Swagger UI and Redoc: api-docs.md
   - Configuration: configuration.md
   - Examples: examples.md
   - API Reference:
@@ -47,23 +49,18 @@ nav:
     - Schemas: api/schemas.md
     - Security: api/security.md
     - Utils: api/utils.md
-  - Changelog: changelog.md
   - Comparison and Motivations: comparison.md
+  - Authors: authors.md
+  - Changelog: changelog.md
   - Donate to APIFlask: https://opencollective.com/apiflask
   - WIP:
-    - Migrating from Flask: flask.md
-    - OpenAPI: openapi.md
-    - Request Validation: request.md
-    - Schema and Fields: schema.md
-    - Security: security.md
-    - Swagger UI and Redoc: swagger.md
+    - Schema, Fields, and Validators: schema.md
+    - Request Validating: request.md
+    - Response Formatting: response.md
+    - OpenAPI Generating: openapi.md
+    - Authentication: security.md
     - Tutorial: tutorial/index.md
-    - Snippets: snippets/index.md
-    - External Tools: tools/index.md
-    - Contributing: contributing.md
-    - Acknowledgement: acknowledgement.md
-    - Authors: authors.md
-    - Alternatives: alterinatives.md
+    - Contributing Guide: contributing.md
 plugins:
   - search
   - mkdocstrings:
