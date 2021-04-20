@@ -14,10 +14,11 @@ Go through the following chapters to learn how to use APIFlask:
 - **[Migrating from Flask](/migrating)**: Migrating guide and notes.
 - **[Basic Usage](/usage)**: Get started with APIFlask.
 - **Schema, Fields, and Validators**: Introduce how to write an input/output schema.
-- **Request Validation**: The detailed introduction of the `@input` decorator.
-- **Response Format**:  The detailed introduction of the `@output` decorator.
-- **OpenAPI Generation**: Introduce how the OpenAPI generation works and how to customize
-it.
+- **Request Validating**: The detailed introduction of the `@input` decorator.
+- **Response Formatting**:  The detailed introduction of the `@output` decorator.
+- **OpenAPI Generating**: Introduce how the OpenAPI generation works and how to customize
+it with `@doc` decorator and configuration variables.
+- **Authentication**: Introduce how to implement HTTP Basic and Token-based authentication.
 - **[Swagger UI and Redoc](/api-docs)**: Introduce the usage and configuration of the API
 documentation tools.
 - **[Configuration](/configuration)**: A list of all the built-in configuration variables
@@ -26,14 +27,14 @@ documentation tools.
 The following chapters are useful for contributors and who want to know more about
 APIFlask:
 
-- **[Comparison and Motivations](/comparison)**: The differences between APIFlask and similar projects.
 - **[API Reference](/api/app)**: The API reference of APIFlask.
+- **[Comparison and Motivations](/comparison)**: The differences between APIFlask and similar projects.
 - **[Authors](/authors)**: The authors of APIFlask.
 - **[Changelog](/changelog)**: The change log of each version of APIFlask.
 
 ## External Documentations
 
-I will try to cover the basic usages in APIFlask's documentation. However, for advanced
+I will try to cover all the basic usages in APIFlask's documentation. However, for advanced
 usages, you may need to read the documentation of the framework, tools that APIFlask based
 on:
 

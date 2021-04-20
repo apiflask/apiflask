@@ -54,13 +54,12 @@ nav:
   - Changelog: changelog.md
   - Donate to APIFlask: https://opencollective.com/apiflask
   - WIP:
-    - Schema and Fields: schema.md
-    - Request Validation: request.md
-    - Response Format: response.md
+    - Schema, Fields, and Validators: schema.md
+    - Request Validating: request.md
+    - Response Formatting: response.md
     - OpenAPI Generating: openapi.md
     - Authentication: security.md
     - Tutorial: tutorial/index.md
-    - Alternatives and Inspirations: alterinatives.md
     - Contributing Guide: contributing.md
 plugins:
   - search
