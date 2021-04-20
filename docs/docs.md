@@ -4,22 +4,22 @@ Welcome to APIFlask's documentation!
 
 Documentation progress:
 
-[=35%]
+[=50%]
 
 ## Contents
 
 Go through the following chapters to learn how to use APIFlask:
 
 - **[Introduction](/)**: A general introduction for APIFlask.
+- **[Migrating from Flask](/migrating)**: Migrating guide and notes.
 - **[Basic Usage](/usage)**: Get started with APIFlask.
-in APIFlask.
 - **Schema, Fields, and Validators**: Introduce how to write an input/output schema.
 - **Request Validation**: The detailed introduction of the `@input` decorator.
 - **Response Format**:  The detailed introduction of the `@output` decorator.
 - **OpenAPI Generation**: Introduce how the OpenAPI generation works and how to customize
 it.
-- **Swagger UI and Redoc**: Introduce the usage and configuration of the API documentation
-tools.
+- **[Swagger UI and Redoc](/api-docs)**: Introduce the usage and configuration of the API
+documentation tools.
 - **[Configuration](/configuration)**: A list of all the built-in configuration variables
 - **[Examples](/examples)**: A collection of application examples.
 
@@ -27,8 +27,9 @@ The following chapters are useful for contributors and who want to know more abo
 APIFlask:
 
 - **[Comparison and Motivations](/comparison)**: The differences between APIFlask and similar projects.
-- **[Changelog](/changelog)**: The change log of each version of APIFlask.
 - **[API Reference](/api/app)**: The API reference of APIFlask.
+- **[Authors](/authors)**: The authors of APIFlask.
+- **[Changelog](/changelog)**: The change log of each version of APIFlask.
 
 ## External Documentations
 
@@ -45,4 +46,4 @@ the usage of `HTTPBasicAuth` and `HTTPTokenAuth`.
 - **[OpenAPI](https://github.com/OAI/OpenAPI-Specification/tree/main/versions)**:
 The OpenAPI Specification.
 - **[JSON Schema](https://json-schema.org/)**: Useful when you want to set a custom
-error schema and you don't want to use schema.
+error schema and you don't want to use schema class.

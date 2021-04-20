@@ -1,1 +1,0 @@
-# Acknowledgement and Inspiration
