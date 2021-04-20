@@ -53,7 +53,7 @@ For Windows:
 ## Example
 
 ```python
-from apiflask import APIFlask, Schema, input, output, abort_json
+from apiflask import APIFlask, Schema, input, output, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
@@ -94,7 +94,7 @@ def say_hello():
 @output(PetOutSchema)
 def get_pet(pet_id):
     if pet_id > len(pets) - 1:
-        abort_json(404)
+        abort(404)
     # you can also return an ORM model class instance directly
     return pets[pet_id]
 
@@ -105,7 +105,7 @@ def get_pet(pet_id):
 def update_pet(pet_id, data):
     # the parsed input data (dict) will be injected into the view function
     if pet_id > len(pets) - 1:
-        abort_json(404)
+        abort(404)
     data['id'] = pet_id
     pets[pet_id] = data
     return pets[pet_id]
@@ -131,10 +131,11 @@ For a more complete example, see [/examples](https://github.com/greyli/apiflask/
 
 ## Relationship with Flask
 
-APIFlask is a thin wrapper on top of Flask, you only need to remember two differences:
+APIFlask is a thin wrapper on top of Flask, you only need to remember three differences:
 
 - When creating an application instance, use `APIFlask` instead of `Flask`.
 - When creating a blueprint instance, use `APIBlueprint` instead of `Blueprint`.
+- The `abort()` function from APIFlask (`apiflask.abort`) returns JSON error response.
 
 For a minimal Flask application:
 

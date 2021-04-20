@@ -1,4 +1,4 @@
-from apiflask import APIFlask, Schema, input, output, abort_json
+from apiflask import APIFlask, Schema, input, output, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 from apiflask.schemas import EmptySchema
@@ -44,7 +44,7 @@ def say_hello():
 @output(PetOutSchema)
 def get_pet(pet_id):
     if pet_id > len(pets) - 1:
-        abort_json(404)
+        abort(404)
     return pets[pet_id]
 
 
@@ -69,7 +69,7 @@ def create_pet(data):
 @output(PetOutSchema)
 def update_pet(pet_id, data):
     if pet_id > len(pets) - 1:
-        abort_json(404)
+        abort(404)
     data['id'] = pet_id
     pets[pet_id] = data
     return pets[pet_id]
@@ -80,7 +80,7 @@ def update_pet(pet_id, data):
 @output(PetOutSchema)
 def partial_update_pet(pet_id, data):
     if pet_id > len(pets) - 1:
-        abort_json(404)
+        abort(404)
     for attr, value in data.items():
         pets[pet_id][attr] = value
     return pets[pet_id]
@@ -90,6 +90,6 @@ def partial_update_pet(pet_id, data):
 @output(EmptySchema, 204)
 def delete_pet(pet_id):
     if pet_id > len(pets) - 1:
-        abort_json(404)
+        abort(404)
     pets.pop(pet_id)
     return ''

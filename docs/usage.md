@@ -693,21 +693,21 @@ of authentication support will be added soon).
 
 [_flask-httpauth]: https://flask-httpauth.readthedocs.io/ 
 
-## Use `abort_json()` to return an error response
+## Use `abort()` to return an error response
 
-Similar to Flask's `abort`, but `abort_json` from APIFlask will return a JSON response.
+Similar to Flask's `abort`, but `abort` from APIFlask will return a JSON response.
 
 Example:
 
 ```python hl_lines="1 8"
-from apiflask import APIFlask, abort_json
+from apiflask import APIFlask, abort
 
 app = APIFlask(__name__)
 
 @app.get('/<name>')
 def hello(name):
     if name == 'Foo':
-        abort_json(404, 'This man is missing.')
+        abort(404, 'This man is missing.')
     return {'hello': name}
 ```
 
@@ -729,7 +729,7 @@ def hello(name):
     return {'hello': name}
 ```
 
-The `abort_json()` and `HTTPError` accept the following arguments:
+The `abort()` and `HTTPError` accept the following arguments:
 
 - `status_code`: The status code of the error (4XX and 5xx).
 - `message`: The simple description of the error. If not provided,
@@ -738,6 +738,10 @@ The `abort_json()` and `HTTPError` accept the following arguments:
     provide additional information such as custom error code, documentation
     URL, etc.
 - `headers`: A dict of headers used in the error response.
+
+!!! warning
+    The function `abort_json()` was renamed to `abort()` in
+    the [version 0.4.0](/changelog/#version-040).
 
 ## Overview of `apiflask` package
 
@@ -749,9 +753,8 @@ In the end, let's unpack the whole `apiflask` package to check out what it shipp
 - `@output`: A decorator used to format the response.
 - `@auth_required`: A decorator used to protect a view from unauthenticated users.
 - `@doc`: A decorator used to set up the OpenAPI spec for view functions.
-- `abort_json()`: A function used to abort the request handling process and return an error response. The
-    JSON version of Flask's `abort()` function.
-- `HTTPError`: An exception used to return error response (used by `abort_json()`).
+- `abort()`: A function used to abort the request handling process and return an error response. The JSON version of Flask's `flask.abort()` function.
+- `HTTPError`: An exception used to return error response (used by `abort()`).
 - `HTTPBasicAuth`: A class used to create an auth instance.
 - `HTTPTokenAuth`: A class used to create an auth instance.
 - `Schema`: A base class for resource schemas (Will be a wrapper for Marshmallow's `Schema`).
