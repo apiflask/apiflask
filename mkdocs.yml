@@ -60,10 +60,8 @@ nav:
     - OpenAPI Generating: openapi.md
     - Authentication: security.md
     - Tutorial: tutorial/index.md
-    - Snippets: snippets/index.md
-    - External Tools: tools/index.md
-    - Contributing Guide: contributing.md
     - Alternatives and Inspirations: alterinatives.md
+    - Contributing Guide: contributing.md
 plugins:
   - search
   - mkdocstrings:
