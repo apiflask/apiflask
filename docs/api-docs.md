@@ -77,7 +77,7 @@ introduction and examples of these configuration variables.
 
 ## Use different CND server for Swagger UI/Redoc resources
 
-Each resource (JavaScript/CSS files) URL has a configuration variable, you can pass
+Each resource (JavaScript/CSS files) URL has a configuration variable. You can pass
 the URL from your preferred CND server to the corresponding configuration variables:
 
 - `REDOC_STANDALONE_JS`
@@ -90,7 +90,7 @@ introduction and examples of these configuration variables.
 
 ## Serve Swagger UI/Redoc from local resources
 
-Like what you need to do in last section, to use a local resources, you can pass
+Like what you need to do in the last section, to use local resources, you can pass
 the URL of local static files to the corresponding configuration variables:
 
 - `REDOC_STANDALONE_JS`
@@ -99,7 +99,7 @@ the URL of local static files to the corresponding configuration variables:
 - `SWAGGER_UI_STANDALONE_PRESET_JS`
 
 For local resources, you can pass a relative URL. For example, if you want to host
-the Redoc standalone JavaScript file from local file, follow the following steps:
+the Redoc standalone JavaScript file from a local file, follow the following steps:
 
 Manual download file:
 
@@ -117,7 +117,7 @@ into a subfolder called `js`, then the URL will be `/static/js/redoc.standalone.
 
 !!! tip
     The `static` part of the URL matches the `static_url_path` argument you passed
-    to `APIFlask` class, defaults to `static`.
+    to the `APIFlask` class, defaults to `static`.
 
 Or with npm:
 

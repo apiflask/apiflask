@@ -1,9 +1,9 @@
 # Migrating from Flask
 
 Since APIFlask is a thin wrapper on top of Flask, you only need to change very little
-code to migrating your application to APIFlask (normally less than 10 lines code).
+code to migrating your application to APIFlask (typically less than ten lines of code).
 
-## Change the `Flask` class to `APIFlask` class
+## Change the `Flask` class to the `APIFlask` class
 
 It's how you create the Flask application:
 
@@ -70,7 +70,7 @@ def create_pet():
 ### Import statements
 
 You only need to import `APIFlask`, `APIBlueprint`, and other utilities APIFlask
-provides from `apiflask`. For others you still import them from `flask`:
+provides from `apiflask` package. For others, you still import them from `flask` package:
 
 ```python
 from apiflask import APIFlask, APIBlueprint
@@ -79,10 +79,10 @@ from flask import request, escape, render_template, g, session, url_for
 
 ### JSON errors
 
-When you chagne the base class to `APIFlask`, all the error responses will
-automtically transfer to JSON fromat. For example:
+When you change the base class to `APIFlask`, all the error responses will
+automatically convert to JSON format. For example:
 
-```
+```python
 from apiflask import APIFlask
 from flask import abort
 
@@ -93,8 +93,8 @@ def foo():
     abort(404)
 ```
 
-In the example above, when user visit `/foo`, the `abort(400)` will return a JSON
-response instead of a HTML error page:
+In the example above, when theuser visit `/foo`, the `abort(400)` will return a JSON
+response instead of an HTML error page:
 
 ```json
 {
@@ -104,7 +104,7 @@ response instead of a HTML error page:
 }
 ```
 
-If you want disable this behavior, just set `json_errors` to `False`:
+If you want to disable this behavior, just set `json_errors` to `False`:
 
 ```python hl_lines="3"
 from apiflask import APIFlask
@@ -112,7 +112,8 @@ from apiflask import APIFlask
 app = APIFlask(__name__, json_errors=False)
 ```
 
-Now you can still use `abort_json` from `apiflask` to return a JSON error response:
+Now you can still use `abort_json` from `apiflask` package to return a JSON error
+response:
 
 ```python hl_lines="3"
 from apiflask import APIFlask, abort_json
@@ -137,14 +138,14 @@ def bar():
 
 ### The return values of view function
 
-When you added a `@output` decorator for you view function, notice the
+When you added a `@output` decorator for your view function, notice the
 following rules:
 
-- Do not return a `Response` object, you should return a ORM/ODM model object or
-a dict that match the schema you passed in `@output` decorator.
-- You can also return a two-elements tuple in the form of `(body, headers)`.
+- Do not return a `Response` object. You should return a ORM/ODM model object or
+a dict that matches the schema you passed in the `@output` decorator.
+- You can also return a two-element tuple in the form of `(body, headers)`.
 
 ## Next step
 
-Now you application is already migrated to APIFlask. Check out the
+Now your application is migrated to APIFlask. Check out the
 [Basic Usage](/usage) chapter to learn more about APIFlask. Enjoy!
