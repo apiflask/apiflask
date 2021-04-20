@@ -1,7 +1,6 @@
 from apiflask import APIFlask, Schema, input, output, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
-from apiflask.schemas import EmptySchema
 
 app = APIFlask(__name__)
 
@@ -87,7 +86,7 @@ def partial_update_pet(pet_id, data):
 
 
 @app.delete('/pets/<int:pet_id>')
-@output(EmptySchema, 204)
+@output({}, 204)
 def delete_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)
