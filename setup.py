@@ -23,7 +23,8 @@ setuptools.setup(
         'Documentation': 'https://apiflask.com/docs',
         'Source': 'https://github.com/greyli/apiflask',
         'Changelog': 'https://apiflask.com/changelog',
-        'Donate': 'https://opencollective.com/apiflask',
+        'Issue Tracker': 'https://github.com/greyli/apiflask/issues',
+        'Funding': 'https://opencollective.com/apiflask',
     },
     packages=['apiflask'],
     package_data={

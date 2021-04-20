@@ -13,7 +13,7 @@ $ pip show apiflask
 ```
 
 ## Version 0.4.0
-Released: -
+Released: 2021/4/20
 
 - Merge the following configuration variables to `SUCCESS_DESCRIPTION` ([pull #7][pull_7]):
     - `DEFAULT_2XX_DESCRIPTION`
