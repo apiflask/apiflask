@@ -77,10 +77,42 @@ from apiflask import APIFlask, APIBlueprint
 from flask import request, escape, render_template, g, session, url_for
 ```
 
-### JSON errors
+### APIFlask's `abort()` vs Flask's `abort()`
 
-When you change the base class to `APIFlask`, all the error responses will
-automatically convert to JSON format. For example:
+APIFlask's `abort()` function will return a JSON error response while Flask's `abort()`
+returns an HTML error page:
+
+```python
+from apiflask import APIFlask, abort
+
+app = APIFlask(__name__)
+
+@app.get('/foo')
+def foo():
+    abort(404)
+```
+
+In the example above, when the user visit `/foo`, the response body will be:
+
+```json
+{
+    "detail": {},
+    "message": "Not Found",
+    "status_code": 404
+}
+```
+
+You can use `message` and `detail` parameter to pass error message and detailed
+information in the `abort()` function.
+
+!!! warning
+    The function `abort_json()` was renamed to `abort()` in the
+    [version 0.4.0](/changelog/#version-040).
+
+### JSON errors and mix the use of `flask.abort()` and `apiflask.abort()`
+
+When you change the base application class to `APIFlask`, all the error responses
+will automatically convert to JSON format even if you use Flask's `abort()` function:
 
 ```python
 from apiflask import APIFlask
@@ -93,18 +125,7 @@ def foo():
     abort(404)
 ```
 
-In the example above, when theuser visit `/foo`, the `abort(400)` will return a JSON
-response instead of an HTML error page:
-
-```json
-{
-    "detail": {},
-    "message": "Not Found",
-    "status_code": 404
-}
-```
-
-If you want to disable this behavior, just set `json_errors` to `False`:
+If you want to disable this behavior, just set `json_errors` parameter to `False`:
 
 ```python hl_lines="3"
 from apiflask import APIFlask
@@ -112,11 +133,18 @@ from apiflask import APIFlask
 app = APIFlask(__name__, json_errors=False)
 ```
 
-Now you can still use `abort_json` from `apiflask` package to return a JSON error
-response:
+Now you can still use `abort` from `apiflask` package to return a JSON error
+response. To mix the use of `flask.abort` and `apiflask.abort`, you will need to import one
+of them with different name:
 
-```python hl_lines="3"
-from apiflask import APIFlask, abort_json
+```python
+from apiflask import abort as abort_json
+```
+
+Here is a full example:
+
+```python hl_lines="1 14"
+from apiflask import APIFlask, abort as abort_json
 from flask import abort
 
 app = APIFlask(__name__, json_errors=False)
@@ -131,10 +159,6 @@ def foo():
 def bar():
     abort_json(404)
 ```
-
-!!! tip
-    You can use `message` and `detail` keyword to pass error message and detailed
-    information in `abort_json()` function.
 
 ### The return values of view function
 

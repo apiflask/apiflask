@@ -1,6 +1,6 @@
 import pytest
 
-from apiflask.exceptions import abort_json
+from apiflask.exceptions import abort
 from apiflask.exceptions import HTTPError
 from apiflask.exceptions import default_error_handler
 from apiflask.utils import get_reason_phrase
@@ -37,10 +37,10 @@ def test_httperror(app, client, kwargs):
     {'message': 'missing', 'detail': {'location': 'query'}},
     {'message': 'missing', 'detail': {'location': 'query'}, 'headers': {'X-BAR': 'foo'}}
 ])
-def test_abort_json(app, client, kwargs):
+def test_abort(app, client, kwargs):
     @app.get('/bar')
     def bar():
-        abort_json(404, **kwargs)
+        abort(404, **kwargs)
 
     rv = client.get('/bar')
     assert rv.status_code == 404
@@ -90,7 +90,7 @@ def test_default_error_handler(kwargs):
 
 def test_invalid_error_status_code():
     with pytest.raises(LookupError):
-        abort_json(200)
+        abort(200)
 
     with pytest.raises(LookupError):
         raise HTTPError(204)

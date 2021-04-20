@@ -1,1 +1,0 @@
-# Alterinatives and Inspirations
