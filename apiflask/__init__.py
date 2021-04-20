@@ -5,7 +5,7 @@ from .decorators import input
 from .decorators import output
 from .decorators import doc
 from .decorators import auth_required
-from .exceptions import abort_json
+from .exceptions import abort
 from .exceptions import HTTPError
 from .schemas import Schema
 from .security import HTTPBasicAuth

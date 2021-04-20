@@ -68,7 +68,7 @@ class ValidationError(HTTPError):
     pass
 
 
-def abort_json(
+def abort(
     status_code: int,
     message: Optional[str] = None,
     detail: Optional[Any] = None,
@@ -80,7 +80,7 @@ def abort_json(
     Examples:
 
     ```python
-    from apiflask import APIFlask, abort_json
+    from apiflask import APIFlask, abort
     from flask import escape
 
     app = APIFlask(__name__)
@@ -88,12 +88,12 @@ def abort_json(
     @app.get('/<name>')
     def hello(name):
         if name == 'Foo':
-            abort_json(404, 'This man is missing.')
+            abort(404, 'This man is missing.')
         return f'Hello, escape{name}'!
     ```
 
-    P.S. When `app.json_errors` is `True` (default), Flask's `abort` will also return
-    JSON error response.
+    P.S. When `app.json_errors` is `True` (default), Flask's `flask.abort` will also
+    return JSON error response.
 
     Arguments:
         status_code: The status code of the error (4XX and 5xx).
@@ -103,6 +103,9 @@ def abort_json(
             provided addition information such as custom error code, documentation
             URL, etc.
         headers: A dict of headers used in error response.
+
+    *Version changed: 0.4.0*
+    - Rename the function name from `abort_json` to `abort`.
     """
     raise HTTPError(status_code, message, detail, headers)
 
