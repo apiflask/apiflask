@@ -25,7 +25,7 @@ This chapter will cover the basic usage of APIFlask.
     [_pipenv]: https://pipenv.pypa.io/
     [_pdm]: https://pdm.fming.dev/
 
-## Creating an `app` instance with `APIFlask`
+## Create an `app` instance with `APIFlask`
 
 Similar to what you did to create a Flask `app` instance, you will need to import
 `APIFlask` from `apiflask` package:
@@ -238,7 +238,7 @@ def delete_pet(pet_id):
     to use `app.route()` decorator. You can mix the use of `app.route()` with the
     shortcuts in your application.
 
-## Using `@input` to validate and deserialize request data
+## Use `@input` to validate and deserialize request data
 
 To validate and deserialize a request body or request query parameters, we need to create a
 resource schema class first. Think of it as a way to describe the valid incoming data. If you
@@ -388,7 +388,7 @@ argument for `@input()` decorator, the value can be:
     Be sure to put the `@input` decorator under the routes decorators
     (i.e. `app.route`, `app.get`, `app.post`, etc.).
 
-## Using `@output` to formatting response data
+## Use `@output` to formatting response data
 
 Similarly, we can define a schema for output data with `@output` decorator. Here is an example:
 
@@ -609,7 +609,7 @@ def create_pet(data)
     passed in `@output` will be used in OpenAPI spec, while the actual response
     will use the status code you returned in the end of the view function.
  
-## Using `@doc` to set up OpenAPI Spec
+## Use `@doc` to set up OpenAPI Spec
 
 The `@doc` decorator can be used to set up the OpenAPI Spec for view functions:
 
@@ -667,7 +667,7 @@ Here are the other arguments for the `@doc` argument:
     Be sure to put the `@doc` decorator under the routes decorators
     (i.e. `app.route`, `app.get`, `app.post`, etc.).
 
-## Using `@auth_required` to protect your views
+## Use `@auth_required` to protect your views
 
 You can use `@auth_required` to protect a view with provided authentication settings:
 
@@ -693,7 +693,7 @@ of authentication support will be added soon).
 
 [_flask-httpauth]: https://flask-httpauth.readthedocs.io/ 
 
-## Using `abort_json()` to return an error response
+## Use `abort_json()` to return an error response
 
 Similar to Flask's `abort`, but `abort_json` from APIFlask will return a JSON response.
 
@@ -763,4 +763,5 @@ In the end, let's unpack the whole `apiflask` package to check out what it shipp
 - `app.patch()`: A decorator used to register a route that only accepts *PATCH* request.
 - `app.delete()`: A decorator used to register a route that only accepts *DELETE* request.
 
-You can learn the details of these APIs in the API reference, or you can continue to read the following chapters (when I finished them, they will appear on the left navigation :p).
+You can learn the details of these APIs in the [API reference](/api/app), or you can
+continue to read the following chapters.
