@@ -33,6 +33,7 @@ and `@iniput(examples=...)` ([pull #23][pull_23]).
 `tag` parameter now only accept string value ([pull #26][pull_26]).
 - Add new configuration variable `OPENAPI_VERSION` to set the version of OAS
 ([pull #27][pull_27]).
+- Rename `abort_json()` to `abort()` ([pull #29][pull_29]).
 
 [pull_3]: https://github.com/greyli/apiflask/pull/3
 [pull_12]: https://github.com/greyli/apiflask/pull/12
@@ -40,6 +41,7 @@ and `@iniput(examples=...)` ([pull #23][pull_23]).
 [pull_23]: https://github.com/greyli/apiflask/pull/23
 [pull_26]: https://github.com/greyli/apiflask/pull/26
 [pull_27]: https://github.com/greyli/apiflask/pull/27
+[pull_29]: https://github.com/greyli/apiflask/pull/29
 
 ## Version 0.3.0
 Released: 2021/3/31
