@@ -166,6 +166,7 @@ class APIFlask(Flask):
             app.error_processor = my_error_handler
             ```
     """
+
     openapi_version: str = ConfigAttribute('OPENAPI_VERSION')  # type: ignore
     description: Optional[str] = ConfigAttribute('DESCRIPTION')  # type: ignore
     tags: Optional[Union[List[str], List[Dict[str, str]]]
@@ -387,10 +388,9 @@ class APIFlask(Flask):
                    self.spec_path.endswith('.yml'):
                     return self.get_spec('yaml'), 200, \
                         {'Content-Type': self.config['YAML_SPEC_MIMETYPE']}
-                else:
-                    response = jsonify(self.get_spec('json'))
-                    response.mimetype = self.config['JSON_SPEC_MIMETYPE']
-                    return response
+                response = jsonify(self.get_spec('json'))
+                response.mimetype = self.config['JSON_SPEC_MIMETYPE']
+                return response
 
         if self.docs_path:
             @bp.route(self.docs_path)

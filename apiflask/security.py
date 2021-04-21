@@ -32,8 +32,7 @@ def handle_auth_error(
     """
     if current_app.json_errors:
         return default_error_handler(status_code)
-    else:
-        return 'Unauthorized Access', status_code
+    return 'Unauthorized Access', status_code
 
 
 class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):

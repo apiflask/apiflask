@@ -55,11 +55,7 @@ class HTTPError(Exception):
         self.status_code = status_code
         self.detail = detail
         self.headers = headers
-
-        if message is not None:
-            self.message = message
-        else:
-            self.message = get_reason_phrase(status_code)
+        self.message = get_reason_phrase(status_code) if message is None else message
 
 
 class ValidationError(HTTPError):
@@ -134,5 +130,4 @@ def default_error_handler(
     body = {'detail': detail, 'message': message, 'status_code': status_code}
     if headers is None:
         return body, status_code
-    else:
-        return body, status_code, headers
+    return body, status_code, headers
