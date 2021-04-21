@@ -1,24 +1,24 @@
 import re
 import sys
-from typing import Iterable
-from typing import Union
-from typing import List
-from typing import Optional
-from typing import Type
-from typing import Tuple
 from typing import Any
 from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Type
+from typing import Union
 
-from flask import Flask
 from flask import Blueprint
-from flask import render_template
+from flask import Flask
 from flask import jsonify
+from flask import render_template
 from flask.config import ConfigAttribute
 from flask.globals import _request_ctx_stack
-from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask_marshmallow import fields
+from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 try:
     from flask_marshmallow import sqla
 except ImportError:

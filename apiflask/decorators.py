@@ -1,29 +1,29 @@
-from typing import Callable
-from typing import Union
-from typing import List
-from typing import Optional
-from typing import Dict
-from typing import Any
-from typing import Type
-from typing import Mapping
-from functools import wraps
 from collections.abc import Mapping as ABCMapping
+from functools import wraps
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import Type
+from typing import Union
 
-from flask import Response
-from flask import jsonify
 from flask import current_app
-from webargs.flaskparser import FlaskParser as BaseFlaskParser
+from flask import jsonify
+from flask import Response
 from marshmallow import ValidationError as MarshmallowValidationError
+from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
 from .exceptions import ValidationError
-from .utils import _sentinel
-from .schemas import Schema
 from .schemas import EmptySchema
+from .schemas import Schema
 from .types import DecoratedType
-from .types import ResponseType
-from .types import RequestType
 from .types import HTTPAuthType
+from .types import RequestType
+from .types import ResponseType
 from .types import SchemaType
+from .utils import _sentinel
 
 
 class FlaskParser(BaseFlaskParser):

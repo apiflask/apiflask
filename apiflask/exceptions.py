@@ -1,8 +1,8 @@
 from typing import Any
-from typing import Optional
 from typing import Mapping
-from typing import Union
+from typing import Optional
 from typing import Tuple
+from typing import Union
 
 from werkzeug.exceptions import default_exceptions
 

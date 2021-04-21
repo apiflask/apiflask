@@ -3,8 +3,8 @@ from typing import Union
 
 from flask import Blueprint
 
-from .utils import route_shortcuts
 from .utils import _sentinel
+from .utils import route_shortcuts
 
 
 @route_shortcuts

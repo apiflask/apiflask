@@ -1,11 +1,11 @@
-from typing import Optional
-from typing import Union
-from typing import Tuple
 from typing import Any
 from typing import Mapping
+from typing import Optional
+from typing import Tuple
+from typing import Union
 
-from flask import g
 from flask import current_app
+from flask import g
 from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 
