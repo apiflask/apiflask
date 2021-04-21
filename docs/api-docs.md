@@ -62,7 +62,7 @@ def some_secret():
     app.config['AUTO_200_RESPONSE'] = False
     ```
 
-## Config Swagger UI/Redoc
+## Configure Swagger UI/Redoc
 
 The following configuration variables can be used to config Swagger UI/Redoc:
 
