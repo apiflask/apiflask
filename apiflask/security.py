@@ -13,8 +13,7 @@ from .exceptions import default_error_handler
 
 
 class _AuthBase:
-    """Base class for `HTTPBasicAuth` and `HTTPBasicAuth`.
-    """
+    """Base class for `HTTPBasicAuth` and `HTTPBasicAuth`."""
 
     def __init__(self, description: Optional[str] = None) -> None:
         self.description = description
@@ -27,8 +26,9 @@ class _AuthBase:
 def handle_auth_error(
     status_code: int
 ) -> Union[Tuple[str, int], Tuple[dict, int], Tuple[dict, int, Mapping[str, str]]]:
-    """A default error handler for Flask-HTTPAuth that returns JSON response
-    when `app.json_errors` is `True` (default).
+    """The default error handler for Flask-HTTPAuth.
+    
+    This handler will return JSON response when `app.json_errors` is `True` (default).
     """
     if current_app.json_errors:
         return default_error_handler(status_code)
@@ -36,7 +36,7 @@ def handle_auth_error(
 
 
 class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
-    """Flask-HTTPAuth's HTTPBasicAuth with some modificaiton:
+    """Flask-HTTPAuth's HTTPBasicAuth with some modificaiton.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.
@@ -73,7 +73,7 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
 
 
 class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
-    """Flask-HTTPAuth's HTTPTokenAuth with some modificaiton:
+    """Flask-HTTPAuth's HTTPTokenAuth with some modificaiton.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.

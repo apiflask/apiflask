@@ -64,7 +64,7 @@ class EmptySchema(Schema):
     @app.delete('/foo')
     @output(EmptySchema)
     def delete_foo():
-        return '', 204
+        return ''
     ```
 
     It equals to:
@@ -73,7 +73,8 @@ class EmptySchema(Schema):
     @app.delete('/foo')
     @output({}, 204)
     def delete_foo():
-        return '', 204
+        return ''
     ```
     """
+
     pass

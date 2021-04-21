@@ -272,9 +272,11 @@ class APIFlask(Flask):
                 )
 
     def dispatch_request(self) -> ResponseType:
-        """Overwrite the default dispatch method to pass view arguments as positional
-        arguments. With this overwrite, the view function can accept the parameters in
-        a intuitive way (from top to bottom, from left to right).
+        """Overwrite the default dispatch method in Flask.
+
+        With this overwrite, view arguments are passed as positional
+        arguments so that the view function can intuitively accept the
+        parameters (i.e. from top to bottom, from left to right).
 
         Examples:
 
@@ -308,7 +310,7 @@ class APIFlask(Flask):
         self,
         f: ErrorCallbackType
     ) -> ErrorCallbackType:
-        """A decorator used to register a error handler callback function.
+        """A decorator to register a error handler callback function.
 
         The callback function will be called when validation error hanppend when
         parse a request or an exception triggerd with exceptions.HTTPError or
@@ -438,7 +440,7 @@ class APIFlask(Flask):
         return self._spec
 
     def spec_processor(self, f: SpecCallbackType) -> SpecCallbackType:
-        """A decorator used to register a spec handler callback function.
+        """A decorator to register a spec handler callback function.
 
         You can register a function to update the spec. The callback function
         should accept the spec as argument and return it in the end. The callback
@@ -471,8 +473,7 @@ class APIFlask(Flask):
         return self.get_spec()
 
     def _generate_spec(self) -> APISpec:
-        """Generate the spec, return an instance of `apispec.APISpec`.
-        """
+        """Generate the spec, return an instance of `apispec.APISpec`."""
         def resolver(schema: Type[Schema]) -> str:
             name = schema.__class__.__name__
             if name.endswith('Schema'):

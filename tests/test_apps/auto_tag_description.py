@@ -1,6 +1,4 @@
-"""
-Some description for my tag from module doc.
-"""
+"""Some description for my tag from module doc."""
 from apiflask import APIFlask, APIBlueprint
 
 

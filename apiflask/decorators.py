@@ -27,8 +27,10 @@ from .types import SchemaType
 
 
 class FlaskParser(BaseFlaskParser):
-    """Overwrite the default `webargs.FlaskParser.handle_error` to
-    change the default status code and the error description.
+    """Overwrite the default `webargs.FlaskParser.handle_error`.
+
+    Update the default status code and the error description from related
+    configuration variables.
     """
 
     def handle_error(  # type: ignore

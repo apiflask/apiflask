@@ -1,6 +1,4 @@
-"""
-Some description for my API.
-"""
+"""Some description for my API."""
 from apiflask import APIFlask
 
 

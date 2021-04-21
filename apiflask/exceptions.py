@@ -10,8 +10,7 @@ from .utils import get_reason_phrase
 
 
 class HTTPError(Exception):
-    """The exception used to end the request handling process and
-    return an error response.
+    """The exception to end the request handling and return an JSON error response.
 
     Examples:
 
@@ -36,7 +35,8 @@ class HTTPError(Exception):
         detail: Optional[Any] = None,
         headers: Optional[Mapping[str, str]] = None
     ) -> None:
-        """
+        """Initialize the error response.
+
         Arguments:
             status_code: The status code of the error (4XX and 5xx).
             message: The simple description of the error. If not provided,
@@ -59,8 +59,8 @@ class HTTPError(Exception):
 
 
 class ValidationError(HTTPError):
-    """The exception used when request validation error happened.
-    """
+    """The exception used when request validation error happened."""
+
     pass
 
 
@@ -70,8 +70,9 @@ def abort(
     detail: Optional[Any] = None,
     headers: Optional[Mapping[str, str]] = None
 ) -> None:
-    """A quick version of HTTPError exception. Similar to Flask's `abort`,
-    but return a JSON response.
+    """A function to raise HTTPError exception.
+
+    Similar to Flask's `abort`, but returns a JSON response.
 
     Examples:
 
@@ -112,7 +113,7 @@ def default_error_handler(
     detail: Optional[Any] = None,
     headers: Optional[Mapping[str, str]] = None
 ) -> Union[Tuple[dict, int], Tuple[dict, int, Mapping[str, str]]]:
-    """The default error handler used in APIFlask.
+    """The default error handler in APIFlask.
 
     Arguments:
         status_code: The status code of the error (4XX and 5xx).
