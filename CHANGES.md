@@ -16,6 +16,11 @@ $ pip show apiflask
 Released: -
 0.5.0 plan: https://github.com/greyli/apiflask/issues/25
 
+- Remove the support to generate `info.description` and tag description from module
+docstring, and also remove the `AUTO_DESCRIPTION` config ([pull #30][pull_30]).
+
+[pull_30]: https://github.com/greyli/apiflask/pull/30
+
 ## Version 0.4.0
 Released: 2021/4/20
 
