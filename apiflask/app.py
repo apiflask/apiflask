@@ -519,7 +519,7 @@ class APIFlask(Flask):
         """Make OpenAPI tags object"""
         tags: Optional[TagsType] = self.tags
         if tags is not None:
-            # Convert simple tags list into standard OpenAPI tags
+            # convert simple tags list into standard OpenAPI tags
             if isinstance(tags[0], str):
                 for index, tag_name in enumerate(tags):
                     tags[index] = {'name': tag_name}  # type: ignore
@@ -640,12 +640,12 @@ class APIFlask(Flask):
             if view_func._spec.get('hide'):
                 continue
 
-            # tag
+            # operation tags
             operation_tags: Optional[List[str]] = None
             if view_func._spec.get('tags'):
                 operation_tags = view_func._spec.get('tags')
             else:
-                # if tag not set, try to use blueprint name as tag
+                # use blueprint name as tag
                 if self.tags is None and self.config['AUTO_TAGS'] and blueprint_name is not None:
                     blueprint = self.blueprints[blueprint_name]
                     operation_tags = get_operation_tags_from_blueprint(blueprint, blueprint_name)
@@ -679,7 +679,7 @@ class APIFlask(Flask):
                     if self.config['AUTO_PATH_DESCRIPTION']:
                         docs = (view_func.__doc__ or '').strip().split('\n')
                         if len(docs) > 1:
-                            # Use the remain lines of docstring as description
+                            # use the remain lines of docstring as description
                             operation['description'] = '\n'.join(docs[1:]).strip()
 
                 # deprecated

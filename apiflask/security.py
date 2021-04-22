@@ -27,7 +27,7 @@ def handle_auth_error(
     status_code: int
 ) -> Union[Tuple[str, int], Tuple[dict, int], Tuple[dict, int, Mapping[str, str]]]:
     """The default error handler for Flask-HTTPAuth.
-    
+
     This handler will return JSON response when `app.json_errors` is `True` (default).
     """
     if current_app.json_errors:
@@ -58,7 +58,7 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
         realm: Optional[str] = None,
         description: Optional[str] = None
     ) -> None:
-        """Initialize a `HTTPBasicAuth` object.
+        """Initialize an `HTTPBasicAuth` object.
 
         Arguments:
             scheme: The authentication scheme used in the `WWW-Authenticate`

@@ -112,10 +112,10 @@ def get_summary_from_view_func(func: Callable) -> str:
     summary: str
     docs: list = (func.__doc__ or '').strip().split('\n')
     if docs[0]:
-        # Use the first line of docstring as summary
+        # Use the first line of docstring
         summary = docs[0]
     else:
-        # Use the function name as summary
+        # Use the function name
         summary = ' '.join(func.__name__.split('_')).title()
     return summary
 
