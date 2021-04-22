@@ -1,4 +1,3 @@
-import sys
 from typing import Any
 from typing import Callable
 from typing import Dict
@@ -27,9 +26,6 @@ def get_tag_from_blueprint(
             tag = {'name': blueprint.tag}
     else:
         tag = {'name': blueprint_name.title()}
-        module = sys.modules[blueprint.import_name]
-        if module.__doc__:
-            tag['description'] = module.__doc__.strip()
     return tag
 
 

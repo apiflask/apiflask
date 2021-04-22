@@ -21,7 +21,6 @@ YAML_SPEC_MIMETYPE: str = 'text/vnd.yaml'
 JSON_SPEC_MIMETYPE: str = 'application/json'
 # Automation behaviour control
 AUTO_TAGS: bool = True
-AUTO_DESCRIPTION: bool = True
 AUTO_PATH_SUMMARY: bool = True
 AUTO_PATH_DESCRIPTION: bool = True
 AUTO_200_RESPONSE: bool = True

@@ -1,5 +1,4 @@
 import re
-import sys
 from typing import Any
 from typing import Dict
 from typing import Iterable
@@ -501,18 +500,6 @@ class APIFlask(Flask):
             info['termsOfService'] = self.terms_of_service
         if self.description:
             info['description'] = self.description
-        else:
-            # auto-generate info.description from module doc
-            if self.config['AUTO_DESCRIPTION']:
-                module_name = self.import_name
-                while module_name:
-                    module = sys.modules[module_name]
-                    if module.__doc__:
-                        info['description'] = module.__doc__.strip()
-                        break
-                    if '.' not in module_name:
-                        module_name = '.' + module_name
-                    module_name = module_name.rsplit('.', 1)[0]
         return info
 
     def _make_tags(self) -> List[Dict[str, Any]]:

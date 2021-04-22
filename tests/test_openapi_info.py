@@ -44,30 +44,3 @@ def test_other_info_fields(app, client):
         'name': 'Apache 2.0',
         'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
     }
-
-
-def test_auto_info_description(test_apps):
-    from auto_description import app
-
-    assert app.description is None
-
-    rv = app.test_client().get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert rv.json['info']['description'] == 'Some description for my API.'
-
-    # reset the app status
-    app._spec = None
-
-
-def test_auto_info_description_precedence(test_apps):
-    from auto_description import app
-
-    app.description = 'new decription'
-
-    rv = app.test_client().get('/openapi.json')
-    assert rv.json['info']['description'] == 'new decription'
-
-    # reset the app status
-    app._spec = None
-    app.description = None

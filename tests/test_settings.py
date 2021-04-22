@@ -120,20 +120,6 @@ def test_auto_tags(app, client):
     assert 'tags' not in rv.json['paths']['/']['get']
 
 
-def test_auto_description(test_apps):
-    from auto_description import app
-
-    app.config['AUTO_DESCRIPTION'] = False
-
-    spec = app.spec
-    validate_spec(spec)
-    assert 'description' not in spec['info']
-
-    # reset the app status
-    app._spec = None
-    app.config['AUTO_DESCRIPTION'] = True
-
-
 @pytest.mark.parametrize('config_value', [True, False])
 def test_auto_path_summary(app, client, config_value):
     app.config['AUTO_PATH_SUMMARY'] = config_value

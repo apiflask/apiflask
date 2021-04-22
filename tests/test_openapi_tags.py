@@ -98,17 +98,6 @@ def test_skip_tag_from_blueprint(app, client):
     assert {'name': 'Foo'} not in rv.json['tags']
 
 
-def test_auto_tag_description_from_blueprint_module_doc(test_apps):
-    from auto_tag_description import app
-
-    client = app.test_client()
-    rv = client.get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert rv.json['tags'][0]['name'] == 'Foo'
-    assert rv.json['tags'][0]['description'] == 'Some description for my tag from module doc.'
-
-
 def test_path_tags(app, client):
     bp = APIBlueprint('foo', __name__)
 
