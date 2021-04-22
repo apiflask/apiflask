@@ -19,8 +19,7 @@ def test_spec_path_summary_description_from_docs(app, client):
     @app.route('/users/<id>', methods=['PUT'])
     @output(FooSchema)
     def update_user(id):
-        """
-        Update User
+        """Update User
 
         Update a user with specified ID.
         """
@@ -90,8 +89,7 @@ def test_spec_path_summary_auto_generation(app, client):
     @app.route('/users/<id>', methods=['DELETE'])
     @output(FooSchema)
     def delete_user(id):
-        """
-        Summary from Docs
+        """Summary from Docs
 
         Delete a user with specified ID.
         """

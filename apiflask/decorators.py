@@ -1,34 +1,36 @@
-from typing import Callable
-from typing import Union
-from typing import List
-from typing import Optional
-from typing import Dict
-from typing import Any
-from typing import Type
-from typing import Mapping
-from functools import wraps
 from collections.abc import Mapping as ABCMapping
+from functools import wraps
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import Type
+from typing import Union
 
-from flask import Response
-from flask import jsonify
 from flask import current_app
-from webargs.flaskparser import FlaskParser as BaseFlaskParser
+from flask import jsonify
+from flask import Response
 from marshmallow import ValidationError as MarshmallowValidationError
+from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
 from .exceptions import ValidationError
-from .utils import _sentinel
-from .schemas import Schema
 from .schemas import EmptySchema
+from .schemas import Schema
 from .types import DecoratedType
-from .types import ResponseType
-from .types import RequestType
 from .types import HTTPAuthType
+from .types import RequestType
+from .types import ResponseType
 from .types import SchemaType
+from .utils import _sentinel
 
 
 class FlaskParser(BaseFlaskParser):
-    """Overwrite the default `webargs.FlaskParser.handle_error` to
-    change the default status code and the error description.
+    """Overwrite the default `webargs.FlaskParser.handle_error`.
+
+    Update the default status code and the error description from related
+    configuration variables.
     """
 
     def handle_error(  # type: ignore
@@ -293,20 +295,16 @@ def output(
             if isinstance(rv, Response):  # pragma: no cover
                 raise RuntimeError(
                     'The @output decorator cannot handle Response objects.')
-            if isinstance(rv, tuple):
-                json = _jsonify(rv[0])
-                if len(rv) == 2:
-                    if not isinstance(rv[1], int):
-                        rv = (json, status_code, rv[1])
-                    else:
-                        rv = (json, rv[1])
-                elif len(rv) >= 3:
-                    rv = (json, rv[1], rv[2])
-                else:
-                    rv = (json, status_code)
-                return rv
-            else:
+            if not isinstance(rv, tuple):
                 return _jsonify(rv), status_code
+            json = _jsonify(rv[0])
+            if len(rv) == 2:
+                rv = (json, rv[1]) if isinstance(rv[1], int) else (json, status_code, rv[1])
+            elif len(rv) >= 3:
+                rv = (json, rv[1], rv[2])
+            else:
+                rv = (json, status_code)
+            return rv
         return _response
     return decorator
 

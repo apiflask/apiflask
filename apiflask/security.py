@@ -1,11 +1,11 @@
-from typing import Optional
-from typing import Union
-from typing import Tuple
 from typing import Any
 from typing import Mapping
+from typing import Optional
+from typing import Tuple
+from typing import Union
 
-from flask import g
 from flask import current_app
+from flask import g
 from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 
@@ -13,8 +13,7 @@ from .exceptions import default_error_handler
 
 
 class _AuthBase:
-    """Base class for `HTTPBasicAuth` and `HTTPBasicAuth`.
-    """
+    """Base class for `HTTPBasicAuth` and `HTTPBasicAuth`."""
 
     def __init__(self, description: Optional[str] = None) -> None:
         self.description = description
@@ -27,17 +26,17 @@ class _AuthBase:
 def handle_auth_error(
     status_code: int
 ) -> Union[Tuple[str, int], Tuple[dict, int], Tuple[dict, int, Mapping[str, str]]]:
-    """A default error handler for Flask-HTTPAuth that returns JSON response
-    when `app.json_errors` is `True` (default).
+    """The default error handler for Flask-HTTPAuth.
+
+    This handler will return JSON response when `app.json_errors` is `True` (default).
     """
     if current_app.json_errors:
         return default_error_handler(status_code)
-    else:
-        return 'Unauthorized Access', status_code
+    return 'Unauthorized Access', status_code
 
 
 class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
-    """Flask-HTTPAuth's HTTPBasicAuth with some modificaiton:
+    """Flask-HTTPAuth's HTTPBasicAuth with some modificaiton.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.
@@ -59,7 +58,7 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
         realm: Optional[str] = None,
         description: Optional[str] = None
     ) -> None:
-        """Initialize a `HTTPBasicAuth` object.
+        """Initialize an `HTTPBasicAuth` object.
 
         Arguments:
             scheme: The authentication scheme used in the `WWW-Authenticate`
@@ -74,7 +73,7 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
 
 
 class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
-    """Flask-HTTPAuth's HTTPTokenAuth with some modificaiton:
+    """Flask-HTTPAuth's HTTPTokenAuth with some modificaiton.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.

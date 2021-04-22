@@ -359,22 +359,6 @@ Enable or disable auto tags (`openapi.tags`) generation from the name of bluepri
 app.config['AUTO_TAGS'] = False
 ```
 
-#### `AUTO_DESCRIPTION`
-
-Enable or disable auto description (`openapi.info.description`) from the module docstring
-(`module.__doc__`).
-
-!!! tip
-    This automation behaviour only happens when `app.description` or config `DESCRIPTION` is not set.
-
-- Type: `bool`
-- Default value: `True`
-- Examples:
-
-```python
-app.config['AUTO_DESCRIPTION'] = False
-```
-
 #### `AUTO_PATH_SUMMARY`
 
 Enable or disable auto path summary from the name or docstring of the view function.
