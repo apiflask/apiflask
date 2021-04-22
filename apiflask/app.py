@@ -9,14 +9,14 @@ from typing import Tuple
 from typing import Type
 from typing import Union
 
+from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Blueprint
 from flask import Flask
 from flask import jsonify
 from flask import render_template
 from flask.config import ConfigAttribute
 from flask.globals import _request_ctx_stack
-from apispec import APISpec
-from apispec.ext.marshmallow import MarshmallowPlugin
 from flask_marshmallow import fields
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 try:
@@ -28,8 +28,6 @@ from .exceptions import HTTPError
 from .exceptions import default_error_handler
 from .utils import route_shortcuts
 from .utils import get_reason_phrase
-from .security import HTTPBasicAuth
-from .security import HTTPTokenAuth
 from .schemas import Schema
 from .types import ResponseType
 from .types import ErrorCallbackType
@@ -37,6 +35,13 @@ from .types import SpecCallbackType
 from .types import SchemaType
 from .types import HTTPAuthType
 from .types import TagsType
+from .openapi import get_tag_from_blueprint, make_argument
+from .openapi import get_operation_tags_from_blueprint
+from .openapi import get_summary_from_view_func
+from .openapi import make_security_and_security_schemes
+from .openapi import get_auth_name_from_auth_object
+from .openapi import add_response_to_operation
+from .openapi import add_response_with_schema_to_operation
 
 
 @route_shortcuts
@@ -247,7 +252,10 @@ class APIFlask(Flask):
         self.error_callback: ErrorCallbackType = default_error_handler  # type: ignore
         self._spec: Optional[Union[dict, str]] = None
         self._register_openapi_blueprint()
+        self._register_error_handlers()
 
+    def _register_error_handlers(self):
+        """Register default error handlers for HTTPError and WerkzeugHTTPException."""
         @self.errorhandler(HTTPError)
         def handle_http_error(
             error: HTTPError
@@ -472,17 +480,18 @@ class APIFlask(Flask):
         """
         return self.get_spec()
 
-    def _generate_spec(self) -> APISpec:
-        """Generate the spec, return an instance of `apispec.APISpec`."""
-        def resolver(schema: Type[Schema]) -> str:
-            name = schema.__class__.__name__
-            if name.endswith('Schema'):
-                name = name[:-6] or name
-            if schema.partial:
-                name += 'Update'
-            return name
+    @staticmethod
+    def _schema_name_resolver(schema: Type[Schema]) -> str:
+        """Default schema name resovler."""
+        name = schema.__class__.__name__
+        if name.endswith('Schema'):
+            name = name[:-6] or name
+        if schema.partial:
+            name += 'Update'
+        return name
 
-        # info object
+    def _make_info(self) -> dict:
+        """Make OpenAPI info object"""
         info: dict = {}
         if self.contact:
             info['contact'] = self.contact
@@ -504,48 +513,76 @@ class APIFlask(Flask):
                     if '.' not in module_name:
                         module_name = '.' + module_name
                     module_name = module_name.rsplit('.', 1)[0]
+        return info
 
-        # tags
+    def _make_tags(self) -> List[Dict[str, Any]]:
+        """Make OpenAPI tags object"""
         tags: Optional[TagsType] = self.tags
         if tags is not None:
             # Convert simple tags list into standard OpenAPI tags
             if isinstance(tags[0], str):
-                for index, tag in enumerate(tags):
-                    tags[index] = {'name': tag}  # type: ignore
+                for index, tag_name in enumerate(tags):
+                    tags[index] = {'name': tag_name}  # type: ignore
         else:
-            tags: List[str] = []  # type: ignore
+            tags: List[Dict[str, Any]] = []  # type: ignore
             if self.config['AUTO_TAGS']:
                 # auto-generate tags from blueprints
-                for name, blueprint in self.blueprints.items():
-                    if name == 'openapi' or name in self.config['DOCS_HIDE_BLUEPRINTS']:
+                for blueprint_name, blueprint in self.blueprints.items():
+                    if blueprint_name == 'openapi' or \
+                       blueprint_name in self.config['DOCS_HIDE_BLUEPRINTS']:
                         continue
-                    if hasattr(blueprint, 'tag') and blueprint.tag is not None:
-                        if isinstance(blueprint.tag, dict):
-                            tag = blueprint.tag
-                        else:
-                            tag = {'name': blueprint.tag}
-                    else:
-                        tag = {'name': name.title()}
-                        module = sys.modules[blueprint.import_name]
-                        if module.__doc__:
-                            tag['description'] = module.__doc__.strip()
+                    tag: Dict[str, Any] = get_tag_from_blueprint(blueprint, blueprint_name)
                     tags.append(tag)  # type: ignore
+        return tags  # type: ignore
 
-        # additional fields
+    # auth information
+    _auth_names: List[str] = []
+    _auth_schemes: List[HTTPAuthType] = []
+    _auth_blueprints: Dict[str, Dict[str, Any]] = {}
+
+    def _update_auth_schemes_and_names(self, auth: HTTPAuthType) -> None:
+        self._auth_schemes.append(auth)
+        auth_name: str = get_auth_name_from_auth_object(auth, self._auth_names)
+        self._auth_names.append(auth_name)
+
+    def _collect_auth_information(self) -> None:
+        # detect auth_required on before_request functions
+        for blueprint_name, funcs in self.before_request_funcs.items():
+            for f in funcs:
+                if hasattr(f, '_spec'):  # pragma: no cover
+                    auth = f._spec.get('auth')  # type: ignore
+                    if auth is not None and auth not in self._auth_schemes:
+                        self._auth_blueprints[blueprint_name] = {  # type: ignore
+                            'auth': auth,
+                            'roles': f._spec.get('roles')  # type: ignore
+                        }
+                        self._update_auth_schemes_and_names(auth)
+
+        for rule in self.url_map.iter_rules():
+            view_func = self.view_functions[rule.endpoint]
+            if hasattr(view_func, '_spec'):
+                auth = view_func._spec.get('auth')
+                if auth is not None and auth not in self._auth_schemes:
+                    self._update_auth_schemes_and_names(auth)
+
+    def _generate_spec(self) -> APISpec:
+        """Generate the spec, return an instance of `apispec.APISpec`."""
         kwargs: dict = {}
         if self.servers:
             kwargs['servers'] = self.servers
         if self.external_docs:
             kwargs['externalDocs'] = self.external_docs
 
-        ma_plugin: MarshmallowPlugin = MarshmallowPlugin(schema_name_resolver=resolver)
+        ma_plugin: MarshmallowPlugin = MarshmallowPlugin(
+            schema_name_resolver=self._schema_name_resolver
+        )
         spec: APISpec = APISpec(
             title=self.title,
             version=self.version,
             openapi_version=self.config['OPENAPI_VERSION'],
             plugins=[ma_plugin],
-            info=info,
-            tags=tags,
+            info=self._make_info(),
+            tags=self._make_tags(),
             **kwargs
         )
 
@@ -558,82 +595,18 @@ class APIFlask(Flask):
                 ('string', 'url')
 
         # security schemes
-        auth_schemes: List[HTTPAuthType] = []
-        auth_names: List[str] = []
-        auth_blueprints: Dict[str, Dict[str, Any]] = {}
-
-        def add_auth_schemes_and_names(
-            auth: HTTPAuthType
-        ) -> None:
-            auth_schemes.append(auth)
-            if isinstance(auth, HTTPBasicAuth):
-                name = 'BasicAuth'
-            elif isinstance(auth, HTTPTokenAuth):
-                if auth.scheme == 'Bearer' and auth.header is None:
-                    name = 'BearerAuth'
-                else:
-                    name = 'ApiKeyAuth'
-            else:
-                raise RuntimeError('Unknown authentication scheme')
-            if name in auth_names:
-                v = 2
-                new_name = f'{name}_{v}'
-                while new_name in auth_names:
-                    v += 1
-                    new_name = f'{name}_{v}'
-                name = new_name
-            auth_names.append(name)
-
-        # detect auth_required on before_request functions
-        for blueprint_name, funcs in self.before_request_funcs.items():
-            for f in funcs:
-                if hasattr(f, '_spec'):  # pragma: no cover
-                    auth = f._spec.get('auth')  # type: ignore
-                    if auth is not None and auth not in auth_schemes:
-                        auth_blueprints[blueprint_name] = {  # type: ignore
-                            'auth': auth,
-                            'roles': f._spec.get('roles')  # type: ignore
-                        }
-                        add_auth_schemes_and_names(auth)
-
-        for rule in self.url_map.iter_rules():
-            view_func = self.view_functions[rule.endpoint]
-            if hasattr(view_func, '_spec'):
-                auth = view_func._spec.get('auth')
-                if auth is not None and auth not in auth_schemes:
-                    add_auth_schemes_and_names(auth)
-
-        security: Dict[HTTPAuthType, str] = {}
-        security_schemes: Dict[str, Dict[str, str]] = {}
-        for name, auth in zip(auth_names, auth_schemes):
-            security[auth] = name
-            if isinstance(auth, HTTPTokenAuth):
-                if auth.scheme == 'Bearer' and auth.header is None:
-                    security_schemes[name] = {
-                        'type': 'http',
-                        'scheme': 'Bearer',
-                    }
-                else:
-                    security_schemes[name] = {
-                        'type': 'apiKey',
-                        'name': auth.header,
-                        'in': 'header',
-                    }
-            else:
-                security_schemes[name] = {
-                    'type': 'http',
-                    'scheme': 'Basic',
-                }
-
-            if hasattr(auth, 'description') and auth.description is not None:
-                security_schemes[name]['description'] = auth.description
-
+        self._auth_names: List[str] = []
+        self._auth_schemes: List[HTTPAuthType] = []
+        self._auth_blueprints: Dict[str, Dict[str, Any]] = {}
+        self._collect_auth_information()
+        security, security_schemes = make_security_and_security_schemes(
+            self._auth_names, self._auth_schemes
+        )
         for name, scheme in security_schemes.items():
             spec.components.security_scheme(name, scheme)
 
         # paths
         paths: Dict[str, Dict[str, Any]] = {}
-        # rules: List[Any] = list(self.url_map.iter_rules())
         rules: List[Any] = sorted(
             list(self.url_map.iter_rules()), key=lambda rule: len(rule.rule)
         )
@@ -645,7 +618,7 @@ class APIFlask(Flask):
                rule.endpoint.startswith('static'):
                 continue
             # skip endpoints from blueprints in config DOCS_HIDE_BLUEPRINTS list
-            blueprint_name: Optional[str] = None  # type: ignore
+            blueprint_name: Optional[str] = None
             if '.' in rule.endpoint:
                 blueprint_name = rule.endpoint.split('.', 1)[0]
                 if blueprint_name in self.config['DOCS_HIDE_BLUEPRINTS']:
@@ -675,13 +648,7 @@ class APIFlask(Flask):
                 # if tag not set, try to use blueprint name as tag
                 if self.tags is None and self.config['AUTO_TAGS'] and blueprint_name is not None:
                     blueprint = self.blueprints[blueprint_name]
-                    if hasattr(blueprint, 'tag') and blueprint.tag is not None:
-                        if isinstance(blueprint.tag, dict):
-                            operation_tags = [blueprint.tag['name']]
-                        else:
-                            operation_tags = [blueprint.tag]
-                    else:
-                        operation_tags = [blueprint_name.title()]
+                    operation_tags = get_operation_tags_from_blueprint(blueprint, blueprint_name)
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
                 if method not in rule.methods:
@@ -702,14 +669,7 @@ class APIFlask(Flask):
                 else:
                     # auto-generate summary from dotstring or view function name
                     if self.config['AUTO_PATH_SUMMARY']:
-                        docs = (view_func.__doc__ or '').strip().split('\n')
-                        if docs[0]:
-                            # Use the first line of docstring as summary
-                            operation['summary'] = docs[0]
-                        else:
-                            # Use the function name as summary
-                            operation['summary'] = ' '.join(
-                                view_func.__name__.split('_')).title()
+                        operation['summary'] = get_summary_from_view_func(view_func)
 
                 # description
                 if view_func._spec.get('description'):
@@ -727,48 +687,6 @@ class APIFlask(Flask):
                     operation['deprecated'] = view_func._spec.get('deprecated')
 
                 # responses
-                def add_response(
-                    status_code: str,
-                    schema: SchemaType,
-                    description: str,
-                    example: Optional[Any] = None,
-                    examples: Optional[Dict[str, Any]] = None,
-                ) -> None:
-                    operation['responses'][status_code] = {}
-                    if status_code != '204':
-                        operation['responses'][status_code]['content'] = {
-                            'application/json': {
-                                'schema': schema
-                            }
-                        }
-                    operation['responses'][status_code]['description'] = description
-                    if example is not None:
-                        operation['responses'][status_code]['content'][
-                            'application/json']['example'] = example
-                    if examples is not None:
-                        operation['responses'][status_code]['content'][
-                            'application/json']['examples'] = examples
-
-                def add_response_with_schema(
-                    status_code: str,
-                    schema: SchemaType,
-                    schema_name: str,
-                    description: str
-                ) -> None:
-                    if isinstance(schema, type):
-                        schema = schema()  # type: ignore
-                        add_response(status_code, schema, description)
-                    elif isinstance(schema, dict):
-                        if schema_name not in spec.components.schemas:
-                            spec.components.schema(schema_name, schema)
-                        schema_ref = {'$ref': f'#/components/schemas/{schema_name}'}
-                        add_response(status_code, schema_ref, description)
-                    else:
-                        raise RuntimeError(
-                            'The schema must be a Marshamallow schema \
-                            class or an OpenAPI schema dict.'
-                        )
-
                 if view_func._spec.get('response'):
                     status_code: str = str(view_func._spec.get('response')['status_code'])
                     schema = view_func._spec.get('response')['schema']
@@ -776,40 +694,44 @@ class APIFlask(Flask):
                         self.config['SUCCESS_DESCRIPTION']
                     example = view_func._spec.get('response')['example']
                     examples = view_func._spec.get('response')['examples']
-                    add_response(status_code, schema, description, example, examples)
+                    add_response_to_operation(
+                        operation, status_code, schema, description, example, examples
+                    )
                 else:
                     # add a default 200 response for views without using @output
                     # or @doc(responses={...})
                     if not view_func._spec.get('responses') and self.config['AUTO_200_RESPONSE']:
-                        add_response('200', {}, self.config['SUCCESS_DESCRIPTION'])
+                        add_response_to_operation(
+                            operation, '200', {}, self.config['SUCCESS_DESCRIPTION']
+                        )
 
                 # add validation error response
-                if self.config['AUTO_VALIDATION_ERROR_RESPONSE']:
-                    if view_func._spec.get('body') or view_func._spec.get('args'):
-                        status_code: str = str(  # type: ignore
-                            self.config['VALIDATION_ERROR_STATUS_CODE']
-                        )
-                        description: str = self.config[  # type: ignore
-                            'VALIDATION_ERROR_DESCRIPTION'
-                        ]
-                        schema: SchemaType = self.config['VALIDATION_ERROR_SCHEMA']  # type: ignore
-                        add_response_with_schema(
-                            status_code, schema, 'ValidationError', description
-                        )
+                if self.config['AUTO_VALIDATION_ERROR_RESPONSE'] and \
+                   (view_func._spec.get('body') or view_func._spec.get('args')):
+                    status_code: str = str(  # type: ignore
+                        self.config['VALIDATION_ERROR_STATUS_CODE']
+                    )
+                    description: str = self.config[  # type: ignore
+                        'VALIDATION_ERROR_DESCRIPTION'
+                    ]
+                    schema: SchemaType = self.config['VALIDATION_ERROR_SCHEMA']  # type: ignore
+                    add_response_with_schema_to_operation(
+                        spec, operation, status_code, schema, 'ValidationError', description
+                    )
 
                 # add authentication error response
-                if self.config['AUTO_AUTH_ERROR_RESPONSE']:
-                    if view_func._spec.get('auth') or (
-                        blueprint_name is not None and blueprint_name in auth_blueprints
-                    ):
-                        status_code: str = str(  # type: ignore
-                            self.config['AUTH_ERROR_STATUS_CODE']
-                        )
-                        description: str = self.config['AUTH_ERROR_DESCRIPTION']  # type: ignore
-                        schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
-                        add_response_with_schema(
-                            status_code, schema, 'HTTPError', description
-                        )
+                if self.config['AUTO_AUTH_ERROR_RESPONSE'] and \
+                   (view_func._spec.get('auth') or (
+                       blueprint_name is not None and blueprint_name in self._auth_blueprints
+                   )):
+                    status_code: str = str(  # type: ignore
+                        self.config['AUTH_ERROR_STATUS_CODE']
+                    )
+                    description: str = self.config['AUTH_ERROR_DESCRIPTION']  # type: ignore
+                    schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
+                    add_response_with_schema_to_operation(
+                        spec, operation, status_code, schema, 'HTTPError', description
+                    )
 
                 if view_func._spec.get('responses'):
                     responses: Union[List[int], Dict[int, str]] \
@@ -827,11 +749,11 @@ class APIFlask(Flask):
                         if status_code.startswith('4') or status_code.startswith('5'):
                             # add error response schema for error responses
                             schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
-                            add_response_with_schema(
-                                status_code, schema, 'HTTPError', description
+                            add_response_with_schema_to_operation(
+                                spec, operation, status_code, schema, 'HTTPError', description
                             )
                         else:
-                            add_response(status_code, {}, description)
+                            add_response_to_operation(operation, status_code, {}, description)
 
                 # requestBody
                 if view_func._spec.get('body'):
@@ -852,10 +774,10 @@ class APIFlask(Flask):
                             'application/json']['examples'] = examples
 
                 # security
-                if blueprint_name is not None and blueprint_name in auth_blueprints:
+                if blueprint_name is not None and blueprint_name in self._auth_blueprints:
                     operation['security'] = [{
-                        security[auth_blueprints[blueprint_name]['auth']]:
-                            auth_blueprints[blueprint_name]['roles']
+                        security[self._auth_blueprints[blueprint_name]['auth']]:
+                            self._auth_blueprints[blueprint_name]['roles']
                     }]
 
                 if view_func._spec.get('auth'):
@@ -870,16 +792,7 @@ class APIFlask(Flask):
             if path_arguments:
                 arguments: List[Dict[str, str]] = []
                 for _, argument_type, argument_name in path_arguments:
-                    argument = {
-                        'in': 'path',
-                        'name': argument_name,
-                    }
-                    if argument_type == 'int:':
-                        argument['schema'] = {'type': 'integer'}
-                    elif argument_type == 'float:':
-                        argument['schema'] = {'type': 'number'}
-                    else:
-                        argument['schema'] = {'type': 'string'}
+                    argument = make_argument(argument_type, argument_name)
                     arguments.append(argument)
 
                 for method, operation in operations.items():
