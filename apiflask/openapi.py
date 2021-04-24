@@ -33,11 +33,11 @@ def get_tag_from_blueprint(
     blueprint_name: str
 ) -> Dict[str, Any]:
     tag: Dict[str, Any]
-    if hasattr(blueprint, 'tag') and blueprint.tag is not None:
-        if isinstance(blueprint.tag, dict):
-            tag = blueprint.tag
+    if hasattr(blueprint, 'tag') and blueprint.tag is not None:  # type: ignore
+        if isinstance(blueprint.tag, dict):  # type: ignore
+            tag = blueprint.tag  # type: ignore
         else:
-            tag = {'name': blueprint.tag}
+            tag = {'name': blueprint.tag}  # type: ignore
     else:
         tag = {'name': blueprint_name.title()}
     return tag
@@ -48,11 +48,11 @@ def get_operation_tags_from_blueprint(
     blueprint_name: str
 ) -> List[str]:
     tags: List[str]
-    if hasattr(blueprint, 'tag') and blueprint.tag is not None:
-        if isinstance(blueprint.tag, dict):
-            tags = [blueprint.tag['name']]
+    if hasattr(blueprint, 'tag') and blueprint.tag is not None:  # type: ignore
+        if isinstance(blueprint.tag, dict):  # type: ignore
+            tags = [blueprint.tag['name']]  # type: ignore
         else:
-            tags = [blueprint.tag]
+            tags = [blueprint.tag]  # type: ignore
     else:
         tags = [blueprint_name.title()]
     return tags
