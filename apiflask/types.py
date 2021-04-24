@@ -14,6 +14,7 @@ from .schemas import Schema
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
 
+
 DecoratedType = TypeVar('DecoratedType', bound=Callable[..., Any])
 RequestType = TypeVar('RequestType')
 

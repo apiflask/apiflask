@@ -3,10 +3,12 @@ from typing import Union
 
 from flask import Blueprint
 
+from .route import route_patch
+from .route import route_shortcuts
 from .utils import _sentinel
-from .utils import route_shortcuts
 
 
+@route_patch
 @route_shortcuts
 class APIBlueprint(Blueprint):
     """Flask's `Blueprint` object with some web API support.
