@@ -1,6 +1,6 @@
 <!--
-For features and bug fixes, before opening a PR, please open a issue describing the
-bug or feature the PR will address. You can skip this step if it's a typo fix.
+For features and bug fixes, before opening a PR, please open an issue describing
+the bug or feature the PR will address. You can skip this step if it's a typo fix.
 
 Replace this comment with a description of the change. Describe how it
 addresses the linked issue.
