@@ -13,6 +13,11 @@ def route_patch(cls):
             endpoint = options.pop('endpoint', f.__name__.lower())
             if isinstance(f, MethodViewType):
                 # MethodView class
+                if 'methods' in options:
+                    raise RuntimeError(
+                        'Use the "route" decorator without passing the "methods" '
+                        'argument for "MethodView" classes.'
+                    )
                 view_func = f.as_view(endpoint)
                 if self.enable_openapi:
                     view_func._method_spec = {}
@@ -40,7 +45,6 @@ def route_patch(cls):
     return cls
 
 
-# TODO Remove these shortcuts when pin Flask>=2.0
 def route_shortcuts(cls):
     """A decorator to add route shortcuts for `Flask` and `Blueprint` objects.
 
@@ -69,25 +73,38 @@ def route_shortcuts(cls):
     """
     cls_route = cls.route
 
+    def _method_route(self, method: str, rule: str, options: Any):
+        if 'methods' in options:
+            raise RuntimeError('Use the "route" decorator to use the "methods" argument.')
+
+        def decorator(f):
+            if isinstance(f, MethodViewType):
+                raise RuntimeError(
+                        'The route shortcuts cannot be used with "MethodView" classes, '
+                        'use "route" decorator instead.'
+                    )
+            return cls_route(self, rule, methods=[method], **options)(f)
+        return decorator
+
     def get(self, rule: str, **options: Any):
         """Shortcut for `app.route()`."""
-        return cls_route(self, rule, methods=['GET'], **options)
+        return _method_route(self, 'GET', rule, options)
 
     def post(self, rule: str, **options: Any):
         """Shortcut for `app.route(methods=['POST'])`."""
-        return cls_route(self, rule, methods=['POST'], **options)
+        return _method_route(self, 'POST', rule, options)
 
     def put(self, rule: str, **options: Any):
         """Shortcut for `app.route(methods=['PUT'])`."""
-        return cls_route(self, rule, methods=['PUT'], **options)
+        return _method_route(self, 'PUT', rule, options)
 
     def patch(self, rule: str, **options: Any):
         """Shortcut for `app.route(methods=['PATCH'])`."""
-        return cls_route(self, rule, methods=['PATCH'], **options)
+        return _method_route(self, 'PATCH', rule, options)
 
     def delete(self, rule: str, **options: Any):
         """Shortcut for `app.route(methods=['DELETE'])`."""
-        return cls_route(self, rule, methods=['DELETE'], **options)
+        return _method_route(self, 'DELETE', rule, options)
 
     cls.get = get
     cls.post = post
