@@ -1,3 +1,4 @@
+from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from apiflask import input
@@ -55,6 +56,57 @@ def test_output(app, client):
     assert rv.headers['Location'] == 'http://localhost/baz'
 
     rv = client.get('/baz?id=4')
+    assert rv.status_code == 201
+    assert rv.json == {'id': 123, 'name': 'baz'}
+    assert 'Location' not in rv.headers
+
+
+def test_output_with_methodview(app, client):
+    @app.route('/')
+    class Foo(MethodView):
+        @output(FooSchema)
+        def get(self):
+            return {'name': 'bar'}
+
+        @output(FooSchema, status_code=201)
+        def post(self):
+            return {'name': 'foo'}
+
+        @input(QuerySchema, 'query')
+        @output(FooSchema, status_code=201)
+        def delete(self, query):
+            if query['id'] == 1:
+                return {'name': 'baz'}, 202
+            elif query['id'] == 2:
+                return {'name': 'baz'}, {'Location': '/baz'}
+            elif query['id'] == 3:
+                return {'name': 'baz'}, 202, {'Location': '/baz'}
+            return ({'name': 'baz'},)
+
+    rv = client.get('/')
+    assert rv.status_code == 200
+    assert rv.json == {'id': 123, 'name': 'bar'}
+
+    rv = client.post('/')
+    assert rv.status_code == 201
+    assert rv.json == {'id': 123, 'name': 'foo'}
+
+    rv = client.delete('/')
+    assert rv.status_code == 202
+    assert rv.json == {'id': 123, 'name': 'baz'}
+    assert 'Location' not in rv.headers
+
+    rv = client.delete('/?id=2')
+    assert rv.status_code == 201
+    assert rv.json == {'id': 123, 'name': 'baz'}
+    assert rv.headers['Location'] == 'http://localhost/baz'
+
+    rv = client.delete('/?id=3')
+    assert rv.status_code == 202
+    assert rv.json == {'id': 123, 'name': 'baz'}
+    assert rv.headers['Location'] == 'http://localhost/baz'
+
+    rv = client.delete('/?id=4')
     assert rv.status_code == 201
     assert rv.json == {'id': 123, 'name': 'baz'}
     assert 'Location' not in rv.headers
@@ -158,10 +210,19 @@ def test_output_with_empty_dict_as_schema(app, client):
     def delete_foo():
         return ''
 
+    @app.route('/bar')
+    class Bar(MethodView):
+        @output({}, 204)
+        def delete(self):
+            return ''
+
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert 'content' not in rv.json['paths']['/foo']['delete']['responses']['204']
+    assert 'content' not in rv.json['paths']['/bar']['delete']['responses']['204']
 
     rv = client.delete('/foo')
+    assert rv.status_code == 204
+    rv = client.delete('/bar')
     assert rv.status_code == 204

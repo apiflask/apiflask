@@ -3,7 +3,6 @@ import pytest
 from apiflask.exceptions import abort
 from apiflask.exceptions import HTTPError
 from apiflask.exceptions import default_error_handler
-from apiflask.utils import get_reason_phrase
 
 
 @pytest.mark.parametrize('kwargs', [
@@ -54,17 +53,6 @@ def test_abort(app, client, kwargs):
         assert rv.json['detail'] == {'location': 'query'}
     if 'headers' in kwargs:
         assert rv.headers['X-BAR'] == 'foo'
-
-
-@pytest.mark.parametrize('code', [400, 404, 456, 4123])
-def test_get_error_message(code):
-    rv = get_reason_phrase(code)
-    if code == 400:
-        assert rv == 'Bad Request'
-    elif code == 404:
-        assert rv == 'Not Found'
-    else:
-        assert rv == 'Unknown error'
 
 
 @pytest.mark.parametrize('kwargs', [

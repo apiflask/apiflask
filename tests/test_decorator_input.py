@@ -1,5 +1,6 @@
 import pytest
 from openapi_spec_validator import validate_spec
+from flask.views import MethodView
 
 from apiflask import input
 from apiflask.fields import String
@@ -15,33 +16,46 @@ def test_input(app, client):
     def foo(schema):
         return schema
 
-    rv = client.post('/foo')
-    assert rv.status_code == 400
-    assert rv.json == {
-        'detail': {
-            'json': {'name': ['Missing data for required field.']}
-        },
-        'message': 'Validation error',
-        'status_code': 400
-    }
+    @app.route('/bar')
+    class Bar(MethodView):
+        @input(FooSchema)
+        def post(self, data):
+            return data
 
-    rv = client.post('/foo', json={'id': 1})
-    assert rv.status_code == 400
-    assert rv.json == {
-        'detail': {
-            'json': {'name': ['Missing data for required field.']}
-        },
-        'message': 'Validation error',
-        'status_code': 400
-    }
+    for rule in ['/foo', '/bar']:
+        rv = client.post(rule)
+        assert rv.status_code == 400
+        assert rv.json == {
+            'detail': {
+                'json': {'name': ['Missing data for required field.']}
+            },
+            'message': 'Validation error',
+            'status_code': 400
+        }
 
-    rv = client.post('/foo', json={'id': 1, 'name': 'bar'})
-    assert rv.status_code == 200
-    assert rv.json == {'id': 1, 'name': 'bar'}
+        rv = client.post(rule, json={'id': 1})
+        assert rv.status_code == 400
+        assert rv.json == {
+            'detail': {
+                'json': {'name': ['Missing data for required field.']}
+            },
+            'message': 'Validation error',
+            'status_code': 400
+        }
 
-    rv = client.post('/foo', json={'name': 'bar'})
-    assert rv.status_code == 200
-    assert rv.json == {'name': 'bar'}
+        rv = client.post(rule, json={'id': 1, 'name': 'bar'})
+        assert rv.status_code == 200
+        assert rv.json == {'id': 1, 'name': 'bar'}
+
+        rv = client.post(rule, json={'name': 'bar'})
+        assert rv.status_code == 200
+        assert rv.json == {'name': 'bar'}
+
+        rv = client.get('/openapi.json')
+        assert rv.status_code == 200
+        validate_spec(rv.json)
+        assert rv.json['paths'][rule]['post']['requestBody'][
+            'content']['application/json']['schema']['$ref'] == '#/components/schemas/Foo'
 
 
 def test_input_with_query_location(app, client):
@@ -194,10 +208,25 @@ def test_input_body_example(app, client):
     def bar():
         pass
 
+    @app.route('/baz')
+    class Baz(MethodView):
+        @input(FooSchema, example=example)
+        def get(self):
+            pass
+
+        @input(FooSchema, examples=examples)
+        def post(self):
+            pass
+
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['post']['requestBody'][
         'content']['application/json']['example'] == example
     assert rv.json['paths']['/bar']['post']['requestBody'][
+        'content']['application/json']['examples'] == examples
+
+    assert rv.json['paths']['/baz']['get']['requestBody'][
+        'content']['application/json']['example'] == example
+    assert rv.json['paths']['/baz']['post']['requestBody'][
         'content']['application/json']['examples'] == examples

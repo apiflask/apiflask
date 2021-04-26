@@ -86,18 +86,6 @@ def test_auto_tag_from_blueprint(app, client):
     assert {'name': 'Foo'} in rv.json['tags']
 
 
-def test_skip_tag_from_blueprint(app, client):
-    bp = APIBlueprint('foo', __name__)
-    app.config['DOCS_HIDE_BLUEPRINTS'] = ['foo']
-    app.register_blueprint(bp)
-
-    rv = client.get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert rv.json['tags'] == []
-    assert {'name': 'Foo'} not in rv.json['tags']
-
-
 def test_path_tags(app, client):
     bp = APIBlueprint('foo', __name__)
 
@@ -127,20 +115,3 @@ def test_path_tags_with_blueprint_tag(app, client, tag):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/']['get']['tags'] == ['test']
-
-
-def test_tag_name_from_flask_blueprint(app, client):
-    from flask import Blueprint
-    bp = Blueprint('foo', __name__)
-
-    @bp.route('/')
-    def foo():
-        pass
-
-    app.register_blueprint(bp)
-
-    rv = client.get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert rv.json['tags'] == [{'name': 'Foo'}]
-    assert rv.json['paths']['/']['get']['tags'] == ['Foo']
