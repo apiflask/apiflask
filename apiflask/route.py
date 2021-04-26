@@ -7,7 +7,10 @@ from .openapi import get_description_from_view_func
 
 
 def route_patch(cls):
-    """Support to use @app.route on a MethodView class."""
+    """Support to use the `route` decorator on a MethodView class.
+
+    *Version Added: 0.5.0*
+    """
     def route(self, rule, **options):
         def decorator(f):
             endpoint = options.pop('endpoint', f.__name__.lower())

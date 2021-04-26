@@ -22,6 +22,10 @@ class APIBlueprint(Blueprint):
     ```
 
     *Version added: 0.2.0*
+
+    *Version changed: 0.5.0*
+
+    - Add `enable_openapi` parameter.
     """
 
     def __init__(

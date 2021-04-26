@@ -22,5 +22,5 @@ Checklist:
 - [ ] Add tests that demonstrate the correct behavior of the change. Tests should fail without the change.
 - [ ] Add or update relevant docs, in the `docs` folder and in code docstring.
 - [ ] Add an entry in `CHANGES.md` summarizing the change and linking to the issue and your username.
-- [ ] Add `**Version Changed**` or `**Version Added**` note in any relevant docs and docstring.
+- [ ] Add `*Version Changed*` or `*Version Added*` note in any relevant docs and docstring.
 - [ ] Run `pytest` and `tox`, no tests failed.

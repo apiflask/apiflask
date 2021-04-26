@@ -14,12 +14,19 @@ $ pip show apiflask
 
 ## Version 0.5.0
 Released: -
-0.5.0 plan: https://github.com/greyli/apiflask/issues/25
+
+0.5.0 plan: <https://github.com/greyli/apiflask/issues/25>
 
 - Remove the support to generate `info.description` and tag description from module
 docstring, and also remove the `AUTO_DESCRIPTION` config ([pull #30][pull_30]).
+- Remove the configuration variable `DOCS_HIDE_BLUEPRINTS`, add `APIBlueprint.enable_openapi`
+as a replacement.
+- Support class-based views, now the `route` decorator can be used on MethodView class. Other decorators (i.e. `@input`, `@output`, etc.) can be used on view methods (i.e. `get()`, `post()`,
+etc.) ([pull #32][pull_32]).
+- No longer support to mix the use of `flask.Bluerpint` and `apiflask.APIBluerpint`.
 
 [pull_30]: https://github.com/greyli/apiflask/pull/30
+[pull_32]: https://github.com/greyli/apiflask/pull/32
 
 ## Version 0.4.0
 Released: 2021/4/20

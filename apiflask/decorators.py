@@ -97,6 +97,7 @@ def auth_required(
             is not included with the request, in which case `auth.current_user` will be `None`.
 
     *Version changed: 0.4.0*
+
     - Add parameter `roles`.
     """
     _roles = None
@@ -176,6 +177,7 @@ def input(
             }
 
     *Version changed: 0.4.0*
+
     - Add parameter `examples`.
     """
     if isinstance(schema, ABCMapping):
@@ -261,6 +263,7 @@ def output(
             ```
 
     *Version changed: 0.4.0*
+
     - Add parameter `examples`.
     """
     if schema == {}:
@@ -355,9 +358,11 @@ def doc(
         hide: Hide this endpoint in API docs. Defaults to `False`.
 
     *Version changed: 0.4.0*
+
     - Add parameter `tag`.
 
     *Version changed: 0.3.0*
+
     - Change the default value of `deprecated` from `None` to `False`.
     - Rename parameter `tags` to `tag`.
 
