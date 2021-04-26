@@ -519,8 +519,7 @@ class APIFlask(Flask):
             if self.config['AUTO_TAGS']:
                 # auto-generate tags from blueprints
                 for blueprint_name, blueprint in self.blueprints.items():
-                    if blueprint_name == 'openapi' or \
-                       blueprint_name in self.config['DOCS_HIDE_BLUEPRINTS']:
+                    if blueprint_name == 'openapi' or not blueprint.enable_openapi:
                         continue
                     tag: Dict[str, Any] = get_tag_from_blueprint(blueprint, blueprint_name)
                     tags.append(tag)  # type: ignore
@@ -539,6 +538,8 @@ class APIFlask(Flask):
     def _collect_auth_information(self) -> None:
         # detect auth_required on before_request functions
         for blueprint_name, funcs in self.before_request_funcs.items():
+            if not self.blueprints[blueprint_name].enable_openapi:
+                continue
             for f in funcs:
                 if hasattr(f, '_spec'):  # pragma: no cover
                     auth = f._spec.get('auth')  # type: ignore
@@ -614,11 +615,10 @@ class APIFlask(Flask):
             if rule.endpoint.startswith('openapi') or \
                rule.endpoint.startswith('static'):
                 continue
-            # skip endpoints from blueprints in config DOCS_HIDE_BLUEPRINTS list
             blueprint_name: Optional[str] = None
             if '.' in rule.endpoint:
                 blueprint_name = rule.endpoint.split('.', 1)[0]
-                if blueprint_name in self.config['DOCS_HIDE_BLUEPRINTS']:
+                if not self.blueprints[blueprint_name].enable_openapi:
                     continue
             # add a default 200 response for bare views
             if not hasattr(view_func, '_spec'):
@@ -626,6 +626,18 @@ class APIFlask(Flask):
                     view_func._spec = {'response': default_response}
                 else:
                     continue  # pragma: no cover
+            # method views
+            if hasattr(view_func, '_method_spec'):
+                skip = True
+                for method, method_spec in view_func._method_spec.items():
+                    if method_spec.get('no_spec'):
+                        if self.config['AUTO_200_RESPONSE']:
+                            view_func._method_spec[method]['response'] = default_response
+                            skip = False
+                    else:
+                        skip = False
+                if skip:
+                    continue
             # skip views flagged with @doc(hide=True)
             if view_func._spec.get('hide'):
                 continue
@@ -648,6 +660,16 @@ class APIFlask(Flask):
                     if method not in view_func._method_spec:
                         continue  # pragma: no cover
                     view_func._spec = view_func._method_spec[method]
+
+                    if view_func._spec.get('no_spec') and \
+                       not self.config['AUTO_200_RESPONSE']:
+                        continue
+                    if view_func._spec.get('generated_summary') and \
+                       not self.config['AUTO_PATH_SUMMARY']:
+                        view_func._spec['summary'] = ''
+                    if view_func._spec.get('generated_description') and \
+                       not self.config['AUTO_PATH_DESCRIPTION']:
+                        view_func._spec['description'] = ''
                     if view_func._spec.get('hide'):
                         continue
                     if view_func._spec.get('tags'):

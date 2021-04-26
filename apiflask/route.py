@@ -2,7 +2,6 @@ from typing import Any
 
 from flask.views import MethodViewType
 
-from .openapi import default_response
 from .openapi import get_summary_from_view_func
 from .openapi import get_description_from_view_func
 
@@ -17,19 +16,19 @@ def route_patch(cls):
                 view_func = f.as_view(endpoint)
                 if self.enable_openapi:
                     view_func._method_spec = {}
+                    view_func._spec = {}
                     for method_name in f.methods:  # method_name: ['GET', 'POST', ...]
                         method = f.__dict__[method_name.lower()]
                         if not hasattr(method, '_spec'):
-                            if not self.config['AUTO_200_RESPONSE']:
-                                continue
-                            method._spec = {'response': default_response}
-                        if not method._spec.get('summary') and self.config['AUTO_PATH_SUMMARY']:
+                            method._spec = {'no_spec': True}
+                        if not method._spec.get('summary'):
                             method._spec['summary'] = get_summary_from_view_func(
                                 method, f'{method_name.title()} {f.__name__}'
                             )
-                        if not method._spec.get('description') and \
-                           self.config['AUTO_PATH_DESCRIPTION']:
+                            method._spec['generated_summary'] = True
+                        if not method._spec.get('description'):
                             method._spec['description'] = get_description_from_view_func(method)
+                            method._spec['generated_description'] = True
                         view_func._method_spec[method_name] = method._spec
             else:
                 view_func = f

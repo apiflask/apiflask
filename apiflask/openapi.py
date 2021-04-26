@@ -6,16 +6,14 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import TYPE_CHECKING
-from typing import Union
 
 from apispec import APISpec
-from flask import Blueprint
 
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
 from .types import HTTPAuthType
 from .types import SchemaType
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .blueprint import APIBlueprint
 
 
@@ -29,30 +27,30 @@ default_response = {
 
 
 def get_tag_from_blueprint(
-    blueprint: Union[Blueprint, APIBlueprint],
+    blueprint: APIBlueprint,
     blueprint_name: str
 ) -> Dict[str, Any]:
     tag: Dict[str, Any]
-    if hasattr(blueprint, 'tag') and blueprint.tag is not None:  # type: ignore
-        if isinstance(blueprint.tag, dict):  # type: ignore
-            tag = blueprint.tag  # type: ignore
+    if blueprint.tag is not None:
+        if isinstance(blueprint.tag, dict):
+            tag = blueprint.tag
         else:
-            tag = {'name': blueprint.tag}  # type: ignore
+            tag = {'name': blueprint.tag}
     else:
         tag = {'name': blueprint_name.title()}
     return tag
 
 
 def get_operation_tags_from_blueprint(
-    blueprint: Union[Blueprint, APIBlueprint],
+    blueprint: APIBlueprint,
     blueprint_name: str
 ) -> List[str]:
     tags: List[str]
-    if hasattr(blueprint, 'tag') and blueprint.tag is not None:  # type: ignore
-        if isinstance(blueprint.tag, dict):  # type: ignore
-            tags = [blueprint.tag['name']]  # type: ignore
+    if blueprint.tag is not None:
+        if isinstance(blueprint.tag, dict):
+            tags = [blueprint.tag['name']]
         else:
-            tags = [blueprint.tag]  # type: ignore
+            tags = [blueprint.tag]
     else:
         tags = [blueprint_name.title()]
     return tags
