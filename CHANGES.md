@@ -24,9 +24,12 @@ as a replacement.
 - Support class-based views, now the `route` decorator can be used on `MethodView` class. Other decorators (i.e. `@input`, `@output`, etc.) can be used on view methods (i.e. `get()`, `post()`,
 etc.) ([pull #32][pull_32]).
 - No longer support to mix the use of `flask.Bluerpint` and `apiflask.APIBluerpint`.
+- Support to use the `auth_required` decorator on app-wide `before_request` functions
+([pull #34][pull_34]).
 
 [pull_30]: https://github.com/greyli/apiflask/pull/30
 [pull_32]: https://github.com/greyli/apiflask/pull/32
+[pull_34]: https://github.com/greyli/apiflask/pull/34
 
 ## Version 0.4.0
 Released: 2021/4/20
