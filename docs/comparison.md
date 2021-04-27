@@ -130,6 +130,7 @@ on Pydantic, while APIFlask uses marshmallow-code projects (Marshmallow, Webargs
 - FastAPI support async. APIFlask will have basic async support after Flask 2.0 is released.
 - APIFlask provides more decorators to help organize things better.
 - FastAPI injects the input data as an object, while APIFlask passes it as a dict.
+- APIFlask has built-in class-based views support based on Flask's `MethodView`.
 
 !!! tip
     Flask 2.0 will have basic async support and I also consider add support to change

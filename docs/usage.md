@@ -693,7 +693,7 @@ of authentication support will be added soon).
 
 [_flask-httpauth]: https://flask-httpauth.readthedocs.io/ 
 
-## Use Class-based views
+## Use class-based views
 
 !!! warning "Version >= 0.5.0"
 
