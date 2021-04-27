@@ -95,7 +95,7 @@ def say_hello():
 def get_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)
-    # you can also return an ORM model class instance directly
+    # you can also return an ORM/ODM model class instance directly
     return pets[pet_id]
 
 
