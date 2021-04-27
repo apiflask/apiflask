@@ -557,7 +557,7 @@ class APIFlask(Flask):
         # security schemes
         auth_names: List[str] = []
         auth_schemes: List[HTTPAuthType] = []
-        auth_blueprints: Dict[str, Dict[str, Any]] = {}
+        auth_blueprints: Dict[Optional[str], Dict[str, Any]] = {}
 
         def _update_auth_info(auth: HTTPAuthType) -> None:
             # update auth_schemes and auth_names
@@ -567,13 +567,14 @@ class APIFlask(Flask):
 
         # detect auth_required on before_request functions
         for blueprint_name, funcs in self.before_request_funcs.items():
-            if not self.blueprints[blueprint_name].enable_openapi:
+            if blueprint_name is not None and \
+               not self.blueprints[blueprint_name].enable_openapi:
                 continue
             for f in funcs:
                 if hasattr(f, '_spec'):  # pragma: no cover
                     auth = f._spec.get('auth')  # type: ignore
                     if auth is not None and auth not in auth_schemes:
-                        auth_blueprints[blueprint_name] = {  # type: ignore
+                        auth_blueprints[blueprint_name] = {
                             'auth': auth,
                             'roles': f._spec.get('roles')  # type: ignore
                         }
@@ -796,12 +797,21 @@ class APIFlask(Flask):
                             'application/json']['examples'] = examples
 
                 # security
+                # app-wide auth
+                if None in auth_blueprints:
+                    operation['security'] = [{
+                        security[auth_blueprints[None]['auth']]:
+                            auth_blueprints[None]['roles']
+                    }]
+
+                # blueprint-wide auth
                 if blueprint_name is not None and blueprint_name in auth_blueprints:
                     operation['security'] = [{
                         security[auth_blueprints[blueprint_name]['auth']]:
                             auth_blueprints[blueprint_name]['roles']
                     }]
 
+                # view-wide auth
                 if view_func._spec.get('auth'):
                     operation['security'] = [{
                         security[view_func._spec['auth']]: view_func._spec['roles']
