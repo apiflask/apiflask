@@ -23,7 +23,6 @@ app.config['DESCRIPTION'] = 'A wonderful API'
 
 # read a config
 description = app.config['DESCRIPTION']
-
 ```
 
 Since it's dict-like object, you can also read a config wth a default value via
@@ -535,18 +534,6 @@ app.config['HTTP_ERROR_SCHEMA'] = CustomHTTPErrorSchema
 
 The following configuration variables used to customize Swagger UI and
 Redoc documentation.
-
-#### `DOCS_HIDE_BLUEPRINTS`
-
-The list of blueprint names that hide from OpenAPI spec and API documentations.
-
-- Type: `list`
-- Default value: `[]`
-- Examples:
-
-```python
-app.config['DOCS_HIDE_BLUEPRINTS'] = ['foo', 'bar']
-```
 
 #### `DOCS_FAVICON`
 

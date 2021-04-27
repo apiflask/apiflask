@@ -47,6 +47,7 @@ nav:
     - Decorators: api/decorators.md
     - Exceptions: api/exceptions.md
     - Schemas: api/schemas.md
+    - Route: api/route.md
     - Security: api/security.md
     - Utils: api/utils.md
   - Comparison and Motivations: comparison.md

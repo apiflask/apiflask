@@ -1,8 +1,11 @@
+from flask.views import MethodView
+
 from apiflask import APIFlask
 from apiflask import input
 from apiflask import Schema
 from apiflask.fields import Integer
 from apiflask.fields import String
+
 from .schemas import PaginationSchema
 
 
@@ -46,11 +49,32 @@ def test_view_function_arguments_order(app, client):
     @input(QuerySchema, 'query')
     @input(PaginationSchema, 'query')
     @input(PetSchema)
-    def test_args(pet_id, toy_id, query, pagination, body):
+    def pets(pet_id, toy_id, query, pagination, body):
         return {'pet_id': pet_id, 'toy_id': toy_id,
                 'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **body}
 
+    @app.route('/animals/<int:pet_id>/toys/<int:toy_id>')
+    class Animals(MethodView):
+        @input(QuerySchema, 'query')
+        @input(PaginationSchema, 'query')
+        @input(PetSchema)
+        def post(self, pet_id, toy_id, query, pagination, body):
+            return {'pet_id': pet_id, 'toy_id': toy_id,
+                    'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **body}
+
     rv = client.post('/pets/1/toys/3?foo=yes&bar=no',
+                     json={'name': 'dodge', 'age': 5})
+    assert rv.status_code == 200
+    assert rv.json['pet_id'] == 1
+    assert rv.json['toy_id'] == 3
+    assert rv.json['foo'] == 'yes'
+    assert rv.json['bar'] == 'no'
+    assert rv.json['name'] == 'dodge'
+    assert rv.json['age'] == 5
+    assert rv.json['pagination']['page'] == 1
+    assert rv.json['pagination']['per_page'] == 10
+
+    rv = client.post('/animals/1/toys/3?foo=yes&bar=no',
                      json={'name': 'dodge', 'age': 5})
     assert rv.status_code == 200
     assert rv.json['pet_id'] == 1

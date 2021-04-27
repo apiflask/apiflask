@@ -25,8 +25,9 @@ except ImportError:
 
 from .exceptions import HTTPError
 from .exceptions import default_error_handler
-from .utils import route_shortcuts
 from .utils import get_reason_phrase
+from .route import route_shortcuts
+from .route import route_patch
 from .schemas import Schema
 from .types import ResponseType
 from .types import ErrorCallbackType
@@ -34,15 +35,18 @@ from .types import SpecCallbackType
 from .types import SchemaType
 from .types import HTTPAuthType
 from .types import TagsType
-from .openapi import get_tag_from_blueprint, make_argument
-from .openapi import get_operation_tags_from_blueprint
-from .openapi import get_summary_from_view_func
-from .openapi import make_security_and_security_schemes
-from .openapi import get_auth_name_from_auth_object
 from .openapi import add_response_to_operation
 from .openapi import add_response_with_schema_to_operation
+from .openapi import default_response
+from .openapi import get_tag_from_blueprint
+from .openapi import get_operation_tags_from_blueprint
+from .openapi import get_summary_from_view_func
+from .openapi import get_auth_name_from_auth_object
+from .openapi import make_argument
+from .openapi import make_security_and_security_schemes
 
 
+@route_patch
 @route_shortcuts
 class APIFlask(Flask):
     """The `Flask` object with some web API support.
@@ -515,8 +519,7 @@ class APIFlask(Flask):
             if self.config['AUTO_TAGS']:
                 # auto-generate tags from blueprints
                 for blueprint_name, blueprint in self.blueprints.items():
-                    if blueprint_name == 'openapi' or \
-                       blueprint_name in self.config['DOCS_HIDE_BLUEPRINTS']:
+                    if blueprint_name == 'openapi' or not blueprint.enable_openapi:
                         continue
                     tag: Dict[str, Any] = get_tag_from_blueprint(blueprint, blueprint_name)
                     tags.append(tag)  # type: ignore
@@ -535,6 +538,8 @@ class APIFlask(Flask):
     def _collect_auth_information(self) -> None:
         # detect auth_required on before_request functions
         for blueprint_name, funcs in self.before_request_funcs.items():
+            if not self.blueprints[blueprint_name].enable_openapi:
+                continue
             for f in funcs:
                 if hasattr(f, '_spec'):  # pragma: no cover
                     auth = f._spec.get('auth')  # type: ignore
@@ -551,6 +556,12 @@ class APIFlask(Flask):
                 auth = view_func._spec.get('auth')
                 if auth is not None and auth not in self._auth_schemes:
                     self._update_auth_schemes_and_names(auth)
+            # method views
+            if hasattr(view_func, '_method_spec'):
+                for method_spec in view_func._method_spec.values():
+                    auth = method_spec.get('auth')
+                    if auth is not None and auth not in self._auth_schemes:
+                        self._update_auth_schemes_and_names(auth)
 
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`."""
@@ -604,25 +615,29 @@ class APIFlask(Flask):
             if rule.endpoint.startswith('openapi') or \
                rule.endpoint.startswith('static'):
                 continue
-            # skip endpoints from blueprints in config DOCS_HIDE_BLUEPRINTS list
             blueprint_name: Optional[str] = None
             if '.' in rule.endpoint:
                 blueprint_name = rule.endpoint.split('.', 1)[0]
-                if blueprint_name in self.config['DOCS_HIDE_BLUEPRINTS']:
+                if not self.blueprints[blueprint_name].enable_openapi:
                     continue
             # add a default 200 response for bare views
-            default_response = {
-                'schema': {},
-                'status_code': 200,
-                'description': None,
-                'example': None,
-                'examples': None
-            }
             if not hasattr(view_func, '_spec'):
                 if self.config['AUTO_200_RESPONSE']:
                     view_func._spec = {'response': default_response}
                 else:
                     continue  # pragma: no cover
+            # method views
+            if hasattr(view_func, '_method_spec'):
+                skip = True
+                for method, method_spec in view_func._method_spec.items():
+                    if method_spec.get('no_spec'):
+                        if self.config['AUTO_200_RESPONSE']:
+                            view_func._method_spec[method]['response'] = default_response
+                            skip = False
+                    else:
+                        skip = False
+                if skip:
+                    continue
             # skip views flagged with @doc(hide=True)
             if view_func._spec.get('hide'):
                 continue
@@ -640,6 +655,32 @@ class APIFlask(Flask):
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
                 if method not in rule.methods:
                     continue
+                # method views
+                if hasattr(view_func, '_method_spec'):
+                    if method not in view_func._method_spec:
+                        continue  # pragma: no cover
+                    view_func._spec = view_func._method_spec[method]
+
+                    if view_func._spec.get('no_spec') and \
+                       not self.config['AUTO_200_RESPONSE']:
+                        continue
+                    if view_func._spec.get('generated_summary') and \
+                       not self.config['AUTO_PATH_SUMMARY']:
+                        view_func._spec['summary'] = ''
+                    if view_func._spec.get('generated_description') and \
+                       not self.config['AUTO_PATH_DESCRIPTION']:
+                        view_func._spec['description'] = ''
+                    if view_func._spec.get('hide'):
+                        continue
+                    if view_func._spec.get('tags'):
+                        operation_tags = view_func._spec.get('tags')
+                    else:
+                        if self.tags is None and self.config['AUTO_TAGS'] and \
+                           blueprint_name is not None:
+                            blueprint = self.blueprints[blueprint_name]
+                            operation_tags = \
+                                get_operation_tags_from_blueprint(blueprint, blueprint_name)
+
                 operation: Dict[str, Any] = {
                     'parameters': [
                         {'in': location, 'schema': schema}

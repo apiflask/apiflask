@@ -97,6 +97,7 @@ def auth_required(
             is not included with the request, in which case `auth.current_user` will be `None`.
 
     *Version changed: 0.4.0*
+
     - Add parameter `roles`.
     """
     _roles = None
@@ -176,6 +177,7 @@ def input(
             }
 
     *Version changed: 0.4.0*
+
     - Add parameter `examples`.
     """
     if isinstance(schema, ABCMapping):
@@ -261,6 +263,7 @@ def output(
             ```
 
     *Version changed: 0.4.0*
+
     - Add parameter `examples`.
     """
     if schema == {}:
@@ -315,8 +318,8 @@ def doc(
     tag: Optional[str] = None,
     tags: Optional[List[str]] = None,
     responses: Optional[Union[List[int], Dict[int, str]]] = None,
-    deprecated: Optional[bool] = False,
-    hide: Optional[bool] = False
+    deprecated: Optional[bool] = None,
+    hide: Optional[bool] = None
 ) -> Callable[[DecoratedType], DecoratedType]:
     """Set up the OpenAPI Spec for view functions.
 
@@ -354,10 +357,16 @@ def doc(
         deprecated: Flag this endpoint as deprecated in API docs. Defaults to `False`.
         hide: Hide this endpoint in API docs. Defaults to `False`.
 
+    *Version changed: 0.5.0*
+
+    - Change the default value of parameter `hide` and `deprecated` from `False` to `None`.
+
     *Version changed: 0.4.0*
+
     - Add parameter `tag`.
 
     *Version changed: 0.3.0*
+
     - Change the default value of `deprecated` from `None` to `False`.
     - Rename parameter `tags` to `tag`.
 

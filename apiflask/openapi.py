@@ -1,17 +1,29 @@
+from __future__ import annotations
 from typing import Any
 from typing import Callable
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
+from typing import TYPE_CHECKING
 
 from apispec import APISpec
 
-from .blueprint import APIBlueprint
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
 from .types import HTTPAuthType
 from .types import SchemaType
+if TYPE_CHECKING:  # pragma: no cover
+    from .blueprint import APIBlueprint
+
+
+default_response = {
+    'schema': {},
+    'status_code': 200,
+    'description': None,
+    'example': None,
+    'examples': None
+}
 
 
 def get_tag_from_blueprint(
@@ -19,7 +31,7 @@ def get_tag_from_blueprint(
     blueprint_name: str
 ) -> Dict[str, Any]:
     tag: Dict[str, Any]
-    if hasattr(blueprint, 'tag') and blueprint.tag is not None:
+    if blueprint.tag is not None:
         if isinstance(blueprint.tag, dict):
             tag = blueprint.tag
         else:
@@ -34,7 +46,7 @@ def get_operation_tags_from_blueprint(
     blueprint_name: str
 ) -> List[str]:
     tags: List[str]
-    if hasattr(blueprint, 'tag') and blueprint.tag is not None:
+    if blueprint.tag is not None:
         if isinstance(blueprint.tag, dict):
             tags = [blueprint.tag['name']]
         else:
@@ -104,7 +116,7 @@ def make_security_and_security_schemes(
     return security, security_schemes
 
 
-def get_summary_from_view_func(func: Callable) -> str:
+def get_summary_from_view_func(func: Callable, fallback: str = None) -> str:
     summary: str
     docs: list = (func.__doc__ or '').strip().split('\n')
     if docs[0]:
@@ -112,8 +124,16 @@ def get_summary_from_view_func(func: Callable) -> str:
         summary = docs[0]
     else:
         # Use the function name
-        summary = ' '.join(func.__name__.split('_')).title()
+        summary = fallback or ' '.join(func.__name__.split('_')).title()
     return summary
+
+
+def get_description_from_view_func(func: Callable) -> str:
+    docs = (func.__doc__ or '').strip().split('\n')
+    if len(docs) > 1:
+        # use the remain lines of docstring as description
+        return '\n'.join(docs[1:]).strip()
+    return ''
 
 
 def add_response_to_operation(

@@ -1,6 +1,6 @@
 # Swagger UI and Redoc
 
-## Disable the API documentations
+## Disable the API documentations globally
 
 You can set the `docs_path` parameter to `None` to disable Swagger UI documentation:
 
@@ -26,21 +26,30 @@ from apiflask import APIFlask
 app = APIFlask(__name__, docs_path=None, redoc_path=None)
 ```
 
-## Skip/hide specific blueprints or views from API documentation
+!!! tip
+    If you want to disable the whole OpenAPI support for the application, you
+    can set `enable_openapi` parameter to `False` when creating the `APIFlask` instance:
+
+    ```python
+    from apiflask import APIFlask
+
+    app = APIFlask(__name__, enable_openapi=False)
+    ```
+
+## Disable the API documentations for specific blueprints
 
 To hide blueprints from API documentations (and OpenAPI spec), you can
-pass a list of blueprint names which you want to hide to the configuration
-variable `DOCS_HIDE_BLUEPRINTS`:
+set `enable_openapi` parameter to `False` when creating the `APIBlueprint` instance:
 
 ```python
-app.config['DOCS_HIDE_BLUEPRINTS'] = ['foo', 'bar']
+from apiflask import APIBlueprint
+
+bp = APIBlueprint(__name__, 'foo', enable_openapi=False)
 ```
 
-!!! tip
-    The name of a blueprint is the second argument you passed into `APIBluerpint`
-    class (e.g. `bp = APIBlueprint(__name__, 'your-blueprint-name')`).
+## Disable the API documentations for specific view functions
 
-Similarly, to hide a view function from API documentations (and OpenAPI spec), you
+To hide a view function from API documentations (and OpenAPI spec), you
 can set the `hide` parameter to `True` in the `@doc` decorator:
 
 ```python hl_lines="1 4"

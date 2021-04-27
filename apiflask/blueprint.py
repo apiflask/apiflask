@@ -3,10 +3,12 @@ from typing import Union
 
 from flask import Blueprint
 
+from .route import route_patch
+from .route import route_shortcuts
 from .utils import _sentinel
-from .utils import route_shortcuts
 
 
+@route_patch
 @route_shortcuts
 class APIBlueprint(Blueprint):
     """Flask's `Blueprint` object with some web API support.
@@ -20,6 +22,10 @@ class APIBlueprint(Blueprint):
     ```
 
     *Version added: 0.2.0*
+
+    *Version changed: 0.5.0*
+
+    - Add `enable_openapi` parameter.
     """
 
     def __init__(
@@ -27,6 +33,7 @@ class APIBlueprint(Blueprint):
         name: str,
         import_name: str,
         tag: Optional[Union[str, dict]] = None,
+        enable_openapi: bool = True,
         static_folder: Optional[str] = None,
         static_url_path: Optional[str] = None,
         template_folder: Optional[str] = None,
@@ -56,6 +63,7 @@ class APIBlueprint(Blueprint):
                 ```python
                 bp = APIBlueprint(__name__, 'foo', tag={'name': 'Foo'})
                 ```
+            enable_openapi: If False, will disable OpenAPI support for current blueprint.
 
         Other keyword arguments are directly pass to `flask.Blueprint`.
         """
@@ -72,3 +80,4 @@ class APIBlueprint(Blueprint):
             cli_group=cli_group,
         )
         self.tag = tag
+        self.enable_openapi = enable_openapi
