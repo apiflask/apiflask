@@ -196,11 +196,12 @@ For a more complete example, see [/examples](https://github.com/greyli/apiflask/
 
 ## Relationship with Flask
 
-APIFlask is a thin wrapper on top of Flask, you only need to remember three differences:
+APIFlask is a thin wrapper on top of Flask, you only need to remember four differences (see *[Migrating from Flask](https://apiflask.com/migrating/)* for more details):
 
 - When creating an application instance, use `APIFlask` instead of `Flask`.
 - When creating a blueprint instance, use `APIBlueprint` instead of `Blueprint`.
 - The `abort()` function from APIFlask (`apiflask.abort`) returns JSON error response.
+- The view class should be registered with the `route` decorator.
 
 For a minimal Flask application:
 

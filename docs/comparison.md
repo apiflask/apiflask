@@ -116,6 +116,7 @@ def create_pet():
 - Support more OpenAPI fields (all fields from `info`, `servers`, response/requestBody/parameters `example`, path `deprecated`, etc).
 - Support to customize the API documentation config and CDN URLs.
 - Return JSON response for all HTTP errors and Auth errors as default.
+- Class-based view support.
 
 ## APIFlask vs FastAPI
 

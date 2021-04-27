@@ -232,11 +232,11 @@ def delete_pet(pet_id):
     return '', 204
 ```
 
-!!! tip
+!!! warning
 
-    If you want the view function to accept multiple methods, you still need
-    to use `app.route()` decorator. You can mix the use of `app.route()` with the
-    shortcuts in your application.
+    You can't pass `methods` argument to route shortcusts. If you want the view
+    function to accept multiple methods, you still need to use `app.route()` decorator.
+    You can mix the use of `app.route()` with the shortcuts in your application.
 
 ## Use `@input` to validate and deserialize request data
 
@@ -692,6 +692,131 @@ of authentication support will be added soon).
     (i.e. `app.route`, `app.get`, `app.post`, etc.).
 
 [_flask-httpauth]: https://flask-httpauth.readthedocs.io/ 
+
+## Use Class-based views
+
+!!! warning "Version >= 0.5.0"
+
+    This feature was added in the [version 0.5.0](/changelog/#version-050).
+
+You can create a group of routes under a same URL rule with `MethodView` class. Here is
+a simple example:
+
+```python
+from flask.views import MethodView
+from apiflask import APIFlask
+
+app = APIFlask(__name__)
+
+
+@app.route('/pets/<int:pet_id>')
+class Pet(MethodView):
+
+    def get(self, pet_id):
+        return {'message': 'OK'}
+
+    def delete(self, pet_id):
+        return '', 204
+```
+
+When creating a view class, it need to inherit from `MethodView` class:
+
+```python hl_lines="1 4"
+from flask.views import MethodView
+
+@app.route('/pets/<int:pet_id>')
+class Pet(MethodView):
+    # ...
+```
+
+The class should be decorated with `route` decorator:
+
+```python hl_lines="1"
+@app.route('/pets/<int:pet_id>')
+class Pet(MethodView):
+    # ...
+```
+
+!!! tips
+    The `endpoint` of the view class defaults to the lower case of the class name.
+
+!!! warning
+    You don't need to pass a `methods` argument, Flask will handle it for you. Besides, you should
+    use `app.route` to register a view class instead of using `app.add_url_rule` method.
+
+Now, you can define view methods for each HTTP method, use the (HTTP) method name as method name:
+
+```python hl_lines="4 7 10 13 16"
+@app.route('/pets/<int:pet_id>')
+class Pet(MethodView):
+
+    def get(self, pet_id):  # triggered by GET request
+        return {'message': 'OK'}
+
+    def post(self, pet_id):  # triggered by POST request
+        return {'message': 'OK'}
+
+    def put(self, pet_id):  # triggered by PUT request
+        return {'message': 'OK'}
+
+    def delete(self, pet_id):  # triggered by DELETE request
+        return '', 204
+
+    def patch(self, pet_id):  # triggered by PATCH request
+        return {'message': 'OK'}
+```
+
+With the example application above, when the user sends a *GET* request to `/pets/<int:pet_id>`,
+the `get()` method of the `Pet` class will be called, and so on for the others.
+
+When you use decorators like `@input`, `@output`, be sure to use it on method instead of class:
+
+```python hl_lines="4 5 9 10 11 15 16"
+@app.route('/pets/<int:pet_id>')
+class Pet(MethodView):
+
+    @output(PetOutSchema)
+    @doc(summary='Get a Pet')
+    def get(self, pet_id):
+        # ...
+
+    @auth_required(auth)
+    @input(PetInSchema)
+    @output(PetOutSchema)
+    def put(self, pet_id, data):
+        # ...
+
+    @input(PetInSchema(partial=True))
+    @output(PetOutSchema)
+    def patch(self, pet_id, data):
+        # ...
+```
+
+If you want to apply a decorator for all methods, instead of repeat yourself, you can
+pass the decorator to the class attriabute `decorators`, it accepts a list of decorators:
+
+```python hl_lines="4"
+@app.route('/pets/<int:pet_id>')
+class Pet(MethodView):
+
+    decorators = [auth_required(auth), doc(responses=[404])]
+
+    @output(PetOutSchema)
+    @doc(summary='Get a Pet')
+    def get(self, pet_id):
+        # ...
+
+    @auth_required(auth)
+    @input(PetInSchema)
+    @output(PetOutSchema)
+    def put(self, pet_id, data):
+        # ...
+
+    @input(PetInSchema(partial=True))
+    @output(PetOutSchema)
+    def patch(self, pet_id, data):
+        # ...
+```
 
 ## Use `abort()` to return an error response
 

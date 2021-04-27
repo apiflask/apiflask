@@ -65,6 +65,55 @@ def create_pet():
     You can mix the use of `app.route()` with route shortcuts. Flask 2.0 will include
     these route shortcuts.
 
+## Class-based views (MethodView)
+
+!!! warning "Version >= 0.5.0"
+
+    This feature was added in the [version 0.5.0](/changelog/#version-050).
+
+APIFlask support to use `MethodView`-based view class, for example:
+
+```python
+from apiflask import APIFlask, Schema, input, output
+from flask.views import MethodView
+
+# ...
+
+@app.route('/pets/<int:pet_id>')
+class Pet(MethodView):
+
+    decorators = [doc(responses=[404])]
+
+    @output(PetOutSchema)
+    def get(self, pet_id):
+        pass
+
+    @output({}, 204)
+    def delete(self, pet_id):
+        pass
+
+    @input(PetInSchema)
+    @output(PetOutSchema)
+    def put(self, pet_id, data):
+        pass
+
+    @input(PetInSchema(partial=True))
+    @output(PetOutSchema)
+    def patch(self, pet_id, data):
+        pass
+```
+
+However, the view class should registered with the `route` decorator without the
+`methods` argument:
+
+```python hl_line="1"
+@app.route('/pets/<int:pet_id>')
+class Pet(MethodView):
+```
+
+!!! tips
+    The `endpoint` of the view class defaults to the lower case of the class name.
+
 ## Other behavior change and notes
 
 ### Import statements
