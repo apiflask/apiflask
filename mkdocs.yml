@@ -46,6 +46,7 @@ nav:
     - APIBlueprint: api/blueprint.md
     - Decorators: api/decorators.md
     - Exceptions: api/exceptions.md
+    - OpenAPI: api/openapi.md
     - Schemas: api/schemas.md
     - Route: api/route.md
     - Security: api/security.md

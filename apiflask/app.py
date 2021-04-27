@@ -35,15 +35,15 @@ from .types import SpecCallbackType
 from .types import SchemaType
 from .types import HTTPAuthType
 from .types import TagsType
-from .openapi import add_response_to_operation
-from .openapi import add_response_with_schema_to_operation
+from .openapi import add_response
+from .openapi import add_response_with_schema
 from .openapi import default_response
-from .openapi import get_tag_from_blueprint
-from .openapi import get_operation_tags_from_blueprint
-from .openapi import get_summary_from_view_func
-from .openapi import get_auth_name_from_auth_object
-from .openapi import make_argument
-from .openapi import make_security_and_security_schemes
+from .openapi import get_tag
+from .openapi import get_operation_tags
+from .openapi import get_path_summary
+from .openapi import get_auth_name
+from .openapi import get_argument
+from .openapi import get_security_and_security_schemes
 
 
 @route_patch
@@ -521,7 +521,7 @@ class APIFlask(Flask):
                 for blueprint_name, blueprint in self.blueprints.items():
                     if blueprint_name == 'openapi' or not blueprint.enable_openapi:
                         continue
-                    tag: Dict[str, Any] = get_tag_from_blueprint(blueprint, blueprint_name)
+                    tag: Dict[str, Any] = get_tag(blueprint, blueprint_name)
                     tags.append(tag)  # type: ignore
         return tags  # type: ignore
 
@@ -530,12 +530,13 @@ class APIFlask(Flask):
     _auth_schemes: List[HTTPAuthType] = []
     _auth_blueprints: Dict[str, Dict[str, Any]] = {}
 
-    def _update_auth_schemes_and_names(self, auth: HTTPAuthType) -> None:
+    def _update_auth_info(self, auth: HTTPAuthType) -> None:
+        # update auth_schemes and auth_names
         self._auth_schemes.append(auth)
-        auth_name: str = get_auth_name_from_auth_object(auth, self._auth_names)
+        auth_name: str = get_auth_name(auth, self._auth_names)
         self._auth_names.append(auth_name)
 
-    def _collect_auth_information(self) -> None:
+    def _collect_auth_info(self) -> None:
         # detect auth_required on before_request functions
         for blueprint_name, funcs in self.before_request_funcs.items():
             if not self.blueprints[blueprint_name].enable_openapi:
@@ -548,20 +549,20 @@ class APIFlask(Flask):
                             'auth': auth,
                             'roles': f._spec.get('roles')  # type: ignore
                         }
-                        self._update_auth_schemes_and_names(auth)
+                        self._update_auth_info(auth)
 
         for rule in self.url_map.iter_rules():
             view_func = self.view_functions[rule.endpoint]
             if hasattr(view_func, '_spec'):
                 auth = view_func._spec.get('auth')
                 if auth is not None and auth not in self._auth_schemes:
-                    self._update_auth_schemes_and_names(auth)
+                    self._update_auth_info(auth)
             # method views
             if hasattr(view_func, '_method_spec'):
                 for method_spec in view_func._method_spec.values():
                     auth = method_spec.get('auth')
                     if auth is not None and auth not in self._auth_schemes:
-                        self._update_auth_schemes_and_names(auth)
+                        self._update_auth_info(auth)
 
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`."""
@@ -596,8 +597,8 @@ class APIFlask(Flask):
         self._auth_names: List[str] = []
         self._auth_schemes: List[HTTPAuthType] = []
         self._auth_blueprints: Dict[str, Dict[str, Any]] = {}
-        self._collect_auth_information()
-        security, security_schemes = make_security_and_security_schemes(
+        self._collect_auth_info()
+        security, security_schemes = get_security_and_security_schemes(
             self._auth_names, self._auth_schemes
         )
         for name, scheme in security_schemes.items():
@@ -650,7 +651,7 @@ class APIFlask(Flask):
                 # use blueprint name as tag
                 if self.tags is None and self.config['AUTO_TAGS'] and blueprint_name is not None:
                     blueprint = self.blueprints[blueprint_name]
-                    operation_tags = get_operation_tags_from_blueprint(blueprint, blueprint_name)
+                    operation_tags = get_operation_tags(blueprint, blueprint_name)
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
                 if method not in rule.methods:
@@ -678,8 +679,7 @@ class APIFlask(Flask):
                         if self.tags is None and self.config['AUTO_TAGS'] and \
                            blueprint_name is not None:
                             blueprint = self.blueprints[blueprint_name]
-                            operation_tags = \
-                                get_operation_tags_from_blueprint(blueprint, blueprint_name)
+                            operation_tags = get_operation_tags(blueprint, blueprint_name)
 
                 operation: Dict[str, Any] = {
                     'parameters': [
@@ -697,7 +697,7 @@ class APIFlask(Flask):
                 else:
                     # auto-generate summary from dotstring or view function name
                     if self.config['AUTO_PATH_SUMMARY']:
-                        operation['summary'] = get_summary_from_view_func(view_func)
+                        operation['summary'] = get_path_summary(view_func)
 
                 # description
                 if view_func._spec.get('description'):
@@ -722,14 +722,14 @@ class APIFlask(Flask):
                         self.config['SUCCESS_DESCRIPTION']
                     example = view_func._spec.get('response')['example']
                     examples = view_func._spec.get('response')['examples']
-                    add_response_to_operation(
+                    add_response(
                         operation, status_code, schema, description, example, examples
                     )
                 else:
                     # add a default 200 response for views without using @output
                     # or @doc(responses={...})
                     if not view_func._spec.get('responses') and self.config['AUTO_200_RESPONSE']:
-                        add_response_to_operation(
+                        add_response(
                             operation, '200', {}, self.config['SUCCESS_DESCRIPTION']
                         )
 
@@ -743,7 +743,7 @@ class APIFlask(Flask):
                         'VALIDATION_ERROR_DESCRIPTION'
                     ]
                     schema: SchemaType = self.config['VALIDATION_ERROR_SCHEMA']  # type: ignore
-                    add_response_with_schema_to_operation(
+                    add_response_with_schema(
                         spec, operation, status_code, schema, 'ValidationError', description
                     )
 
@@ -757,7 +757,7 @@ class APIFlask(Flask):
                     )
                     description: str = self.config['AUTH_ERROR_DESCRIPTION']  # type: ignore
                     schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
-                    add_response_with_schema_to_operation(
+                    add_response_with_schema(
                         spec, operation, status_code, schema, 'HTTPError', description
                     )
 
@@ -777,11 +777,11 @@ class APIFlask(Flask):
                         if status_code.startswith('4') or status_code.startswith('5'):
                             # add error response schema for error responses
                             schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
-                            add_response_with_schema_to_operation(
+                            add_response_with_schema(
                                 spec, operation, status_code, schema, 'HTTPError', description
                             )
                         else:
-                            add_response_to_operation(operation, status_code, {}, description)
+                            add_response(operation, status_code, {}, description)
 
                 # requestBody
                 if view_func._spec.get('body'):
@@ -820,7 +820,7 @@ class APIFlask(Flask):
             if path_arguments:
                 arguments: List[Dict[str, str]] = []
                 for _, argument_type, argument_name in path_arguments:
-                    argument = make_argument(argument_type, argument_name)
+                    argument = get_argument(argument_type, argument_name)
                     arguments.append(argument)
 
                 for method, operation in operations.items():
