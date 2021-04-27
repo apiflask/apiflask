@@ -24,11 +24,21 @@ def route_patch(cls):
                 view_func = f.as_view(endpoint)
                 if self.enable_openapi:
                     view_func._method_spec = {}
-                    view_func._spec = {}
+                    if not hasattr(view_func, '_spec'):
+                        view_func._spec = {}
                     for method_name in f.methods:  # method_name: ['GET', 'POST', ...]
                         method = f.__dict__[method_name.lower()]
-                        if not hasattr(method, '_spec'):
-                            method._spec = {'no_spec': True}
+                        # collect spec info from class attribute "decorators"
+                        if hasattr(view_func, '_spec') and view_func._spec != {}:
+                            if not hasattr(method, '_spec'):
+                                method._spec = view_func._spec
+                            else:
+                                for key, value in view_func._spec.items():
+                                    if value is not None and method._spec.get(key) is None:
+                                        method._spec[key] = value
+                        else:
+                            if not hasattr(method, '_spec'):
+                                method._spec = {'no_spec': True}
                         if not method._spec.get('summary'):
                             method._spec['summary'] = get_summary_from_view_func(
                                 method, f'{method_name.title()} {f.__name__}'

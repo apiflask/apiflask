@@ -3,7 +3,10 @@ from openapi_spec_validator import validate_spec
 from flask.views import MethodView
 
 from apiflask import APIBlueprint
+from apiflask import auth_required
+from apiflask import doc
 from apiflask import output
+from apiflask import HTTPTokenAuth
 
 from .schemas import FooSchema
 
@@ -107,3 +110,49 @@ def test_bad_route_decorator_usages(app):
         class Baz(MethodView):
             def get(self):
                 pass
+
+
+def test_class_attribute_decorators(app, client):
+    auth = HTTPTokenAuth()
+
+    @app.route('/')
+    class Foo(MethodView):
+        decorators = [auth_required(auth), doc(responses=[404])]
+
+        def get(self):
+            pass
+
+        def post(self):
+            pass
+
+    rv = client.get('/')
+    assert rv.status_code == 401
+    rv = client.post('/')
+    assert rv.status_code == 401
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert '404' in rv.json['paths']['/']['get']['responses']
+    assert '404' in rv.json['paths']['/']['post']['responses']
+    assert 'BearerAuth' in rv.json['paths']['/']['get']['security'][0]
+    assert 'BearerAuth' in rv.json['paths']['/']['post']['security'][0]
+
+
+def test_overwrite_class_attribute_decorators(app, client):
+    @app.route('/')
+    class Foo(MethodView):
+        decorators = [doc(deprecated=True)]
+
+        def get(self):
+            pass
+
+        @doc(deprecated=False)
+        def post(self):
+            pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/']['get']['deprecated']
+    assert 'deprecated' not in rv.json['paths']['/']['post']

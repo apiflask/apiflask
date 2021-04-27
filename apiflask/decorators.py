@@ -318,8 +318,8 @@ def doc(
     tag: Optional[str] = None,
     tags: Optional[List[str]] = None,
     responses: Optional[Union[List[int], Dict[int, str]]] = None,
-    deprecated: Optional[bool] = False,
-    hide: Optional[bool] = False
+    deprecated: Optional[bool] = None,
+    hide: Optional[bool] = None
 ) -> Callable[[DecoratedType], DecoratedType]:
     """Set up the OpenAPI Spec for view functions.
 
@@ -356,6 +356,10 @@ def doc(
             of `{404: 'Not Found'}` or a list of status code (`[404, 418]`).
         deprecated: Flag this endpoint as deprecated in API docs. Defaults to `False`.
         hide: Hide this endpoint in API docs. Defaults to `False`.
+
+    *Version changed: 0.5.0*
+
+    - Change the default value of parameter `hide` and `deprecated` from `False` to `None`.
 
     *Version changed: 0.4.0*
 
