@@ -11,9 +11,9 @@ def route_patch(cls):
 
     *Version Added: 0.5.0*
     """
-    def route(self, rule, **options):
+    def route(self, rule: str, **options):
         def decorator(f):
-            endpoint = options.pop('endpoint', f.__name__.lower())
+            endpoint: str = options.pop('endpoint', f.__name__.lower())
             if isinstance(f, MethodViewType):
                 # MethodView class
                 if 'methods' in options:

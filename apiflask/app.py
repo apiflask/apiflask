@@ -525,45 +525,6 @@ class APIFlask(Flask):
                     tags.append(tag)  # type: ignore
         return tags  # type: ignore
 
-    # auth information
-    _auth_names: List[str] = []
-    _auth_schemes: List[HTTPAuthType] = []
-    _auth_blueprints: Dict[str, Dict[str, Any]] = {}
-
-    def _update_auth_info(self, auth: HTTPAuthType) -> None:
-        # update auth_schemes and auth_names
-        self._auth_schemes.append(auth)
-        auth_name: str = get_auth_name(auth, self._auth_names)
-        self._auth_names.append(auth_name)
-
-    def _collect_auth_info(self) -> None:
-        # detect auth_required on before_request functions
-        for blueprint_name, funcs in self.before_request_funcs.items():
-            if not self.blueprints[blueprint_name].enable_openapi:
-                continue
-            for f in funcs:
-                if hasattr(f, '_spec'):  # pragma: no cover
-                    auth = f._spec.get('auth')  # type: ignore
-                    if auth is not None and auth not in self._auth_schemes:
-                        self._auth_blueprints[blueprint_name] = {  # type: ignore
-                            'auth': auth,
-                            'roles': f._spec.get('roles')  # type: ignore
-                        }
-                        self._update_auth_info(auth)
-
-        for rule in self.url_map.iter_rules():
-            view_func = self.view_functions[rule.endpoint]
-            if hasattr(view_func, '_spec'):
-                auth = view_func._spec.get('auth')
-                if auth is not None and auth not in self._auth_schemes:
-                    self._update_auth_info(auth)
-            # method views
-            if hasattr(view_func, '_method_spec'):
-                for method_spec in view_func._method_spec.values():
-                    auth = method_spec.get('auth')
-                    if auth is not None and auth not in self._auth_schemes:
-                        self._update_auth_info(auth)
-
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`."""
         kwargs: dict = {}
@@ -594,12 +555,45 @@ class APIFlask(Flask):
                 ('string', 'url')
 
         # security schemes
-        self._auth_names: List[str] = []
-        self._auth_schemes: List[HTTPAuthType] = []
-        self._auth_blueprints: Dict[str, Dict[str, Any]] = {}
-        self._collect_auth_info()
+        auth_names: List[str] = []
+        auth_schemes: List[HTTPAuthType] = []
+        auth_blueprints: Dict[str, Dict[str, Any]] = {}
+
+        def _update_auth_info(auth: HTTPAuthType) -> None:
+            # update auth_schemes and auth_names
+            auth_schemes.append(auth)
+            auth_name: str = get_auth_name(auth, auth_names)
+            auth_names.append(auth_name)
+
+        # detect auth_required on before_request functions
+        for blueprint_name, funcs in self.before_request_funcs.items():
+            if not self.blueprints[blueprint_name].enable_openapi:
+                continue
+            for f in funcs:
+                if hasattr(f, '_spec'):  # pragma: no cover
+                    auth = f._spec.get('auth')  # type: ignore
+                    if auth is not None and auth not in auth_schemes:
+                        auth_blueprints[blueprint_name] = {  # type: ignore
+                            'auth': auth,
+                            'roles': f._spec.get('roles')  # type: ignore
+                        }
+                        _update_auth_info(auth)
+        # collect auth info
+        for rule in self.url_map.iter_rules():
+            view_func = self.view_functions[rule.endpoint]
+            if hasattr(view_func, '_spec'):
+                auth = view_func._spec.get('auth')
+                if auth is not None and auth not in auth_schemes:
+                    _update_auth_info(auth)
+            # method views
+            if hasattr(view_func, '_method_spec'):
+                for method_spec in view_func._method_spec.values():
+                    auth = method_spec.get('auth')
+                    if auth is not None and auth not in auth_schemes:
+                        _update_auth_info(auth)
+
         security, security_schemes = get_security_and_security_schemes(
-            self._auth_names, self._auth_schemes
+            auth_names, auth_schemes
         )
         for name, scheme in security_schemes.items():
             spec.components.security_scheme(name, scheme)
@@ -616,7 +610,7 @@ class APIFlask(Flask):
             if rule.endpoint.startswith('openapi') or \
                rule.endpoint.startswith('static'):
                 continue
-            blueprint_name: Optional[str] = None
+            blueprint_name: Optional[str] = None  # type: ignore
             if '.' in rule.endpoint:
                 blueprint_name = rule.endpoint.split('.', 1)[0]
                 if not self.blueprints[blueprint_name].enable_openapi:
@@ -750,7 +744,7 @@ class APIFlask(Flask):
                 # add authentication error response
                 if self.config['AUTO_AUTH_ERROR_RESPONSE'] and \
                    (view_func._spec.get('auth') or (
-                       blueprint_name is not None and blueprint_name in self._auth_blueprints
+                       blueprint_name is not None and blueprint_name in auth_blueprints
                    )):
                     status_code: str = str(  # type: ignore
                         self.config['AUTH_ERROR_STATUS_CODE']
@@ -802,10 +796,10 @@ class APIFlask(Flask):
                             'application/json']['examples'] = examples
 
                 # security
-                if blueprint_name is not None and blueprint_name in self._auth_blueprints:
+                if blueprint_name is not None and blueprint_name in auth_blueprints:
                     operation['security'] = [{
-                        security[self._auth_blueprints[blueprint_name]['auth']]:
-                            self._auth_blueprints[blueprint_name]['roles']
+                        security[auth_blueprints[blueprint_name]['auth']]:
+                            auth_blueprints[blueprint_name]['roles']
                     }]
 
                 if view_func._spec.get('auth'):
