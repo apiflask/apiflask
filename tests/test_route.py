@@ -142,7 +142,7 @@ def test_class_attribute_decorators(app, client):
 def test_overwrite_class_attribute_decorators(app, client):
     @app.route('/')
     class Foo(MethodView):
-        decorators = [doc(deprecated=True)]
+        decorators = [doc(deprecated=True, tag='foo')]
 
         def get(self):
             pass
@@ -151,8 +151,15 @@ def test_overwrite_class_attribute_decorators(app, client):
         def post(self):
             pass
 
+        @doc(tag='bar')
+        def delete(self):
+            pass
+
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/']['get']['deprecated']
+    assert rv.json['paths']['/']['get']['tags'] == ['foo']
+    assert rv.json['paths']['/']['post']['tags'] == ['foo']
+    assert rv.json['paths']['/']['delete']['tags'] == ['bar']
     assert 'deprecated' not in rv.json['paths']['/']['post']
