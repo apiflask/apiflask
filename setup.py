@@ -48,6 +48,7 @@ setuptools.setup(
     extras_require={
         'dotenv': ['python-dotenv'],
         'yaml': ['pyyaml'],
+        'async': ['asgiref>=3.2'],
     },
     classifiers=[
         'Development Status :: 3 - Alpha',
