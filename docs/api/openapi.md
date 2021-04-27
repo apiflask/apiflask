@@ -1,0 +1,3 @@
+# OpenAPI
+
+::: apiflask.openapi

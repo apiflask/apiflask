@@ -2,8 +2,8 @@ from typing import Any
 
 from flask.views import MethodViewType
 
-from .openapi import get_summary_from_view_func
-from .openapi import get_description_from_view_func
+from .openapi import get_path_summary
+from .openapi import get_path_description
 
 
 def route_patch(cls):
@@ -11,9 +11,9 @@ def route_patch(cls):
 
     *Version Added: 0.5.0*
     """
-    def route(self, rule, **options):
+    def route(self, rule: str, **options):
         def decorator(f):
-            endpoint = options.pop('endpoint', f.__name__.lower())
+            endpoint: str = options.pop('endpoint', f.__name__.lower())
             if isinstance(f, MethodViewType):
                 # MethodView class
                 if 'methods' in options:
@@ -40,12 +40,12 @@ def route_patch(cls):
                             if not hasattr(method, '_spec'):
                                 method._spec = {'no_spec': True}
                         if not method._spec.get('summary'):
-                            method._spec['summary'] = get_summary_from_view_func(
+                            method._spec['summary'] = get_path_summary(
                                 method, f'{method_name.title()} {f.__name__}'
                             )
                             method._spec['generated_summary'] = True
                         if not method._spec.get('description'):
-                            method._spec['description'] = get_description_from_view_func(method)
+                            method._spec['description'] = get_path_description(method)
                             method._spec['generated_description'] = True
                         view_func._method_spec[method_name] = method._spec
             else:
