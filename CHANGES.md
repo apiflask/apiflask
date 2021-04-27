@@ -12,10 +12,12 @@ or check the current installed version first:
 $ pip show apiflask
 ```
 
-## Version 0.5.0
-Released: -
+## Version 0.6.0
 
-0.5.0 plan: <https://github.com/greyli/apiflask/issues/25>
+0.6.0 plan: <https://github.com/greyli/apiflask/issues/31>
+
+## Version 0.5.0
+Released: 2021/4/27
 
 - Remove the support to generate `info.description` and tag description from module
 docstring, and also remove the `AUTO_DESCRIPTION` config ([pull #30][pull_30]).
