@@ -1,4 +1,10 @@
 # flake8: noqa
+# temp fix for https://github.com/django/asgiref/issues/143
+import sys
+if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):
+    import asyncio
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 from . import fields
 from . import validators
 from .app import APIFlask
