@@ -16,11 +16,6 @@ def route_patch(cls):
             endpoint: str = options.pop('endpoint', f.__name__)
             if isinstance(f, MethodViewType):
                 # MethodView class
-                if 'methods' in options:
-                    raise RuntimeError(
-                        'Use the "route" decorator without passing the "methods" '
-                        'argument for "MethodView" classes.'
-                    )
                 view_func = f.as_view(endpoint)
                 if self.enable_openapi:
                     view_func._method_spec = {}
@@ -94,7 +89,7 @@ def route_shortcuts(cls):
             if isinstance(f, MethodViewType):
                 raise RuntimeError(
                         'The route shortcuts cannot be used with "MethodView" classes, '
-                        'use "route" decorator instead.'
+                        'use the "route" decorator instead.'
                     )
             return cls_route(self, rule, methods=[method], **options)(f)
         return decorator
