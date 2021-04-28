@@ -13,7 +13,7 @@ def route_patch(cls):
     """
     def route(self, rule: str, **options):
         def decorator(f):
-            endpoint: str = options.pop('endpoint', f.__name__.lower())
+            endpoint: str = options.pop('endpoint', f.__name__)
             if isinstance(f, MethodViewType):
                 # MethodView class
                 if 'methods' in options:

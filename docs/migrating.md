@@ -79,7 +79,7 @@ from flask.views import MethodView
 
 # ...
 
-@app.route('/pets/<int:pet_id>')
+@app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 
     decorators = [doc(responses=[404])]
@@ -103,16 +103,16 @@ class Pet(MethodView):
         pass
 ```
 
-However, the view class should registered with the `route` decorator without the
-`methods` argument:
+Beware that the view class should be registered with the `route` decorator instead of
+the `add_ul_rule()` method:
 
 ```python hl_line="1"
-@app.route('/pets/<int:pet_id>')
+@app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 ```
 
 !!! tips
-    The `endpoint` of the view class defaults to the lower case of the class name.
+    If the `endpoint` argument isn't provided, the class name will be used as endpoint.
 
 ## Other behavior change and notes
 
