@@ -16,6 +16,11 @@ $ pip show apiflask
 
 0.6.0 plan: <https://github.com/greyli/apiflask/issues/31>
 
+## Version 0.5.1
+Released: 2021/4/28
+
+- Change the default endpoint of the view class to the original class name (not lowercase).
+
 ## Version 0.5.0
 Released: 2021/4/27
 

@@ -100,12 +100,6 @@ def test_bad_route_decorator_usages(app):
             pass
 
     with pytest.raises(RuntimeError):
-        @app.route('/bar', methods=['GET', 'POST'])
-        class Bar(MethodView):
-            def get(self):
-                pass
-
-    with pytest.raises(RuntimeError):
         @app.get('/baz')
         class Baz(MethodView):
             def get(self):

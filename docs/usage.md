@@ -608,7 +608,7 @@ def create_pet(data)
     to use a non-200 status code. If there is a mismatch, the `status_code`
     passed in `@output` will be used in OpenAPI spec, while the actual response
     will use the status code you returned in the end of the view function.
- 
+
 ## Use `@doc` to set up OpenAPI Spec
 
 The `@doc` decorator can be used to set up the OpenAPI Spec for view functions:
@@ -709,7 +709,7 @@ from apiflask import APIFlask
 app = APIFlask(__name__)
 
 
-@app.route('/pets/<int:pet_id>')
+@app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 
     def get(self, pet_id):
@@ -724,30 +724,32 @@ When creating a view class, it need to inherit from `MethodView` class:
 ```python hl_lines="1 4"
 from flask.views import MethodView
 
-@app.route('/pets/<int:pet_id>')
+@app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
     # ...
 ```
 
-The class should be decorated with `route` decorator:
+The class should be decorated with the `route` decorator:
 
 ```python hl_lines="1"
-@app.route('/pets/<int:pet_id>')
+@app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
     # ...
 ```
 
 !!! tips
-    The `endpoint` of the view class defaults to the lower case of the class name.
+    If the `endpoint` argument isn't provided, the class name will be used as
+    endpoint. You don't need to pass a `methods` argument, since Flask will handle
+    it for you.
 
 !!! warning
-    You don't need to pass a `methods` argument, Flask will handle it for you. Besides, you should
-    use `app.route` to register a view class instead of using `app.add_url_rule` method.
+    You should use `app.route` to register a view class instead of using
+    `app.add_url_rule` method.
 
 Now, you can define view methods for each HTTP method, use the (HTTP) method name as method name:
 
 ```python hl_lines="4 7 10 13 16"
-@app.route('/pets/<int:pet_id>')
+@app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 
     def get(self, pet_id):  # triggered by GET request
@@ -772,7 +774,7 @@ the `get()` method of the `Pet` class will be called, and so on for the others.
 When you use decorators like `@input`, `@output`, be sure to use it on method instead of class:
 
 ```python hl_lines="4 5 9 10 11 15 16"
-@app.route('/pets/<int:pet_id>')
+@app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 
     @output(PetOutSchema)
@@ -796,7 +798,7 @@ If you want to apply a decorator for all methods, instead of repeat yourself, yo
 pass the decorator to the class attriabute `decorators`, it accepts a list of decorators:
 
 ```python hl_lines="4"
-@app.route('/pets/<int:pet_id>')
+@app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 
     decorators = [auth_required(auth), doc(responses=[404])]
