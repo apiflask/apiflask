@@ -16,10 +16,14 @@ $ pip show apiflask
 
 0.6.0 plan: <https://github.com/greyli/apiflask/issues/31>
 
+- Allow to return a `Response` object in a view function decorated with `output`. In
+this case, APIFlask will do nothing but return it directly.
+
 ## Version 0.5.1
 Released: 2021/4/28
 
 - Change the default endpoint of the view class to the original class name (not lowercase).
+- Allow to pass the `methods` arugment for the `route` decorator on view classes.
 
 ## Version 0.5.0
 Released: 2021/4/27
