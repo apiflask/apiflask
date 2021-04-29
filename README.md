@@ -112,7 +112,7 @@ def update_pet(pet_id, data):
 ```
 
 <details>
-<summary>Click to see the same example with <strong>class-based views</strong>.</summary>
+<summary>Click to see the same example with <strong>class-based views</strong></summary>
 
 ```python
 from apiflask import APIFlask, Schema, input, output, abort
@@ -176,10 +176,33 @@ class Pet(MethodView):
 ```
 </details>
 
-Save the file as `app.py`, then run it with:
+<details>
+<summary>You can use <strong>async def</strong> from Flask 2.0</summary>
+
+Flask 2.0 have the basic support for <code>async</code> and <code>await</code>, check it out with Flask 2.0.0rc:
 
 ```bash
-$ flask run
+$ pip install --pre flask[async]
+```
+
+```python
+from apiflask import APIFlask
+
+app = APIFlask(__name__)
+
+@app.get('/')
+async def say_hello():
+    return {'message': 'Hello!'}
+```
+
+See <em><a href="https://flask.palletsprojects.com/en/master/async-await/">Using async and await</a></em> to learn the details of the async support in Flask 2.0.
+
+</details>
+
+Save this as `app.py`, then run it with :
+
+```bash
+$ flask run --reload
 ```
 
 Now visit the interactive API documentation (Swagger UI) at <http://localhost:5000/docs>:
