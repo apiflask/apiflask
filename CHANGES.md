@@ -16,14 +16,24 @@ $ pip show apiflask
 
 0.6.0 plan: <https://github.com/greyli/apiflask/issues/31>
 
-- Allow to return a `Response` object in a view function decorated with `output`. In
-this case, APIFlask will do nothing but return it directly.
+## Version 0.5.2
+Released: 2021/4/29
+
+- Allow returning a `Response` object in a view function decorated with `output`. In
+this case, APIFlask will do nothing but return it directly ([pull #38][pull_38]).
+- Skip Flask's `Bluerpint` object when generating the OpenAPI spec ([pull #37][pull_37]).
+
+[pull_38]: https://github.com/greyli/apiflask/pull/38
+[pull_37]: https://github.com/greyli/apiflask/pull/37
 
 ## Version 0.5.1
 Released: 2021/4/28
 
-- Change the default endpoint of the view class to the original class name (not lowercase).
-- Allow to pass the `methods` arugment for the `route` decorator on view classes.
+- Change the default endpoint of the view class to the original class name
+([pull #36][pull_36]).
+- Allow passing the `methods` arugment for the `route` decorator on view classes.
+
+[pull_36]: https://github.com/greyli/apiflask/pull/36
 
 ## Version 0.5.0
 Released: 2021/4/27

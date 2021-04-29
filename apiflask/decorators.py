@@ -262,6 +262,10 @@ def output(
             }
             ```
 
+    *Version changed: 0.5.2*
+
+    - Return the `Response` object directly.
+
     *Version changed: 0.4.0*
 
     - Add parameter `examples`.
