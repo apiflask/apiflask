@@ -295,9 +295,8 @@ def output(
         @wraps(f)
         def _response(*args: Any, **kwargs: Any) -> ResponseType:
             rv = f(*args, **kwargs)
-            if isinstance(rv, Response):  # pragma: no cover
-                raise RuntimeError(
-                    'The @output decorator cannot handle Response objects.')
+            if isinstance(rv, Response):
+                return rv
             if not isinstance(rv, tuple):
                 return _jsonify(rv), status_code
             json = _jsonify(rv[0])

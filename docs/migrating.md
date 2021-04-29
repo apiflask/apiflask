@@ -211,12 +211,10 @@ def bar():
 
 ### The return values of view function
 
-When you added a `@output` decorator for your view function, notice the
-following rules:
-
-- Do not return a `Response` object. You should return a ORM/ODM model object or
-a dict that matches the schema you passed in the `@output` decorator.
-- You can also return a two-element tuple in the form of `(body, headers)`.
+When you added a `@output` decorator for your view function, APIFlask expects you to
+return an ORM/ODM model object or a dict that matches the schema you passed in the
+`@output` decorator. If you return a `Response` object, APIFlask will return it
+directly without any process.
 
 ## Next step
 

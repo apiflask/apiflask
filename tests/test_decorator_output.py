@@ -1,3 +1,4 @@
+from flask import make_response
 from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
@@ -226,3 +227,14 @@ def test_output_with_empty_dict_as_schema(app, client):
     assert rv.status_code == 204
     rv = client.delete('/bar')
     assert rv.status_code == 204
+
+
+def test_output_response_object_directly(app, client):
+    @app.get('/foo')
+    @output(FooSchema)
+    def foo():
+        return make_response({'message': 'hello'})
+
+    rv = client.get('/foo')
+    assert rv.status_code == 200
+    assert rv.json['message'] == 'hello'
