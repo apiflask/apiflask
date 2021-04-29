@@ -19,9 +19,10 @@ $ pip show apiflask
 ## Version 0.5.2
 Released: 2021/4/29
 
-- Allow returning a `Response` object in a view function decorated with `output`. In
-this case, APIFlask will do nothing but return it directly ([pull #38][pull_38]).
-- Skip Flask's `Bluerpint` object when generating the OpenAPI spec ([pull #37][pull_37]).
+- Allow returning a `Response` object in a view function decorated with the `output`
+decorator. In this case, APIFlask will do nothing but return it directly
+([pull #38][pull_38]).
+- Skip Flask's `Blueprint` object when generating the OpenAPI spec ([pull #37][pull_37]).
 
 [pull_38]: https://github.com/greyli/apiflask/pull/38
 [pull_37]: https://github.com/greyli/apiflask/pull/37
