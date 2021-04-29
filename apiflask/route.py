@@ -17,7 +17,7 @@ def route_patch(cls):
             if isinstance(f, MethodViewType):
                 # MethodView class
                 view_func = f.as_view(endpoint)
-                if self.enable_openapi:
+                if hasattr(self, 'enable_openapi') and self.enable_openapi:
                     view_func._method_spec = {}
                     if not hasattr(view_func, '_spec'):
                         view_func._spec = {}

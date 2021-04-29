@@ -519,7 +519,9 @@ class APIFlask(Flask):
             if self.config['AUTO_TAGS']:
                 # auto-generate tags from blueprints
                 for blueprint_name, blueprint in self.blueprints.items():
-                    if blueprint_name == 'openapi' or not blueprint.enable_openapi:
+                    if blueprint_name == 'openapi' or \
+                       not hasattr(blueprint, 'enable_openapi') or \
+                       not blueprint.enable_openapi:
                         continue
                     tag: Dict[str, Any] = get_tag(blueprint, blueprint_name)
                     tags.append(tag)  # type: ignore
@@ -614,7 +616,8 @@ class APIFlask(Flask):
             blueprint_name: Optional[str] = None  # type: ignore
             if '.' in rule.endpoint:
                 blueprint_name = rule.endpoint.split('.', 1)[0]
-                if not self.blueprints[blueprint_name].enable_openapi:
+                if not hasattr(self.blueprints[blueprint_name], 'enable_openapi') or \
+                   not self.blueprints[blueprint_name].enable_openapi:
                     continue
             # add a default 200 response for bare views
             if not hasattr(view_func, '_spec'):

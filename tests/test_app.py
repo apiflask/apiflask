@@ -1,6 +1,9 @@
+from openapi_spec_validator import validate_spec
 from flask.views import MethodView
+from flask import Blueprint
 
 from apiflask import APIFlask
+from apiflask import APIBlueprint
 from apiflask import input
 from apiflask import Schema
 from apiflask.fields import Integer
@@ -106,3 +109,38 @@ def test_error_callback(app, client):
     assert rv.status_code == 200
     assert 'message' in rv.json
     assert rv.json['message'] == 'something was wrong'
+
+
+def test_skip_raw_blueprint(app, client):
+    raw_bp = Blueprint('raw', __name__)
+    api_bp = APIBlueprint('api', __name__, tag='test')
+
+    @raw_bp.route('/foo')
+    def foo():
+        pass
+
+    @raw_bp.route('/bar')
+    class Bar(MethodView):
+        def get(self):
+            pass
+
+    @api_bp.get('/baz')
+    def baz():
+        pass
+
+    @api_bp.route('/spam')
+    class Spam(MethodView):
+        def get(self):
+            pass
+
+    app.register_blueprint(raw_bp)
+    app.register_blueprint(api_bp)
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['tags'] == [{'name': 'test'}]
+    assert '/foo' not in rv.json['paths']
+    assert '/bar' not in rv.json['paths']
+    assert '/baz' in rv.json['paths']
+    assert '/spam' in rv.json['paths']
