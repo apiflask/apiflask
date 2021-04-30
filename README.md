@@ -176,29 +176,6 @@ class Pet(MethodView):
 ```
 </details>
 
-<details>
-<summary>You can use <strong>async def</strong> from Flask 2.0</summary>
-
-Flask 2.0 have the basic support for <code>async</code> and <code>await</code>, check it out with Flask 2.0.0rc:
-
-```bash
-$ pip install --pre flask[async]
-```
-
-```python
-from apiflask import APIFlask
-
-app = APIFlask(__name__)
-
-@app.get('/')
-async def say_hello():
-    return {'message': 'Hello!'}
-```
-
-See <em><a href="https://flask.palletsprojects.com/en/master/async-await/">Using async and await</a></em> to learn the details of the async support in Flask 2.0.
-
-</details>
-
 Save this as `app.py`, then run it with :
 
 ```bash
