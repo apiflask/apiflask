@@ -12,7 +12,7 @@ pets = [
         'category': 'cat'
     },
     {
-        'id': "100",
+        'id': 1,
         'name': 'Coco',
         'category': 'dog'
     },
