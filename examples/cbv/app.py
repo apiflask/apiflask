@@ -51,15 +51,6 @@ class Pet(MethodView):
             abort(404)
         return pets[pet_id]
 
-    @input(PetInSchema)
-    @output(PetOutSchema)
-    def put(self, pet_id, data):
-        if pet_id > len(pets) - 1:
-            abort(404)
-        data['id'] = pet_id
-        pets[pet_id] = data
-        return pets[pet_id]
-
     @input(PetInSchema(partial=True))
     @output(PetOutSchema)
     def patch(self, pet_id, data):

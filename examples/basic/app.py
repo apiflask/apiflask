@@ -63,21 +63,10 @@ def create_pet(data):
     return pets[pet_id]
 
 
-@app.put('/pets/<int:pet_id>')
-@input(PetInSchema)
-@output(PetOutSchema)
-def update_pet(pet_id, data):
-    if pet_id > len(pets) - 1:
-        abort(404)
-    data['id'] = pet_id
-    pets[pet_id] = data
-    return pets[pet_id]
-
-
 @app.patch('/pets/<int:pet_id>')
 @input(PetInSchema(partial=True))
 @output(PetOutSchema)
-def partial_update_pet(pet_id, data):
+def update_pet(pet_id, data):
     if pet_id > len(pets) - 1:
         abort(404)
     for attr, value in data.items():

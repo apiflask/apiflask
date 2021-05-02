@@ -99,15 +99,15 @@ def get_pet(pet_id):
     return pets[pet_id]
 
 
-@app.put('/pets/<int:pet_id>')
-@input(PetInSchema)
+@app.patch('/pets/<int:pet_id>')
+@input(PetInSchema(partial=True))
 @output(PetOutSchema)
 def update_pet(pet_id, data):
     # the parsed input data (dict) will be injected into the view function
     if pet_id > len(pets) - 1:
         abort(404)
-    data['id'] = pet_id
-    pets[pet_id] = data
+    for attr, value in data.items():
+        pets[pet_id][attr] = value
     return pets[pet_id]
 ```
 
@@ -165,13 +165,13 @@ class Pet(MethodView):
             abort(404)
         return pets[pet_id]
 
-    @input(PetInSchema)
+    @input(PetInSchema(partial=True))
     @output(PetOutSchema)
-    def put(self, pet_id, data):
+    def patch(self, pet_id, data):
         if pet_id > len(pets) - 1:
             abort(404)
-        data['id'] = pet_id
-        pets[pet_id] = data
+        for attr, value in data.items():
+            pets[pet_id][attr] = value
         return pets[pet_id]
 ```
 </details>
