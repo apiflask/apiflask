@@ -2,6 +2,7 @@
 
 - Basic example: <https://github.com/greyli/apiflask/tree/master/examples/basic/app.py>
 - Class-based view example: <https://github.com/greyli/apiflask/tree/master/examples/cbv/app.py>
+- ORM example (with Flask-SQLAlchemy): <https://github.com/greyli/apiflask/tree/master/examples/orm/app.py>
 
 There will be more examples to be added here, if you have made your own, just submit a pull request to add the source link here.
 
@@ -37,12 +38,19 @@ Each example application store in a sub-folder:
 
 - `/basic`: Basic example
 - `/cbv`: Classed-based view example
+- `/orm`: ORM example (with Flask-SQLAlchemy)
 
 To run a specific example, you have to change into the corresponding folder.
 For example, if you want to run the basic example, just do:
 
 ```bash
 $ cd basic
+```
+
+if you want to run the ORM example, you will need to install `Flask-SQLAlchemy`:
+
+```bash
+$ pip install flask-sqlalchemy
 ```
 
 ### Run, Flask, Run!
