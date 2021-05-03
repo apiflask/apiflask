@@ -19,7 +19,7 @@ $ git clone https://github.com/greyli/apiflask
 $ cd apiflask/examples
 $ python3 -m venv venv
 $ source venv/bin/activate
-$ pip3 install apiflask
+$ pip3 install -r requirements.txt
 ```
 
 For Windows:
@@ -29,7 +29,7 @@ For Windows:
 > cd apiflask\examples
 > python -m venv venv
 > venv\Scripts\activate
-> pip install apiflask
+> pip install -r requirements.txt
 ```
 
 ### Choose the application
@@ -45,12 +45,6 @@ For example, if you want to run the basic example, just do:
 
 ```bash
 $ cd basic
-```
-
-if you want to run the ORM example, you will need to install `Flask-SQLAlchemy`:
-
-```bash
-$ pip install flask-sqlalchemy
 ```
 
 ### Run, Flask, Run!
