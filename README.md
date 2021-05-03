@@ -161,6 +161,7 @@ class Pet(MethodView):
 
     @output(PetOutSchema)
     def get(self, pet_id):
+        """Get a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
         return pets[pet_id]
@@ -168,6 +169,7 @@ class Pet(MethodView):
     @input(PetInSchema(partial=True))
     @output(PetOutSchema)
     def patch(self, pet_id, data):
+        """Update a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
         for attr, value in data.items():

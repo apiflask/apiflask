@@ -47,6 +47,7 @@ class Pet(MethodView):
 
     @output(PetOutSchema)
     def get(self, pet_id):
+        """Get a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
         return pets[pet_id]
@@ -54,6 +55,7 @@ class Pet(MethodView):
     @input(PetInSchema(partial=True))
     @output(PetOutSchema)
     def patch(self, pet_id, data):
+        """Update a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
         for attr, value in data.items():
@@ -62,6 +64,7 @@ class Pet(MethodView):
 
     @output({}, 204)
     def delete(self, pet_id):
+        """Delete a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
         pets.pop(pet_id)
@@ -73,11 +76,13 @@ class Pets(MethodView):
 
     @output(PetOutSchema(many=True))
     def get(self):
+        """Get all pets"""
         return pets
 
     @input(PetInSchema)
     @output(PetOutSchema, 201)
     def post(self, data):
+        """Create a pet"""
         pet_id = len(pets)
         data['id'] = pet_id
         pets.append(data)
