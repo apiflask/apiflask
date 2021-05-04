@@ -96,6 +96,7 @@ def get_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)
     # you can also return an ORM/ODM model class instance directly
+    # APIFlask will serialize the object into JSON format
     return pets[pet_id]
 
 
@@ -103,7 +104,8 @@ def get_pet(pet_id):
 @input(PetInSchema(partial=True))
 @output(PetOutSchema)
 def update_pet(pet_id, data):
-    # the parsed input data (dict) will be injected into the view function
+    # the validated and parsed input data will
+    # be injected into the view function as a dict
     if pet_id > len(pets) - 1:
         abort(404)
     for attr, value in data.items():
