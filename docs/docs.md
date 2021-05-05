@@ -38,13 +38,13 @@ I will try to cover all the basic usages in APIFlask's documentation. However, f
 usages, you may need to read the documentation of the framework, tools that APIFlask based
 on:
 
-- **[Flask](https://flask.palletsprojects.com)**: The knowledge of Flask is required.
-- **[Marshmallow](https://marshmallow.readthedocs.io/)**: Advanced reference for schema.
-- **[Flask-HTTPAuth](https://flask-httpauth.readthedocs.io/)**: Advanced reference for
+- **[Flask](https://flask.palletsprojects.com){target=_blank}**: The knowledge of Flask is required.
+- **[Marshmallow](https://marshmallow.readthedocs.io/){target=_blank}**: Advanced reference for schema.
+- **[Flask-HTTPAuth](https://flask-httpauth.readthedocs.io/){target=_blank}**: Advanced reference for
 the usage of `HTTPBasicAuth` and `HTTPTokenAuth`.
-- **[Webargs](https://webargs.readthedocs.io/)**: Useful for contributors.
-- **[APISpec](https://apispec.readthedocs.io/)**: Useful for contributors.
-- **[OpenAPI](https://github.com/OAI/OpenAPI-Specification/tree/main/versions)**:
+- **[Webargs](https://webargs.readthedocs.io/){target=_blank}**: Useful for contributors.
+- **[APISpec](https://apispec.readthedocs.io/){target=_blank}**: Useful for contributors.
+- **[OpenAPI](https://github.com/OAI/OpenAPI-Specification/tree/main/versions){target=_blank}**:
 The OpenAPI Specification.
-- **[JSON Schema](https://json-schema.org/)**: Useful when you want to set a custom
+- **[JSON Schema](https://json-schema.org/){target=_blank}**: Useful when you want to set a custom
 error schema and you don't want to use schema class.
