@@ -32,6 +32,7 @@ to learn Flask:
     ```
 
 !!! tip "Python dependency management tools"
+
     The command above use [pip][_pip]{target=_blank} to install APIFlask, you can also use
     other dependencies management tools such as [Poetry][_poetry]{target=_blank},
     [Pipenv][_pipenv]{target=_blank}, [PDM][_pdm]{target=_blank}, etc.
@@ -158,6 +159,7 @@ $ flask run --reload
 ```
 
 !!! tip
+
     Install `watchdog` for a better performance for the application reloader:
 
     === "Linux/macOS"
@@ -245,6 +247,7 @@ FOO_APP_KEY=some-app-key
 ```
 
 !!! warning
+
     Since the `.env` contains sensitive information, do not commit it into the
     Git history. Be sure to ignore it by adding the file name into `.gitignore`.
 
@@ -406,6 +409,7 @@ class PetInSchema(Schema):
 ```
 
 !!! tip
+
     See Schema and Fields chapter (WIP) for the details of how to write a schema and
     the examples for all the fields and validators.
 
@@ -451,6 +455,7 @@ class PetInSchema(Schema):
 ```
 
 !!! tip
+
     Notice we mark the field as a required field with the `required` parameter.
     If you want to set a default value for an input field when is missing in
     the input data, you can use the `missing` parameter:
@@ -535,6 +540,7 @@ argument for `@input()` decorator, the value can be:
 - Query string: `'query'` (same as `'querystring'`)
 
 !!! warning
+
     Be sure to put the `@input` decorator under the routes decorators
     (i.e. `app.route`, `app.get`, `app.post`, etc.).
 
@@ -557,6 +563,7 @@ Since APIFlask will not validate the output data, we only need to list all the f
 schema.
 
 !!! tip
+
     You can set a default value for output field with `default` argument:
 
     ```python
@@ -644,6 +651,7 @@ def delete_pet(pet_id):
     ```
 
 !!! warning
+
     Be sure to put the `@output` decorator under the routes decorators
     (i.e. `app.route`, `app.get`, `app.post`, etc.).
 
@@ -781,10 +789,12 @@ def hello():
 As default, APIFlask will use the name of the view function as the value of summary.
 If your view function is named with `get_pet`, then the summary will be "Get Pet".
 
-If the view function has docstring, then the first line of the docstring will be used as the
-summary, the lines after the empty line of the docstring will be used as the description.
+If the view function has docstring, then the first line of the docstring will be used
+as the summary, the lines after the empty line of the docstring will be used as
+the description.
 
 !!! note "The precedence of summary setting"
+
     ```
     @doc(summary='blah') > the first line of docstring > the view function name
     ```
@@ -817,6 +827,7 @@ Here are the other arguments for the `@doc` argument:
 - `hide`: Hide this endpoint in API docs. Defaults to `False`.
 
 !!! warning
+
     Be sure to put the `@doc` decorator under the routes decorators
     (i.e. `app.route`, `app.get`, `app.post`, etc.).
 
@@ -842,6 +853,7 @@ See [Flask-HTTPAuth's documentation][_flask-httpauth]{target=_blank} for more
 details (The chapter of authentication support will be added soon).
 
 !!! warning
+
     Be sure to put the `@auth_required` decorator under the routes decorators
     (i.e. `app.route`, `app.get`, `app.post`, etc.).
 
@@ -893,11 +905,13 @@ class Pet(MethodView):
 ```
 
 !!! tips
+
     If the `endpoint` argument isn't provided, the class name will be used as
     endpoint. You don't need to pass a `methods` argument, since Flask will handle
     it for you.
 
 !!! warning
+
     You should use `app.route` to register a view class instead of using
     `app.add_url_rule` method.
 
@@ -998,6 +1012,7 @@ def hello(name):
 ```
 
 !!! tip
+
     When `app.json_errors` is `True` (default), Flask's `abort` will also return
     JSON error response.
 
@@ -1026,6 +1041,7 @@ The `abort()` and `HTTPError` accept the following arguments:
 - `headers`: A dict of headers used in the error response.
 
 !!! warning
+
     The function `abort_json()` was renamed to `abort()` in
     the [version 0.4.0](/changelog/#version-040).
 
