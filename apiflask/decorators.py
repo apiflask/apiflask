@@ -69,7 +69,7 @@ def auth_required(
 ) -> Callable[[DecoratedType], DecoratedType]:
     """Protect a view with provided authentication settings.
 
-    > Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
+    > Be sure to put it under the routes decorators (i.e., `app.route`, `app.get`,
     `app.post`, etc.).
 
     Examples:
@@ -90,11 +90,12 @@ def auth_required(
         auth: The `auth` object, an instance of [`HTTPBasicAuth`][apiflask.security.HTTPBasicAuth]
             or [`HTTPTokenAuth`][apiflask.security.HTTPTokenAuth].
         role: The selected role to allow to visit this view, accepts a string.
-            See [Flask-HTTPAuth's documentation][role] for more details.
-            [role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
+            See [Flask-HTTPAuth's documentation][_role]{target:_blank} for more details.
+            [_role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
         roles: Similar to `role` but accepts a list of role names.
-        optional: To allow the view to execute even the authentication information
-            is not included with the request, in which case `auth.current_user` will be `None`.
+        optional: Set to `True` to allow the view to execute even the authentication
+            information is not included with the request, in which case the attribute
+            `auth.current_user` will be `None`.
 
     *Version changed: 0.4.0*
 
@@ -131,12 +132,12 @@ def input(
 ) -> Callable[[DecoratedType], DecoratedType]:
     """Add input settings for view functions.
 
-    > Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
+    > Be sure to put it under the routes decorators (i.e., `app.route`, `app.get`,
     `app.post`, etc.).
 
-    If the validation passed, the data will be inject to view
+    If the validation passed, the data will inject into view
     function as a positional argument in the form of `dict`. Otherwise,
-    an error response with the detail of validation result will be returned.
+    an error response with the detail of the validation result will be returned.
 
     Examples:
 
@@ -153,17 +154,18 @@ def input(
     ```
 
     Arguments:
-        schema: The Marshmallow schema used to validate the input data.
+        schema: The Marshmallow schema of the input data.
         location: The location of the input data, one of `'json'` (default),
             `'files'`, `'form'`, `'cookies'`, `'headers'`, `'query'`
             (same as `'querystring'`).
         schema_name: The schema name for dict schema, only needed when you pass
-            a `dict` schema (e.g. `{'name': String(required=True)}`) for `json`
+            a `dict` schema (e.g., `{'name': String(required=True)}`) for `json`
             location.
         example: The example data in dict for request body, you should use either
             `example` or `examples`, not both.
         examples: Multiple examples for request body, you should pass a dict
             that contains multiple examples. Example:
+
             ```python
             {
                 'example foo': {  # example name
@@ -175,6 +177,7 @@ def input(
                     'value': {'name': 'bar', 'id': 2}
                 },
             }
+            ```
 
     *Version changed: 0.4.0*
 
@@ -215,16 +218,16 @@ def output(
 ) -> Callable[[DecoratedType], DecoratedType]:
     """Add output settings for view functions.
 
-    > Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
+    > Be sure to put it under the routes decorators (i.e., `app.route`, `app.get`,
     `app.post`, etc.).
 
-    The decorator will formatting the return value of your view
-    function with provided Marshmallow schema. You can just return a
-    dict or an object (such as a Model instance of ORMs). APIFlask will
-    handle the formatting and turn your return value into a JSON response.
+    The decorator will format the return value of your view function with
+    provided Marshmallow schema. You can return a dict or an object (such
+    as a model class instance of ORMs). APIFlask will handle the formatting
+    and turn your return value into a JSON response.
 
-    P.S. The output data will not be validated, it's a design choice of Marshmallow.
-    This output validation may be supported in Marshmallow 4.0.
+    P.S. The output data will not be validated; it's a design choice of Marshmallow.
+    Marshmallow 4.0 may be support the output validation.
 
     Examples:
 
@@ -244,11 +247,12 @@ def output(
         status_code: The status code of the response, defaults to `200`.
         description: The description of the response.
         schema_name: The schema name for dict schema, only needed when you pass
-            a `dict` schema (e.g. `{'name': String()}`).
+            a `dict` schema (e.g., `{'name': String()}`).
         example: The example data in dict for response body, you should use either
             `example` or `examples`, not both.
         examples: Multiple examples for response body, you should pass a dict
             that contains multiple examples. Example:
+
             ```python
             {
                 'example foo': {  # example name
@@ -290,7 +294,7 @@ def output(
         })
 
         def _jsonify(obj, many=_sentinel, *args, **kwargs):  # pragma: no cover
-            """From Flask-Marshmallow, see NOTICE file for license informaiton."""
+            """From Flask-Marshmallow, see the NOTICE file for license informaiton."""
             if many is _sentinel:
                 many = schema.many
             data = schema.dump(obj, many=many)  # type: ignore
@@ -326,7 +330,7 @@ def doc(
 ) -> Callable[[DecoratedType], DecoratedType]:
     """Set up the OpenAPI Spec for view functions.
 
-    > Be sure to put it under the routes decorators (i.e. `app.route`, `app.get`,
+    > Be sure to put it under the routes decorators (i.e., `app.route`, `app.get`,
     `app.post`, etc.).
 
     Examples:
@@ -344,16 +348,19 @@ def doc(
 
     Arguments:
         summary: The summary of this endpoint. If not set, the name of the view function
-            will be used. If your view function named with `get_pet`, then the summary
-            will be "Get Pet". If the view function has docstring, then the first line of
-            the docstring will be used. The precedence will be:
+            will be used. If your view function is named with `get_pet`, then the summary
+            will be "Get Pet". If the view function has a docstring, then the first
+            line of the docstring will be used. The precedence will be:
+
             ```
             @doc(summary='blah') > the first line of docstring > the view function name
             ```
+
         description: The description of this endpoint. If not set, the lines after the empty
             line of the docstring will be used.
         tag: The tag name of this endpoint, map the tags you passed in the `app.tags`
-            attribute. If `app.tags` not set, the blueprint name will be used as tag name.
+            attribute. If `app.tags` is not set, the blueprint name will be used as
+            tag name.
         tags: Similar to `tag` but accepts a list of tag names.
         responses: The other responses for this view function, accepts a dict in a format
             of `{404: 'Not Found'}` or a list of status code (`[404, 418]`).
@@ -362,7 +369,7 @@ def doc(
 
     *Version changed: 0.5.0*
 
-    - Change the default value of parameter `hide` and `deprecated` from `False` to `None`.
+    - Change the default value of parameters `hide` and `deprecated` from `False` to `None`.
 
     *Version changed: 0.4.0*
 

@@ -36,7 +36,7 @@ def handle_auth_error(
 
 
 class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
-    """Flask-HTTPAuth's HTTPBasicAuth with some modificaiton.
+    """Flask-HTTPAuth's HTTPBasicAuth with some modifications.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.

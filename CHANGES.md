@@ -35,7 +35,7 @@ Released: 2021/4/27
 docstring, and also remove the `AUTO_DESCRIPTION` config ([pull #30][pull_30]).
 - Remove the configuration variable `DOCS_HIDE_BLUEPRINTS`, add `APIBlueprint.enable_openapi`
 as a replacement.
-- Support class-based views, now the `route` decorator can be used on `MethodView` class. Other decorators (i.e. `@input`, `@output`, etc.) can be used on view methods (i.e. `get()`, `post()`,
+- Support class-based views, now the `route` decorator can be used on `MethodView` class. Other decorators (i.e., `@input`, `@output`, etc.) can be used on view methods (i.e., `get()`, `post()`,
 etc.) ([pull #32][pull_32]).
 - No longer support to mix the use of `flask.Bluerpint` and `apiflask.APIBluerpint`.
 - Support to use the `auth_required` decorator on app-wide `before_request` functions

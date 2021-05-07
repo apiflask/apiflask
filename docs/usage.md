@@ -542,7 +542,7 @@ argument for `@input()` decorator, the value can be:
 !!! warning
 
     Be sure to put the `@input` decorator under the routes decorators
-    (i.e. `app.route`, `app.get`, `app.post`, etc.).
+    (i.e., `app.route`, `app.get`, `app.post`, etc.).
 
 
 ## Use `@output` to formatting response data
@@ -653,7 +653,7 @@ def delete_pet(pet_id):
 !!! warning
 
     Be sure to put the `@output` decorator under the routes decorators
-    (i.e. `app.route`, `app.get`, `app.post`, etc.).
+    (i.e., `app.route`, `app.get`, `app.post`, etc.).
 
 
 ## The return value of the view function
@@ -735,7 +735,7 @@ def create_pet(data)
 ```
 
 You don't need to return the same status code in the end of the view function
-(i.e. `return data, 201`):
+(i.e., `return data, 201`):
 
 ```python hl_lines="8"
 @app.post('/pets')
@@ -829,7 +829,7 @@ Here are the other arguments for the `@doc` argument:
 !!! warning
 
     Be sure to put the `@doc` decorator under the routes decorators
-    (i.e. `app.route`, `app.get`, `app.post`, etc.).
+    (i.e., `app.route`, `app.get`, `app.post`, etc.).
 
 
 ## Use `@auth_required` to protect your views
@@ -855,7 +855,7 @@ details (The chapter of authentication support will be added soon).
 !!! warning
 
     Be sure to put the `@auth_required` decorator under the routes decorators
-    (i.e. `app.route`, `app.get`, `app.post`, etc.).
+    (i.e., `app.route`, `app.get`, `app.post`, etc.).
 
 [_flask-httpauth]: https://flask-httpauth.readthedocs.io/
 

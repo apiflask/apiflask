@@ -1,5 +1,5 @@
 # flake8: noqa
-# Field aliases were skipped (e.g. Str, Int, Url, etc.)
+# Field aliases were skipped (e.g., Str, Int, Url, etc.)
 from flask_marshmallow.fields import AbsoluteURLFor
 from flask_marshmallow.fields import Hyperlinks
 from flask_marshmallow.fields import URLFor
