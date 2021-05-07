@@ -17,12 +17,14 @@ With APIFlask, you will have:
 - API authentication support (with [Flask-HTTPAuth](https://github.com/migulgrinberg/flask-httpauth))
 - Automatic JSON response for HTTP errors
 
-**Currently this project is in active development stage, bugs and breaking changes are expected. Welcome to leave any suggestions or feedbacks in [this issue](https://github.com/greyli/apiflask/issues/1) or just submit a pull request to improve it. Thank you!**
+**Currently, this project is in the active development stage; bugs and breaking changes are expected. Welcome to leave any suggestions or feedbacks in [this issue](https://github.com/greyli/apiflask/issues/1) or submit a pull request to improve it. Thank you!**
+
 
 ## Requirements
 
 - Python 3.7+
 - Flask 1.1.0+
+
 
 ## Installation
 
@@ -38,6 +40,7 @@ For Windows:
 > pip install apiflask
 ```
 
+
 ## Links
 
 - Website: <https://apiflask.com>
@@ -49,6 +52,7 @@ For Windows:
 - Discussion: <https://github.com/greyli/apiflask/discussions>
 - Twitter: <https://twitter.com/apiflask>
 - Donate on Open Collective: <https://opencollective.com/apiflask>
+
 
 ## Example
 
@@ -215,11 +219,12 @@ Or you can visit the alternative API documentation (Redoc) at <http://localhost:
 
 The auto-generated OpenAPI spec file is available at <http://localhost:5000/openapi.json>.
 
-For a more complete example, see [/examples](https://github.com/greyli/apiflask/tree/master/examples).
+For some complete examples, see [/examples](https://github.com/greyli/apiflask/tree/master/examples).
+
 
 ## Relationship with Flask
 
-APIFlask is a thin wrapper on top of Flask, you only need to remember four differences (see *[Migrating from Flask](https://apiflask.com/migrating/)* for more details):
+APIFlask is a thin wrapper on top of Flask. You only need to remember four differences (see *[Migrating from Flask](https://apiflask.com/migrating/)* for more details):
 
 - When creating an application instance, use `APIFlask` instead of `Flask`.
 - When creating a blueprint instance, use `APIBlueprint` instead of `Blueprint`.
@@ -253,4 +258,4 @@ def hello():
     return f'Hello, {escape(name)}'
 ```
 
-In a word, to make Web API development in Flask more easily, APIFlask provides `APIFlask` and `APIBlueprint` to extend Flask's `Flask` and `Blueprint` objects, and it also ships with some helpful utilities. Other than that, you are actually using Flask.
+In a word, to make Web API development in Flask more easily, APIFlask provides `APIFlask` and `APIBlueprint` to extend Flask's `Flask` and `Blueprint` objects and it also ships with some helpful utilities. Other than that, you are actually using Flask.

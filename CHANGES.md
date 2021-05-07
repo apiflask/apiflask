@@ -1,22 +1,10 @@
-# APIFlask Change Log
-
-Upgrade to the latest version:
-
-```
-$ pip install -U apiflask
-```
-
-or check the current installed version first:
-
-```
-$ pip show apiflask
-```
-
 ## Version 0.6.0
 
 0.6.0 plan: <https://github.com/greyli/apiflask/issues/31>
 
+
 ## Version 0.5.2
+
 Released: 2021/4/29
 
 - Allow returning a `Response` object in a view function decorated with the `output`
@@ -27,16 +15,20 @@ decorator. In this case, APIFlask will do nothing but return it directly
 [pull_38]: https://github.com/greyli/apiflask/pull/38
 [pull_37]: https://github.com/greyli/apiflask/pull/37
 
+
 ## Version 0.5.1
+
 Released: 2021/4/28
 
 - Change the default endpoint of the view class to the original class name
 ([pull #36][pull_36]).
-- Allow passing the `methods` arugment for the `route` decorator on view classes.
+- Allow passing the `methods` argument for the `route` decorator on view classes.
 
 [pull_36]: https://github.com/greyli/apiflask/pull/36
 
+
 ## Version 0.5.0
+
 Released: 2021/4/27
 
 - Remove the support to generate `info.description` and tag description from module
@@ -53,7 +45,9 @@ etc.) ([pull #32][pull_32]).
 [pull_32]: https://github.com/greyli/apiflask/pull/32
 [pull_34]: https://github.com/greyli/apiflask/pull/34
 
+
 ## Version 0.4.0
+
 Released: 2021/4/20
 
 - Merge the following configuration variables to `SUCCESS_DESCRIPTION` ([pull #7][pull_7]):
@@ -84,7 +78,9 @@ and `@iniput(examples=...)` ([pull #23][pull_23]).
 [pull_27]: https://github.com/greyli/apiflask/pull/27
 [pull_29]: https://github.com/greyli/apiflask/pull/29
 
+
 ## Version 0.3.0
+
 Released: 2021/3/31
 
 - First public version.
@@ -106,7 +102,9 @@ Released: 2021/3/31
 - Add basic docstrings to generate the API reference documentation ([commit](https://github.com/greyli/apiflask/commit/6d65a25ab4de9d623e22575d4d5476abdc50cbc0)).
 - Support to set custom example for request/response body ([commit](https://github.com/greyli/apiflask/commit/638fa9c5680944d6454a4dbafe8abb152525d91c)).
 
+
 ## Version 0.2.0
+
 Released: 2021-3-27
 
 - Fix various bugs.
@@ -172,7 +170,9 @@ Released: 2021-3-27
 - Add shortcuts for `app.route`: `app.get()`, `app.post()`, etc. ([commit](https://github.com/greyli/apiflask/commit/48bc1246628e53573c811def4a909be0faa9dcfb))
 - Not an extension any more ([commit](https://github.com/greyli/apiflask/commit/ecaec37544524deb8b2ce445d4a3cbf990ff95cb))
 
+
 ## Version 0.1.0
+
 Released: 2021-1-27
 
 - Add view functions without response schema into spec ([commit](https://github.com/greyli/apiflask/commit/aabf427590227001e0e443d8d6a3bf5f56dc5964))       

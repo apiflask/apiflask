@@ -77,7 +77,7 @@ def create_pet():
 
     This feature was added in the [version 0.5.0](/changelog/#version-050).
 
-APIFlask support to use `MethodView`-based view class, for example:
+APIFlask support to use the `MethodView`-based view class, for example:
 
 ```python
 from apiflask import APIFlask, Schema, input, output
@@ -132,7 +132,8 @@ APIFlask can't generate OpenAPI spec (and API documentation) for it.
 ### Import statements
 
 You only need to import `APIFlask`, `APIBlueprint`, and other utilities APIFlask
-provides from `apiflask` package. For others, you still import them from `flask` package:
+provides from the `apiflask` package. For others, you still import them from
+the `flask` package:
 
 ```python
 from apiflask import APIFlask, APIBlueprint

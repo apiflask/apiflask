@@ -866,8 +866,8 @@ details (The chapter of authentication support will be added soon).
 
     This feature was added in the [version 0.5.0](/changelog/#version-050).
 
-You can create a group of routes under the same URL rule with `MethodView` class. Here is
-a simple example:
+You can create a group of routes under the same URL rule with the `MethodView` class.
+Here is a simple example:
 
 ```python
 from flask.views import MethodView
@@ -1068,6 +1068,9 @@ In the end, let's unpack the whole `apiflask` package to check out what it shipp
 - `app.put()`: A decorator used to register a route that only accepts *PUT* request.
 - `app.patch()`: A decorator used to register a route that only accepts *PATCH* request.
 - `app.delete()`: A decorator used to register a route that only accepts *DELETE* request.
+- `app.route()`: A decorator used to register a route. It accepts a `methods`
+parameter to specify a list of accepted methods, default to *GET* only. It can also
+be used on the `MethodView`-based view class.
 
 You can learn the details of these APIs in the [API reference](/api/app), or you can
 continue to read the following chapters.
