@@ -69,8 +69,9 @@ class APIFlask(Flask):
         description: The description of the API (openapi.info.description).
             This attribute can also be configured from the config with the
             `DESCRIPTION` configuration key. Defaults to `None`.
-        tags: The tags of the OpenAPI spec documentation (openapi.tags), accepts a
-            list of dicts. You can also pass a simple list contains the tag name:
+        tags: The list of tags of the OpenAPI spec documentation (openapi.tags),
+            accepts a list of dicts. You can also pass a simple list contains the
+            tag name:
 
             ```python
             app.tags = ['foo', 'bar', 'baz']
@@ -209,25 +210,25 @@ class APIFlask(Flask):
         instance_relative_config: bool = False,
         root_path: Optional[str] = None
     ) -> None:
-        """Make a Flask app instance.
+        """Make an app instance.
 
         Arguments:
             import_name: The name of the application package, usually
                 `__name__`. This helps locate the `root_path` for the
                 application.
             title: The title of the API (openapi.info.title), defaults to "APIFlask".
-                You can change it to the name of your API (e.g. "Pet API").
+                You can change it to the name of your API (e.g., "Pet API").
             version: The version of the API (openapi.info.version), defaults to "0.1.0".
             spec_path: The path to OpenAPI Spec documentation. It
-                defaults to `/openapi.json`, if the path end with `.yaml`
+                defaults to `/openapi.json`, if the path ends with `.yaml`
                 or `.yml`, the YAML format of the OAS will be returned.
             docs_path: The path to Swagger UI documentation, defaults to `/docs`.
             docs_oauth2_redirect_path: The path to Swagger UI OAuth redirect.
             redoc_path: The path to Redoc documentation, defaults to `/redoc`.
-            json_errors: If True, APIFlask will return a JSON response for HTTP errors.
-            enable_openapi: If False, will disable OpenAPI spec and API docs views.
+            json_errors: If `True`, APIFlask will return a JSON response for HTTP errors.
+            enable_openapi: If `False`, will disable OpenAPI spec and API docs views.
 
-        Other keyword arguments are directly pass to `flask.Flask`.
+        Other keyword arguments are directly passed to `flask.Flask`.
         """
         super(APIFlask, self).__init__(
             import_name,
@@ -290,7 +291,7 @@ class APIFlask(Flask):
 
         With this overwrite, view arguments are passed as positional
         arguments so that the view function can intuitively accept the
-        parameters (i.e. from top to bottom, from left to right).
+        parameters (i.e., from top to bottom, from left to right).
 
         Examples:
 
@@ -302,7 +303,7 @@ class APIFlask(Flask):
             pass
         ```
 
-        From Flask, see NOTICE file for license informaiton.
+        From Flask, see the NOTICE file for license information.
 
         *Version added: 0.2.0*
         """
@@ -324,12 +325,14 @@ class APIFlask(Flask):
         self,
         f: ErrorCallbackType
     ) -> ErrorCallbackType:
-        """A decorator to register a error handler callback function.
+        """A decorator to register an error handler callback function.
 
-        The callback function will be called when validation error hanppend when
-        parse a request or an exception triggerd with exceptions.HTTPError or
-        :func:`exceptions.abort`. It must accept four positional arguments (i.e.
-        `status_code, message, detail, headers`) and return a valid response.
+        The callback function will be called when the validation error hanppend
+        when parsing a request or an exception triggered with
+        [`HTTPError`][apiflask.exceptions.HTTPError] or
+        [`abort`][apiflask.exceptions.abort]. It must accept four
+        positional arguments (i.e., `status_code, message, detail, headers`)
+        and return a valid response.
 
         Examples:
 
@@ -345,13 +348,16 @@ class APIFlask(Flask):
 
         The arguments are:
 
-        - status_code: If the error triggerd by validation error, the value will be
+        - status_code: If the error triggered by validation error, the value will be
             400 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
-            If the error triggerd by HTTP, it will be the status code you passed.
-            Otherwise, it will be the status code set by Werkzueg when processing the request.
-        - message: The error description for this error, either you passed or grab from Werkzeug.
-        - detail: The detail of the error, it will be filled when validation error happaned, the
-            structure will be:
+            If the error triggered by [`HTTPError`][apiflask.exceptions.HTTPError]
+            or [`abort`][apiflask.exceptions.abort], it will be the status code
+            you passed. Otherwise, it will be the status code set by Werkzueg when
+            processing the request.
+        - message: The error description for this error, either you passed or grab from
+            Werkzeug.
+        - detail: The detail of the error. When the validation error happened, it will
+            be filled automatically in the following structure:
 
             ```python
             "<location>": {
@@ -365,9 +371,10 @@ class APIFlask(Flask):
             ...
             ```
 
-            The value of `location` can be `json` (i.e. request body) or `query`
-            (i.e. query string) depend on the palace the validation error happened.
-        - headers: The value will be None unless you pass it in HTTPError or abort.
+            The value of `location` can be `json` (i.e., request body) or `query`
+            (i.e., query string) depend on the place where the validation error
+            happened.
+        - headers: The value will be `None` unless you pass it in HTTPError or abort.
 
         If you want, you can rewrite the whole response body to anything you like:
 
@@ -377,8 +384,9 @@ class APIFlask(Flask):
             return {'error_detail': detail}, status_code, headers
         ```
 
-        However, I would recommend to keep the `detail` since it contains the detail
-        information about the validation error.
+        However, I would recommend keeping the `detail` in the response since it contains
+        the detailed information about the validation error when the validation error
+        happened.
         """
         self.error_callback = f
         return f
@@ -457,8 +465,8 @@ class APIFlask(Flask):
         """A decorator to register a spec handler callback function.
 
         You can register a function to update the spec. The callback function
-        should accept the spec as argument and return it in the end. The callback
-        function will be called when generating the spec file.
+        should accept the spec as an argument and return it in the end. The
+        callback function will be called when generating the spec file.
 
         Examples:
 
@@ -472,7 +480,7 @@ class APIFlask(Flask):
         Notice the format of the spec is depends on the the value of configuration
         variable `SPEC_FORMAT` (defaults to `'json'`):
 
-        - `'json'` -> dictionary
+        - `'json'` -> dict
         - `'yaml'` -> string
         """
         self.spec_callback = f
@@ -497,7 +505,7 @@ class APIFlask(Flask):
         return name
 
     def _make_info(self) -> dict:
-        """Make OpenAPI info object"""
+        """Make OpenAPI info object."""
         info: dict = {}
         if self.contact:
             info['contact'] = self.contact
@@ -510,7 +518,7 @@ class APIFlask(Flask):
         return info
 
     def _make_tags(self) -> List[Dict[str, Any]]:
-        """Make OpenAPI tags object"""
+        """Make OpenAPI tags object."""
         tags: Optional[TagsType] = self.tags
         if tags is not None:
             # convert simple tags list into standard OpenAPI tags

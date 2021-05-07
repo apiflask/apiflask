@@ -9,7 +9,9 @@ additional extension object) and simple (more automation support for OpenAPI/API
 documentation) solution for creating web APIs with Flask. Here is a summary of the
 differences between APIFlask and similar projects.
 
+
 ## APIFlask vs APIFairy/flask-smorest
+
 
 ### It's a framework (and why?)
 
@@ -24,7 +26,7 @@ app = Flask(__name__)
 api = APIExtension(app)
 ```
 
-You only need to use `APIFlask` class to replace the `Flask` class:
+You only need to use the `APIFlask` class to replace the `Flask` class:
 
 ```python
 from apiflask import APIFlask
@@ -35,11 +37,12 @@ app = APIFlask(__name__)
 The key reasons behind making APIFlask a framework instead of a Flask
 extension is:
 
-- I have to rewrite the `Flask` class to ensure natural order of the arguments
+- I have to rewrite the `Flask` class to ensure the natural order of the arguments
 injected into the view function.
 - I have to rewrite the `Flask` and the `Blueprint` class to add route shortcuts.
 
 See the following two sections for more details.
+
 
 ### A natural order of view arguments
 
@@ -64,20 +67,18 @@ With APIFlask, you can accept the arguments in the view function in a natural wa
 def get_article(category, article_id, query, data)
 ```
 
-However, with APIFairy, Flask-Smorest or Webargs, the path variables
+However, with APIFairy, Flask-Smorest, or Webargs, the path variables
 (`category` and `article_id`) need to be declared after the input data:
 
 ```python
 def get_article(query, data, category, article_id)
 ```
 
-!!! note
-    I achieve this by overwriting Flask's `Flask.dispatch_request` method [at this line](https://github.com/greyli/apiflask/blob/master/apiflask/app.py#L290). If you have a
-    better solution, feel free to submit a PR.
 
 ### Route shortcuts
 
-APIFlask added some route shortcuts (`app.get()`, `app.post()` , etc) for `app.route(..., methods=['GET/POST...'])`.
+APIFlask added some route shortcuts (`app.get()`, `app.post()` , etc) for
+`app.route(..., methods=['GET/POST...'])`.
 
 Instead of doing something like this:
 
@@ -96,7 +97,9 @@ def create_pet():
 ```
 
 !!! tip
+
     Flask will have original support for these route shortcuts in the 2.0 version.
+
 
 ### More automation for OpenAPI generating
 
@@ -107,8 +110,10 @@ def create_pet():
 - Add response schema for potential error responses of view function passed with `doc` decorator. For example, `doc(responses=[404, 405])` (I'm considering rename the `responses` argument to `errors` or `error_responses`, what do you think?).
 
 !!! tip
+
     These automation behaviors can be changed with related
     [configuration variables](/configuration).
+
 
 ### More features compare with APIFairy
 
@@ -117,6 +122,7 @@ def create_pet():
 - Support to customize the API documentation config and CDN URLs.
 - Return JSON response for all HTTP errors and Auth errors as default.
 - Class-based view support.
+
 
 ## APIFlask vs FastAPI
 
@@ -132,16 +138,10 @@ on Pydantic, while APIFlask uses marshmallow-code projects (Marshmallow, Webargs
 - FastAPI injects the input data as an object, while APIFlask passes it as a dict.
 - APIFlask has built-in class-based views support based on Flask's `MethodView`.
 
-!!! tip
-    Flask 2.0 will have basic async support and I also consider add support to change
-    the base Flask to the async version of Flask, Quart.
-
-!!! note
-    I have to admit, I know very little about FastAPI other than the introduction
-    on its README. I will try to learn more about it, and then I will update this
-    section.
 
 ## APIFlask vs Flask-RESTful
 
-Flask-RESTful's latest release is in 2014. Besides, its core components were
-deprecated, see [this issue](https://github.com/flask-restful/flask-restful/issues/883) for more details.
+Flask-RESTful's latest release was in 2014. Besides, its core components were
+deprecated, see [this issue][_883]{target=_blank} for more details.
+
+[_883]: https://github.com/flask-restful/flask-restful/issues/883

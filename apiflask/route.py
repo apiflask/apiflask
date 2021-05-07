@@ -7,11 +7,15 @@ from .openapi import get_path_description
 
 
 def route_patch(cls):
-    """Support to use the `route` decorator on a MethodView class.
+    """A decorator to add a patched `route` decorator for `APIFlask` and
+    `APIBlueprint` objects.
 
     *Version Added: 0.5.0*
     """
     def route(self, rule: str, **options):
+        """Decorate a view function or `MethodView` subclass to register it with
+        the given URL rule and options.
+        """
         def decorator(f):
             endpoint: str = options.pop('endpoint', f.__name__)
             if isinstance(f, MethodViewType):
@@ -77,7 +81,8 @@ def route_shortcuts(cls):
     *Version added: 0.2.0*
 
     *Version changed: 0.3.0*
-    - Turn base class into class decorator.
+
+    - Turn base class into a class decorator.
     """
     cls_route = cls.route
 

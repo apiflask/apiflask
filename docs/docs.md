@@ -6,6 +6,7 @@ Documentation progress:
 
 [=50%]
 
+
 ## Contents
 
 Go through the following chapters to learn how to use APIFlask:
@@ -30,21 +31,29 @@ APIFlask:
 - **[API Reference](/api/app)**: The API reference of APIFlask.
 - **[Comparison and Motivations](/comparison)**: The differences between APIFlask and similar projects.
 - **[Authors](/authors)**: The authors of APIFlask.
-- **[Changelog](/changelog)**: The change log of each version of APIFlask.
+- **[Changelog](/changelog)**: The changelog of each version of APIFlask.
+
 
 ## External Documentations
 
-I will try to cover all the basic usages in APIFlask's documentation. However, for advanced
-usages, you may need to read the documentation of the framework, tools that APIFlask based
-on:
+I will try to cover all the basic usages in APIFlask's documentation. However, for
+advanced usages, you may need to read the documentation of the framework, tools
+that APIFlask based on:
 
-- **[Flask](https://flask.palletsprojects.com)**: The knowledge of Flask is required.
-- **[Marshmallow](https://marshmallow.readthedocs.io/)**: Advanced reference for schema.
-- **[Flask-HTTPAuth](https://flask-httpauth.readthedocs.io/)**: Advanced reference for
+- **[Flask][_flask]{target=_blank}**: The knowledge of Flask is required.
+- **[Marshmallow][_marshmallow]{target=_blank}**: Advanced reference for schema.
+- **[Flask-HTTPAuth][_flask_httpauth]{target=_blank}**: Advanced reference for
 the usage of `HTTPBasicAuth` and `HTTPTokenAuth`.
-- **[Webargs](https://webargs.readthedocs.io/)**: Useful for contributors.
-- **[APISpec](https://apispec.readthedocs.io/)**: Useful for contributors.
-- **[OpenAPI](https://github.com/OAI/OpenAPI-Specification/tree/main/versions)**:
-The OpenAPI Specification.
-- **[JSON Schema](https://json-schema.org/)**: Useful when you want to set a custom
+- **[Webargs][_webargs]{target=_blank}**: Useful for contributors.
+- **[APISpec][_apispec]{target=_blank}**: Useful for contributors.
+- **[OpenAPI][_openapi]{target=_blank}**: The OpenAPI Specification.
+- **[JSON Schema][_jsonschema]{target=_blank}**: Useful when you want to set a custom
 error schema and you don't want to use schema class.
+
+[_flask]: https://flask.palletsprojects.com/
+[_marshmallow]: https://marshmallow.readthedocs.io/
+[_flask_httpauth]: https://flask-httpauth.readthedocs.io/
+[_webargs]: https://webargs.readthedocs.io/
+[_apispec]: https://apispec.readthedocs.io/
+[_openapi]: https://github.com/OAI/OpenAPI-Specification/tree/main/versions
+[_jsonschema]: https://json-schema.org/

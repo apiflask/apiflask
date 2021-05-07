@@ -4,11 +4,13 @@
 - Class-based view example: <https://github.com/greyli/apiflask/tree/master/examples/cbv/app.py>
 - ORM example (with Flask-SQLAlchemy): <https://github.com/greyli/apiflask/tree/master/examples/orm/app.py>
 
-There will be more examples to be added here, if you have made your own, just submit a pull request to add the source link here.
+If you have built an application with APIFlask, feel free to submit a pull request to add the source link here.
 
 Follow the commands in the *Installation* section to run these examples on your computer.
 
+
 ## Installation
+
 
 ### Build the environment
 
@@ -32,6 +34,7 @@ For Windows:
 > pip install -r requirements.txt
 ```
 
+
 ### Choose the application
 
 Each example application store in a sub-folder:
@@ -41,11 +44,12 @@ Each example application store in a sub-folder:
 - `/orm`: ORM example (with Flask-SQLAlchemy)
 
 To run a specific example, you have to change into the corresponding folder.
-For example, if you want to run the basic example, just do:
+For example, if you want to run the basic example:
 
 ```bash
 $ cd basic
 ```
+
 
 ### Run, Flask, Run!
 
@@ -57,15 +61,17 @@ $ flask run
   * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 ```
 
+
 ## Try it out
 
-When the application is running, now you can visit the interactive API documentation at <http://localhost:5000/docs> or <http://localhost:5000/redoc> . Inside the detail tab of each endpoints, you can click the "Try it out" button to test the APIs:
+When the application is running, now you can visit the interactive API documentation at <http://localhost:5000/docs> or <http://localhost:5000/redoc> . Inside the detail tab of each endpoint, you can click the "Try it out" button to test the APIs:
 
 ![](https://apiflask.com/_assets/try-it-out.png)
 
 Then click the "Execute" button, it will send a request to the related endpoint and retrieve the response back:
 
 ![](https://apiflask.com/_assets/execute.png)
+
 
 ## Do some experiment
 
@@ -75,4 +81,4 @@ If you want to do some experiment on the example application, just open the `app
 $ flask run --reload
 ```
 
-Furthermore, you can run the application in debug mode, it will enable the reloader and debugger as default. To enable debug mode, you will need to set the environment variable `FLASK_ENV` to `development` before execute `flask run`, see *[Debug Mode](https://flask.palletsprojects.com/en/master/quickstart/#debug-mode)* for more details.
+Furthermore, you can run the application in debug mode; it will enable the reloader and debugger as default. To enable the debug mode, you will need to set the environment variable `FLASK_ENV` to `development` before executing `flask run`, see *[Debug Mode](https://flask.palletsprojects.com/en/master/quickstart/#debug-mode)* for more details.

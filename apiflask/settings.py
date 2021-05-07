@@ -19,7 +19,7 @@ EXTERNAL_DOCS: Optional[Dict[str, str]] = None
 TERMS_OF_SERVICE: Optional[str] = None
 YAML_SPEC_MIMETYPE: str = 'text/vnd.yaml'
 JSON_SPEC_MIMETYPE: str = 'application/json'
-# Automation behaviour control
+# Automation behavior control
 AUTO_TAGS: bool = True
 AUTO_PATH_SUMMARY: bool = True
 AUTO_PATH_DESCRIPTION: bool = True

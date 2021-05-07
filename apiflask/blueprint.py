@@ -21,11 +21,11 @@ class APIBlueprint(Blueprint):
     bp = APIBlueprint(__name__, 'foo')
     ```
 
-    *Version added: 0.2.0*
-
     *Version changed: 0.5.0*
 
     - Add `enable_openapi` parameter.
+
+    *Version added: 0.2.0*
     """
 
     def __init__(
@@ -63,9 +63,10 @@ class APIBlueprint(Blueprint):
                 ```python
                 bp = APIBlueprint(__name__, 'foo', tag={'name': 'Foo'})
                 ```
-            enable_openapi: If False, will disable OpenAPI support for current blueprint.
+            enable_openapi: If `False`, will disable OpenAPI support for the
+                current blueprint.
 
-        Other keyword arguments are directly pass to `flask.Blueprint`.
+        Other keyword arguments are directly passed to `flask.Blueprint`.
         """
         super(APIBlueprint, self).__init__(
             name,

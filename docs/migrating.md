@@ -3,7 +3,8 @@
 Since APIFlask is a thin wrapper on top of Flask, you only need to change very little
 code to migrating your application to APIFlask (typically less than ten lines of code).
 
-## Change the `Flask` class to the `APIFlask` class
+
+## `Flask` class -> `APIFlask` class
 
 It's how you create the Flask application:
 
@@ -21,7 +22,8 @@ from apiflask import APIFlask
 app = APIFlask(__name__)
 ```
 
-## Change `Blueprint` class to `APIBlueprint` class
+
+## `Blueprint` class -> `APIBlueprint` class
 
 It's how you create the Flask application:
 
@@ -40,10 +42,12 @@ bp = APIBlueprint(__name__, 'foo')
 ```
 
 !!! tip
-    You can register a `Blueprint` object to an `APIFlask` instance. However, you
+
+    You can register a `Blueprint` object to an `APIFlask` instance, but you
     can't register an `APIBlueprint` object to a `Flask` instance.
 
-## Update route method (optional)
+
+## Use route shortcuts (optional)
 
 APIFlask provides some route shortcuts, you can update a view function:
 
@@ -62,8 +66,10 @@ def create_pet():
 ```
 
 !!! tip
+
     You can mix the use of `app.route()` with route shortcuts. Flask 2.0 will include
     these route shortcuts.
+
 
 ## Class-based views (MethodView)
 
@@ -71,7 +77,7 @@ def create_pet():
 
     This feature was added in the [version 0.5.0](/changelog/#version-050).
 
-APIFlask support to use `MethodView`-based view class, for example:
+APIFlask support to use the `MethodView`-based view class, for example:
 
 ```python
 from apiflask import APIFlask, Schema, input, output
@@ -106,25 +112,34 @@ class Pet(MethodView):
 Beware that the view class should be registered with the `route` decorator instead of
 the `add_ul_rule()` method:
 
-```python hl_line="1"
+```python hl_lines="1"
 @app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
+    ...
 ```
 
+The `View`-based view class is not supported, you can still use it but currently
+APIFlask can't generate OpenAPI spec (and API documentation) for it.
+
 !!! tips
+
     If the `endpoint` argument isn't provided, the class name will be used as endpoint.
 
-## Other behavior change and notes
+
+## Other behavior changes and notes
+
 
 ### Import statements
 
 You only need to import `APIFlask`, `APIBlueprint`, and other utilities APIFlask
-provides from `apiflask` package. For others, you still import them from `flask` package:
+provides from the `apiflask` package. For others, you still import them from
+the `flask` package:
 
 ```python
 from apiflask import APIFlask, APIBlueprint
 from flask import request, escape, render_template, g, session, url_for
 ```
+
 
 ### APIFlask's `abort()` vs Flask's `abort()`
 
@@ -141,7 +156,7 @@ def foo():
     abort(404)
 ```
 
-In the example above, when the user visit `/foo`, the response body will be:
+In the example above, when the user visits `/foo`, the response body will be:
 
 ```json
 {
@@ -155,8 +170,10 @@ You can use `message` and `detail` parameter to pass error message and detailed
 information in the `abort()` function.
 
 !!! warning
+
     The function `abort_json()` was renamed to `abort()` in the
     [version 0.4.0](/changelog/#version-040).
+
 
 ### JSON errors and mix the use of `flask.abort()` and `apiflask.abort()`
 
@@ -183,8 +200,8 @@ app = APIFlask(__name__, json_errors=False)
 ```
 
 Now you can still use `abort` from `apiflask` package to return a JSON error
-response. To mix the use of `flask.abort` and `apiflask.abort`, you will need to import one
-of them with different name:
+response. To mix the use of `flask.abort` and `apiflask.abort`, you will need
+to import one of them with a different name:
 
 ```python
 from apiflask import abort as abort_json
@@ -209,12 +226,14 @@ def bar():
     abort_json(404)
 ```
 
+
 ### The return values of view function
 
 When you added a `@output` decorator for your view function, APIFlask expects you to
 return an ORM/ODM model object or a dict that matches the schema you passed in the
 `@output` decorator. If you return a `Response` object, APIFlask will return it
 directly without any process.
+
 
 ## Next step
 

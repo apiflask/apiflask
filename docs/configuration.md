@@ -1,14 +1,16 @@
 # Configuration
 
+
 ## Basics
 
-In Flask, conguration system is built on top the `app.config` attribute. It's dict-like attribute, thus you can operate it as a dict.
+In Flask, the configuration system is built on top of the `app.config` attribute.
+It's a dict-like attribute; thus you can operate it as a dict.
 
-This `app.config` attribute will contains the following configuration variables:
+This `app.config` attribute will contain the following configuration variables:
 
-- Flask's built in configuration variables
-- Flask extension's built in configuration variables
-- APIFlask's built in configuration variables
+- Flask's built-in configuration variables
+- Flask extension's built-in configuration variables
+- APIFlask's built-in configuration variables
 - Your application's configuration variables
 
 Here is a simple example for basic operates:
@@ -17,7 +19,7 @@ Here is a simple example for basic operates:
 from apiflask import APIFlask
 
 app = APIFlask(__name__)
-
+ 
 # set a config
 app.config['DESCRIPTION'] = 'A wonderful API'
 
@@ -25,8 +27,8 @@ app.config['DESCRIPTION'] = 'A wonderful API'
 description = app.config['DESCRIPTION']
 ```
 
-Since it's dict-like object, you can also read a config wth a default value via
-`app.config.get()` method:
+Since it's dict-like object, you can also read a configuration variable with
+a default value via the `app.config.get()` method:
 
 ```python
 my_name = app.config.get('DESCRIPTION', 'default value')
@@ -42,8 +44,8 @@ app.config.update(
 )
 ```
 
-For a large application, you may want to store all configs in an seprate file,
-for example, a file called `settings.py`:
+For a large application, you can store all the configuration variable in a seprate
+file, for example, a file called `settings.py`:
 
 ```python
 MY_CONFIG = 'A wonderful API'
@@ -51,7 +53,7 @@ FOO = 'bar'
 ITEMS_PER_PAGE = 15
 ```
 
-Now you can set the configuration variables with `app.config.from_pyfile()` method:
+Now you can set the configuration variables with the `app.config.from_pyfile()` method:
 
 ```python
 from apiflask import APIFlask
@@ -62,21 +64,23 @@ app = APIFlask(__name__)
 app.config.from_pyfile('settings.py')
 ```
 
-Read more about configuration mangament in the "[Configuration Handling][_config]" chapter
-of Flask's documentation.
+Read more about configuration management in
+*[Configuration Handling][_config]{target:_blank}* in Flask's documentation.
 
 [_config]: https://flask.palletsprojects.com/config/
 
 !!! warning
-    All configuration variable should in uppercase.
 
-!!! tip "Reading a config outside of the application context"
+    All configuration variables should be in uppercase.
+
+!!! tip "Read a config outside of the application context"
 
     If you want to read a configuration variable outside of the application context,
-    you will get some error like: "Working outside of the application context". The
-    usually happened when you use application factory.
+    you will get an error like: "Working outside of the application context". This
+    usually happened when you use an application factory.
 
-    When you use application factory, you can access the config with `current_app.config` in the view function:
+    When you use the application factory, you can access the config with
+    `current_app.config` in the view function:
 
     ```python
     from flask import current_app
@@ -86,8 +90,9 @@ of Flask's documentation.
         bar = current_app.config['BAR']
     ```
 
-    However, when you define a resource schema, there isn't a application context exists, you can't use `current_app`. In this situation, you can just access the configration
-    variables from the module you store them:
+    However, when you define a data schema, there isn't an active application
+    context, so you can't use `current_app`. In this situation, you can access
+    the configration variables from the module you store them:
 
     ```python hl_lines="3 6"
     from apiflask import Schema
@@ -99,14 +104,17 @@ of Flask's documentation.
         category = String(required=True, validate=OneOf(CATEGORIES))  # use it
     ```
 
+
 ## Built-in configuration variables
 
 Below are all the built-in configuration variables in APIFlask.
 
+
 ### OpenAPI fields
 
-All the configurations of OpenAPI-related fields will be used when the OpenAPI spec was
-generated. They will also rendered by the API documentations.
+All the configurations of OpenAPI-related fields will be used when generating the
+OpenAPI spec. They will also be rendered by the API documentation.
+
 
 #### `OPENAPI_VERSION`
 
@@ -120,7 +128,9 @@ be configured from the `app.openapi_version` attribute.
 ```python
 app.config['OPENAPI_VERSION'] = '3.0.2'
 ```
+
 Or:
+
 ```python
 app.openapi_version = '3.0.2'
 ```
@@ -128,6 +138,7 @@ app.openapi_version = '3.0.2'
 !!! warning "Version >= 0.4.0"
 
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
+
 
 #### `DESCRIPTION`
 
@@ -141,29 +152,35 @@ be configured from the `app.description` attribute.
 ```python
 app.config['DESCRIPTION'] = 'Some description of my API.'
 ```
+
 Or:
+
 ```python
 app.description = 'Some description of my API.'
 ```
 
+
 #### `TAGS`
 
-The tags of the OpenAPI spec documentation (`openapi.tags`), accepts a
-list of dicts. You can also pass a simple list contains the tag names.
+The tag list of the OpenAPI spec documentation (`openapi.tags`), accepts a
+list of dicts. You can also pass a simple list contains the tag name string.
 This configuration can also be configured from the `app.tags` attribute.
 
-If not set, the blueprint names will be used as tags, each views under the
-blueprint will marked with the blueprint tag automatically.
+If not set, the blueprint names will use as tags, all the endpoints under the
+blueprint will be marked with the blueprint tag automatically.
 
 - Type: `Union[List[str], List[Dict[str, str]]]`
 - Default value: `None`
 - Examples:
 
 Simple tag name list example:
+
 ```python
 app.config['TAGS'] = ['foo', 'bar', 'baz']
 ```
+
 With tag description:
+
 ```python
 app.config['TAGS'] = [
     {'name': 'foo', 'description': 'The description of foo'},
@@ -171,7 +188,9 @@ app.config['TAGS'] = [
     {'name': 'baz', 'description': 'The description of baz'}
 ]
 ```
+
 Full OpenAPI tags example:
+
 ```python
 app.config['TAGS'] = [
     {
@@ -184,10 +203,13 @@ app.config['TAGS'] = [
     }
 ]
 ```
+
 Use attribute `app.tags`:
+
 ```python
 app.tags = ['foo', 'bar', 'baz']
 ```
+
 
 #### `CONTACT`
 
@@ -205,7 +227,9 @@ app.config['CONTACT'] = {
     'email': 'support@example.com'
 }
 ```
+
 Or:
+
 ```python
 app.contact = {
     'name': 'API Support',
@@ -213,6 +237,7 @@ app.contact = {
     'email': 'support@example.com'
 }
 ```
+
 
 #### `LICENSE`
 
@@ -229,7 +254,9 @@ app.config['LICENSE'] = {
     'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
 }
 ```
+
 Or:
+
 ```python
 app.license = {
     'name': 'Apache 2.0',
@@ -237,9 +264,10 @@ app.license = {
 }
 ```
 
+
 #### `SERVERS`
 
-The servers information of the API (`openapi.servers`), accepts multiple
+The server information of the API (`openapi.servers`), accepts multiple
 server dicts. This configuration can also be configured from the `app.servers`
 attribute.
 
@@ -255,7 +283,9 @@ app.config['SERVERS'] = [
     }
 ]
 ```
+
 Or:
+
 ```python
 app.servers = [
     {
@@ -264,6 +294,7 @@ app.servers = [
     }
 ]
 ```
+
 
 #### `EXTERNAL_DOCS`
 
@@ -280,13 +311,16 @@ app.config['EXTERNAL_DOCS'] = {
     'url': 'http://docs.example.com'
 }
 ```
+
 Or:
+
 ```python
 app.external_docs = {
     'description': 'Find more info here',
     'url': 'http://docs.example.com'
 }
 ```
+
 
 #### `TERMS_OF_SERVICE`
 
@@ -300,10 +334,13 @@ This configuration can also be configured from the `app.terms_of_service` attrib
 ```python
 app.config['TERMS_OF_SERVICE'] = 'http://example.com/terms/'
 ```
+
 Or:
+
 ```python
 app.terms_of_service = 'http://example.com/terms/'
 ```
+
 
 #### `JSON_SPEC_MIMETYPE`
 
@@ -321,6 +358,7 @@ app.config['JSON_SPEC_MIMETYPE'] = 'application/custom-json'
 
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
 
+
 #### `YAML_SPEC_MIMETYPE`
 
 The MIME type string for YAML OpenAPI spec response.
@@ -337,18 +375,21 @@ app.config['YAML_SPEC_MIMETYPE'] = 'text/x-yaml'
 
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
 
-### Automation behaviour control
 
-The following configuration variables used to control the automation behaviour of APIFlask.
-The default values of all these configuration variables are `True`, you can disable them
-when you needed.
+### Automation behavior control
+
+The following configuration variables are used to control the automation behavior
+of APIFlask. The default values of all these configuration variables are `True`,
+you can disable them if you needed.
+
 
 #### `AUTO_TAGS`
 
-Enable or disable auto tags (`openapi.tags`) generation from the name of blueprint.
+Enable or disable auto tags (`openapi.tags`) generation from the name of the blueprint.
 
 !!! tip
-    This automation behaviour only happens when `app.tags` or config `TAGS` is not set.
+
+    This automation behavior only happens when `app.tags` or config `TAGS` is not set.
 
 - Type: `bool`
 - Default value: `True`
@@ -358,12 +399,14 @@ Enable or disable auto tags (`openapi.tags`) generation from the name of bluepri
 app.config['AUTO_TAGS'] = False
 ```
 
+
 #### `AUTO_PATH_SUMMARY`
 
 Enable or disable auto path summary from the name or docstring of the view function.
 
 !!! tip
-    This automation behaviour only happens when the view function doesn't decorated
+
+    This automation behavior only happens when the view function doesn't decorate
     with `@doc(summary=...)`.
 
 - Type: `bool`
@@ -374,12 +417,14 @@ Enable or disable auto path summary from the name or docstring of the view funct
 app.config['AUTO_PATH_SUMMARY'] = False
 ```
 
+
 #### `AUTO_PATH_DESCRIPTION`
 
 Enable or disable auto path description from the docstring of the view function.
 
 !!! tip
-    This automation behaviour only happens when the view function doesn't decorated
+
+    This automation behavior only happens when the view function doesn't decorate
     with `@doc(description=...)`.
 
 - Type: `bool`
@@ -390,13 +435,15 @@ Enable or disable auto path description from the docstring of the view function.
 app.config['AUTO_PATH_DESCRIPTION'] = False
 ```
 
+
 #### `AUTO_200_RESPONSE`
 
-If a view function doesn't decorated with either `@input`, `@output`, `@auth_required`
-or `@doc`. By default, APIFlask will add an default 200 response for this view into OpenAPI
-spec. Set this config to `False` to disable this behaviour.
+If a view function doesn't decorate with either `@input`, `@output`, `@auth_required`
+or `@doc`. By default, APIFlask will add a default 200 response for this view
+into OpenAPI spec. Set this config to `False` to disable this behavior.
 
 !!! tip
+
     You can change the description of the default 200 response with config
     `DEFAULT_200_DESCRIPTION`.
 
@@ -408,11 +455,12 @@ spec. Set this config to `False` to disable this behaviour.
 app.config['AUTO_200_RESPONSE'] = False
 ```
 
+
 #### `AUTO_VALIDATION_ERROR_RESPONSE`
 
-If a view function use `@input` to validate input request data, APIFlask will add a
+If a view function uses `@input` to validate input request data, APIFlask will add a
 validation error response into OpenAPI spec for this view. Set this config to `False`
-to disable this behaviour.
+to disable this behavior.
  
 - Type: `bool`
 - Default value: `True`
@@ -422,11 +470,12 @@ to disable this behaviour.
 app.config['AUTO_VALIDATION_ERROR_RESPONSE'] = False
 ```
 
+
 #### `AUTO_AUTH_ERROR_RESPONSE`
 
-If a view function use `@auth_required` to restrict the access, APIFlask will add a
-authentication error response into OpenAPI spec for this view. Set this config to `False`
-to disable this behaviour.
+If a view function uses `@auth_required` to restrict the access, APIFlask will add
+an authentication error response into OpenAPI spec for this view. Set this
+config to `False` to disable this behavior.
 
 - Type: `bool`
 - Default value: `True`
@@ -436,9 +485,11 @@ to disable this behaviour.
 app.config['AUTO_AUTH_ERROR_RESPONSE'] = False
 ```
 
+
 ### Response customization
 
-The following configuration variables used to customize auto responses.
+The following configuration variables are used to customize auto-responses.
+
 
 #### `SUCCESS_DESCRIPTION`
 
@@ -456,6 +507,7 @@ app.config['SUCCESS_DESCRIPTION'] = 'Success!'
 
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
 
+
 #### `VALIDATION_ERROR_STATUS_CODE`
 
 The status code of validation error response.
@@ -468,6 +520,7 @@ The status code of validation error response.
 app.config['VALIDATION_ERROR_STATUS_CODE'] = 422
 ```
 
+
 #### `VALIDATION_ERROR_DESCRIPTION`
 
 The description of validation error response.
@@ -479,6 +532,7 @@ The description of validation error response.
 ```python
 app.config['VALIDATION_ERROR_DESCRIPTION'] = 'Invalid JSON body'
 ```
+
 
 #### `VALIDATION_ERROR_SCHEMA`
 
@@ -493,6 +547,7 @@ a dict of OpenAPI schema definition.
 app.config['VALIDATION_ERROR_SCHEMA'] = CustomValidationErrorSchema
 ```
 
+
 #### `AUTH_ERROR_STATUS_CODE`
 
 The status code of authentication error response.
@@ -505,6 +560,7 @@ The status code of authentication error response.
 app.config['AUTH_ERROR_STATUS_CODE'] = 403
 ```
 
+
 #### `AUTH_ERROR_DESCRIPTION`
 
 The description of authentication error response.
@@ -516,6 +572,7 @@ The description of authentication error response.
 ```python
 app.config['AUTH_ERROR_DESCRIPTION'] = 'Auth error'
 ```
+
 
 #### `HTTP_ERROR_SCHEMA`
 
@@ -530,10 +587,12 @@ a dict of OpenAPI schema definition.
 app.config['HTTP_ERROR_SCHEMA'] = CustomHTTPErrorSchema
 ```
 
+
 ### Swagger UI and Redoc
 
 The following configuration variables used to customize Swagger UI and
 Redoc documentation.
+
 
 #### `DOCS_FAVICON`
 
@@ -547,6 +606,7 @@ The absolute or relative URL of the favicon image file of API documentations.
 app.config['DOCS_FAVICON'] = 'https://cdn.example.com/favicon.png'
 ```
 
+
 #### `REDOC_USE_GOOGLE_FONT`
 
 Enable or disable Google font in Redoc documentation.
@@ -558,6 +618,7 @@ Enable or disable Google font in Redoc documentation.
 ```python
 app.config['REDOC_USE_GOOGLE_FONT'] = False
 ```
+
 
 #### `REDOC_STANDALONE_JS`
 
@@ -571,6 +632,7 @@ The absolute or relative URL of the Redoc standalone JavaScript file.
 app.config['REDOC_STANDALONE_JS'] = 'https://cdn.example.com/filename.js'
 ```
 
+
 #### `SWAGGER_UI_CSS`
 
 The absolute or relative URL of the Swagger UI CSS file.
@@ -582,6 +644,7 @@ The absolute or relative URL of the Swagger UI CSS file.
 ```python
 app.config['SWAGGER_UI_CSS'] = 'https://cdn.example.com/filename.js'
 ```
+
 
 #### `SWAGGER_UI_BUNDLE_JS`
 
@@ -595,6 +658,7 @@ The absolute or relative URL of the Swagger UI bundle JavaScript file.
 app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdn.example.com/filename.js'
 ```
 
+
 #### `SWAGGER_UI_STANDALONE_PRESET_JS`
 
 The absolute or relative URL of the Swagger UI standalone preset JavaScript file.
@@ -606,6 +670,7 @@ The absolute or relative URL of the Swagger UI standalone preset JavaScript file
 ```python
 app.config['SWAGGER_UI_STANDALONE_PRESET_JS'] = 'https://cdn.example.com/filename.js'
 ```
+
 
 #### `SWAGGER_UI_LAYOUT`
 
@@ -619,15 +684,18 @@ The layout of Swagger UI, one of `'BaseLayout'` and `'StandaloneLayout'`.
 app.config['SWAGGER_UI_LAYOUT'] = 'StandaloneLayout'
 ```
 
+
 #### `SWAGGER_UI_CONFIG`
 
-The config for Swagger UI, this config value will overwrite the existing config such
-as `SWAGGER_UI_LAYOUT`.
+The config for Swagger UI, this config value will overwrite the existing config,
+such as `SWAGGER_UI_LAYOUT`.
 
 !!! tip
-    See the [Configuration][_swagger_configuration] chapter of the Swagger UI docs for more details.
 
-[_swagger_configuration]: https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
+    See *[Configuration][_swagger_conf]{target=_blank}* of the Swagger UI docs
+    for more details.
+
+[_swagger_conf]: https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
 
 - Type: `dict`
 - Default value: `None`
@@ -639,6 +707,7 @@ app.config['SWAGGER_UI_CONFIG'] = {
 }
 ```
 
+
 #### `SWAGGER_UI_OAUTH_CONFIG`
 
 The config for Swagger UI OAuth:
@@ -648,7 +717,9 @@ ui.initOAuth(yourConfig)
 ```
 
 !!! tip
-    See the [OAuth 2.0 configuration][_swagger_oauth] chapter of the Swagger UI docs for more details.
+
+    See the *[OAuth 2.0 configuration][_swagger_oauth]{target=_blank}* in Swagger UI
+    docs for more details.
 
 [_swagger_oauth]: https://swagger.io/docs/open-source-tools/swagger-ui/usage/oauth2/
 
@@ -662,8 +733,10 @@ app.config['SWAGGER_UI_OAUTH_CONFIG'] = {
 }
 ```
 
+
 ## Flask built-in configuration variables
 
-See [Flask's documentation](_flask_config) for the built-in configuration variables provided by Flask.
+See *[Builtin Configuration Values][_flask_config]{target:_blank}* for the
+built-in configuration variables provided by Flask.
 
 [_flask_config]: https://flask.palletsprojects.com/config/#builtin-configuration-values
