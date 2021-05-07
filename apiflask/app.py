@@ -16,12 +16,15 @@ from flask import jsonify
 from flask import render_template
 from flask.config import ConfigAttribute
 from flask.globals import _request_ctx_stack
-from flask_marshmallow import fields
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore')
+    from flask_marshmallow import fields
+    try:
+        from flask_marshmallow import sqla
+    except ImportError:
+        sqla = None
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
-try:
-    from flask_marshmallow import sqla
-except ImportError:
-    sqla = None
 
 from .exceptions import HTTPError
 from .exceptions import default_error_handler

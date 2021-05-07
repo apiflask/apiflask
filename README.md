@@ -100,18 +100,20 @@ def get_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)
     # you can also return an ORM/ODM model class instance directly
+    # APIFlask will serialize the object into JSON format
     return pets[pet_id]
 
 
-@app.put('/pets/<int:pet_id>')
-@input(PetInSchema)
+@app.patch('/pets/<int:pet_id>')
+@input(PetInSchema(partial=True))
 @output(PetOutSchema)
 def update_pet(pet_id, data):
-    # the parsed input data (dict) will be injected into the view function
+    # the validated and parsed input data will
+    # be injected into the view function as a dict
     if pet_id > len(pets) - 1:
         abort(404)
-    data['id'] = pet_id
-    pets[pet_id] = data
+    for attr, value in data.items():
+        pets[pet_id][attr] = value
     return pets[pet_id]
 ```
 
@@ -165,42 +167,21 @@ class Pet(MethodView):
 
     @output(PetOutSchema)
     def get(self, pet_id):
+        """Get a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
         return pets[pet_id]
 
-    @input(PetInSchema)
+    @input(PetInSchema(partial=True))
     @output(PetOutSchema)
-    def put(self, pet_id, data):
+    def patch(self, pet_id, data):
+        """Update a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
-        data['id'] = pet_id
-        pets[pet_id] = data
+        for attr, value in data.items():
+            pets[pet_id][attr] = value
         return pets[pet_id]
 ```
-</details>
-
-<details>
-<summary>You can use <strong>async def</strong> from Flask 2.0</summary>
-
-Flask 2.0 have the basic support for <code>async</code> and <code>await</code>, check it out with Flask 2.0.0rc:
-
-```bash
-$ pip install --pre flask[async]
-```
-
-```python
-from apiflask import APIFlask
-
-app = APIFlask(__name__)
-
-@app.get('/')
-async def say_hello():
-    return {'message': 'Hello!'}
-```
-
-See <em><a href="https://flask.palletsprojects.com/en/master/async-await/">Using async and await</a></em> to learn the details of the async support in Flask 2.0.
-
 </details>
 
 Save this as `app.py`, then run it with :
