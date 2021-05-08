@@ -2,6 +2,8 @@
 
 0.6.0 plan: <https://github.com/greyli/apiflask/issues/31>
 
+- Support using the `output` decorator on async views.
+
 
 ## Version 0.5.2
 

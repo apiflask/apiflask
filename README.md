@@ -118,7 +118,7 @@ def update_pet(pet_id, data):
 ```
 
 <details>
-<summary>Click to see the same example with <strong>class-based views</strong></summary>
+<summary>You can also use class-based views with <code>MethodView</code></summary>
 
 ```python
 from apiflask import APIFlask, Schema, input, output, abort
@@ -182,6 +182,32 @@ class Pet(MethodView):
             pets[pet_id][attr] = value
         return pets[pet_id]
 ```
+</details>
+
+<details>
+<summary>Or use <code>async def</code> with Flask 2.0</summary>
+
+Flask 2.0 has the basic support for <code>async</code> and <code>await</code>, check it out with Flask 2.0.0rc:
+
+```bash
+$ pip install --pre flask[async]
+```
+
+```python
+import asyncio
+
+from apiflask import APIFlask
+
+app = APIFlask(__name__)
+
+@app.get('/')
+async def say_hello():
+    await asyncio.sleep(1)
+    return {'message': 'Hello!'}
+```
+
+See <em><a href="https://flask.palletsprojects.com/en/master/async-await/">Using async and await</a></em> for the details of the async support in Flask 2.0.
+
 </details>
 
 Save this as `app.py`, then run it with :
