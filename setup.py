@@ -41,6 +41,7 @@ setuptools.setup(
         'webargs>=6',
         'flask-httpauth>=4',
         'apispec>=4.2.0',
+        'typing-extensions; python_version<"3.8"',
     ],
     tests_require=[
         'openapi-spec-validator',

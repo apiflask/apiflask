@@ -2,6 +2,8 @@ from typing import Any
 from typing import Dict
 
 from marshmallow import Schema
+from marshmallow.fields import Integer
+from marshmallow.fields import URL
 
 
 # schema for the detail object of validation error response
@@ -78,3 +80,15 @@ class EmptySchema(Schema):
     """
 
     pass
+
+
+class PaginationSchema(Schema):
+    page = Integer()
+    per_page = Integer()
+    pages = Integer()
+    total = Integer()
+    current = URL()
+    next = URL()
+    prev = URL()
+    first = URL()
+    last = URL()
