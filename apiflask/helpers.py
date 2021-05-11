@@ -17,6 +17,10 @@ def get_reason_phrase(status_code: int, default: str = 'Unknown') -> str:
     Arguments:
         status_code: A standard HTTP status code.
         default: The default phrase to use if not found, defaults to "Unknown".
+
+    *Version Changed: 0.6.0*
+
+    - Add `default` parameter.
     """
     return HTTP_STATUS_CODES.get(status_code, default)
 

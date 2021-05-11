@@ -5,6 +5,7 @@
 - Support using the `output` decorator on async views.
 - Add `PaginationSchema` and `pagination_builder` as basic pagination support.
 - Rename `utils` module to `helpers`.
+- Add `default` parameter for `get_reason_phrase`.
 
 
 ## Version 0.5.2
