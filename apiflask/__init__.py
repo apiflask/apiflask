@@ -1,10 +1,4 @@
 # flake8: noqa
-# temp fix for https://github.com/django/asgiref/issues/143
-import sys
-if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pragma: no cover
-    import asyncio
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # pragma: no cover
-
 from marshmallow import pre_load as before_load
 from marshmallow import post_load as after_load
 from marshmallow import pre_dump as before_dump
