@@ -783,7 +783,7 @@ class APIFlask(Flask):
                         for status_code in view_func._spec.get('responses'):
                             responses[  # type: ignore
                                 status_code
-                            ] = get_reason_phrase(int(status_code))
+                            ] = get_reason_phrase(int(status_code), '')
                     for status_code, description in responses.items():  # type: ignore
                         status_code: str = str(status_code)  # type: ignore
                         if status_code in operation['responses']:

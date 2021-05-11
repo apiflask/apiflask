@@ -11,13 +11,14 @@ from .types import PaginationType
 _sentinel = object()
 
 
-def get_reason_phrase(status_code: int) -> str:
+def get_reason_phrase(status_code: int, default: str = 'Unknown') -> str:
     """A helper function to get the reason phrase of the given status code.
 
     Arguments:
         status_code: A standard HTTP status code.
+        default: The default phrase to use if not found, defaults to "Unknown".
     """
-    return HTTP_STATUS_CODES.get(status_code, 'Unknown error')
+    return HTTP_STATUS_CODES.get(status_code, default)
 
 
 def pagination_builder(pagination: PaginationType, **kwargs: Any) -> dict:
