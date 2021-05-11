@@ -58,7 +58,7 @@ class HTTPError(Exception):
         self.message = get_reason_phrase(status_code) if message is None else message
 
 
-class ValidationError(HTTPError):
+class _ValidationError(HTTPError):
     """The exception used when the request validation error happened."""
 
     pass
@@ -107,7 +107,7 @@ def abort(
     raise HTTPError(status_code, message, detail, headers)
 
 
-def default_error_handler(
+def _default_error_handler(
     status_code: int,
     message: Optional[str] = None,
     detail: Optional[Any] = None,

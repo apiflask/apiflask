@@ -2,7 +2,7 @@ import pytest
 
 from apiflask.exceptions import abort
 from apiflask.exceptions import HTTPError
-from apiflask.exceptions import default_error_handler
+from apiflask.exceptions import _default_error_handler
 
 
 @pytest.mark.parametrize('kwargs', [
@@ -62,7 +62,7 @@ def test_abort(app, client, kwargs):
     {'message': 'bad', 'detail': {'location': 'json'}, 'headers': {'X-FOO': 'bar'}}
 ])
 def test_default_error_handler(kwargs):
-    rv = default_error_handler(400, **kwargs)
+    rv = _default_error_handler(400, **kwargs)
     assert rv[1] == 400
     if 'message' not in kwargs:
         assert rv[0]['message'] == 'Bad Request'

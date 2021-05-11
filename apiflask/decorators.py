@@ -15,7 +15,7 @@ from flask import Response
 from marshmallow import ValidationError as MarshmallowValidationError
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
-from .exceptions import ValidationError
+from .exceptions import _ValidationError
 from .schemas import EmptySchema
 from .schemas import Schema
 from .types import DecoratedType
@@ -42,7 +42,7 @@ class FlaskParser(BaseFlaskParser):
         error_status_code: int,
         error_headers: Mapping[str, str]
     ) -> None:
-        raise ValidationError(
+        raise _ValidationError(
             error_status_code or current_app.config['VALIDATION_ERROR_STATUS_CODE'],
             current_app.config['VALIDATION_ERROR_DESCRIPTION'],
             error.messages,
