@@ -33,7 +33,7 @@ from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .exceptions import HTTPError
 from .exceptions import _default_error_handler
-from .utils import get_reason_phrase
+from .helpers import get_reason_phrase
 from .route import route_shortcuts
 from .route import route_patch
 from .schemas import Schema

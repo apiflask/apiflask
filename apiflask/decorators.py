@@ -23,7 +23,7 @@ from .types import HTTPAuthType
 from .types import RequestType
 from .types import ResponseType
 from .types import SchemaType
-from .utils import _sentinel
+from .helpers import _sentinel
 
 
 class FlaskParser(BaseFlaskParser):

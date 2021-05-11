@@ -6,7 +6,7 @@ from typing import Union
 
 from werkzeug.exceptions import default_exceptions
 
-from .utils import get_reason_phrase
+from .helpers import get_reason_phrase
 
 
 class HTTPError(Exception):
