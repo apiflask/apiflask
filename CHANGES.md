@@ -2,6 +2,8 @@
 
 0.6.0 plan: <https://github.com/greyli/apiflask/issues/31>
 
+- Add `PaginationSchema` and `pagination_builder` as basic pagination support.
+
 
 ## Version 0.5.2
 
