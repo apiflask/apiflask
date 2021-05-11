@@ -265,6 +265,9 @@ def output(
                 },
             }
             ```
+    *Version changed: 0.6.0*
+
+    - Support decorating async views.
 
     *Version changed: 0.5.2*
 
@@ -302,7 +305,10 @@ def output(
 
         @wraps(f)
         def _response(*args: Any, **kwargs: Any) -> ResponseType:
-            rv = f(*args, **kwargs)
+            if hasattr(current_app, 'ensure_sync'):  # pragma: no cover
+                rv = current_app.ensure_sync(f)(*args, **kwargs)
+            else:
+                rv = f(*args, **kwargs)  # for Flask < 2.0
             if isinstance(rv, Response):
                 return rv
             if not isinstance(rv, tuple):
