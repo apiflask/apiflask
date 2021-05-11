@@ -27,7 +27,7 @@ with warnings.catch_warnings():
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .exceptions import HTTPError
-from .exceptions import default_error_handler
+from .exceptions import _default_error_handler
 from .utils import get_reason_phrase
 from .route import route_shortcuts
 from .route import route_patch
@@ -256,7 +256,7 @@ class APIFlask(Flask):
         self.json_errors = json_errors
 
         self.spec_callback: Optional[SpecCallbackType] = None
-        self.error_callback: ErrorCallbackType = default_error_handler  # type: ignore
+        self.error_callback: ErrorCallbackType = _default_error_handler  # type: ignore
         self._spec: Optional[Union[dict, str]] = None
         self._register_openapi_blueprint()
         self._register_error_handlers()
