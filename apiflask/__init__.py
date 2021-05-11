@@ -21,7 +21,7 @@ from .schemas import Schema
 from .schemas import PaginationSchema
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
-from .utils import get_reason_phrase
-from .utils import pagination_builder
+from .helpers import get_reason_phrase
+from .helpers import pagination_builder
 
 __version__ = '0.6.0dev'

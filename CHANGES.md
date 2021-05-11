@@ -4,6 +4,7 @@
 
 - Support using the `output` decorator on async views.
 - Add `PaginationSchema` and `pagination_builder` as basic pagination support.
+- Rename `utils` module to `helpers`.
 
 
 ## Version 0.5.2

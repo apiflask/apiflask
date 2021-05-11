@@ -51,7 +51,7 @@ nav:
     - Schemas: api/schemas.md
     - Route: api/route.md
     - Security: api/security.md
-    - Utils: api/utils.md
+    - Helpers: api/helpers.md
   - Comparison and Motivations: comparison.md
   - Authors: authors.md
   - Changelog: changelog.md

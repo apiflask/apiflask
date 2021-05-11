@@ -5,7 +5,7 @@ from flask import Blueprint
 
 from .route import route_patch
 from .route import route_shortcuts
-from .utils import _sentinel
+from .helpers import _sentinel
 
 
 @route_patch
