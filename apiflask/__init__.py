@@ -24,4 +24,4 @@ from .security import HTTPTokenAuth
 from .helpers import get_reason_phrase
 from .helpers import pagination_builder
 
-__version__ = '0.6.0'
+__version__ = '0.7.0dev'
