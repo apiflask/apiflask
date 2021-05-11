@@ -55,7 +55,8 @@ class HTTPError(Exception):
         self.status_code = status_code
         self.detail = detail
         self.headers = headers
-        self.message = get_reason_phrase(status_code) if message is None else message
+        self.message = get_reason_phrase(status_code, 'Unknown error') \
+            if message is None else message
 
 
 class _ValidationError(HTTPError):
@@ -125,7 +126,7 @@ def _default_error_handler(
         headers: A dict of headers used in the error response.
     """
     if message is None:
-        message = get_reason_phrase(status_code)
+        message = get_reason_phrase(status_code, 'Unknown error')
     if detail is None:
         detail = {}
     body = {'detail': detail, 'message': message, 'status_code': status_code}

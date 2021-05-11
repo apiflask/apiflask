@@ -16,7 +16,15 @@ def test_get_reason_phrase(code):
     elif code == 404:
         assert rv == 'Not Found'
     else:
-        assert rv == 'Unknown error'
+        assert rv == 'Unknown'
+
+
+def test_get_reason_phrase_default():
+    rv = get_reason_phrase(1234)
+    assert rv == 'Unknown'
+
+    rv = get_reason_phrase(1234, 'Unknown error')
+    assert rv == 'Unknown error'
 
 
 def test_pagination_builder(app, client):
