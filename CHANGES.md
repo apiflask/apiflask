@@ -1,11 +1,19 @@
 ## Version 0.6.0
 
-0.6.0 plan: <https://github.com/greyli/apiflask/issues/31>
+Released: 2021/5/11
 
-- Support using the `output` decorator on async views.
-- Add `PaginationSchema` and `pagination_builder` as basic pagination support.
-- Rename `utils` module to `helpers`.
-- Add `default` parameter for `get_reason_phrase`.
+- Support using the `output` decorator on async views ([pull #41][pull_41]).
+- Add `PaginationSchema` and `pagination_builder` as basic pagination support
+([pull #42][pull_42]).
+- Import and rename the decorators from Marshmallow ([pull #43][pull_43]).
+- Rename `utils` module to `helpers` ([pull #44][pull_44]).
+- Add `default` parameter for `get_reason_phrase` ([pull #45][pull_45]).
+
+[pull_41]: https://github.com/greyli/apiflask/pull/41
+[pull_42]: https://github.com/greyli/apiflask/pull/42
+[pull_43]: https://github.com/greyli/apiflask/pull/43
+[pull_44]: https://github.com/greyli/apiflask/pull/44
+[pull_45]: https://github.com/greyli/apiflask/pull/45
 
 
 ## Version 0.5.2
