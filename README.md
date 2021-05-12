@@ -187,10 +187,10 @@ class Pet(MethodView):
 <details>
 <summary>Or use <code>async def</code> with Flask 2.0</summary>
 
-Flask 2.0 has the basic support for <code>async</code> and <code>await</code>, check it out with Flask 2.0.0rc:
+Flask 2.0 has the basic support for <code>async</code> and <code>await</code>, check it out with Flask 2.0:
 
 ```bash
-$ pip install --pre flask[async]
+$ pip install -U flask[async]
 ```
 
 ```python
@@ -206,7 +206,7 @@ async def say_hello():
     return {'message': 'Hello!'}
 ```
 
-See <em><a href="https://flask.palletsprojects.com/en/master/async-await/">Using async and await</a></em> for the details of the async support in Flask 2.0.
+See <em><a href="https://flask.palletsprojects.com/en/2.0.x/async-await/">Using async and await</a></em> for the details of the async support in Flask 2.0.
 
 </details>
 
