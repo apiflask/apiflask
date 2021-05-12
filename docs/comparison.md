@@ -141,7 +141,7 @@ on Pydantic, while APIFlask uses marshmallow-code projects (Marshmallow, Webargs
 
 ## APIFlask vs Flask-RESTful
 
-Flask-RESTful's latest release was in 2014. Besides, its core components were
-deprecated, see [this issue][_883]{target=_blank} for more details.
+Flask-RESTful's core components were deprecated, see
+[this issue][_883]{target=_blank} for more details.
 
 [_883]: https://github.com/flask-restful/flask-restful/issues/883
