@@ -9,7 +9,6 @@ from typing import Dict
 from typing import Iterable
 from typing import List
 from typing import Optional
-from typing import Tuple
 from typing import Type
 from typing import Union
 
@@ -38,6 +37,7 @@ from .route import route_shortcuts
 from .route import route_patch
 from .schemas import Schema
 from .types import ResponseType
+from .types import ViewFuncType
 from .types import ErrorCallbackType
 from .types import SpecCallbackType
 from .types import SchemaType
@@ -412,7 +412,7 @@ class APIFlask(Flask):
 
         if self.spec_path:
             @bp.route(self.spec_path)
-            def spec() -> Tuple[Union[dict, str], int, Dict[str, str]]:
+            def spec() -> ResponseType:
                 if self.spec_path.endswith('.yaml') or \
                    self.spec_path.endswith('.yml'):
                     return self.get_spec('yaml'), 200, \
@@ -537,9 +537,9 @@ class APIFlask(Flask):
                 for blueprint_name, blueprint in self.blueprints.items():
                     if blueprint_name == 'openapi' or \
                        not hasattr(blueprint, 'enable_openapi') or \
-                       not blueprint.enable_openapi:
+                       not blueprint.enable_openapi:  # type: ignore
                         continue
-                    tag: Dict[str, Any] = get_tag(blueprint, blueprint_name)
+                    tag: Dict[str, Any] = get_tag(blueprint, blueprint_name)  # type: ignore
                     tags.append(tag)  # type: ignore
         return tags  # type: ignore
 
@@ -586,7 +586,7 @@ class APIFlask(Flask):
         # detect auth_required on before_request functions
         for blueprint_name, funcs in self.before_request_funcs.items():
             if blueprint_name is not None and \
-               not self.blueprints[blueprint_name].enable_openapi:
+               not self.blueprints[blueprint_name].enable_openapi:  # type: ignore
                 continue
             for f in funcs:
                 if hasattr(f, '_spec'):  # pragma: no cover
@@ -599,7 +599,7 @@ class APIFlask(Flask):
                         _update_auth_info(auth)
         # collect auth info
         for rule in self.url_map.iter_rules():
-            view_func = self.view_functions[rule.endpoint]
+            view_func: ViewFuncType = self.view_functions[rule.endpoint]  # type: ignore
             if hasattr(view_func, '_spec'):
                 auth = view_func._spec.get('auth')
                 if auth is not None and auth not in auth_schemes:
@@ -624,16 +624,17 @@ class APIFlask(Flask):
         )
         for rule in rules:
             operations: Dict[str, Any] = {}
-            view_func = self.view_functions[rule.endpoint]
+            view_func: ViewFuncType = self.view_functions[rule.endpoint]  # type: ignore
             # skip endpoints from openapi blueprint and the built-in static endpoint
             if rule.endpoint.startswith('openapi') or \
                rule.endpoint.startswith('static'):
                 continue
             blueprint_name: Optional[str] = None  # type: ignore
             if '.' in rule.endpoint:
-                blueprint_name = rule.endpoint.split('.', 1)[0]
-                if not hasattr(self.blueprints[blueprint_name], 'enable_openapi') or \
-                   not self.blueprints[blueprint_name].enable_openapi:
+                blueprint_name: str = rule.endpoint.split('.', 1)[0]  # type: ignore
+                blueprint = self.blueprints[blueprint_name]  # type: ignore
+                if not hasattr(blueprint, 'enable_openapi') or \
+                   not blueprint.enable_openapi:  # type: ignore
                     continue
             # add a default 200 response for bare views
             if not hasattr(view_func, '_spec'):
@@ -663,9 +664,11 @@ class APIFlask(Flask):
                 operation_tags = view_func._spec.get('tags')
             else:
                 # use blueprint name as tag
-                if self.tags is None and self.config['AUTO_TAGS'] and blueprint_name is not None:
+                if self.tags is None and self.config['AUTO_TAGS'] and \
+                   blueprint_name is not None:
                     blueprint = self.blueprints[blueprint_name]
-                    operation_tags = get_operation_tags(blueprint, blueprint_name)
+                    operation_tags = \
+                        get_operation_tags(blueprint, blueprint_name)  # type: ignore
 
             for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
                 if method not in rule.methods:
@@ -693,7 +696,8 @@ class APIFlask(Flask):
                         if self.tags is None and self.config['AUTO_TAGS'] and \
                            blueprint_name is not None:
                             blueprint = self.blueprints[blueprint_name]
-                            operation_tags = get_operation_tags(blueprint, blueprint_name)
+                            operation_tags = \
+                                get_operation_tags(blueprint, blueprint_name)  # type: ignore
 
                 operation: Dict[str, Any] = {
                     'parameters': [
@@ -711,7 +715,7 @@ class APIFlask(Flask):
                 else:
                     # auto-generate summary from dotstring or view function name
                     if self.config['AUTO_PATH_SUMMARY']:
-                        operation['summary'] = get_path_summary(view_func)
+                        operation['summary'] = get_path_summary(view_func)  # type: ignore
 
                 # description
                 if view_func._spec.get('description'):
