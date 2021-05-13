@@ -51,3 +51,8 @@ class PaginationType(Protocol):
     has_next: bool
     prev_num: int
     has_prev: bool
+
+
+class ViewFuncType(Protocol):
+    _spec: Any
+    _method_spec: Any

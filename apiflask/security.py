@@ -20,7 +20,7 @@ class _AuthBase:
 
     @property
     def current_user(self) -> Union[None, Any]:
-        return g.get('flask_httpauth_user', None)
+        return g.get('flask_httpauth_user', None)  # type: ignore
 
 
 def handle_auth_error(
@@ -30,7 +30,7 @@ def handle_auth_error(
 
     This handler will return JSON response when `app.json_errors` is `True` (default).
     """
-    if current_app.json_errors:
+    if current_app.json_errors:  # type: ignore
         return _default_error_handler(status_code)
     return 'Unauthorized Access', status_code
 
