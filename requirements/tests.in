@@ -1,0 +1,5 @@
+pytest
+pytest-cov
+flake8
+openapi-spec-validator
+asgiref

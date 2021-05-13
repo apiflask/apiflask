@@ -307,7 +307,7 @@ def output(
         def _response(*args: Any, **kwargs: Any) -> ResponseType:
             if hasattr(current_app, 'ensure_sync'):  # pragma: no cover
                 rv = current_app.ensure_sync(f)(*args, **kwargs)
-            else:
+            else:  # pragma: no cover
                 rv = f(*args, **kwargs)  # for Flask < 2.0
             if isinstance(rv, Response):
                 return rv
