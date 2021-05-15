@@ -2,6 +2,11 @@
 
 0.7.0 plan: <https://github.com/greyli/apiflask/issues/46>
 
+## Version 0.6.1
+
+- Fix async support for Flask 2.0.
+
+
 ## Version 0.6.0
 
 Released: 2021/5/11
