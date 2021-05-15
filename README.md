@@ -187,8 +187,6 @@ class Pet(MethodView):
 <details>
 <summary>Or use <code>async def</code> with Flask 2.0</summary>
 
-Flask 2.0 has the basic support for <code>async</code> and <code>await</code>, check it out with Flask 2.0:
-
 ```bash
 $ pip install -U flask[async]
 ```

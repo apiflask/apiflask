@@ -2,9 +2,21 @@
 
 0.7.0 plan: <https://github.com/greyli/apiflask/issues/46>
 
+
 ## Version 0.6.1
 
-- Fix async support for Flask 2.0.
+Released: 2021/5/15
+
+- Fix type annotaion for Flask 2.0 ([pull #48][pull_48]).
+- Fix type annotaion for `schema` parameter of `input` and `output`
+([pull #49][pull_49]).
+- Fix type annotaion for imports by exporting top-level name explicitly
+([pull #49][pull_49]).
+- Fix async for `dispatch_request` for Flask 2.0 ([pull #50][pull_50]).
+
+[pull_48]: https://github.com/greyli/apiflask/pull/48
+[pull_49]: https://github.com/greyli/apiflask/pull/49
+[pull_50]: https://github.com/greyli/apiflask/pull/50
 
 
 ## Version 0.6.0
