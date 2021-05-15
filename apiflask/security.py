@@ -1,8 +1,4 @@
-from typing import Any
-from typing import Mapping
-from typing import Optional
-from typing import Tuple
-from typing import Union
+import typing as t
 
 from flask import current_app
 from flask import g
@@ -15,17 +11,17 @@ from .exceptions import _default_error_handler
 class _AuthBase:
     """Base class for `HTTPBasicAuth` and `HTTPBasicAuth`."""
 
-    def __init__(self, description: Optional[str] = None) -> None:
+    def __init__(self, description: t.Optional[str] = None) -> None:
         self.description = description
 
     @property
-    def current_user(self) -> Union[None, Any]:
+    def current_user(self) -> t.Union[None, t.Any]:
         return g.get('flask_httpauth_user', None)  # type: ignore
 
 
 def handle_auth_error(
     status_code: int
-) -> Union[Tuple[str, int], Tuple[dict, int], Tuple[dict, int, Mapping[str, str]]]:
+) -> t.Union[t.Tuple[str, int], t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
     """The default error handler for Flask-HTTPAuth.
 
     This handler will return JSON response when `app.json_errors` is `True` (default).
@@ -55,8 +51,8 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
     def __init__(
         self,
         scheme: str = 'Basic',
-        realm: Optional[str] = None,
-        description: Optional[str] = None
+        realm: t.Optional[str] = None,
+        description: t.Optional[str] = None
     ) -> None:
         """Initialize an `HTTPBasicAuth` object.
 
@@ -92,9 +88,9 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
     def __init__(
         self,
         scheme: str = 'Bearer',
-        realm: Optional[str] = None,
-        header: Optional[str] = None,
-        description: Optional[str] = None
+        realm: t.Optional[str] = None,
+        header: t.Optional[str] = None,
+        description: t.Optional[str] = None
     ) -> None:
         """Initialize a `HTTPTokenAuth` object.
 

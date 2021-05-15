@@ -1,5 +1,4 @@
-from typing import Optional
-from typing import Union
+import typing as t
 
 from flask import Blueprint
 
@@ -32,16 +31,16 @@ class APIBlueprint(Blueprint):
         self,
         name: str,
         import_name: str,
-        tag: Optional[Union[str, dict]] = None,
+        tag: t.Optional[t.Union[str, dict]] = None,
         enable_openapi: bool = True,
-        static_folder: Optional[str] = None,
-        static_url_path: Optional[str] = None,
-        template_folder: Optional[str] = None,
-        url_prefix: Optional[str] = None,
-        subdomain: Optional[str] = None,
-        url_defaults: Optional[dict] = None,
-        root_path: Optional[str] = None,
-        cli_group: Union[Optional[str]] = _sentinel  # type: ignore
+        static_folder: t.Optional[str] = None,
+        static_url_path: t.Optional[str] = None,
+        template_folder: t.Optional[str] = None,
+        url_prefix: t.Optional[str] = None,
+        subdomain: t.Optional[str] = None,
+        url_defaults: t.Optional[dict] = None,
+        root_path: t.Optional[str] = None,
+        cli_group: t.Union[t.Optional[str]] = _sentinel  # type: ignore
     ) -> None:
         """Make a blueprint instance.
 

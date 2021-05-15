@@ -1,5 +1,4 @@
-from typing import Any
-from typing import Optional
+import typing as t
 
 from flask import request
 from flask import url_for
@@ -25,7 +24,7 @@ def get_reason_phrase(status_code: int, default: str = 'Unknown') -> str:
     return HTTP_STATUS_CODES.get(status_code, default)
 
 
-def pagination_builder(pagination: PaginationType, **kwargs: Any) -> dict:
+def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
     """A helper function to generate pagination schema.
 
     This function is designed based on Flask-SQLAlchemy's `Pagination` class.
@@ -85,7 +84,7 @@ def pagination_builder(pagination: PaginationType, **kwargs: Any) -> dict:
 
     *Version Added: 0.6.0*
     """
-    endpoint: Optional[str] = request.endpoint
+    endpoint: t.Optional[str] = request.endpoint
     per_page: int = pagination.per_page
 
     def get_page_url(page: int) -> str:

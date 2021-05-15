@@ -1,13 +1,6 @@
+import typing as t
 from collections.abc import Mapping as ABCMapping
 from functools import wraps
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Mapping
-from typing import Optional
-from typing import Type
-from typing import Union
 
 from flask import current_app
 from flask import jsonify
@@ -41,7 +34,7 @@ class FlaskParser(BaseFlaskParser):
         schema: Schema,
         *,
         error_status_code: int,
-        error_headers: Mapping[str, str]
+        error_headers: t.Mapping[str, str]
     ) -> None:
         raise _ValidationError(
             error_status_code or current_app.config['VALIDATION_ERROR_STATUS_CODE'],
@@ -52,10 +45,10 @@ class FlaskParser(BaseFlaskParser):
 
 
 parser: FlaskParser = FlaskParser()
-use_args: Callable = parser.use_args
+use_args: t.Callable = parser.use_args
 
 
-def _annotate(f: Any, **kwargs: Any) -> None:
+def _annotate(f: t.Any, **kwargs: t.Any) -> None:
     if not hasattr(f, '_spec'):
         f._spec = {}
     for key, value in kwargs.items():
@@ -64,10 +57,10 @@ def _annotate(f: Any, **kwargs: Any) -> None:
 
 def auth_required(
     auth: HTTPAuthType,
-    role: Optional[str] = None,
-    roles: Optional[list] = None,
-    optional: Optional[str] = None
-) -> Callable[[DecoratedType], DecoratedType]:
+    role: t.Optional[str] = None,
+    roles: t.Optional[list] = None,
+    optional: t.Optional[str] = None
+) -> t.Callable[[DecoratedType], DecoratedType]:
     """Protect a view with provided authentication settings.
 
     > Be sure to put it under the routes decorators (i.e., `app.route`, `app.get`,
@@ -116,8 +109,8 @@ def auth_required(
 
 def _generate_schema_from_mapping(
     schema: DictSchemaType,
-    schema_name: Optional[str]
-) -> Type[Schema]:
+    schema_name: t.Optional[str]
+) -> t.Type[Schema]:
     if schema_name is None:
         schema_name = 'GeneratedSchema'
     return Schema.from_dict(schema, name=schema_name)()  # type: ignore
@@ -126,11 +119,11 @@ def _generate_schema_from_mapping(
 def input(
     schema: SchemaType,
     location: str = 'json',
-    schema_name: Optional[str] = None,
-    example: Optional[Any] = None,
-    examples: Optional[Dict[str, Any]] = None,
-    **kwargs: Any
-) -> Callable[[DecoratedType], DecoratedType]:
+    schema_name: t.Optional[str] = None,
+    example: t.Optional[t.Any] = None,
+    examples: t.Optional[t.Dict[str, t.Any]] = None,
+    **kwargs: t.Any
+) -> t.Callable[[DecoratedType], DecoratedType]:
     """Add input settings for view functions.
 
     > Be sure to put it under the routes decorators (i.e., `app.route`, `app.get`,
@@ -212,11 +205,11 @@ def input(
 def output(
     schema: SchemaType,
     status_code: int = 200,
-    description: Optional[str] = None,
-    schema_name: Optional[str] = None,
-    example: Optional[Any] = None,
-    examples: Optional[Dict[str, Any]] = None
-) -> Callable[[DecoratedType], DecoratedType]:
+    description: t.Optional[str] = None,
+    schema_name: t.Optional[str] = None,
+    example: t.Optional[t.Any] = None,
+    examples: t.Optional[t.Dict[str, t.Any]] = None
+) -> t.Callable[[DecoratedType], DecoratedType]:
     """Add output settings for view functions.
 
     > Be sure to put it under the routes decorators (i.e., `app.route`, `app.get`,
@@ -298,10 +291,10 @@ def output(
         })
 
         def _jsonify(
-            obj: Any,
+            obj: t.Any,
             many: bool = _sentinel,  # type: ignore
-            *args: Any,
-            **kwargs: Any
+            *args: t.Any,
+            **kwargs: t.Any
         ) -> Response:  # pragma: no cover
             """From Flask-Marshmallow, see the NOTICE file for license informaiton."""
             if many is _sentinel:
@@ -310,7 +303,7 @@ def output(
             return jsonify(data, *args, **kwargs)
 
         @wraps(f)
-        def _response(*args: Any, **kwargs: Any) -> ResponseType:
+        def _response(*args: t.Any, **kwargs: t.Any) -> ResponseType:
             if hasattr(current_app, 'ensure_sync'):  # pragma: no cover
                 rv = current_app.ensure_sync(f)(*args, **kwargs)
             else:  # pragma: no cover
@@ -332,14 +325,14 @@ def output(
 
 
 def doc(
-    summary: Optional[str] = None,
-    description: Optional[str] = None,
-    tag: Optional[str] = None,
-    tags: Optional[List[str]] = None,
-    responses: Optional[Union[List[int], Dict[int, str]]] = None,
-    deprecated: Optional[bool] = None,
-    hide: Optional[bool] = None
-) -> Callable[[DecoratedType], DecoratedType]:
+    summary: t.Optional[str] = None,
+    description: t.Optional[str] = None,
+    tag: t.Optional[str] = None,
+    tags: t.Optional[t.List[str]] = None,
+    responses: t.Optional[t.Union[t.List[int], t.Dict[int, str]]] = None,
+    deprecated: t.Optional[bool] = None,
+    hide: t.Optional[bool] = None
+) -> t.Callable[[DecoratedType], DecoratedType]:
     """Set up the OpenAPI Spec for view functions.
 
     > Be sure to put it under the routes decorators (i.e., `app.route`, `app.get`,

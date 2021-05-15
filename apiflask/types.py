@@ -1,52 +1,42 @@
+import typing as t
 import sys
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import Generator
-from typing import List
-from typing import Mapping
-from typing import Tuple
-from typing import Type
-from typing import TypeVar
-from typing import Union
-from typing import TYPE_CHECKING
+
 if sys.version_info >= (3, 8):
     from typing import Protocol
 else:  # pragma: no cover
     from typing_extensions import Protocol
 
+if t.TYPE_CHECKING:  # pragma: no cover
+    from flask.wrappers import Response  # noqa: F401
+    from werkzeug.datastructures import Headers  # noqa: F401
+    from wsgiref.types import WSGIApplication  # noqa: F401
+    from .fields import Field  # noqa: F401
+    from .schemas import Schema  # noqa: F401
+    from .security import HTTPBasicAuth  # noqa: F401
+    from .security import HTTPTokenAuth  # noqa: F401
 
-if TYPE_CHECKING:  # pragma: no cover
-    from flask.wrappers import Response
-    from werkzeug.datastructures import Headers
-    from wsgiref.types import WSGIApplication
-    from .fields import Field
-    from .schemas import Schema
-    from .security import HTTPBasicAuth
-    from .security import HTTPTokenAuth
 
+DecoratedType = t.TypeVar('DecoratedType', bound=t.Callable[..., t.Any])
+RequestType = t.TypeVar('RequestType')
 
-DecoratedType = TypeVar('DecoratedType', bound=Callable[..., Any])
-RequestType = TypeVar('RequestType')
-
-_Body = Union[str, bytes, Dict[str, Any], Generator[str, None, None], 'Response']
-_Status = Union[str, int]
-_Header = Union[str, List[str], Tuple[str, ...]]
-_Headers = Union[Dict[str, _Header], List[Tuple[str, _Header]], 'Headers']
-ResponseType = Union[
+_Body = t.Union[str, bytes, t.Dict[str, t.Any], t.Generator[str, None, None], 'Response']
+_Status = t.Union[str, int]
+_Header = t.Union[str, t.List[str], t.Tuple[str, ...]]
+_Headers = t.Union[t.Dict[str, _Header], t.List[t.Tuple[str, _Header]], 'Headers']
+ResponseType = t.Union[
     _Body,
-    Tuple[_Body, _Status],
-    Tuple[_Body, _Headers],
-    Tuple[_Body, _Status, _Headers],
+    t.Tuple[_Body, _Status],
+    t.Tuple[_Body, _Headers],
+    t.Tuple[_Body, _Status, _Headers],
     'WSGIApplication'
 ]
-SpecCallbackType = Callable[[Union[dict, str]], Union[dict, str]]
-ErrorCallbackType = Callable[[int, str, Any, Mapping[str, str]], ResponseType]
+SpecCallbackType = t.Callable[[t.Union[dict, str]], t.Union[dict, str]]
+ErrorCallbackType = t.Callable[[int, str, t.Any, t.Mapping[str, str]], ResponseType]
 
-DictSchemaType = Dict[str, Union['Field', type]]
-SchemaType = Union['Schema', Type['Schema'], DictSchemaType]
-HTTPAuthType = Union['HTTPBasicAuth', 'HTTPTokenAuth']
-TagsType = Union[List[str], List[Dict[str, Any]]]
+DictSchemaType = t.Dict[str, t.Union['Field', type]]
+SchemaType = t.Union['Schema', t.Type['Schema'], DictSchemaType]
+HTTPAuthType = t.Union['HTTPBasicAuth', 'HTTPTokenAuth']
+TagsType = t.Union[t.List[str], t.List[t.Dict[str, t.Any]]]
 
 
 class PaginationType(Protocol):
@@ -61,5 +51,5 @@ class PaginationType(Protocol):
 
 
 class ViewFuncType(Protocol):
-    _spec: Any
-    _method_spec: Any
+    _spec: t.Any
+    _method_spec: t.Any

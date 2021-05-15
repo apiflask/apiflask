@@ -1,4 +1,4 @@
-from typing import Any
+import typing as t
 
 from flask.views import MethodViewType
 
@@ -86,7 +86,7 @@ def route_shortcuts(cls):
     """
     cls_route = cls.route
 
-    def _method_route(self, method: str, rule: str, options: Any):
+    def _method_route(self, method: str, rule: str, options: t.Any):
         if 'methods' in options:
             raise RuntimeError('Use the "route" decorator to use the "methods" argument.')
 
@@ -99,23 +99,23 @@ def route_shortcuts(cls):
             return cls_route(self, rule, methods=[method], **options)(f)
         return decorator
 
-    def get(self, rule: str, **options: Any):
+    def get(self, rule: str, **options: t.Any):
         """Shortcut for `app.route()`."""
         return _method_route(self, 'GET', rule, options)
 
-    def post(self, rule: str, **options: Any):
+    def post(self, rule: str, **options: t.Any):
         """Shortcut for `app.route(methods=['POST'])`."""
         return _method_route(self, 'POST', rule, options)
 
-    def put(self, rule: str, **options: Any):
+    def put(self, rule: str, **options: t.Any):
         """Shortcut for `app.route(methods=['PUT'])`."""
         return _method_route(self, 'PUT', rule, options)
 
-    def patch(self, rule: str, **options: Any):
+    def patch(self, rule: str, **options: t.Any):
         """Shortcut for `app.route(methods=['PATCH'])`."""
         return _method_route(self, 'PATCH', rule, options)
 
-    def delete(self, rule: str, **options: Any):
+    def delete(self, rule: str, **options: t.Any):
         """Shortcut for `app.route(methods=['DELETE'])`."""
         return _method_route(self, 'DELETE', rule, options)
 

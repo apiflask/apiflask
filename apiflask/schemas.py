@@ -1,5 +1,4 @@
-from typing import Any
-from typing import Dict
+import typing as t
 
 from marshmallow import Schema as Schema
 from marshmallow.fields import Integer
@@ -7,7 +6,7 @@ from marshmallow.fields import URL
 
 
 # schema for the detail object of validation error response
-validation_error_detail_schema: Dict[str, Any] = {
+validation_error_detail_schema: t.Dict[str, t.Any] = {
     "type": "object",
     "properties": {
         "<location>": {
@@ -26,7 +25,7 @@ validation_error_detail_schema: Dict[str, Any] = {
 
 
 # schema for validation error response
-validation_error_schema: Dict[str, Any] = {
+validation_error_schema: t.Dict[str, t.Any] = {
     "properties": {
         "detail": validation_error_detail_schema,
         "message": {
@@ -41,7 +40,7 @@ validation_error_schema: Dict[str, Any] = {
 
 
 # schema for generic error response
-http_error_schema: Dict[str, Any] = {
+http_error_schema: t.Dict[str, t.Any] = {
     "properties": {
         "detail": {
             "type": "object"

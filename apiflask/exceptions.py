@@ -1,8 +1,4 @@
-from typing import Any
-from typing import Mapping
-from typing import Optional
-from typing import Tuple
-from typing import Union
+import typing as t
 
 from werkzeug.exceptions import default_exceptions
 
@@ -31,9 +27,9 @@ class HTTPError(Exception):
     def __init__(
         self,
         status_code: int,
-        message: Optional[str] = None,
-        detail: Optional[Any] = None,
-        headers: Optional[Mapping[str, str]] = None
+        message: t.Optional[str] = None,
+        detail: t.Optional[t.Any] = None,
+        headers: t.Optional[t.Mapping[str, str]] = None
     ) -> None:
         """Initialize the error response.
 
@@ -67,9 +63,9 @@ class _ValidationError(HTTPError):
 
 def abort(
     status_code: int,
-    message: Optional[str] = None,
-    detail: Optional[Any] = None,
-    headers: Optional[Mapping[str, str]] = None
+    message: t.Optional[str] = None,
+    detail: t.Optional[t.Any] = None,
+    headers: t.Optional[t.Mapping[str, str]] = None
 ) -> None:
     """A function to raise HTTPError exception.
 
@@ -110,10 +106,10 @@ def abort(
 
 def _default_error_handler(
     status_code: int,
-    message: Optional[str] = None,
-    detail: Optional[Any] = None,
-    headers: Optional[Mapping[str, str]] = None
-) -> Union[Tuple[dict, int], Tuple[dict, int, Mapping[str, str]]]:
+    message: t.Optional[str] = None,
+    detail: t.Optional[t.Any] = None,
+    headers: t.Optional[t.Mapping[str, str]] = None
+) -> t.Union[t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
     """The default error handler in APIFlask.
 
     Arguments:
