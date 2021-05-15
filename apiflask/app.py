@@ -266,7 +266,7 @@ class APIFlask(Flask):
         self._register_openapi_blueprint()
         self._register_error_handlers()
 
-    def _register_error_handlers(self):
+    def _register_error_handlers(self) -> None:
         """Register default error handlers for HTTPError and WerkzeugHTTPException."""
         @self.errorhandler(HTTPError)
         def handle_http_error(
@@ -324,7 +324,7 @@ class APIFlask(Flask):
         ):
             return self.make_default_options_response()  # pragma: no cover
         # otherwise dispatch to the handler for that endpoint
-        return self.view_functions[rule.endpoint](*req.view_args.values())
+        return self.view_functions[rule.endpoint](*req.view_args.values())  # type: ignore
 
     def error_processor(
         self,

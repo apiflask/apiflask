@@ -19,6 +19,7 @@ from .exceptions import _ValidationError
 from .schemas import EmptySchema
 from .schemas import Schema
 from .types import DecoratedType
+from .types import DictSchemaType
 from .types import HTTPAuthType
 from .types import RequestType
 from .types import ResponseType
@@ -114,12 +115,12 @@ def auth_required(
 
 
 def _generate_schema_from_mapping(
-    schema: dict,
+    schema: DictSchemaType,
     schema_name: Optional[str]
 ) -> Type[Schema]:
     if schema_name is None:
         schema_name = 'GeneratedSchema'
-    return Schema.from_dict(schema, name=schema_name)()
+    return Schema.from_dict(schema, name=schema_name)()  # type: ignore
 
 
 def input(
@@ -186,7 +187,7 @@ def input(
     if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
-        schema = schema()  # type: ignore
+        schema = schema()
 
     def decorator(f):
         if location not in [
@@ -282,7 +283,7 @@ def output(
     if isinstance(schema, ABCMapping):
         schema = _generate_schema_from_mapping(schema, schema_name)
     if isinstance(schema, type):  # pragma: no cover
-        schema = schema()  # type: ignore
+        schema = schema()
 
     if isinstance(schema, EmptySchema):
         status_code = 204
@@ -296,10 +297,15 @@ def output(
             'examples': examples
         })
 
-        def _jsonify(obj, many=_sentinel, *args, **kwargs):  # pragma: no cover
+        def _jsonify(
+            obj: Any,
+            many: bool = _sentinel,  # type: ignore
+            *args: Any,
+            **kwargs: Any
+        ) -> Response:  # pragma: no cover
             """From Flask-Marshmallow, see the NOTICE file for license informaiton."""
             if many is _sentinel:
-                many = schema.many
+                many = schema.many  # type: ignore
             data = schema.dump(obj, many=many)  # type: ignore
             return jsonify(data, *args, **kwargs)
 
@@ -320,7 +326,7 @@ def output(
                 rv = (json, rv[1], rv[2])
             else:
                 rv = (json, status_code)
-            return rv
+            return rv  # type: ignore
         return _response
     return decorator
 

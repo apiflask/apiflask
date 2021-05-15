@@ -6,6 +6,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import TYPE_CHECKING
+from typing import Union
 
 from apispec import APISpec
 
@@ -121,7 +122,7 @@ def get_security_and_security_schemes(
     return security, security_schemes
 
 
-def get_path_summary(func: Callable, fallback: str = None) -> str:
+def get_path_summary(func: Callable, fallback: Optional[str] = None) -> str:
     """Get path summary from the name or docstring of the view function."""
     summary: str
     docs: list = (func.__doc__ or '').strip().split('\n')
@@ -146,7 +147,7 @@ def get_path_description(func: Callable) -> str:
 def add_response(
     operation: dict,
     status_code: str,
-    schema: SchemaType,
+    schema: Union[SchemaType, dict],
     description: str,
     example: Optional[Any] = None,
     examples: Optional[Dict[str, Any]] = None,
@@ -178,7 +179,7 @@ def add_response_with_schema(
 ) -> None:
     """Add response with given schema to operation."""
     if isinstance(schema, type):
-        schema = schema()  # type: ignore
+        schema = schema()
         add_response(operation, status_code, schema, description)
     elif isinstance(schema, dict):
         if schema_name not in spec.components.schemas:
