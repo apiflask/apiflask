@@ -1,7 +1,7 @@
 from typing import Any
 from typing import Dict
 
-from marshmallow import Schema
+from marshmallow import Schema as Schema
 from marshmallow.fields import Integer
 from marshmallow.fields import URL
 
