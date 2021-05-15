@@ -324,7 +324,7 @@ class APIFlask(Flask):
             return self.ensure_sync(  # type: ignore
                 self.view_functions[rule.endpoint]
             )(*req.view_args.values())
-        else:
+        else:  # pragma: no cover
             return self.view_functions[rule.endpoint](*req.view_args.values())  # type: ignore
 
     def error_processor(
