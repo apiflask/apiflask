@@ -1,11 +1,5 @@
 from __future__ import annotations
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import TYPE_CHECKING
+import typing as t
 
 from apispec import APISpec
 
@@ -13,7 +7,8 @@ from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
 from .types import HTTPAuthType
 from .types import SchemaType
-if TYPE_CHECKING:  # pragma: no cover
+
+if t.TYPE_CHECKING:  # pragma: no cover
     from .blueprint import APIBlueprint
 
 
@@ -29,9 +24,9 @@ default_response = {
 def get_tag(
     blueprint: APIBlueprint,
     blueprint_name: str
-) -> Dict[str, Any]:
+) -> t.Dict[str, t.Any]:
     """Get tag from blueprint object."""
-    tag: Dict[str, Any]
+    tag: t.Dict[str, t.Any]
     if blueprint.tag is not None:
         if isinstance(blueprint.tag, dict):
             tag = blueprint.tag
@@ -45,9 +40,9 @@ def get_tag(
 def get_operation_tags(
     blueprint: APIBlueprint,
     blueprint_name: str
-) -> List[str]:
+) -> t.List[str]:
     """Get operation tag from blueprint object."""
-    tags: List[str]
+    tags: t.List[str]
     if blueprint.tag is not None:
         if isinstance(blueprint.tag, dict):
             tags = [blueprint.tag['name']]
@@ -60,7 +55,7 @@ def get_operation_tags(
 
 def get_auth_name(
     auth: HTTPAuthType,
-    auth_names: List[str]
+    auth_names: t.List[str]
 ) -> str:
     """Get auth name from auth object."""
     name: str
@@ -83,9 +78,9 @@ def get_auth_name(
     return name
 
 
-def get_security_scheme(auth: HTTPAuthType) -> Dict[str, Any]:
+def get_security_scheme(auth: HTTPAuthType) -> t.Dict[str, t.Any]:
     """Get security scheme from auth object."""
-    security_scheme: Dict[str, Any]
+    security_scheme: t.Dict[str, t.Any]
     if isinstance(auth, HTTPTokenAuth):
         if auth.scheme == 'Bearer' and auth.header is None:
             security_scheme = {
@@ -107,12 +102,12 @@ def get_security_scheme(auth: HTTPAuthType) -> Dict[str, Any]:
 
 
 def get_security_and_security_schemes(
-    auth_names: List[str],
-    auth_schemes: List[HTTPAuthType]
-) -> Tuple[Dict[HTTPAuthType, str], Dict[str, Dict[str, str]]]:
+    auth_names: t.List[str],
+    auth_schemes: t.List[HTTPAuthType]
+) -> t.Tuple[t.Dict[HTTPAuthType, str], t.Dict[str, t.Dict[str, str]]]:
     """Make security and security schemes from given auth names and schemes."""
-    security: Dict[HTTPAuthType, str] = {}
-    security_schemes: Dict[str, Dict[str, str]] = {}
+    security: t.Dict[HTTPAuthType, str] = {}
+    security_schemes: t.Dict[str, t.Dict[str, str]] = {}
     for name, auth in zip(auth_names, auth_schemes):
         security[auth] = name
         security_schemes[name] = get_security_scheme(auth)
@@ -121,7 +116,7 @@ def get_security_and_security_schemes(
     return security, security_schemes
 
 
-def get_path_summary(func: Callable, fallback: str = None) -> str:
+def get_path_summary(func: t.Callable, fallback: t.Optional[str] = None) -> str:
     """Get path summary from the name or docstring of the view function."""
     summary: str
     docs: list = (func.__doc__ or '').strip().split('\n')
@@ -134,7 +129,7 @@ def get_path_summary(func: Callable, fallback: str = None) -> str:
     return summary
 
 
-def get_path_description(func: Callable) -> str:
+def get_path_description(func: t.Callable) -> str:
     """Get path description from the docstring of the view function."""
     docs = (func.__doc__ or '').strip().split('\n')
     if len(docs) > 1:
@@ -146,10 +141,10 @@ def get_path_description(func: Callable) -> str:
 def add_response(
     operation: dict,
     status_code: str,
-    schema: SchemaType,
+    schema: t.Union[SchemaType, dict],
     description: str,
-    example: Optional[Any] = None,
-    examples: Optional[Dict[str, Any]] = None,
+    example: t.Optional[t.Any] = None,
+    examples: t.Optional[t.Dict[str, t.Any]] = None,
 ) -> None:
     """Add response to operation."""
     operation['responses'][status_code] = {}
@@ -178,7 +173,7 @@ def add_response_with_schema(
 ) -> None:
     """Add response with given schema to operation."""
     if isinstance(schema, type):
-        schema = schema()  # type: ignore
+        schema = schema()
         add_response(operation, status_code, schema, description)
     elif isinstance(schema, dict):
         if schema_name not in spec.components.schemas:
@@ -192,9 +187,9 @@ def add_response_with_schema(
         )
 
 
-def get_argument(argument_type: str, argument_name: str) -> Dict[str, Any]:
+def get_argument(argument_type: str, argument_name: str) -> t.Dict[str, t.Any]:
     """Make argument from given type and name."""
-    argument: Dict[str, Any] = {
+    argument: t.Dict[str, t.Any] = {
         'in': 'path',
         'name': argument_name,
     }

@@ -1,16 +1,12 @@
-# temp fix for https://github.com/django/asgiref/issues/143
+import typing as t
+import re
 import sys
+import warnings
+
+# temp fix for https://github.com/django/asgiref/issues/143
 if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pragma: no cover
     import asyncio
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # pragma: no cover
-import re
-from typing import Any
-from typing import Dict
-from typing import Iterable
-from typing import List
-from typing import Optional
-from typing import Type
-from typing import Union
 
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
@@ -20,7 +16,7 @@ from flask import jsonify
 from flask import render_template
 from flask.config import ConfigAttribute
 from flask.globals import _request_ctx_stack
-import warnings
+
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from flask_marshmallow import fields
@@ -28,6 +24,7 @@ with warnings.catch_warnings():
         from flask_marshmallow import sqla
     except ImportError:
         sqla = None
+
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .exceptions import HTTPError
@@ -185,14 +182,13 @@ class APIFlask(Flask):
     """
 
     openapi_version: str = ConfigAttribute('OPENAPI_VERSION')  # type: ignore
-    description: Optional[str] = ConfigAttribute('DESCRIPTION')  # type: ignore
-    tags: Optional[Union[List[str], List[Dict[str, str]]]
-                   ] = ConfigAttribute('TAGS')  # type: ignore
-    contact: Optional[Dict[str, str]] = ConfigAttribute('CONTACT')  # type: ignore
-    license: Optional[Dict[str, str]] = ConfigAttribute('LICENSE')  # type: ignore
-    servers: Optional[List[Dict[str, str]]] = ConfigAttribute('SERVERS')  # type: ignore
-    external_docs: Optional[Dict[str, str]] = ConfigAttribute('EXTERNAL_DOCS')  # type: ignore
-    terms_of_service: Optional[str] = ConfigAttribute('TERMS_OF_SERVICE')  # type: ignore
+    description: t.Optional[str] = ConfigAttribute('DESCRIPTION')  # type: ignore
+    tags: t.Optional[TagsType] = ConfigAttribute('TAGS')  # type: ignore
+    contact: t.Optional[t.Dict[str, str]] = ConfigAttribute('CONTACT')  # type: ignore
+    license: t.Optional[t.Dict[str, str]] = ConfigAttribute('LICENSE')  # type: ignore
+    servers: t.Optional[t.List[t.Dict[str, str]]] = ConfigAttribute('SERVERS')  # type: ignore
+    external_docs: t.Optional[t.Dict[str, str]] = ConfigAttribute('EXTERNAL_DOCS')  # type: ignore
+    terms_of_service: t.Optional[str] = ConfigAttribute('TERMS_OF_SERVICE')  # type: ignore
 
     def __init__(
         self,
@@ -205,15 +201,15 @@ class APIFlask(Flask):
         redoc_path: str = '/redoc',
         json_errors: bool = True,
         enable_openapi: bool = True,
-        static_url_path: Optional[str] = None,
+        static_url_path: t.Optional[str] = None,
         static_folder: str = 'static',
-        static_host: Optional[str] = None,
+        static_host: t.Optional[str] = None,
         host_matching: bool = False,
         subdomain_matching: bool = False,
         template_folder: str = 'templates',
-        instance_path: Optional[str] = None,
+        instance_path: t.Optional[str] = None,
         instance_relative_config: bool = False,
-        root_path: Optional[str] = None
+        root_path: t.Optional[str] = None
     ) -> None:
         """Make an app instance.
 
@@ -260,13 +256,13 @@ class APIFlask(Flask):
         self.enable_openapi = enable_openapi
         self.json_errors = json_errors
 
-        self.spec_callback: Optional[SpecCallbackType] = None
+        self.spec_callback: t.Optional[SpecCallbackType] = None
         self.error_callback: ErrorCallbackType = _default_error_handler  # type: ignore
-        self._spec: Optional[Union[dict, str]] = None
+        self._spec: t.Optional[t.Union[dict, str]] = None
         self._register_openapi_blueprint()
         self._register_error_handlers()
 
-    def _register_error_handlers(self):
+    def _register_error_handlers(self) -> None:
         """Register default error handlers for HTTPError and WerkzeugHTTPException."""
         @self.errorhandler(HTTPError)
         def handle_http_error(
@@ -324,7 +320,7 @@ class APIFlask(Flask):
         ):
             return self.make_default_options_response()  # pragma: no cover
         # otherwise dispatch to the handler for that endpoint
-        return self.view_functions[rule.endpoint](*req.view_args.values())
+        return self.view_functions[rule.endpoint](*req.view_args.values())  # type: ignore
 
     def error_processor(
         self,
@@ -450,7 +446,7 @@ class APIFlask(Flask):
         ):
             self.register_blueprint(bp)
 
-    def get_spec(self, spec_format: str = 'json') -> Union[dict, str]:
+    def get_spec(self, spec_format: str = 'json') -> t.Union[dict, str]:
         """Get the current OAS document file.
 
         Arguments:
@@ -492,7 +488,7 @@ class APIFlask(Flask):
         return f
 
     @property
-    def spec(self) -> Union[dict, str]:
+    def spec(self) -> t.Union[dict, str]:
         """Get the current OAS document file.
 
         This property will call [get_spec][apiflask.APIFlask.get_spec] method.
@@ -500,7 +496,7 @@ class APIFlask(Flask):
         return self.get_spec()
 
     @staticmethod
-    def _schema_name_resolver(schema: Type[Schema]) -> str:
+    def _schema_name_resolver(schema: t.Type[Schema]) -> str:
         """Default schema name resovler."""
         name = schema.__class__.__name__
         if name.endswith('Schema'):
@@ -522,16 +518,16 @@ class APIFlask(Flask):
             info['description'] = self.description
         return info
 
-    def _make_tags(self) -> List[Dict[str, Any]]:
+    def _make_tags(self) -> t.List[t.Dict[str, t.Any]]:
         """Make OpenAPI tags object."""
-        tags: Optional[TagsType] = self.tags
+        tags: t.Optional[TagsType] = self.tags
         if tags is not None:
             # convert simple tags list into standard OpenAPI tags
             if isinstance(tags[0], str):
                 for index, tag_name in enumerate(tags):
                     tags[index] = {'name': tag_name}  # type: ignore
         else:
-            tags: List[Dict[str, Any]] = []  # type: ignore
+            tags: t.List[t.Dict[str, t.Any]] = []  # type: ignore
             if self.config['AUTO_TAGS']:
                 # auto-generate tags from blueprints
                 for blueprint_name, blueprint in self.blueprints.items():
@@ -539,7 +535,7 @@ class APIFlask(Flask):
                        not hasattr(blueprint, 'enable_openapi') or \
                        not blueprint.enable_openapi:  # type: ignore
                         continue
-                    tag: Dict[str, Any] = get_tag(blueprint, blueprint_name)  # type: ignore
+                    tag: t.Dict[str, t.Any] = get_tag(blueprint, blueprint_name)  # type: ignore
                     tags.append(tag)  # type: ignore
         return tags  # type: ignore
 
@@ -573,9 +569,9 @@ class APIFlask(Flask):
                 ('string', 'url')
 
         # security schemes
-        auth_names: List[str] = []
-        auth_schemes: List[HTTPAuthType] = []
-        auth_blueprints: Dict[Optional[str], Dict[str, Any]] = {}
+        auth_names: t.List[str] = []
+        auth_schemes: t.List[HTTPAuthType] = []
+        auth_blueprints: t.Dict[t.Optional[str], t.Dict[str, t.Any]] = {}
 
         def _update_auth_info(auth: HTTPAuthType) -> None:
             # update auth_schemes and auth_names
@@ -618,18 +614,18 @@ class APIFlask(Flask):
             spec.components.security_scheme(name, scheme)
 
         # paths
-        paths: Dict[str, Dict[str, Any]] = {}
-        rules: List[Any] = sorted(
+        paths: t.Dict[str, t.Dict[str, t.Any]] = {}
+        rules: t.List[t.Any] = sorted(
             list(self.url_map.iter_rules()), key=lambda rule: len(rule.rule)
         )
         for rule in rules:
-            operations: Dict[str, Any] = {}
+            operations: t.Dict[str, t.Any] = {}
             view_func: ViewFuncType = self.view_functions[rule.endpoint]  # type: ignore
             # skip endpoints from openapi blueprint and the built-in static endpoint
             if rule.endpoint.startswith('openapi') or \
                rule.endpoint.startswith('static'):
                 continue
-            blueprint_name: Optional[str] = None  # type: ignore
+            blueprint_name: t.Optional[str] = None  # type: ignore
             if '.' in rule.endpoint:
                 blueprint_name: str = rule.endpoint.split('.', 1)[0]  # type: ignore
                 blueprint = self.blueprints[blueprint_name]  # type: ignore
@@ -659,7 +655,7 @@ class APIFlask(Flask):
                 continue
 
             # operation tags
-            operation_tags: Optional[List[str]] = None
+            operation_tags: t.Optional[t.List[str]] = None
             if view_func._spec.get('tags'):
                 operation_tags = view_func._spec.get('tags')
             else:
@@ -699,7 +695,7 @@ class APIFlask(Flask):
                             operation_tags = \
                                 get_operation_tags(blueprint, blueprint_name)  # type: ignore
 
-                operation: Dict[str, Any] = {
+                operation: t.Dict[str, t.Any] = {
                     'parameters': [
                         {'in': location, 'schema': schema}
                         for schema, location in view_func._spec.get('args', [])
@@ -780,10 +776,10 @@ class APIFlask(Flask):
                     )
 
                 if view_func._spec.get('responses'):
-                    responses: Union[List[int], Dict[int, str]] \
+                    responses: t.Union[t.List[int], t.Dict[int, str]] \
                         = view_func._spec.get('responses')
                     if isinstance(responses, list):
-                        responses: Dict[int, str] = {}  # type: ignore
+                        responses: t.Dict[int, str] = {}  # type: ignore
                         for status_code in view_func._spec.get('responses'):
                             responses[  # type: ignore
                                 status_code
@@ -843,9 +839,9 @@ class APIFlask(Flask):
                 operations[method.lower()] = operation
 
             # parameters
-            path_arguments: Iterable = re.findall(r'<(([^<:]+:)?([^>]+))>', rule.rule)
+            path_arguments: t.Iterable = re.findall(r'<(([^<:]+:)?([^>]+))>', rule.rule)
             if path_arguments:
-                arguments: List[Dict[str, str]] = []
+                arguments: t.List[t.Dict[str, str]] = []
                 for _, argument_type, argument_name in path_arguments:
                     argument = get_argument(argument_type, argument_name)
                     arguments.append(argument)
@@ -861,7 +857,7 @@ class APIFlask(Flask):
 
         for path, operations in paths.items():
             # sort by method before adding them to the spec
-            sorted_operations: Dict[str, Any] = {}
+            sorted_operations: t.Dict[str, t.Any] = {}
             for method in ['get', 'post', 'put', 'patch', 'delete']:
                 if method in operations:
                     sorted_operations[method] = operations[method]
