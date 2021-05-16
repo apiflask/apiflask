@@ -320,12 +320,13 @@ class APIFlask(Flask):
         ):
             return self.make_default_options_response()  # pragma: no cover
         # otherwise dispatch to the handler for that endpoint
+        view_function = self.view_functions[rule.endpoint]
         if hasattr(self, 'ensure_sync'):  # pragma: no cover
-            return self.ensure_sync(  # type: ignore
-                self.view_functions[rule.endpoint]
-            )(*req.view_args.values())
-        else:  # pragma: no cover
-            return self.view_functions[rule.endpoint](*req.view_args.values())  # type: ignore
+            view_function = self.ensure_sync(view_function)
+        if rule.endpoint.endswith('static'):
+            return view_function(**req.view_args)  # type: ignore
+        else:
+            return view_function(*req.view_args.values())  # type: ignore
 
     def error_processor(
         self,
