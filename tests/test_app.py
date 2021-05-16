@@ -144,3 +144,8 @@ def test_skip_raw_blueprint(app, client):
     assert '/bar' not in rv.json['paths']
     assert '/baz' in rv.json['paths']
     assert '/spam' in rv.json['paths']
+
+
+def test_dispatch_static_request(client):
+    rv = client.get('/static/hello.css')
+    assert rv.status_code == 404

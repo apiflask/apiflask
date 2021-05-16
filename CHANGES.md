@@ -3,6 +3,15 @@
 0.7.0 plan: <https://github.com/greyli/apiflask/issues/46>
 
 
+## Version 0.6.2
+
+Released: 2021/5/16
+
+- Fix static request dispatch for Flask 2.0 ([issue #52][issue_52]).
+
+[issue_52]: https://github.com/greyli/apiflask/issues/52
+
+
 ## Version 0.6.1
 
 Released: 2021/5/15
