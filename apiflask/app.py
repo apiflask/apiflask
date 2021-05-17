@@ -323,7 +323,8 @@ class APIFlask(Flask):
         view_function = self.view_functions[rule.endpoint]
         if hasattr(self, 'ensure_sync'):  # pragma: no cover
             view_function = self.ensure_sync(view_function)
-        if rule.endpoint.endswith('static'):
+        if rule.endpoint == 'static':
+            # app static route only accepts keyword arguments, see flask#3762
             return view_function(**req.view_args)  # type: ignore
         else:
             return view_function(*req.view_args.values())  # type: ignore
