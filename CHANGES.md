@@ -3,6 +3,15 @@
 0.7.0 plan: <https://github.com/greyli/apiflask/issues/46>
 
 
+## Version 0.6.3
+
+Released: 2021/5/17
+
+- Improve static request dispatch ([pull #54][pull_54]).
+
+[pull_54]: https://github.com/greyli/apiflask/pull/54
+
+
 ## Version 0.6.2
 
 Released: 2021/5/16
