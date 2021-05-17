@@ -9,6 +9,7 @@ from apiflask import Schema
 from apiflask.fields import Integer
 from apiflask.fields import String
 
+from .schemas import FooSchema
 from .schemas import PaginationSchema
 
 
@@ -146,6 +147,25 @@ def test_skip_raw_blueprint(app, client):
     assert '/spam' in rv.json['paths']
 
 
-def test_dispatch_static_request(client):
-    rv = client.get('/static/hello.css')
+def test_dispatch_static_request(app, client):
+    # keyword arguments
+    rv = client.get('/static/hello.css')  # endpoint: static
+    assert rv.status_code == 404
+
+    # positional arguments
+    @app.get('/mystatic/<int:pet_id>')
+    @input(FooSchema)
+    def mystatic(pet_id, foo):  # endpoint: mystatic
+        return {'pet_id': pet_id, 'foo': foo}
+
+    rv = client.get('/mystatic/2', json={'id': 1, 'name': 'foo'})
+    assert rv.status_code == 200
+    assert rv.json['pet_id'] == 2
+    assert rv.json['foo'] == {'id': 1, 'name': 'foo'}
+
+    # positional arguments
+    # blueprint static route accepts both keyword/positional arguments
+    bp = APIBlueprint('foo', __name__, static_folder='static')
+    app.register_blueprint(bp, url_prefix='/foo')
+    rv = client.get('/foo/static/hello.css')  # endpoint: foo.static
     assert rv.status_code == 404
