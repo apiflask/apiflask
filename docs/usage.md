@@ -380,12 +380,29 @@ def delete_pet(pet_id):
     return '', 204
 ```
 
-!!! warning
+!!! note "Handling multiple HTTP methods in one view function"
 
     You can't pass the `methods` argument to route shortcuts. If you want the
-    view function to accept multiple methods, you still need to use the
-    `app.route()` decorator. You can mix the use of `app.route()` with the
-    shortcuts in your application.
+    view function to accept multiple HTTP methods, you will need to use the
+    `app.route()` decorator to pass the `methods` argument:
+
+    ```python
+    @app.route('/', methods=['GET', 'POST'])
+    def index():
+        return {'message': 'hello'}
+    ```
+
+    Or you can do something like this:
+
+    ```python
+    @app.get('/')
+    @app.post('/')
+    def index():
+        return {'message': 'hello'}
+    ```
+
+    By the way, you can mix the use of `app.route()` with the shortcuts in your
+    application.
 
 
 ## Use `@input` to validate and deserialize request data
