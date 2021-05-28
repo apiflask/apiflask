@@ -264,7 +264,7 @@ class APIFlask(Flask):
 
     def _register_error_handlers(self) -> None:
         """Register default error handlers for HTTPError and WerkzeugHTTPException."""
-        @self.errorhandler(HTTPError)
+        @self.errorhandler(HTTPError)  # type: ignore
         def handle_http_error(
             error: HTTPError
         ) -> ResponseType:
@@ -276,7 +276,7 @@ class APIFlask(Flask):
             )
 
         if self.json_errors:
-            @self.errorhandler(WerkzeugHTTPException)
+            @self.errorhandler(WerkzeugHTTPException)  # type: ignore
             def handle_werkzeug_errrors(
                 error: WerkzeugHTTPException
             ) -> ResponseType:

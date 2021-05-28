@@ -16,7 +16,7 @@ class _AuthBase:
 
     @property
     def current_user(self) -> t.Union[None, t.Any]:
-        return g.get('flask_httpauth_user', None)  # type: ignore
+        return g.get('flask_httpauth_user', None)
 
 
 def handle_auth_error(
