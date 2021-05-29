@@ -6,9 +6,13 @@ from apiflask import output
 from .schemas import FooSchema
 
 
-def test_async_view(app, client):
+def skip_flask1(app):
     if not hasattr(app, 'ensure_sync'):
         pytest.skip('This test requires Flask 2.0 or higher')
+
+
+def test_async_view(app, client):
+    skip_flask1(app)
 
     @app.get('/')
     async def index():
@@ -20,8 +24,7 @@ def test_async_view(app, client):
 
 
 def test_output_on_async_view(app, client):
-    if not hasattr(app, 'ensure_sync'):
-        pytest.skip('This test requires Flask 2.0 or higher')
+    skip_flask1(app)
 
     @app.get('/foo')
     @output(FooSchema)
@@ -39,3 +42,29 @@ def test_output_on_async_view(app, client):
     assert rv.json['paths']['/foo']['get']['responses']['200']
     assert rv.json['paths']['/foo']['get']['responses']['200'][
         'content']['application/json']['schema']['$ref'] == '#/components/schemas/Foo'
+
+
+def test_async_error_processor(app, client):
+    skip_flask1(app)
+
+    @app.error_processor
+    async def custom_error_processor(status_code, message, detail, headers):
+        return {'foo': 'test'}, status_code, headers
+
+    rv = client.get('/foo')
+    assert rv.status_code == 404
+    assert rv.json['foo'] == 'test'
+
+
+def test_async_spec_processor(app, client):
+    skip_flask1(app)
+
+    @app.spec_processor
+    async def update_spec(spec):
+        spec['info']['title'] = 'Updated Title'
+        return spec
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    rv.json['info']['title'] == 'Updated Title'
