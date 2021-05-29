@@ -333,20 +333,30 @@ class APIFlask(Flask):
         self,
         f: ErrorCallbackType
     ) -> ErrorCallbackType:
-        """A decorator to register an error handler callback function.
+        """A decorator to register an error response processor function.
 
-        The callback function will be called when the validation error hanppend
-        when parsing a request or an exception triggered with
-        [`HTTPError`][apiflask.exceptions.HTTPError] or
-        [`abort`][apiflask.exceptions.abort]. It must accept four
-        positional arguments (i.e., `status_code, message, detail, headers`)
-        and return a valid response.
+        The decorated callback function will be called in the following situations:
+
+        - An validation error happened when parsing a request.
+        - An exception triggered with [`HTTPError`][apiflask.exceptions.HTTPError]
+        - An exception triggered with [`abort`][apiflask.exceptions.abort].
+
+        If you have set the `json_errors` argument to `True` when creating the `app`
+        instance, this callback function will also be used for normal HTTP errors,
+        for example, 404 and 500 errors, etc. You can still register a specific error
+        handler for a specific error code or exception with the
+        `app.errorhanlder(code_or_exection)` decorator, in that case, the return
+        value of the error handler will be used as the response when the corresponding
+        error or exception happened.
+
+        The callback function must accept four positional arguments (i.e.,
+        `status_code, message, detail, headers`) and return a valid response.
 
         Examples:
 
         ```python
         @app.error_processor
-        def my_error_handler(status_code, message, detail, headers):
+        def my_error_processor(status_code, message, detail, headers):
             return {
                 'status_code': status_code,
                 'message': message,
@@ -387,8 +397,8 @@ class APIFlask(Flask):
         If you want, you can rewrite the whole response body to anything you like:
 
         ```python
-        @app.errorhandler_callback
-        def my_error_handler(status_code, message, detail, headers):
+        @app.error_processor
+        def my_error_processor(status_code, message, detail, headers):
             return {'error_detail': detail}, status_code, headers
         ```
 
@@ -396,7 +406,10 @@ class APIFlask(Flask):
         the detailed information about the validation error when the validation error
         happened.
         """
-        self.error_callback = f
+        if hasattr(self, 'ensure_sync'):  # pragma: no cover
+            self.error_callback = self.ensure_sync(f)
+        else:  # pragma: no cover
+            self.error_callback = f
         return f
 
     def _register_openapi_blueprint(self) -> None:
@@ -481,7 +494,7 @@ class APIFlask(Flask):
         ```python
         @app.spec_processor
         def update_spec(spec):
-            spec['title'] = 'Updated Title'
+            spec['info']['title'] = 'Updated Title'
             return spec
         ```
 
@@ -491,7 +504,10 @@ class APIFlask(Flask):
         - `'json'` -> dict
         - `'yaml'` -> string
         """
-        self.spec_callback = f
+        if hasattr(self, 'ensure_sync'):  # pragma: no cover
+            self.spec_callback = self.ensure_sync(f)
+        else:  # pragma: no cover
+            self.spec_callback = f
         return f
 
     @property
