@@ -32,7 +32,7 @@ class PetModel(db.Model):
 
 
 @app.before_first_request
-def init_datebase():
+def init_database():
     db.create_all()
     for pet_data in pets:
         pet = PetModel(**pet_data)

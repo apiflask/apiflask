@@ -296,7 +296,7 @@ def output(
             *args: t.Any,
             **kwargs: t.Any
         ) -> Response:  # pragma: no cover
-            """From Flask-Marshmallow, see the NOTICE file for license informaiton."""
+            """From Flask-Marshmallow, see the NOTICE file for license information."""
             if many is _sentinel:
                 many = schema.many  # type: ignore
             data = schema.dump(obj, many=many)  # type: ignore

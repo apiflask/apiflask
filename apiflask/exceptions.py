@@ -19,7 +19,7 @@ class HTTPError(Exception):
     @app.get('/<name>')
     def hello(name):
         if name == 'Foo':
-            rasie HTTPError(404, 'This man is missing.')
+            raise HTTPError(404, 'This man is missing.')
         return f'Hello, escape{name}'!
     ```
     """

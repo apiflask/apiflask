@@ -220,7 +220,7 @@ def test_doc_responses_with_methodview(app, client):
         @input(FooSchema)
         @output(FooSchema)
         @doc(responses=[200, 400, 404, 500])
-        def get():
+        def get(self):
             pass
 
     rv = client.get('/openapi.json')
