@@ -405,6 +405,10 @@ class APIFlask(Flask):
         However, I would recommend keeping the `detail` in the response since it contains
         the detailed information about the validation error when the validation error
         happened.
+
+        *Version Changed: 0.7.0*
+
+        - Support registering an async callback function.
         """
         if hasattr(self, 'ensure_sync'):  # pragma: no cover
             self.error_callback = self.ensure_sync(f)
@@ -503,6 +507,10 @@ class APIFlask(Flask):
 
         - `'json'` -> dict
         - `'yaml'` -> string
+
+        *Version Changed: 0.7.0*
+
+        - Support registering an async callback function.
         """
         if hasattr(self, 'ensure_sync'):  # pragma: no cover
             self.spec_callback = self.ensure_sync(f)

@@ -2,6 +2,11 @@
 
 0.7.0 plan: <https://github.com/greyli/apiflask/issues/46>
 
+- Support using async error processor and async spec processor
+([pull #57][pull_57]).
+
+[pull_54]: https://github.com/greyli/apiflask/pull/57
+
 
 ## Version 0.6.3
 
