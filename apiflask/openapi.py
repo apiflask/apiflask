@@ -182,7 +182,7 @@ def add_response_with_schema(
         add_response(operation, status_code, schema_ref, description)
     else:
         raise RuntimeError(
-            'The schema must be a Marshamallow schema \
+            'The schema must be a Marshmallow schema \
             class or an OpenAPI schema dict.'
         )
 

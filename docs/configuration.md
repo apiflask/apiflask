@@ -44,7 +44,7 @@ app.config.update(
 )
 ```
 
-For a large application, you can store all the configuration variable in a seprate
+For a large application, you can store all the configuration variable in a separate
 file, for example, a file called `settings.py`:
 
 ```python

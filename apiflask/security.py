@@ -69,7 +69,7 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
 
 
 class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
-    """Flask-HTTPAuth's HTTPTokenAuth with some modificaiton.
+    """Flask-HTTPAuth's HTTPTokenAuth with some modifications.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.

@@ -19,7 +19,7 @@ class PetModel(db.Model):
 
 
 @app.before_first_request
-def init_datebase():
+def init_database():
     db.create_all()
     for i in range(100):
         name = f'Pet {i}'

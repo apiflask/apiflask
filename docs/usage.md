@@ -740,7 +740,7 @@ class Pet(Model):
     ```
 
 The default status code is `200`, if you want to use a different status code,
-you can pass a `status_code` arguent in the `@output` decorator:
+you can pass a `status_code` argument in the `@output` decorator:
 
 ```python hl_lines="3"
 @app.post('/pets')
@@ -983,7 +983,7 @@ class Pet(MethodView):
 ```
 
 If you want to apply a decorator for all methods, instead of repeat yourself,
-you can pass the decorator to the class attriabute `decorators`, it accepts
+you can pass the decorator to the class attribute `decorators`, it accepts
 a list of decorators:
 
 ```python hl_lines="4"

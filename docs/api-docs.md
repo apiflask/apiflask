@@ -174,7 +174,7 @@ into a subfolder called `js`, then the URL will be `/static/js/redoc.standalone.
 
 Or with npm:
 
-- Initilize the npm in `static` folder with `npm init`.
+- Initialize the npm in `static` folder with `npm init`.
 - Install the file via `npm i redoc` command.
 - Pass the URL to the corresponding config:
     ```python
