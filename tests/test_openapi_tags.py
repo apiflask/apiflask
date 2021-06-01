@@ -4,6 +4,11 @@ from openapi_spec_validator import validate_spec
 from apiflask import APIBlueprint
 
 
+def skip_flask1():
+    if not hasattr(APIBlueprint, 'register_blueprint'):
+        pytest.skip('This test requires Flask 2.0 or higher')
+
+
 def test_tags(app, client):
     assert app.tags is None
     app.tags = [
@@ -86,6 +91,22 @@ def test_auto_tag_from_blueprint(app, client):
     assert {'name': 'Foo'} in rv.json['tags']
 
 
+def test_auto_tag_from_nesting_blueprints(app, client):
+    skip_flask1()
+
+    parent_bp = APIBlueprint('parent', __name__)
+    child_bp = APIBlueprint('child', __name__)
+    parent_bp.register_blueprint(child_bp)
+    app.register_blueprint(parent_bp)
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['tags']
+    assert {'name': 'Parent'} in rv.json['tags']
+    assert {'name': 'Parent.Child'} in rv.json['tags']
+
+
 def test_path_tags(app, client):
     bp = APIBlueprint('foo', __name__)
 
@@ -115,3 +136,27 @@ def test_path_tags_with_blueprint_tag(app, client, tag):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/']['get']['tags'] == ['test']
+
+
+def test_path_tags_with_nesting_blueprints(app, client):
+    skip_flask1()
+
+    parent_bp = APIBlueprint('parent', __name__, url_prefix='/parent')
+    child_bp = APIBlueprint('child', __name__, url_prefix='/child')
+
+    @parent_bp.get('/')
+    def foo():
+        pass
+
+    @child_bp.get('/')
+    def bar():
+        pass
+
+    parent_bp.register_blueprint(child_bp)
+    app.register_blueprint(parent_bp)
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/parent/']['get']['tags'] == ['Parent']
+    assert rv.json['paths']['/parent/child/']['get']['tags'] == ['Parent.Child']
