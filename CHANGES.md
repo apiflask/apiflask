@@ -4,8 +4,10 @@
 
 - Support using async error processor and async spec processor
 ([pull #57][pull_57]).
+- Fix auto-tag support for nesting blueprint ([pull #58][pull_58]).
 
-[pull_54]: https://github.com/greyli/apiflask/pull/57
+[pull_57]: https://github.com/greyli/apiflask/pull/57
+[pull_58]: https://github.com/greyli/apiflask/pull/58
 
 
 ## Version 0.6.3

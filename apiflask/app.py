@@ -658,7 +658,7 @@ class APIFlask(Flask):
                 continue
             blueprint_name: t.Optional[str] = None  # type: ignore
             if '.' in rule.endpoint:
-                blueprint_name: str = rule.endpoint.split('.', 1)[0]  # type: ignore
+                blueprint_name: str = rule.endpoint.rsplit('.', 1)[0]  # type: ignore
                 blueprint = self.blueprints[blueprint_name]  # type: ignore
                 if not hasattr(blueprint, 'enable_openapi') or \
                    not blueprint.enable_openapi:  # type: ignore
