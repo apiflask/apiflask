@@ -55,6 +55,7 @@ nav:
   - Comparison and Motivations: comparison.md
   - Authors: authors.md
   - Changelog: changelog.md
+  - Contributing Guide: contributing.md
   - WIP:
     - Schema, Fields, and Validators: schema.md
     - Request Validating: request.md
@@ -62,7 +63,6 @@ nav:
     - Authentication: security.md
     - OpenAPI Generating: openapi.md
     - Tutorial: tutorial/index.md
-    - Contributing Guide: contributing.md
 plugins:
   - search
   - mkdocstrings:
