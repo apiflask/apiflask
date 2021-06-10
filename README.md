@@ -51,7 +51,6 @@ For Windows:
 - Issue Tracker: <https://github.com/greyli/apiflask/issues>
 - Discussion: <https://github.com/greyli/apiflask/discussions>
 - Twitter: <https://twitter.com/apiflask>
-- Donate on Open Collective: <https://opencollective.com/apiflask>
 
 
 ## Example

@@ -24,7 +24,6 @@ setuptools.setup(
         'Source': 'https://github.com/greyli/apiflask',
         'Changelog': 'https://apiflask.com/changelog',
         'Issue Tracker': 'https://github.com/greyli/apiflask/issues',
-        'Funding': 'https://opencollective.com/apiflask',
     },
     packages=['apiflask'],
     package_data={

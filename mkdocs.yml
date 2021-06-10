@@ -55,7 +55,6 @@ nav:
   - Comparison and Motivations: comparison.md
   - Authors: authors.md
   - Changelog: changelog.md
-  - Donate to APIFlask: https://opencollective.com/apiflask
   - WIP:
     - Schema, Fields, and Validators: schema.md
     - Request Validating: request.md
