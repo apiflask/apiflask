@@ -5,7 +5,7 @@
 
 [![Build status](https://github.com/greyli/apiflask/workflows/build/badge.svg)](https://github.com/greyli/apiflask/actions) [![codecov](https://codecov.io/gh/greyli/apiflask/branch/master/graph/badge.svg?token=2CFPCZ1DMY)](https://codecov.io/gh/greyli/apiflask)
 
-APIFlask is a lightweight Python web API framework based on [Flask](https://github.com/pallets/flask/) and [marshmallow-code](https://github.com/marshmallow-code) projects. It's easy to use, highly customizable, ORM/ODM-agnostic, and 100% compatible with the Flask ecosystem. It starts as a fork of [APIFairy](https://github.com/miguelgrinberg/APIFairy) and is inspired by [flask-smorest](https://github.com/marshmallow-code/flask-smorest) and [FastAPI](https://github.com/tiangolo/fastapi) (see *[Comparison and Motivations](https://apiflask.com/comparison)* for the comparison between these projects).
+APIFlask is a lightweight Python web API framework based on [Flask](https://github.com/pallets/flask) and [marshmallow-code](https://github.com/marshmallow-code) projects. It's easy to use, highly customizable, ORM/ODM-agnostic, and 100% compatible with the Flask ecosystem. It starts as a fork of [APIFairy](https://github.com/miguelgrinberg/APIFairy) and is inspired by [flask-smorest](https://github.com/marshmallow-code/flask-smorest) and [FastAPI](https://github.com/tiangolo/fastapi) (see *[Comparison and Motivations](https://apiflask.com/comparison)* for the comparison between these projects).
 
 With APIFlask, you will have:
 
@@ -204,7 +204,7 @@ async def say_hello():
     return {'message': 'Hello!'}
 ```
 
-See <em><a href="https://flask.palletsprojects.com/en/2.0.x/async-await/">Using async and await</a></em> for the details of the async support in Flask 2.0.
+See <em><a href="https://flask.palletsprojects.com/en/2.0.x/async-await">Using async and await</a></em> for the details of the async support in Flask 2.0.
 
 </details>
 
@@ -229,7 +229,7 @@ For some complete examples, see [/examples](https://github.com/greyli/apiflask/t
 
 ## Relationship with Flask
 
-APIFlask is a thin wrapper on top of Flask. You only need to remember four differences (see *[Migrating from Flask](https://apiflask.com/migrating/)* for more details):
+APIFlask is a thin wrapper on top of Flask. You only need to remember four differences (see *[Migrating from Flask](https://apiflask.com/migrating)* for more details):
 
 - When creating an application instance, use `APIFlask` instead of `Flask`.
 - When creating a blueprint instance, use `APIBlueprint` instead of `Blueprint`.
