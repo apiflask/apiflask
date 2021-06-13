@@ -227,10 +227,17 @@ class APIFlask(Flask):
             docs_path: The path to Swagger UI documentation, defaults to `/docs`.
             docs_oauth2_redirect_path: The path to Swagger UI OAuth redirect.
             redoc_path: The path to Redoc documentation, defaults to `/redoc`.
+            openapi_blueprint_url_prefix: The url prefix of the OpenAPI blueprint. This
+                prefix will append before all the OpenAPI-related paths (`sepc_path`,
+                `docs_path`, etc.), defaults to `None`.
             json_errors: If `True`, APIFlask will return a JSON response for HTTP errors.
             enable_openapi: If `False`, will disable OpenAPI spec and API docs views.
 
         Other keyword arguments are directly passed to `flask.Flask`.
+
+        *Version Changed: 0.7.0*
+
+        - Add `openapi_blueprint_url_prefix` argument.
         """
         super(APIFlask, self).__init__(
             import_name,
