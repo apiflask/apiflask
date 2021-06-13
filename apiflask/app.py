@@ -199,6 +199,7 @@ class APIFlask(Flask):
         docs_path: str = '/docs',
         docs_oauth2_redirect_path: str = '/docs/oauth2-redirect',
         redoc_path: str = '/redoc',
+        openapi_blueprint_url_prefix: t.Optional[str] = None,
         json_errors: bool = True,
         enable_openapi: bool = True,
         static_url_path: t.Optional[str] = None,
@@ -226,10 +227,17 @@ class APIFlask(Flask):
             docs_path: The path to Swagger UI documentation, defaults to `/docs`.
             docs_oauth2_redirect_path: The path to Swagger UI OAuth redirect.
             redoc_path: The path to Redoc documentation, defaults to `/redoc`.
+            openapi_blueprint_url_prefix: The url prefix of the OpenAPI blueprint. This
+                prefix will append before all the OpenAPI-related paths (`sepc_path`,
+                `docs_path`, etc.), defaults to `None`.
             json_errors: If `True`, APIFlask will return a JSON response for HTTP errors.
             enable_openapi: If `False`, will disable OpenAPI spec and API docs views.
 
         Other keyword arguments are directly passed to `flask.Flask`.
+
+        *Version Changed: 0.7.0*
+
+        - Add `openapi_blueprint_url_prefix` argument.
         """
         super(APIFlask, self).__init__(
             import_name,
@@ -253,6 +261,7 @@ class APIFlask(Flask):
         self.docs_path = docs_path
         self.redoc_path = redoc_path
         self.docs_oauth2_redirect_path = docs_oauth2_redirect_path
+        self.openapi_blueprint_url_prefix = openapi_blueprint_url_prefix
         self.enable_openapi = enable_openapi
         self.json_errors = json_errors
 
@@ -427,7 +436,8 @@ class APIFlask(Flask):
             __name__,
             template_folder='templates',
             static_folder='static',
-            static_url_path='/apiflask'
+            static_url_path='/apiflask',
+            url_prefix=self.openapi_blueprint_url_prefix
         )
 
         if self.spec_path:
