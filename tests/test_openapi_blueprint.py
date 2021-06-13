@@ -121,3 +121,17 @@ def test_redoc(client):
     rv = client.get('/redoc')
     assert rv.status_code == 200
     assert b'redoc.standalone.js' in rv.data
+
+
+def test_openapi_blueprint_url_prefix(app):
+    assert app.openapi_blueprint_url_prefix is None
+
+    prefix = '/api'
+    app = APIFlask(__name__, openapi_blueprint_url_prefix=prefix)
+    assert app.openapi_blueprint_url_prefix == prefix
+
+    client = app.test_client()
+    rv = client.get('/docs')
+    assert rv.status_code == 404
+    rv = client.get(f'{prefix}/docs')
+    assert rv.status_code == 200

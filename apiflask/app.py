@@ -199,6 +199,7 @@ class APIFlask(Flask):
         docs_path: str = '/docs',
         docs_oauth2_redirect_path: str = '/docs/oauth2-redirect',
         redoc_path: str = '/redoc',
+        openapi_blueprint_url_prefix: t.Optional[str] = None,
         json_errors: bool = True,
         enable_openapi: bool = True,
         static_url_path: t.Optional[str] = None,
@@ -253,6 +254,7 @@ class APIFlask(Flask):
         self.docs_path = docs_path
         self.redoc_path = redoc_path
         self.docs_oauth2_redirect_path = docs_oauth2_redirect_path
+        self.openapi_blueprint_url_prefix = openapi_blueprint_url_prefix
         self.enable_openapi = enable_openapi
         self.json_errors = json_errors
 
@@ -427,7 +429,8 @@ class APIFlask(Flask):
             __name__,
             template_folder='templates',
             static_folder='static',
-            static_url_path='/apiflask'
+            static_url_path='/apiflask',
+            url_prefix=self.openapi_blueprint_url_prefix
         )
 
         if self.spec_path:
