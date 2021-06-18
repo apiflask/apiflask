@@ -342,6 +342,62 @@ app.terms_of_service = 'http://example.com/terms/'
 ```
 
 
+### OpenAPI spec
+
+Customize the generation of the OpenAPI spec.
+
+
+#### `SPEC_FORMAT`
+
+The format of the OpenAPI spec, accepts `'json'`, `'yaml'` or `'yml'`.
+
+- Type: `str`
+- Default value: `'json'`
+- Examples:
+
+```python
+app.config['SPEC_FORMAT'] = 'yaml'
+```
+
+!!! warning "Version >= 0.7.0"
+
+    This configuration variable was added in the [version 0.7.0](/changelog/#version-070).
+
+
+#### `LOCAL_SPEC_PATH`
+
+The path to the local OpenAPI spec file.
+
+- Type: `str`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['LOCAL_SPEC_PATH'] = 'openapi.json'
+```
+
+!!! warning "Version >= 0.7.0"
+
+    This configuration variable was added in the [version 0.7.0](/changelog/#version-070).
+
+
+#### `LOCAL_SPEC_JSON_INDENT`
+
+The indent of the local OpenAPI spec in JSON format.
+
+- Type: `int`
+- Default value: `2`
+- Examples:
+
+```python
+app.config['LOCAL_SPEC_JSON_INDENT'] = 4
+```
+
+!!! warning "Version >= 0.7.0"
+
+    This configuration variable was added in the [version 0.7.0](/changelog/#version-070).
+
+
 #### `JSON_SPEC_MIMETYPE`
 
 The MIME type string for JSON OpenAPI spec response.

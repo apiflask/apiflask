@@ -15,8 +15,12 @@ LICENSE: t.Optional[t.Dict[str, str]] = None
 SERVERS: t.Optional[t.List[t.Dict[str, str]]] = None
 EXTERNAL_DOCS: t.Optional[t.Dict[str, str]] = None
 TERMS_OF_SERVICE: t.Optional[str] = None
+# OpenAPI spec
+SPEC_FORMAT: str = 'json'
 YAML_SPEC_MIMETYPE: str = 'text/vnd.yaml'
 JSON_SPEC_MIMETYPE: str = 'application/json'
+LOCAL_SPEC_PATH: t.Optional[str] = None
+LOCAL_SPEC_JSON_INDENT: int = 2
 # Automation behavior control
 AUTO_TAGS: bool = True
 AUTO_PATH_SUMMARY: bool = True

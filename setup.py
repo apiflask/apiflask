@@ -62,4 +62,9 @@ setuptools.setup(
         'Operating System :: OS Independent',
     ],
     python_requires='>=3.7',
+    entry_points={
+        'flask.commands': [
+            'spec=apiflask.commands:spec_command'
+        ],
+    },
 )
