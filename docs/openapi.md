@@ -1,6 +1,43 @@
 # OpenAPI Generating
 
 
+## The spec format
+
+The default format of the OpenAPI spec is JSON, while YAML is also supported.
+If you want to enable the YAML support, install APIFlask with the `yaml` extra
+(it will install `PyYAML`):
+
+```
+$ pip install apiflask[yaml]
+```
+
+Now you can change the format via the `SPEC_FORMAT` config:
+
+```
+from apiflask import APIFlask
+
+app = APIFlask(__name__)
+app.config['SPEC_FORMAT'] == 'yaml'
+```
+
+This config will also control the format output by the `flask spec` command.
+
+
+## The indentation of spec
+
+When you view the spec from your browser via `/openapi.json`, if you enabled the
+debug mode or set the configuration variable `JSONIFY_PRETTYPRINT_REGULAR` to
+`True`, the indentation will set to `2`. Otherwise, the JSON spec will be sent
+without indentation and spaces to save the bandwidth and speed the request.
+
+The indentation of the local spec file is enabled by default. The default indentation
+is the default value of the `LOCAL_SPEC_JSON_INDENT` config (i.e., `2`). When you
+use the `flask spec` command, you can change the indentation with the `--indent`
+or `-i` option.
+
+The indentation of the YAML spec is always `2`, and it can't be changed for now.
+
+
 ## Use the `flask spec` command to output the OpenAPI spec
 
 !!! warning "Version >= 0.7.0"
@@ -80,18 +117,19 @@ $ flask spec
 ```
 
 
-### Change the indent of JSON spec
+### Change the indentation of JSON spec
 
-For the local spec file, the indent is always for readability and easy to trace the
-changes. The indent can be set with the `--indent` or `-i` option:
+For the local spec file, the indentation is always needed for readability and
+easy to trace the changes. The indentation can be set with the `--indent` or
+`-i` option:
 
 ```
 $ flask spec --indent 4
 ```
 
-You can also set the indent with the configuration variable `LOCAL_SPEC_JSON_INDENT`
-(defaults to `2`), then the value will be used in `flask spec` command when the
-`--indent/-i` option is not passed:
+You can also set the indentation with the configuration variable
+`LOCAL_SPEC_JSON_INDENT` (defaults to `2`), then the value will be used in
+the `flask spec` command when the `--indent/-i` option is not passed:
 
 ```python
 from apiflask import APIFlask
@@ -104,10 +142,3 @@ app.config['LOCAL_SPEC_JSON_INDENT'] = 4
 ```
 $ flask spec
 ```
-
-!!! note "The indent of spec response (`/openapi.json`)"
-
-    When you view the spec from your browser via `/openapi.json`, if you enabled the
-    debug mode or set the configuration variable `JSONIFY_PRETTYPRINT_REGULAR` to
-    `True`. Otherwise, the JSON spec will be sent without indent to save the bandwidth
-    and speed the request.

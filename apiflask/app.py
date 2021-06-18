@@ -430,6 +430,10 @@ class APIFlask(Flask):
 
         The name of the blueprint is "openapi". This blueprint will hold the view
         functions for spec file, Swagger UI and Redoc.
+
+        *Version changed: 0.7.0*
+
+        - The format of the spec now rely on the `SPEC_FORMAT` config.
         """
         bp = Blueprint(
             'openapi',
@@ -443,13 +447,12 @@ class APIFlask(Flask):
         if self.spec_path:
             @bp.route(self.spec_path)
             def spec() -> ResponseType:
-                if self.spec_path.endswith('.yaml') or \
-                   self.spec_path.endswith('.yml'):
-                    return self.get_spec('yaml'), 200, \
-                        {'Content-Type': self.config['YAML_SPEC_MIMETYPE']}
-                response = jsonify(self.get_spec('json'))
-                response.mimetype = self.config['JSON_SPEC_MIMETYPE']
-                return response
+                if self.config['SPEC_FORMAT'] == 'json':
+                    response = jsonify(self.get_spec('json'))
+                    response.mimetype = self.config['JSON_SPEC_MIMETYPE']
+                    return response
+                return self.get_spec('yaml'), 200, \
+                    {'Content-Type': self.config['YAML_SPEC_MIMETYPE']}
 
         if self.docs_path:
             @bp.route(self.docs_path)
@@ -480,13 +483,20 @@ class APIFlask(Flask):
         ):
             self.register_blueprint(bp)
 
-    def get_spec(self, spec_format: str = 'json') -> t.Union[dict, str]:
+    def get_spec(self, spec_format: t.Optional[str] = None) -> t.Union[dict, str]:
         """Get the current OAS document file.
 
         Arguments:
             spec_format: The format of the spec file, one of `'json'`, `'yaml'`
-                and `'yml'`, defaults to `'json'`.
+                and `'yml'`, defaults to the `SPEC_FORMAT` config.
+
+
+        *Version changed: 0.7.0*
+
+        - The default format now rely on the `SPEC_FORMAT` config.
         """
+        if spec_format is None:
+            spec_format = self.config['SPEC_FORMAT']
         if self._spec is None:
             if spec_format == 'json':
                 self._spec = self._generate_spec().to_dict()
