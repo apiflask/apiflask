@@ -19,6 +19,7 @@ def test_json_spec_mimetype(app, client):
 
 def test_yaml_spec_mimetype():
     app = APIFlask(__name__, spec_path='/openapi.yaml')
+    app.config['SPEC_FORMAT'] = 'yaml'
     client = app.test_client()
 
     rv = client.get('/openapi.yaml')
@@ -32,11 +33,21 @@ def test_yaml_spec_mimetype():
     assert rv.mimetype == 'text/custom.yaml'
 
 
-def test_spec_format(app, cli_runner):
-    app.config['SPEC_FORMAT'] = 'yaml'
+@pytest.mark.parametrize('format', ['yaml', 'yml', 'json'])
+def test_spec_format(app, client, cli_runner, format):
+    app.config['SPEC_FORMAT'] = format
 
     result = cli_runner.invoke(spec_command)
-    assert 'title: APIFlask' in result.output
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    if format == 'json':
+        assert '"title": "APIFlask",' in result.output
+        assert b'"title":"APIFlask",' in rv.data
+        assert rv.headers['Content-Type'] == 'application/json'
+    else:
+        assert 'title: APIFlask' in result.output
+        assert b'title: APIFlask' in rv.data
+        assert rv.headers['Content-Type'] == 'text/vnd.yaml'
 
 
 def test_local_spec_path(app, cli_runner, tmp_path):

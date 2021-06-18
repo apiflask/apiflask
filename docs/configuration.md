@@ -349,7 +349,16 @@ Customize the generation of the OpenAPI spec.
 
 #### `SPEC_FORMAT`
 
-The format of the OpenAPI spec, accepts `'json'`, `'yaml'` or `'yml'`.
+The format of the OpenAPI spec, accepts `'json'`, `'yaml'` or `'yml'`. This config
+will be used in the following conditions:
+
+- Serve the spec via the built-in route.
+- Execute `flask spec` without passing the `--format`/`-f` option.
+- Call `app.get_spec()` without passing the `spec_format` argument.
+
+!!! warning
+    The auto-detection of the format from the `APIFlask(spec_path=...)` was
+    removed in favor of this config in 0.7.0.
 
 - Type: `str`
 - Default value: `'json'`
@@ -383,7 +392,7 @@ app.config['LOCAL_SPEC_PATH'] = 'openapi.json'
 
 #### `LOCAL_SPEC_JSON_INDENT`
 
-The indent of the local OpenAPI spec in JSON format.
+The indentation of the local OpenAPI spec in JSON format.
 
 - Type: `int`
 - Default value: `2`

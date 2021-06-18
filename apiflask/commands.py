@@ -22,7 +22,7 @@ from flask.cli import with_appcontext
     '--indent',
     '-i',
     type=int,
-    help='The indent for JSON spec, defauts to LOCAL_SPEC_JSON_INDENT config.'
+    help='The indentation for JSON spec, defauts to LOCAL_SPEC_JSON_INDENT config.'
 )
 @with_appcontext
 def spec_command(format, output, indent):

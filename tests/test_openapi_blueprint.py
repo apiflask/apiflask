@@ -1,3 +1,4 @@
+import pytest
 from apiflask import APIFlask
 
 
@@ -28,19 +29,13 @@ def test_spec_path(app):
     assert 'openapi.spec' not in bp_endpoints
 
 
-def test_yaml_spec():
-    app = APIFlask(__name__, spec_path='/spec.yaml')
+@pytest.mark.parametrize('spec_path', ['/spec.yaml', '/spec.yml'])
+def test_yaml_spec(spec_path):
+    app = APIFlask(__name__, spec_path=spec_path)
+    app.config['SPEC_FORMAT'] = 'yaml'
     client = app.test_client()
 
-    rv = client.get('/spec.yaml')
-    assert rv.status_code == 200
-    assert rv.headers['Content-Type'] == 'text/vnd.yaml'
-    assert b'title: APIFlask' in rv.data
-
-    app = APIFlask(__name__, spec_path='/spec.yml')
-    client = app.test_client()
-
-    rv = client.get('/spec.yml')
+    rv = client.get(spec_path)
     assert rv.status_code == 200
     assert rv.headers['Content-Type'] == 'text/vnd.yaml'
     assert b'title: APIFlask' in rv.data
