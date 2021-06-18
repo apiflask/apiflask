@@ -30,7 +30,9 @@ def spec_command(format, output, indent):
     spec_format = format or current_app.config['SPEC_FORMAT']
     spec = current_app.get_spec(spec_format)
     output_path = output or current_app.config['LOCAL_SPEC_PATH']
-    json_indent = indent or current_app.config['LOCAL_SPEC_JSON_INDENT']
+    if indent is None:
+        indent = current_app.config['LOCAL_SPEC_JSON_INDENT']
+    json_indent = None if indent == 0 else indent
 
     if spec_format == 'json':
         spec = json.dumps(spec, indent=json_indent)
