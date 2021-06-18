@@ -7,10 +7,13 @@
 - Fix auto-tag support for nesting blueprint ([pull #58][pull_58]).
 - Support set the url prefix of the OpenAPI blueprint with the 
 `openapi_blueprint_url_prefix` argument ([pull #64][pull_64]).
+- Add `flask spec` command to output the OpenAPI spec to stdout
+or a file ([pull #66][pull_66]).
 
 [pull_57]: https://github.com/greyli/apiflask/pull/57
 [pull_58]: https://github.com/greyli/apiflask/pull/58
 [pull_64]: https://github.com/greyli/apiflask/pull/64
+[pull_66]: https://github.com/greyli/apiflask/pull/66
 
 
 ## Version 0.6.3

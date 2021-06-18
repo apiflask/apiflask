@@ -26,7 +26,12 @@ from flask.cli import with_appcontext
 )
 @with_appcontext
 def spec_command(format, output, indent):
-    """Output the OpenAPI spec to stdout or a file."""
+    """The command (`flask spec`) to output the OpenAPI spec to stdout or a file.
+
+    Execute `flask spec --help` to see the usage.
+
+    *Version added: 0.7.0*
+    """
     spec_format = format or current_app.config['SPEC_FORMAT']
     spec = current_app.get_spec(spec_format)
     output_path = output or current_app.config['LOCAL_SPEC_PATH']

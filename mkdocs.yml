@@ -39,6 +39,7 @@ nav:
   - Documentation Index: docs.md
   - Migrating from Flask: migrating.md
   - Basic Usage: usage.md
+  - OpenAPI Generating: openapi.md
   - Swagger UI and Redoc: api-docs.md
   - Configuration: configuration.md
   - Examples: examples.md
@@ -52,6 +53,7 @@ nav:
     - Route: api/route.md
     - Security: api/security.md
     - Helpers: api/helpers.md
+    - Commands: api/commands.md
   - Comparison and Motivations: comparison.md
   - Authors: authors.md
   - Changelog: changelog.md
@@ -61,7 +63,6 @@ nav:
     - Request Validating: request.md
     - Response Formatting: response.md
     - Authentication: security.md
-    - OpenAPI Generating: openapi.md
     - Tutorial: tutorial/index.md
 plugins:
   - search
