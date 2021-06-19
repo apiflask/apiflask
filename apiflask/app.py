@@ -2,6 +2,7 @@ import typing as t
 import re
 import sys
 import warnings
+import json
 
 # temp fix for https://github.com/django/asgiref/issues/143
 if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pragma: no cover
@@ -486,6 +487,10 @@ class APIFlask(Flask):
     def get_spec(self, spec_format: t.Optional[str] = None) -> t.Union[dict, str]:
         """Get the current OAS document file.
 
+        If the config `SYNC_LOCAL_SPEC` is `True`, the local spec
+        specified in config `LOCAL_SPEC_PATH` will be automatically updated
+        when the spec changes.
+
         Arguments:
             spec_format: The format of the spec file, one of `'json'`, `'yaml'`
                 and `'yml'`, defaults to the `SPEC_FORMAT` config.
@@ -494,6 +499,7 @@ class APIFlask(Flask):
         *Version changed: 0.7.0*
 
         - The default format now rely on the `SPEC_FORMAT` config.
+        - Support to sync local spec file.
         """
         if spec_format is None:
             spec_format = self.config['SPEC_FORMAT']
@@ -504,6 +510,20 @@ class APIFlask(Flask):
                 self._spec = self._generate_spec().to_yaml()
             if self.spec_callback:
                 self._spec = self.spec_callback(self._spec)
+        # sync local spec
+        if self.config['SYNC_LOCAL_SPEC']:
+            spec_path = self.config['LOCAL_SPEC_PATH']
+            if spec_path is None:
+                raise RuntimeError('The spec path should be a valid path string.')
+            spec: str
+            if spec_format == 'json':
+                spec = json.dumps(
+                    self._spec, indent=self.config['LOCAL_SPEC_JSON_INDENT']
+                )
+            else:
+                spec = str(self._spec)
+            with open(spec_path, 'w') as f:
+                f.write(spec)
         return self._spec
 
     def spec_processor(self, f: SpecCallbackType) -> SpecCallbackType:

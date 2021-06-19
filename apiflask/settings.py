@@ -21,6 +21,7 @@ YAML_SPEC_MIMETYPE: str = 'text/vnd.yaml'
 JSON_SPEC_MIMETYPE: str = 'application/json'
 LOCAL_SPEC_PATH: t.Optional[str] = None
 LOCAL_SPEC_JSON_INDENT: int = 2
+SYNC_LOCAL_SPEC: t.Optional[bool] = None
 # Automation behavior control
 AUTO_TAGS: bool = True
 AUTO_PATH_SUMMARY: bool = True
