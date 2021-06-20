@@ -6,12 +6,11 @@ def test_openapi_blueprint(app):
     assert 'openapi' in app.blueprints
     rules = list(app.url_map.iter_rules())
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
-    assert len(bp_endpoints) == 5
+    assert len(bp_endpoints) == 4
     assert 'openapi.spec' in bp_endpoints
     assert 'openapi.swagger_ui' in bp_endpoints
     assert 'openapi.swagger_ui_oauth_redirect' in bp_endpoints
     assert 'openapi.redoc' in bp_endpoints
-    assert 'openapi.static' in bp_endpoints
 
     app = APIFlask(__name__, spec_path=None, docs_path=None, redoc_path=None)
     assert 'openapi' not in app.blueprints
@@ -25,7 +24,7 @@ def test_spec_path(app):
     assert 'openapi' in app.blueprints
     rules = list(app.url_map.iter_rules())
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
-    assert len(bp_endpoints) == 4
+    assert len(bp_endpoints) == 3
     assert 'openapi.spec' not in bp_endpoints
 
 
@@ -49,7 +48,7 @@ def test_docs_path(app):
 
     rules = list(app.url_map.iter_rules())
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
-    assert len(bp_endpoints) == 3
+    assert len(bp_endpoints) == 2
     assert 'openapi.swagger_ui' not in bp_endpoints
     assert 'openapi.swagger_ui_oauth_redirect' not in bp_endpoints
 
@@ -75,7 +74,7 @@ def test_docs_oauth2_redirect_path(client):
 
     rules = list(app.url_map.iter_rules())
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
-    assert len(bp_endpoints) == 4
+    assert len(bp_endpoints) == 3
     assert 'openapi.swagger_ui' in bp_endpoints
     assert 'openapi.swagger_ui_oauth_redirect' not in bp_endpoints
     rv = app.test_client().get('/docs')
@@ -91,7 +90,7 @@ def test_redoc_path(app):
 
     rules = list(app.url_map.iter_rules())
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
-    assert len(bp_endpoints) == 4
+    assert len(bp_endpoints) == 3
     assert 'openapi.redoc' not in bp_endpoints
 
 

@@ -38,7 +38,7 @@ AUTH_ERROR_STATUS_CODE: int = 401
 VALIDATION_ERROR_SCHEMA: SchemaType = validation_error_schema
 HTTP_ERROR_SCHEMA: SchemaType = http_error_schema
 # Swagger UI and Redoc
-DOCS_FAVICON: t.Optional[str] = None
+DOCS_FAVICON: str = 'https://apiflask.com/_assets/favicon.png'
 REDOC_USE_GOOGLE_FONT: bool = True
 REDOC_STANDALONE_JS: str = 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/\
 redoc.standalone.js'

@@ -686,7 +686,7 @@ Redoc documentation.
 The absolute or relative URL of the favicon image file of API documentations.
 
 - Type: `str`
-- Default value: `None`
+- Default value: `'https://apiflask.com/_assets/favicon.png'`
 - Examples:
 
 ```python

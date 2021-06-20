@@ -3,8 +3,6 @@ include CHANGES.md
 include tox.ini
 include requirements/*.txt
 include src/apiflask/py.typed
-graft src/apiflask/templates/apiflask
-graft src/apiflask/static
 graft examples
 graft tests
 prune site

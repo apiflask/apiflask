@@ -15,6 +15,9 @@ the format from `APIFlask(spec_path=...)`, now you have to set the
 format explicitly with the `SPEC_FORMAT` config ([issue #67][issue_67]).
 - Support to sync the local OpenAPI spec automatically. Add new config
 `SYNC_LOCAL_SPEC` ([issue #68][issue_68]).
+- Change the default value of config `DOCS_FAVICON` to
+`'https://apiflask.com/_assets/favicon.png'`, set to `None` to disable
+the favicon. OpenAPI UI templates are move to `ui_templates.py`.
 
 [pull_57]: https://github.com/greyli/apiflask/pull/57
 [pull_58]: https://github.com/greyli/apiflask/pull/58
