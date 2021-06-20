@@ -13,12 +13,15 @@ or a file, also add new config `LOCAL_SPEC_PATH` and
 - Re-add the `SPEC_FORMAT` config. Remove the auto-detection of
 the format from `APIFlask(spec_path=...)`, now you have to set the
 format explicitly with the `SPEC_FORMAT` config ([issue #67][issue_67]).
+- Support to sync the local OpenAPI spec automatically. Add new config
+`SYNC_LOCAL_SPEC` ([issue #68][issue_68]).
 
 [pull_57]: https://github.com/greyli/apiflask/pull/57
 [pull_58]: https://github.com/greyli/apiflask/pull/58
 [pull_64]: https://github.com/greyli/apiflask/pull/64
 [issue_61]: https://github.com/greyli/apiflask/issues/61
 [issue_67]: https://github.com/greyli/apiflask/issues/67
+[issue_68]: https://github.com/greyli/apiflask/issues/68
 
 
 ## Version 0.6.3

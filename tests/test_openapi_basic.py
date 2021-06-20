@@ -1,6 +1,7 @@
+import json
+
 import pytest
 from openapi_spec_validator import validate_spec
-
 from apiflask import Schema as BaseSchema
 from apiflask.fields import Integer
 from apiflask import input
@@ -159,3 +160,42 @@ def test_auto_200_response(app, client):
     assert '200' not in rv.json['paths']['/spam']['get']['responses']
     assert rv.json['paths']['/spam']['get']['responses'][
         '204']['description'] == 'empty'
+
+
+def test_sync_local_json_spec(app, client, tmp_path):
+    local_spec_path = tmp_path / 'openapi.json'
+    app.config['SYNC_LOCAL_SPEC'] = True
+    app.config['LOCAL_SPEC_PATH'] = local_spec_path
+    app.config['SPEC_FORMAT'] = 'json'
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+
+    with open(local_spec_path) as f:
+        spec_content = f.read()
+        assert json.loads(spec_content) == app.spec
+        assert '{\n  "info": {' in spec_content
+        assert '"title": "APIFlask",' in spec_content
+
+
+def test_sync_local_yaml_spec(app, client, tmp_path):
+    local_spec_path = tmp_path / 'openapi.json'
+    app.config['SYNC_LOCAL_SPEC'] = True
+    app.config['LOCAL_SPEC_PATH'] = local_spec_path
+    app.config['SPEC_FORMAT'] = 'yaml'
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+
+    with open(local_spec_path) as f:
+        spec_content = f.read()
+        assert spec_content == str(app.spec)
+        assert 'title: APIFlask' in spec_content
+
+
+def test_sync_local_spec_no_path(app):
+    app.config['SYNC_LOCAL_SPEC'] = True
+
+    with pytest.raises(RuntimeError):
+        app.spec

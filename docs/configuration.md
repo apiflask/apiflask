@@ -385,6 +385,10 @@ The path to the local OpenAPI spec file.
 app.config['LOCAL_SPEC_PATH'] = 'openapi.json'
 ```
 
+!!! warning
+
+    If the path you passed is a relative path, do not put a leading slash in it.
+
 !!! warning "Version >= 0.7.0"
 
     This configuration variable was added in the [version 0.7.0](/changelog/#version-070).
@@ -400,6 +404,24 @@ The indentation of the local OpenAPI spec in JSON format.
 
 ```python
 app.config['LOCAL_SPEC_JSON_INDENT'] = 4
+```
+
+!!! warning "Version >= 0.7.0"
+
+    This configuration variable was added in the [version 0.7.0](/changelog/#version-070).
+
+
+#### `SYNC_LOCAL_SPEC`
+
+If `True`, the local spec will be in sync automatically, see the example usage at
+[Keep the local spec in sync automatically](/openapi#keep-the-local-spec-in-sync-automatically).
+
+- Type: `bool`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['SYNC_LOCAL_SPEC'] = True
 ```
 
 !!! warning "Version >= 0.7.0"
