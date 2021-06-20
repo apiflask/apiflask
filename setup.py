@@ -1,14 +1,15 @@
 import re
-import setuptools
+from setuptools import setup
+from setuptools import find_packages
 
-with open('apiflask/__init__.py', 'r') as f:
+with open('src/apiflask/__init__.py', 'r') as f:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         f.read(), re.MULTILINE).group(1)
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
 
-setuptools.setup(
+setup(
     name='APIFlask',
     version=version,
     license='MIT',
@@ -25,9 +26,10 @@ setuptools.setup(
         'Changelog': 'https://apiflask.com/changelog',
         'Issue Tracker': 'https://github.com/greyli/apiflask/issues',
     },
-    packages=['apiflask'],
+    packages=find_packages(where='src'),
+    package_dir={'': 'src'},
     package_data={
-        'apiflask': [
+        'src/apiflask': [
             'templates/apiflask/*.html',
             'static/favicon.png',
             'py.typed'
