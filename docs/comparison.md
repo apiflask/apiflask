@@ -46,7 +46,7 @@ See the following two sections for more details.
 
 ### A natural order of view arguments
 
-By acting as a framework on top of Flask, APIFlask can overwrite the way Flask 
+By acting as a framework on top of Flask, APIFlask can overwrite the way Flask
 passes path arguments to view functions from keyword arguments to positional
 arguments.
 

@@ -1,4 +1,3 @@
-# flake8: noqa
 from marshmallow.validate import ContainsNoneOf as ContainsNoneOf
 from marshmallow.validate import ContainsOnly as ContainsOnly
 from marshmallow.validate import Email as Email

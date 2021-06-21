@@ -60,7 +60,7 @@ def index():
     return {'message': 'hello'}
 ```
 
-The default title and version of the API will be `APIFlask` and `0.1.0`; you can 
+The default title and version of the API will be `APIFlask` and `0.1.0`; you can
 pass the `title` and the `version` arguments to change these settings:
 
 ```python
@@ -619,7 +619,7 @@ status code with the `status_code` argument:
 @input(PetInSchema)
 @output(PetOutSchema, status_code=201)
 def create_pet(data)
-    data['id'] = 2 
+    data['id'] = 2
     return data
 ```
 
@@ -657,7 +657,7 @@ def delete_pet(pet_id):
     add more alternative responses for a view in the OpenAPI spec, you can
     use the `@doc` decorator and pass a list to the `responses` parameter.
     For example:
-    
+
     ```python hl_lines="4"
     @app.put('/pets/<int:pet_id>')
     @input(PetInSchema)

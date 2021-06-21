@@ -20,10 +20,11 @@ attrs==21.2.0
     # via
     #   jsonschema
     #   pytest
-click==8.0.0
+cfgv==3.3.0
+    # via pre-commit
+click==8.0.1
     # via
     #   mkdocs
-    #   nltk
     #   pip-tools
 colorama==0.4.4
     # via
@@ -32,7 +33,7 @@ colorama==0.4.4
     #   tox
 coverage==5.5
     # via pytest-cov
-distlib==0.3.1
+distlib==0.3.2
     # via virtualenv
 filelock==3.0.12
     # via
@@ -40,26 +41,24 @@ filelock==3.0.12
     #   virtualenv
 flake8==3.9.2
     # via -r .\requirements\tests.in
-future==0.18.2
-    # via lunr
+ghp-import==2.0.1
+    # via mkdocs
+identify==2.2.10
+    # via pre-commit
+importlib-metadata==4.5.0
+    # via mkdocs
 iniconfig==1.1.1
     # via pytest
 isodate==0.6.0
     # via openapi-schema-validator
-jinja2==2.11.3
+jinja2==3.0.1
     # via
     #   mkdocs
     #   mkdocstrings
-joblib==1.0.1
-    # via nltk
 jsonschema==3.2.0
     # via
     #   openapi-schema-validator
     #   openapi-spec-validator
-livereload==2.6.3
-    # via mkdocs
-lunr[languages]==0.5.8
-    # via mkdocs
 markdown==3.3.4
     # via
     #   mkdocs
@@ -67,39 +66,42 @@ markdown==3.3.4
     #   mkdocs-material
     #   mkdocstrings
     #   pymdown-extensions
-markupsafe==1.1.1
+markupsafe==2.0.1
     # via
     #   jinja2
     #   mkdocstrings
 mccabe==0.6.1
     # via flake8
-mkdocs-autorefs==0.1.1
+mergedeep==1.3.4
+    # via mkdocs
+mkdocs-autorefs==0.2.1
     # via mkdocstrings
 mkdocs-material-extensions==1.0.1
     # via mkdocs-material
-mkdocs-material==7.1.4
+mkdocs-material==7.1.8
     # via
     #   -r .\requirements\docs.in
     #   mkdocs-material-extensions
-mkdocs==1.1.2
+mkdocs==1.2.1
     # via
     #   mkdocs-autorefs
     #   mkdocs-material
     #   mkdocstrings
-mkdocstrings==0.15.0
+mkdocstrings==0.15.2
     # via -r .\requirements\docs.in
 mypy-extensions==0.4.3
     # via mypy
-mypy==0.812
+mypy==0.902
     # via -r .\requirements\typing.in
-nltk==3.6.2
-    # via lunr
+nodeenv==1.6.0
+    # via pre-commit
 openapi-schema-validator==0.1.5
     # via openapi-spec-validator
 openapi-spec-validator==0.3.1
     # via -r .\requirements\tests.in
 packaging==20.9
     # via
+    #   mkdocs
     #   pytest
     #   tox
 pep517==0.10.0
@@ -110,6 +112,8 @@ pluggy==0.13.1
     # via
     #   pytest
     #   tox
+pre-commit==2.13.0
+    # via -r .\requirements\dev.in
 py==1.10.0
     # via
     #   pytest
@@ -128,52 +132,56 @@ pyparsing==2.4.7
     # via packaging
 pyrsistent==0.17.3
     # via jsonschema
-pytest-cov==2.11.1
+pytest-cov==2.12.1
     # via -r .\requirements\tests.in
 pytest==6.2.4
     # via
     #   -r .\requirements\tests.in
     #   pytest-cov
+python-dateutil==2.8.1
+    # via ghp-import
 pytkdocs==0.11.1
     # via mkdocstrings
+pyyaml-env-tag==0.1
+    # via mkdocs
 pyyaml==5.4.1
     # via
     #   mkdocs
     #   openapi-spec-validator
-regex==2021.4.4
-    # via nltk
+    #   pre-commit
+    #   pyyaml-env-tag
 six==1.16.0
     # via
     #   astunparse
     #   isodate
     #   jsonschema
-    #   livereload
-    #   lunr
     #   openapi-schema-validator
     #   openapi-spec-validator
+    #   python-dateutil
     #   tox
     #   virtualenv
 toml==0.10.2
     # via
+    #   mypy
     #   pep517
+    #   pre-commit
     #   pytest
+    #   pytest-cov
     #   tox
-tornado==6.1
-    # via
-    #   livereload
-    #   mkdocs
 tox==3.23.1
     # via -r .\requirements\dev.in
-tqdm==4.60.0
-    # via nltk
-typed-ast==1.4.3
-    # via mypy
 typing-extensions==3.10.0.0
     # via mypy
-virtualenv==20.4.6
-    # via tox
+virtualenv==20.4.7
+    # via
+    #   pre-commit
+    #   tox
+watchdog==2.1.2
+    # via mkdocs
 wheel==0.36.2
     # via astunparse
+zipp==3.4.1
+    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip

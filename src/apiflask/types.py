@@ -1,5 +1,5 @@
-import typing as t
 import sys
+import typing as t
 
 if sys.version_info >= (3, 8):
     from typing import Protocol

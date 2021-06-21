@@ -2,8 +2,8 @@ import typing as t
 
 from flask.views import MethodViewType
 
-from .openapi import get_path_summary
 from .openapi import get_path_description
+from .openapi import get_path_summary
 
 
 def route_patch(cls):
@@ -93,9 +93,9 @@ def route_shortcuts(cls):
         def decorator(f):
             if isinstance(f, MethodViewType):
                 raise RuntimeError(
-                        'The route shortcuts cannot be used with "MethodView" classes, '
-                        'use the "route" decorator instead.'
-                    )
+                    'The route shortcuts cannot be used with "MethodView" classes, '
+                    'use the "route" decorator instead.'
+                )
             return cls_route(self, rule, methods=[method], **options)(f)
         return decorator
 

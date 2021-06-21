@@ -63,7 +63,7 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
                 a scope of protection, defaults to use `'Authentication Required'`.
             description: The description of the security scheme.
         """
-        super(HTTPBasicAuth, self).__init__(description=description)
+        super().__init__(description=description)
         BaseHTTPBasicAuth.__init__(self, scheme=scheme, realm=realm)
         self.error_handler(handle_auth_error)
 
@@ -109,6 +109,6 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
 
             description: The description of the security scheme.
         """
-        super(HTTPTokenAuth, self).__init__(description=description)
+        super().__init__(description=description)
         BaseHTTPTokenAuth.__init__(self, scheme=scheme, realm=realm, header=header)
         self.error_handler(handle_auth_error)

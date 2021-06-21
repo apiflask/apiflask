@@ -3,3 +3,4 @@
 -r typing.in
 pip-tools
 tox
+pre-commit

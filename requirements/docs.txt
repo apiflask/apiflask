@@ -10,24 +10,18 @@
 
 astunparse==1.6.3
     # via pytkdocs
-click==8.0.0
-    # via
-    #   mkdocs
-    #   nltk
+click==8.0.1
+    # via mkdocs
 colorama==0.4.4
     # via click
-future==0.18.2
-    # via lunr
-jinja2==2.11.3
+ghp-import==2.0.1
+    # via mkdocs
+importlib-metadata==4.5.0
+    # via mkdocs
+jinja2==3.0.1
     # via
     #   mkdocs
     #   mkdocstrings
-joblib==1.0.1
-    # via nltk
-livereload==2.6.3
-    # via mkdocs
-lunr[languages]==0.5.8
-    # via mkdocs
 markdown==3.3.4
     # via
     #   mkdocs
@@ -35,49 +29,54 @@ markdown==3.3.4
     #   mkdocs-material
     #   mkdocstrings
     #   pymdown-extensions
-markupsafe==1.1.1
+markupsafe==2.0.1
     # via
     #   jinja2
     #   mkdocstrings
-mkdocs-autorefs==0.1.1
+mergedeep==1.3.4
+    # via mkdocs
+mkdocs-autorefs==0.2.1
     # via mkdocstrings
 mkdocs-material-extensions==1.0.1
     # via mkdocs-material
-mkdocs-material==7.1.4
+mkdocs-material==7.1.8
     # via
     #   -r .\requirements\docs.in
     #   mkdocs-material-extensions
-mkdocs==1.1.2
+mkdocs==1.2.1
     # via
     #   mkdocs-autorefs
     #   mkdocs-material
     #   mkdocstrings
-mkdocstrings==0.15.0
+mkdocstrings==0.15.2
     # via -r .\requirements\docs.in
-nltk==3.6.2
-    # via lunr
+packaging==20.9
+    # via mkdocs
 pygments==2.9.0
     # via mkdocs-material
 pymdown-extensions==8.2
     # via
     #   mkdocs-material
     #   mkdocstrings
+pyparsing==2.4.7
+    # via packaging
+python-dateutil==2.8.1
+    # via ghp-import
 pytkdocs==0.11.1
     # via mkdocstrings
-pyyaml==5.4.1
+pyyaml-env-tag==0.1
     # via mkdocs
-regex==2021.4.4
-    # via nltk
+pyyaml==5.4.1
+    # via
+    #   mkdocs
+    #   pyyaml-env-tag
 six==1.16.0
     # via
     #   astunparse
-    #   livereload
-    #   lunr
-tornado==6.1
-    # via
-    #   livereload
-    #   mkdocs
-tqdm==4.60.0
-    # via nltk
+    #   python-dateutil
+watchdog==2.1.2
+    # via mkdocs
 wheel==0.36.2
     # via astunparse
+zipp==3.4.1
+    # via importlib-metadata

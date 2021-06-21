@@ -1,8 +1,8 @@
-import typing as t
+import json
 import re
 import sys
+import typing as t
 import warnings
-import json
 
 # temp fix for https://github.com/django/asgiref/issues/143
 if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pragma: no cover
@@ -14,7 +14,7 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Blueprint
 from flask import Flask
 from flask import jsonify
-from flask import render_template
+from flask import render_template_string
 from flask.config import ConfigAttribute
 from flask.globals import _request_ctx_stack
 
@@ -50,6 +50,9 @@ from .openapi import get_path_summary
 from .openapi import get_auth_name
 from .openapi import get_argument
 from .openapi import get_security_and_security_schemes
+from .ui_templates import redoc_template
+from .ui_templates import swagger_ui_template
+from .ui_templates import swagger_ui_oauth2_redirect_template
 
 
 @route_patch
@@ -240,7 +243,7 @@ class APIFlask(Flask):
 
         - Add `openapi_blueprint_url_prefix` argument.
         """
-        super(APIFlask, self).__init__(
+        super().__init__(
             import_name,
             static_url_path=static_url_path,
             static_folder=static_folder,
@@ -439,9 +442,6 @@ class APIFlask(Flask):
         bp = Blueprint(
             'openapi',
             __name__,
-            template_folder='templates',
-            static_folder='static',
-            static_url_path='/apiflask',
             url_prefix=self.openapi_blueprint_url_prefix
         )
 
@@ -458,8 +458,8 @@ class APIFlask(Flask):
         if self.docs_path:
             @bp.route(self.docs_path)
             def swagger_ui() -> str:
-                return render_template(
-                    'apiflask/swagger_ui.html',
+                return render_template_string(
+                    swagger_ui_template,
                     title=self.title,
                     version=self.version,
                     oauth2_redirect_path=self.docs_oauth2_redirect_path
@@ -468,13 +468,13 @@ class APIFlask(Flask):
             if self.docs_oauth2_redirect_path:
                 @bp.route(self.docs_oauth2_redirect_path)
                 def swagger_ui_oauth_redirect() -> str:
-                    return render_template('apiflask/swagger_ui_oauth2_redirect.html')
+                    return render_template_string(swagger_ui_oauth2_redirect_template)
 
         if self.redoc_path:
             @bp.route(self.redoc_path)
             def redoc() -> str:
-                return render_template(
-                    'apiflask/redoc.html',
+                return render_template_string(
+                    redoc_template,
                     title=self.title,
                     version=self.version
                 )
@@ -917,7 +917,7 @@ class APIFlask(Flask):
                     argument = get_argument(argument_type, argument_name)
                     arguments.append(argument)
 
-                for method, operation in operations.items():
+                for _method, operation in operations.items():
                     operation['parameters'] = arguments + operation['parameters']
 
             path: str = re.sub(r'<([^<:]+:)?', '{', rule.rule).replace('>', '}')

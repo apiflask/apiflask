@@ -2,9 +2,9 @@ import typing as t
 
 from flask import Blueprint
 
+from .helpers import _sentinel
 from .route import route_patch
 from .route import route_shortcuts
-from .helpers import _sentinel
 
 
 @route_patch
@@ -67,7 +67,7 @@ class APIBlueprint(Blueprint):
 
         Other keyword arguments are directly passed to `flask.Blueprint`.
         """
-        super(APIBlueprint, self).__init__(
+        super().__init__(
             name,
             import_name,
             static_folder=static_folder,
