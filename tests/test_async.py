@@ -1,9 +1,8 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import output
-
 from .schemas import FooSchema
+from apiflask import output
 
 
 def skip_flask1(app):
@@ -67,4 +66,4 @@ def test_async_spec_processor(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    rv.json['info']['title'] == 'Updated Title'
+    assert rv.json['info']['title'] == 'Updated Title'

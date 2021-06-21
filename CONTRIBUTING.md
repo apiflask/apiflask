@@ -18,7 +18,7 @@ the "Q&A" category.
 Include the following information in your post:
 
 - Describe what you expected to happen.
-- If possible, include a [minimal reproducible example][_mcve] to help us 
+- If possible, include a [minimal reproducible example][_mcve] to help us
 identify the issue. This also helps check that the issue is not with
 your own code.
 - Describe what actually happened. Include the full traceback if there
@@ -40,7 +40,7 @@ issue on our [issue tracker][_gh_issue].
 Include the following information in your post:
 
 - Describe what you expected to happen.
-- If possible, include a [minimal reproducible example][_mcve] to help us 
+- If possible, include a [minimal reproducible example][_mcve] to help us
 identify the issue. This also helps check that the issue is not with
 your own code.
 - Describe what actually happened. Include the full traceback if there

@@ -1,12 +1,11 @@
 from openapi_spec_validator import validate_spec
 
+from .schemas import FooSchema
+from .schemas import HeaderSchema
+from .schemas import PaginationSchema
+from .schemas import QuerySchema
 from apiflask import input
 from apiflask import output
-
-from .schemas import FooSchema
-from .schemas import QuerySchema
-from .schemas import PaginationSchema
-from .schemas import HeaderSchema
 
 
 def test_spec_path_summary_description_from_docs(app, client):

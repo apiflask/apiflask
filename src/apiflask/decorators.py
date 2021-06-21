@@ -9,6 +9,7 @@ from marshmallow import ValidationError as MarshmallowValidationError
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
 from .exceptions import _ValidationError
+from .helpers import _sentinel
 from .schemas import EmptySchema
 from .schemas import Schema
 from .types import DecoratedType
@@ -17,7 +18,6 @@ from .types import HTTPAuthType
 from .types import RequestType
 from .types import ResponseType
 from .types import SchemaType
-from .helpers import _sentinel
 
 
 class FlaskParser(BaseFlaskParser):

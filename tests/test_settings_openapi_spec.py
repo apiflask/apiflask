@@ -1,6 +1,7 @@
 import json
 
 import pytest
+
 from apiflask import APIFlask
 from apiflask.commands import spec_command
 

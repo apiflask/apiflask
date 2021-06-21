@@ -1,8 +1,8 @@
 import pytest
 
+from apiflask.exceptions import _default_error_handler
 from apiflask.exceptions import abort
 from apiflask.exceptions import HTTPError
-from apiflask.exceptions import _default_error_handler
 
 
 @pytest.mark.parametrize('kwargs', [

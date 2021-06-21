@@ -2,8 +2,8 @@ import typing as t
 
 from flask.views import MethodViewType
 
-from .openapi import get_path_summary
 from .openapi import get_path_description
+from .openapi import get_path_summary
 
 
 def route_patch(cls):

@@ -19,7 +19,7 @@ Here is a simple example for basic operates:
 from apiflask import APIFlask
 
 app = APIFlask(__name__)
- 
+
 # set a config
 app.config['DESCRIPTION'] = 'A wonderful API'
 
@@ -548,7 +548,7 @@ app.config['AUTO_200_RESPONSE'] = False
 If a view function uses `@input` to validate input request data, APIFlask will add a
 validation error response into OpenAPI spec for this view. Set this config to `False`
 to disable this behavior.
- 
+
 - Type: `bool`
 - Default value: `True`
 - Examples:

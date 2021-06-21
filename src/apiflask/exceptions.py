@@ -42,7 +42,7 @@ class HTTPError(Exception):
                 documentation URL, etc.
             headers: A dict of headers used in the error response.
         """
-        super(HTTPError, self).__init__()
+        super().__init__()
         if status_code not in default_exceptions:
             raise LookupError(
                 f'No exception for status code "{status_code}",'

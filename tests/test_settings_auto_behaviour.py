@@ -1,15 +1,14 @@
 import pytest
-from openapi_spec_validator import validate_spec
 from flask.views import MethodView
+from openapi_spec_validator import validate_spec
 
+from .schemas import FooSchema
+from .schemas import QuerySchema
 from apiflask import APIBlueprint
-from apiflask import input
 from apiflask import auth_required
 from apiflask import doc
+from apiflask import input
 from apiflask.security import HTTPBasicAuth
-
-from .schemas import QuerySchema
-from .schemas import FooSchema
 
 
 def test_auto_tags(app, client):

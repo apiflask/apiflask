@@ -2,15 +2,15 @@ import json
 
 import pytest
 from openapi_spec_validator import validate_spec
-from apiflask import Schema as BaseSchema
-from apiflask.fields import Integer
-from apiflask import input
-from apiflask import output
-from apiflask import doc
 
-from .schemas import FooSchema
 from .schemas import BarSchema
 from .schemas import BazSchema
+from .schemas import FooSchema
+from apiflask import doc
+from apiflask import input
+from apiflask import output
+from apiflask import Schema as BaseSchema
+from apiflask.fields import Integer
 
 
 def test_spec(app):

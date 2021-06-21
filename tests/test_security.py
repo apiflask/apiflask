@@ -1,7 +1,7 @@
 from apiflask import APIFlask
 from apiflask import auth_required
-from apiflask.security import HTTPTokenAuth
 from apiflask.security import HTTPBasicAuth
+from apiflask.security import HTTPTokenAuth
 
 
 def test_default_auth_error_handler(app, client):

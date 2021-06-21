@@ -1,8 +1,8 @@
-import typing as t
+import json
 import re
 import sys
+import typing as t
 import warnings
-import json
 
 # temp fix for https://github.com/django/asgiref/issues/143
 if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pragma: no cover
@@ -243,7 +243,7 @@ class APIFlask(Flask):
 
         - Add `openapi_blueprint_url_prefix` argument.
         """
-        super(APIFlask, self).__init__(
+        super().__init__(
             import_name,
             static_url_path=static_url_path,
             static_folder=static_folder,
@@ -917,7 +917,7 @@ class APIFlask(Flask):
                     argument = get_argument(argument_type, argument_name)
                     arguments.append(argument)
 
-                for method, operation in operations.items():
+                for _method, operation in operations.items():
                     operation['parameters'] = arguments + operation['parameters']
 
             path: str = re.sub(r'<([^<:]+:)?', '{', rule.rule).replace('>', '}')

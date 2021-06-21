@@ -1,7 +1,8 @@
+from marshmallow import EXCLUDE
+
 from apiflask import Schema
 from apiflask.fields import Integer
 from apiflask.fields import String
-from marshmallow import EXCLUDE
 
 
 class FooSchema(Schema):
