@@ -11,6 +11,7 @@ repos:
     hooks:
       - id: reorder-python-imports
         args: ['--application-directories', 'src']
+        exclude: 'examples'
   # - repo: https://github.com/psf/black
   #   rev: 21.5b1
   #   hooks:
