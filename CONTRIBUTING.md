@@ -102,6 +102,7 @@ $ source env/bin/activate
 $ python -m pip install --upgrade pip setuptools
 $ pip install -r requirements/dev.txt
 $ pip install -e .
+$ pre-commit install
 ```
 
 For Windows:
@@ -112,6 +113,7 @@ For Windows:
 > python -m pip install --upgrade pip setuptools
 > pip install -r .\requirements\dev.txt
 > pip install -e .
+> pre-commit install
 ```
 
 [_fork]: https://github.com/greyli/apiflask/fork

@@ -20,6 +20,8 @@ attrs==21.2.0
     # via
     #   jsonschema
     #   pytest
+cfgv==3.3.0
+    # via pre-commit
 click==8.0.1
     # via
     #   mkdocs
@@ -41,6 +43,8 @@ flake8==3.9.2
     # via -r .\requirements\tests.in
 ghp-import==2.0.1
     # via mkdocs
+identify==2.2.10
+    # via pre-commit
 importlib-metadata==4.5.0
     # via mkdocs
 iniconfig==1.1.1
@@ -89,6 +93,8 @@ mypy-extensions==0.4.3
     # via mypy
 mypy==0.902
     # via -r .\requirements\typing.in
+nodeenv==1.6.0
+    # via pre-commit
 openapi-schema-validator==0.1.5
     # via openapi-spec-validator
 openapi-spec-validator==0.3.1
@@ -106,6 +112,8 @@ pluggy==0.13.1
     # via
     #   pytest
     #   tox
+pre-commit==2.13.0
+    # via -r .\requirements\dev.in
 py==1.10.0
     # via
     #   pytest
@@ -140,6 +148,7 @@ pyyaml==5.4.1
     # via
     #   mkdocs
     #   openapi-spec-validator
+    #   pre-commit
     #   pyyaml-env-tag
 six==1.16.0
     # via
@@ -155,6 +164,7 @@ toml==0.10.2
     # via
     #   mypy
     #   pep517
+    #   pre-commit
     #   pytest
     #   pytest-cov
     #   tox
@@ -163,7 +173,9 @@ tox==3.23.1
 typing-extensions==3.10.0.0
     # via mypy
 virtualenv==20.4.7
-    # via tox
+    # via
+    #   pre-commit
+    #   tox
 watchdog==2.1.2
     # via mkdocs
 wheel==0.36.2

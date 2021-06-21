@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-python@v2
       - run: python -m pip install --upgrade pip wheel
       - run: pip install tox tox-gh-actions
-      - run: tox -e flake8
+      - run: tox -e style
       - run: tox -e docs
   flask1:
     name: flask1
