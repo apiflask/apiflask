@@ -126,7 +126,7 @@ update the example branch name):
 
 ```
 $ git fetch upstream
-$ git checkout -b your-branch-name upstream/master
+$ git checkout -b your-branch-name upstream/main
 ```
 
 - Using your favorite editor, make your changes,
