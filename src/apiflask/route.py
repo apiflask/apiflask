@@ -93,9 +93,9 @@ def route_shortcuts(cls):
         def decorator(f):
             if isinstance(f, MethodViewType):
                 raise RuntimeError(
-                        'The route shortcuts cannot be used with "MethodView" classes, '
-                        'use the "route" decorator instead.'
-                    )
+                    'The route shortcuts cannot be used with "MethodView" classes, '
+                    'use the "route" decorator instead.'
+                )
             return cls_route(self, rule, methods=[method], **options)(f)
         return decorator
 

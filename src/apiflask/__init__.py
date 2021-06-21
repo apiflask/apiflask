@@ -1,4 +1,3 @@
-# flake8: noqa
 from marshmallow import pre_load as before_load
 from marshmallow import post_load as after_load
 from marshmallow import pre_dump as before_dump

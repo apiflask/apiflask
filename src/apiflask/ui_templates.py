@@ -1,5 +1,3 @@
-# flake8: noqa
-
 redoc_template = '''
 <!DOCTYPE html>
 <html>
