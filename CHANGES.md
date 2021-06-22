@@ -18,11 +18,13 @@ format explicitly with the `SPEC_FORMAT` config ([issue #67][issue_67]).
 - Change the default value of config `DOCS_FAVICON` to
 `'https://apiflask.com/_assets/favicon.png'`, set to `None` to disable
 the favicon. OpenAPI UI templates are move to `ui_templates.py`.
+- Revert the renames on pre/post decorators from Marshmallow ([issue #62][issue_62]).
 
 [pull_57]: https://github.com/greyli/apiflask/pull/57
 [pull_58]: https://github.com/greyli/apiflask/pull/58
 [pull_64]: https://github.com/greyli/apiflask/pull/64
 [issue_61]: https://github.com/greyli/apiflask/issues/61
+[issue_62]: https://github.com/greyli/apiflask/issues/62
 [issue_67]: https://github.com/greyli/apiflask/issues/67
 [issue_68]: https://github.com/greyli/apiflask/issues/68
 
