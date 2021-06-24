@@ -7,15 +7,15 @@ in APIFlask.
 
 !!! note "Code-first or Design-first"
 
-    There are two approachs when working with OpenAPI: Code-first and Design-first.
-    APIFlask currently only support the last way. It generates the OpenAPI spec
+    There are two approaches when working with OpenAPI: Code-first and Design-first.
+    APIFlask currently only supports the last way. It generates the OpenAPI spec
     for you after you write the code. We will try to support the Design-first
     approach after the 1.0 version is released.
 
 
 ## A general view of the OpenAPI support
 
-APIFlask collects the information from the configuration values, reigistered routes, and
+APIFlask collects the information from the configuration values, registered routes, and
 the information you passed through decorators, then generates the OpenAPI spec based
 on these information.
 
@@ -33,9 +33,9 @@ externalDocs | - | Use the configuration variable [`EXTERNAL_DOCS`](/configurati
 It provides two ways to obtain the spec document file:
 
 - A spec endpoint that serves the spec.
-- A `flask spec` to output the spec to stdout or file.
+- A `flask spec` command to output the spec to stdout or file.
 
-Bisides, it also provides a `app.spec_processor` decorator which you can used to register
+Besides, it also provides an `app.spec_processor` decorator, which you can use to register
 a spec process function to update the spec before it returns. See
 *[Register a spec processor](#register-a-spec-processor)* for more details.
 
@@ -62,7 +62,7 @@ app.config['SPEC_FORMAT'] == 'yaml'
 This config will also control the format output by the `flask spec` command.
 
 
-### The indentation of JSON spec
+### The indentation of the JSON spec
 
 When you view the spec from your browser via `/openapi.json`, if you enabled the
 debug mode or set the configuration variable `JSONIFY_PRETTYPRINT_REGULAR` to
@@ -174,7 +174,7 @@ $ flask spec
 ```
 
 
-### Change the indentation of local JSON spec
+### Change the indentation of the local JSON spec
 
 For the local spec file, the indentation is always needed for readability and
 easy to trace the changes. The indentation can be set with the `--indent` or
@@ -222,7 +222,7 @@ app.config['LOCAL_SPEC_PATH'] = 'openapi.json'
 
 !!! warning
 
-    If the path you passed is a relative path, do not put a leading slash in it.
+    If the path you passed is relative, do not put a leading slash in it.
 
 APIFlask will create the file at your current working directory (where you execute the
 `flask run` command). We recommend using an absolute path. For example, you can use
@@ -302,14 +302,14 @@ docs for the details.
 
 ## Tags
 
-By deafult, the `tag` object is generated automatically based on the blueprints:
+By default, the `tag` object is generated automatically based on the blueprints:
 
-- A blueprint generate a tag, the name of the bluprint in title form will become
+- A blueprint generates a tag, the name of the blueprint in title form will become
 the name of the tag.
-- All routes under the blueprint will be tagged with corresponding tag automatically.
+- All routes under the blueprint will be tagged with the corresponding tag automatically.
 
-If you want to use a custom tag name for blueprint or want to add more details for
-the tag, you canuse the `APIBlueprint(tag)` parameter to pass a new name:
+If you want to use a custom tag name for a blueprint or want to add more details for
+the tag, you can use the `APIBlueprint(tag=...)` parameter to pass a new name:
 
 ```python
 from apiflask import APIBlueprint
@@ -324,7 +324,7 @@ bp = APIBlueprint(__name__, 'foo', tag={'name': 'New Name', 'description': 'blah
 ```
 
 If you don't like this blueprint-based tagging system, surely you can do it manually.
-You can pass a list of tag names to the the configuration variable `TAGS`:
+You can pass a list of tag names to the configuration variable `TAGS`:
 
 ```python
 app.config['TAGS'] = ['foo', 'bar', 'baz']
@@ -355,7 +355,7 @@ the `doc` decorator, see [Operation `tags`](#operation-tags)
 
 ## Path items and operations
 
-Most of the information in `paths` object and `operation` object are generated from
+Most of the information in `path` and `operation` object is generated from
 your view functions or view classes automatically, while you may want to change some of them.
 
 
@@ -383,14 +383,14 @@ def get_pet(pet_id):
 
 There are some automatic behaviors on operation `responses` object:
 
-- If the `input` decorator is added on the view function, APIFlask will add
+- If the `input` decorator is added to the view function, APIFlask will add
 a `400` response.
-- When the `auth_required` decorator is added on the view function, APIFlask will
+- When the `auth_required` decorator is added to the view function, APIFlask will
 add a `401` response.
 - If the view function only use the route decorator, APIFlask will add a default
 `200` response.
 
-You can disable these behavior or configure them through related
+You can disable these behaviors or configure them through related
 [configuration variables](/configuration#automation-behavior-control).
 
 
@@ -419,7 +419,7 @@ def get_pets():
 
 ### Operation `summary` and `description`
 
-By default, APIFlask will use the name of the view function as operation summary.
+By default, APIFlask will use the name of the view function as the operation summary.
 If your view function is named with `get_pet`, then the `summary` will be "Get Pet".
 
 If the view function has docstring, then the first line of the docstring will be used
@@ -493,9 +493,9 @@ the following field are supported:
 See the details of these fields at
 [OpenAPI docs](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#schemaObject).
 
-However, the most of these fields will be generated automatically when you set up the
-schema field. For example, if you set `required` to `True`, pass a `Length(0, 10)`
-validator to `validate`:
+However, most of these fields will be generated when you set up the schema field.
+For example, if you set `required` to `True`, pass a `Length(0, 10)` validator
+to `validate`:
 
 ```python
 from apiflask import Schema
@@ -536,7 +536,7 @@ the right value:
 
 ### Response and request example
 
-When redering the spec in API documentation, the docs tool will generate a default
+When rendering the spec in the API documentation, the docs tool will generate a default
 example for you. If you want to add a custom example, you can use the `example` parameter to pass a dict as the response `example` in the `input`/`output` decorator:
 
 ```python hl_lines="6"
@@ -551,7 +551,7 @@ def create_pet():
 ```
 
 For multiple examples, use the `examples` parameter and pass a dict of dict, every
-example dict maps a unqiue name:
+example dict maps a unique name:
 
 ```python hl_lines="17"
 from apiflask import APIFlask, output
@@ -595,12 +595,12 @@ def get_pets():
 
 ## Use the `doc` decorator
 
-There is also a `doc` decorator can be used to set operation fields explicitly.
+There is also a `doc` decorator that can be used to set operation fields explicitly.
 
 
 ### Operation `summary` and `description`
 
-Here is the example of using the `doc` decoraotr to set `summary` and `description`:
+Here is the example of using the `doc` decorator to set `summary` and `description`:
 
 ```python hl_lines="6"
 from apiflask import APIFlask, doc
@@ -641,8 +641,8 @@ def hello():
 ### Alternative operation `responses`
 
 As described above, APIFlask will add some responses based on the decorators you added
-on the view function. Sometime you may want to add alternative responses the view
-will return, then you can use the `@doc(responses=...)` parameter, it accepts the
+on the view function. Sometimes you may want to add alternative responses the view
+function will return, then you can use the `@doc(responses=...)` parameter, it accepts the
 following values:
 
 - A list of status code int, for example, `[404, 418]`.
@@ -711,7 +711,10 @@ from apiflask import APIFlask
 app = APIFlask(__name__, enable_openapi=False)
 ```
 
-If you only need to disable API documentations, see.
+!!! tips
+
+    If you only need to disable the API documentation, see
+    *[Disable the API documentations globally](/api-docs/#disable-the-api-documentations-globally)*.
 
 
 ### Disable for specific blueprints

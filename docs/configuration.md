@@ -387,7 +387,7 @@ app.config['LOCAL_SPEC_PATH'] = 'openapi.json'
 
 !!! warning
 
-    If the path you passed is a relative path, do not put a leading slash in it.
+    If the path you passed is relative, do not put a leading slash in it.
 
 !!! warning "Version >= 0.7.0"
 
