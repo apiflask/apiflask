@@ -562,7 +562,7 @@ argument for `@input()` decorator, the value can be:
     (i.e., `app.route`, `app.get`, `app.post`, etc.).
 
 
-## Use `@output` to formatting response data
+## Use `@output` to format response data
 
 Similarly, we can define a schema for output data with `@output` decorator. Here is an example:
 
@@ -787,9 +787,19 @@ def create_pet(data)
     will use the status code you returned at the end of the view function.
 
 
-## Use `@doc` to set up OpenAPI Spec
+## The OpenAPI generating support and the `doc` decorator
 
-The `@doc` decorator can be used to set up the OpenAPI Spec for view functions:
+APIFlask provides automatic OpenAPI spec generating support, while also allows
+you to customize the spec:
+
+- Most of the fields of the `info` object and top-level field of `OpenAPI`
+objct are accessible with configuration variables.
+- The `tag` object, Operation `summary` and `description` will generated from
+the blueprint name, the view function name and docstring.
+- You can register a spec processor function to process the spec.
+- `requestBody` and `responses` fields can be set with the `input` and `output`
+decorator.
+- Other operation fields can be set with the `doc` decorator:
 
 ```python hl_lines="1 7"
 from apiflask import APIFlask, doc
@@ -800,48 +810,11 @@ app = APIFlask(__name__)
 @app.get('/hello')
 @doc(summary='Say hello', description='Some description for the /hello')
 def hello():
-    return 'Hello'!
-```
-
-As default, APIFlask will use the name of the view function as the value of summary.
-If your view function is named with `get_pet`, then the summary will be "Get Pet".
-
-If the view function has docstring, then the first line of the docstring will be used
-as the summary, the lines after the empty line of the docstring will be used as
-the description.
-
-!!! note "The precedence of summary setting"
-
-    ```
-    @doc(summary='blah') > the first line of docstring > the view function name
-    ```
-
-Hence the example above is equals to:
-
-```python hl_lines="8 10"
-from apiflask import APIFlask
-
-app = APIFlask(__name__)
-
-
-@app.get('/hello')
-def hello():
-    """Say hello
-
-    Some description for the /hello
-    """
     return 'Hello'
 ```
 
-Here are the other arguments for the `@doc` argument:
-
-- `tag`: The tag or tag list of this endpoint, map the tags you passed in the `app.tags`
-            attribute. You can pass a list of tag names or just a single tag name string.
-            If `app.tags` is not set, the blueprint name will be used as the tag name.
-- `responses`: The other responses for this view function, accepts a dict in a format
-    of `{404: 'Not Found'}` or a list of status code (`[404, 418]`).
-- `deprecated`: Flag this endpoint as deprecated in API docs. Defaults to `False`.
-- `hide`: Hide this endpoint in API docs. Defaults to `False`.
+See *[Use the `doc` decorator](/openapi/#use-the-doc-decorator)* for more details
+about OpenAPI genenrating and the usage of the `doc` decorator.
 
 !!! warning
 

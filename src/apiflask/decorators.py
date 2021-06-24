@@ -153,7 +153,7 @@ def input(
             `'files'`, `'form'`, `'cookies'`, `'headers'`, `'query'`
             (same as `'querystring'`).
         schema_name: The schema name for dict schema, only needed when you pass
-            a `dict` schema (e.g., `{'name': String(required=True)}`) for `json`
+            a schema dict (e.g., `{'name': String(required=True)}`) for `json`
             location.
         example: The example data in dict for request body, you should use either
             `example` or `examples`, not both.
@@ -241,7 +241,7 @@ def output(
         status_code: The status code of the response, defaults to `200`.
         description: The description of the response.
         schema_name: The schema name for dict schema, only needed when you pass
-            a `dict` schema (e.g., `{'name': String()}`).
+            a schema dict (e.g., `{'name': String()}`).
         example: The example data in dict for response body, you should use either
             `example` or `examples`, not both.
         examples: Multiple examples for response body, you should pass a dict
@@ -369,8 +369,8 @@ def doc(
         tags: Similar to `tag` but accepts a list of tag names.
         responses: The other responses for this view function, accepts a dict in a format
             of `{404: 'Not Found'}` or a list of status code (`[404, 418]`).
-        deprecated: Flag this endpoint as deprecated in API docs. Defaults to `False`.
-        hide: Hide this endpoint in API docs. Defaults to `False`.
+        deprecated: Flag this endpoint as deprecated in API docs.
+        hide: Hide this endpoint in API docs.
 
     *Version changed: 0.5.0*
 
