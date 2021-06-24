@@ -703,3 +703,80 @@ variable `SPEC_FORMAT` (defaults to `'json'`):
 
 - `'json'` -> dict
 - `'yaml'` -> string
+=======
+## Keep the local spec in sync automatically
+
+!!! warning "Version >= 0.7.0"
+
+    This feature was added in the [version 0.7.0](/changelog/#version-070).
+
+With the `flask spec` command, you can easily generate the spec to a local file.
+While it will be handy if the spec file is in sync with the project code.
+To achieve this, you need to set a path to the config `LOCAL_SPEC_PATH`,
+then enable the sync by setting the config `SYNC_LOCAL_SPEC` to `True`:
+
+```python
+from apiflask import APIFlask
+
+app = APIFlask(__name__)
+
+app.config['SYNC_LOCAL_SPEC'] = True
+app.config['LOCAL_SPEC_PATH'] = 'openapi.json'
+```
+
+!!! warning
+
+    If the path you passed is a relative path, do not put a leading slash in it.
+
+APIFlask will create the file at your current working directory (where you execute the
+`flask run` command). We recommend using an absolute path. For example, you can use
+`app.root_path`, which stores the absolute root path to your app module:
+
+```python
+from pathlib import Path
+
+app = APIFlask(__name__)
+app.config['SYNC_LOCAL_SPEC'] = True
+app.config['LOCAL_SPEC_PATH'] = Path(app.root_path) / 'openapi.json'
+```
+
+Or use the `os` module:
+
+```python
+import os
+
+app = APIFlask(__name__)
+app.config['SYNC_LOCAL_SPEC'] = True
+app.config['LOCAL_SPEC_PATH'] = os.path.join(app.root_path, 'openapi.json')
+```
+
+You can also find the project root path manually based on the current module's
+`__file_` variable when you are using an application factory:
+
+```python
+from pathlib import Path
+
+base_path = Path(__file__).parent
+# you may need to use the following if current module is
+# inside the application package:
+# base_path = Path(__file__).parent.parent
+
+app = APIFlask(__name__)
+app.config['SYNC_LOCAL_SPEC'] = True
+app.config['LOCAL_SPEC_PATH'] = base_path / 'openapi.json'
+```
+
+Or use the `os` module:
+
+```python
+import os
+
+base_path = os.path.dirname(__file__)
+# you may need to use the following if current module is
+# inside the application package:
+# base_path = os.path.dirname(os.path.dirname(__file__))
+
+app = APIFlask(__name__)
+app.config['SYNC_LOCAL_SPEC'] = True
+app.config['LOCAL_SPEC_PATH'] = os.path.join(base_path, 'openapi.json')
+```

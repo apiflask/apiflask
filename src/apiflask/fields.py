@@ -1,4 +1,3 @@
-# flake8: noqa
 # Field aliases were skipped (e.g., Str, Int, Url, etc.)
 import warnings
 with warnings.catch_warnings():

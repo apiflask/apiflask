@@ -5,10 +5,10 @@
 - ORM example (with Flask-SQLAlchemy): [/examples/orm/app.py][_orm]
 - Pagination example (with Flask-SQLAlchemy): [/examples/pagination/app.py][_pagination]
 
-[_basic]: https://github.com/greyli/apiflask/tree/master/examples/basic/app.py
-[_cbv]: https://github.com/greyli/apiflask/tree/master/examples/cbv/app.py
-[_orm]: https://github.com/greyli/apiflask/tree/master/examples/orm/app.py
-[_pagination]: https://github.com/greyli/apiflask/tree/master/examples/pagination/app.py
+[_basic]: https://github.com/greyli/apiflask/tree/main/examples/basic/app.py
+[_cbv]: https://github.com/greyli/apiflask/tree/main/examples/cbv/app.py
+[_orm]: https://github.com/greyli/apiflask/tree/main/examples/orm/app.py
+[_pagination]: https://github.com/greyli/apiflask/tree/main/examples/pagination/app.py
 
 If you have built an application with APIFlask, feel free to submit a pull request to add the source link here.
 
@@ -88,4 +88,4 @@ If you want to do some experiment on the example application, just open the `app
 $ flask run --reload
 ```
 
-Furthermore, you can run the application in debug mode; it will enable the reloader and debugger as default. To enable the debug mode, you will need to set the environment variable `FLASK_ENV` to `development` before executing `flask run`, see *[Debug Mode](https://flask.palletsprojects.com/en/master/quickstart/#debug-mode)* for more details.
+Furthermore, you can run the application in debug mode; it will enable the reloader and debugger as default. To enable the debug mode, you will need to set the environment variable `FLASK_ENV` to `development` before executing `flask run`, see *[Debug Mode](https://flask.palletsprojects.com/en/main/quickstart/#debug-mode)* for more details.

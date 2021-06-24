@@ -150,7 +150,7 @@ Or with npm:
 
 !!! tip
 
-    The resources of Swagger UI can be found at the `dist` folder of release assets at 
+    The resources of Swagger UI can be found at the `dist` folder of release assets at
     [Swagger UI releases page][_swagger_ui_releases]{target=_blank}.
 
     [_swagger_ui_releases]: https://github.com/swagger-api/swagger-ui/releases

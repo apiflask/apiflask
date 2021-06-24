@@ -18,7 +18,7 @@ the "Q&A" category.
 Include the following information in your post:
 
 - Describe what you expected to happen.
-- If possible, include a [minimal reproducible example][_mcve] to help us 
+- If possible, include a [minimal reproducible example][_mcve] to help us
 identify the issue. This also helps check that the issue is not with
 your own code.
 - Describe what actually happened. Include the full traceback if there
@@ -40,7 +40,7 @@ issue on our [issue tracker][_gh_issue].
 Include the following information in your post:
 
 - Describe what you expected to happen.
-- If possible, include a [minimal reproducible example][_mcve] to help us 
+- If possible, include a [minimal reproducible example][_mcve] to help us
 identify the issue. This also helps check that the issue is not with
 your own code.
 - Describe what actually happened. Include the full traceback if there
@@ -102,6 +102,7 @@ $ source env/bin/activate
 $ python -m pip install --upgrade pip setuptools
 $ pip install -r requirements/dev.txt
 $ pip install -e .
+$ pre-commit install
 ```
 
 For Windows:
@@ -112,6 +113,7 @@ For Windows:
 > python -m pip install --upgrade pip setuptools
 > pip install -r .\requirements\dev.txt
 > pip install -e .
+> pre-commit install
 ```
 
 [_fork]: https://github.com/greyli/apiflask/fork
@@ -124,7 +126,7 @@ update the example branch name):
 
 ```
 $ git fetch upstream
-$ git checkout -b your-branch-name upstream/master
+$ git checkout -b your-branch-name upstream/main
 ```
 
 - Using your favorite editor, make your changes,

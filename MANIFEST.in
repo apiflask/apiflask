@@ -2,9 +2,7 @@ include README.md
 include CHANGES.md
 include tox.ini
 include requirements/*.txt
-include apiflask/py.typed
-graft apiflask/templates/apiflask
-graft apiflask/static
+include src/apiflask/py.typed
 graft examples
 graft tests
 prune site

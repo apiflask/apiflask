@@ -1,11 +1,10 @@
-from openapi_spec_validator import validate_spec
 from flask.views import MethodView
-
-from apiflask import input
-from apiflask import output
-from apiflask import doc
+from openapi_spec_validator import validate_spec
 
 from .schemas import FooSchema
+from apiflask import doc
+from apiflask import input
+from apiflask import output
 
 
 def test_doc_summary_and_description(app, client):

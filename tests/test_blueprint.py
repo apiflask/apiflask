@@ -1,5 +1,5 @@
-from openapi_spec_validator import validate_spec
 from flask.views import MethodView
+from openapi_spec_validator import validate_spec
 
 from apiflask import APIBlueprint
 from apiflask import auth_required

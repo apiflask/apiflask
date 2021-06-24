@@ -1,16 +1,15 @@
-from openapi_spec_validator import validate_spec
-from flask.views import MethodView
 from flask import Blueprint
+from flask.views import MethodView
+from openapi_spec_validator import validate_spec
 
-from apiflask import APIFlask
+from .schemas import FooSchema
+from .schemas import PaginationSchema
 from apiflask import APIBlueprint
+from apiflask import APIFlask
 from apiflask import input
 from apiflask import Schema
 from apiflask.fields import Integer
 from apiflask.fields import String
-
-from .schemas import FooSchema
-from .schemas import PaginationSchema
 
 
 def test_app_init(app):

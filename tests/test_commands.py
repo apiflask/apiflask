@@ -1,13 +1,14 @@
 import json
 
 import pytest
+
 from apiflask.commands import spec_command
 
 
 def test_flask_spec_stdout(app, cli_runner):
     result = cli_runner.invoke(spec_command)
     assert 'openapi' in result.output
-    assert json.loads(result.output) == app._spec
+    assert json.loads(result.output) == app.spec
 
 
 def test_flask_spec_output(app, cli_runner, tmp_path):
@@ -15,7 +16,7 @@ def test_flask_spec_output(app, cli_runner, tmp_path):
     result = cli_runner.invoke(spec_command, ['--output', str(local_spec_path)])
     assert 'openapi' in result.output
     with open(local_spec_path) as f:
-        assert json.loads(f.read()) == app._spec
+        assert json.loads(f.read()) == app.spec
 
 
 @pytest.mark.parametrize('format', ['json', 'yaml', 'yml', 'foo'])

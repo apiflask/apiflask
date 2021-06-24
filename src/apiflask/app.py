@@ -1,6 +1,7 @@
-import typing as t
+import json
 import re
 import sys
+import typing as t
 import warnings
 
 # temp fix for https://github.com/django/asgiref/issues/143
@@ -13,7 +14,7 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Blueprint
 from flask import Flask
 from flask import jsonify
-from flask import render_template
+from flask import render_template_string
 from flask.config import ConfigAttribute
 from flask.globals import _request_ctx_stack
 
@@ -49,6 +50,9 @@ from .openapi import get_path_summary
 from .openapi import get_auth_name
 from .openapi import get_argument
 from .openapi import get_security_and_security_schemes
+from .ui_templates import redoc_template
+from .ui_templates import swagger_ui_template
+from .ui_templates import swagger_ui_oauth2_redirect_template
 
 
 @route_patch
@@ -239,7 +243,7 @@ class APIFlask(Flask):
 
         - Add `openapi_blueprint_url_prefix` argument.
         """
-        super(APIFlask, self).__init__(
+        super().__init__(
             import_name,
             static_url_path=static_url_path,
             static_folder=static_folder,
@@ -438,9 +442,6 @@ class APIFlask(Flask):
         bp = Blueprint(
             'openapi',
             __name__,
-            template_folder='templates',
-            static_folder='static',
-            static_url_path='/apiflask',
             url_prefix=self.openapi_blueprint_url_prefix
         )
 
@@ -457,8 +458,8 @@ class APIFlask(Flask):
         if self.docs_path:
             @bp.route(self.docs_path)
             def swagger_ui() -> str:
-                return render_template(
-                    'apiflask/swagger_ui.html',
+                return render_template_string(
+                    swagger_ui_template,
                     title=self.title,
                     version=self.version,
                     oauth2_redirect_path=self.docs_oauth2_redirect_path
@@ -467,13 +468,13 @@ class APIFlask(Flask):
             if self.docs_oauth2_redirect_path:
                 @bp.route(self.docs_oauth2_redirect_path)
                 def swagger_ui_oauth_redirect() -> str:
-                    return render_template('apiflask/swagger_ui_oauth2_redirect.html')
+                    return render_template_string(swagger_ui_oauth2_redirect_template)
 
         if self.redoc_path:
             @bp.route(self.redoc_path)
             def redoc() -> str:
-                return render_template(
-                    'apiflask/redoc.html',
+                return render_template_string(
+                    redoc_template,
                     title=self.title,
                     version=self.version
                 )
@@ -486,6 +487,10 @@ class APIFlask(Flask):
     def get_spec(self, spec_format: t.Optional[str] = None) -> t.Union[dict, str]:
         """Get the current OAS document file.
 
+        If the config `SYNC_LOCAL_SPEC` is `True`, the local spec
+        specified in config `LOCAL_SPEC_PATH` will be automatically updated
+        when the spec changes.
+
         Arguments:
             spec_format: The format of the spec file, one of `'json'`, `'yaml'`
                 and `'yml'`, defaults to the `SPEC_FORMAT` config.
@@ -494,6 +499,7 @@ class APIFlask(Flask):
         *Version changed: 0.7.0*
 
         - The default format now rely on the `SPEC_FORMAT` config.
+        - Support to sync local spec file.
         """
         if spec_format is None:
             spec_format = self.config['SPEC_FORMAT']
@@ -504,6 +510,20 @@ class APIFlask(Flask):
                 self._spec = self._generate_spec().to_yaml()
             if self.spec_callback:
                 self._spec = self.spec_callback(self._spec)
+        # sync local spec
+        if self.config['SYNC_LOCAL_SPEC']:
+            spec_path = self.config['LOCAL_SPEC_PATH']
+            if spec_path is None:
+                raise RuntimeError('The spec path should be a valid path string.')
+            spec: str
+            if spec_format == 'json':
+                spec = json.dumps(
+                    self._spec, indent=self.config['LOCAL_SPEC_JSON_INDENT']
+                )
+            else:
+                spec = str(self._spec)
+            with open(spec_path, 'w') as f:
+                f.write(spec)
         return self._spec
 
     def spec_processor(self, f: SpecCallbackType) -> SpecCallbackType:
@@ -897,7 +917,7 @@ class APIFlask(Flask):
                     argument = get_argument(argument_type, argument_name)
                     arguments.append(argument)
 
-                for method, operation in operations.items():
+                for _method, operation in operations.items():
                     operation['parameters'] = arguments + operation['parameters']
 
             path: str = re.sub(r'<([^<:]+:)?', '{', rule.rule).replace('>', '}')

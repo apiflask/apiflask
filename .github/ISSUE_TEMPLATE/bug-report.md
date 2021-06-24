@@ -1,7 +1,10 @@
 ---
 name: Bug report
 about: Report a bug in APIFlask (not Flask or marshmallow-code projects)
+title: ''
 labels: bug
+assignees: ''
+
 ---
 
 <!--

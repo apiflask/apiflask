@@ -1,7 +1,10 @@
 ---
 name: Feature request
 about: Suggest a new feature for APIFlask
+title: ''
 labels: feature
+assignees: ''
+
 ---
 
 <!--

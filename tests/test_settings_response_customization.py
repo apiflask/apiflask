@@ -1,17 +1,16 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import input
-from apiflask import output
+from .schemas import FooSchema
+from .schemas import HTTPErrorSchema
+from .schemas import ValidationErrorSchema
 from apiflask import auth_required
 from apiflask import doc
+from apiflask import input
+from apiflask import output
 from apiflask.schemas import EmptySchema
 from apiflask.schemas import http_error_schema
 from apiflask.security import HTTPBasicAuth
-
-from .schemas import FooSchema
-from .schemas import ValidationErrorSchema
-from .schemas import HTTPErrorSchema
 
 
 def test_response_description_config(app, client):

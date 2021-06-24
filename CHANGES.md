@@ -5,7 +5,7 @@
 - Support using async error processor and async spec processor
 ([pull #57][pull_57]).
 - Fix auto-tag support for nesting blueprint ([pull #58][pull_58]).
-- Support set the url prefix of the OpenAPI blueprint with the 
+- Support set the url prefix of the OpenAPI blueprint with the
 `openapi_blueprint_url_prefix` argument ([pull #64][pull_64]).
 - Add `flask spec` command to output the OpenAPI spec to stdout
 or a file, also add new config `LOCAL_SPEC_PATH` and
@@ -13,12 +13,20 @@ or a file, also add new config `LOCAL_SPEC_PATH` and
 - Re-add the `SPEC_FORMAT` config. Remove the auto-detection of
 the format from `APIFlask(spec_path=...)`, now you have to set the
 format explicitly with the `SPEC_FORMAT` config ([issue #67][issue_67]).
+- Support to sync the local OpenAPI spec automatically. Add new config
+`SYNC_LOCAL_SPEC` ([issue #68][issue_68]).
+- Change the default value of config `DOCS_FAVICON` to
+`'https://apiflask.com/_assets/favicon.png'`, set to `None` to disable
+the favicon. OpenAPI UI templates are move to `ui_templates.py`.
+- Revert the renames on pre/post decorators from Marshmallow ([issue #62][issue_62]).
 
 [pull_57]: https://github.com/greyli/apiflask/pull/57
 [pull_58]: https://github.com/greyli/apiflask/pull/58
 [pull_64]: https://github.com/greyli/apiflask/pull/64
 [issue_61]: https://github.com/greyli/apiflask/issues/61
+[issue_62]: https://github.com/greyli/apiflask/issues/62
 [issue_67]: https://github.com/greyli/apiflask/issues/67
+[issue_68]: https://github.com/greyli/apiflask/issues/68
 
 
 ## Version 0.6.3
@@ -245,7 +253,7 @@ Released: 2021-3-27
 
 Released: 2021-1-27
 
-- Add view functions without response schema into spec ([commit](https://github.com/greyli/apiflask/commit/aabf427590227001e0e443d8d6a3bf5f56dc5964))       
+- Add view functions without response schema into spec ([commit](https://github.com/greyli/apiflask/commit/aabf427590227001e0e443d8d6a3bf5f56dc5964))
 - Set default response descriptions ([commit](https://github.com/greyli/apiflask/commit/b9edf9e8f5731a8f45b359f6a101b4d39ba3f2f5))
 - Stop rely on Flask-Marshmallow ([commit](https://github.com/greyli/apiflask/commit/cce7a0b8b97f345e087973b127c6d25c884dbc8f))
 - Change default spec path to `openapi.json` ([commit](https://github.com/greyli/apiflask/commit/09d0d278a1fc27fa5868ef5848f3931bd8f76ef4))

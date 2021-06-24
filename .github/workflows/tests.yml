@@ -2,10 +2,10 @@ name: build
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 jobs:
   lint:
     name: lint
@@ -15,9 +15,8 @@ jobs:
       - uses: actions/setup-python@v2
       - run: python -m pip install --upgrade pip wheel
       - run: pip install tox tox-gh-actions
-      - run: tox -eflake8
-      # re-enable it when mkdocstrings supports jinja 3.0 and markupsafe 2.0
-      # - run: tox -edocs
+      - run: tox -e style
+      - run: tox -e docs
   flask1:
     name: flask1
     runs-on: ubuntu-latest
@@ -26,7 +25,7 @@ jobs:
       - uses: actions/setup-python@v2
       - run: python -m pip install --upgrade pip wheel
       - run: pip install tox tox-gh-actions
-      - run: tox -eflask1
+      - run: tox -e flask1
   tests:
     name: tests
     strategy:

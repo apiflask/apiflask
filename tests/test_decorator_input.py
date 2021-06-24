@@ -1,13 +1,12 @@
 import pytest
-from openapi_spec_validator import validate_spec
 from flask.views import MethodView
+from openapi_spec_validator import validate_spec
 
+from .schemas import BarSchema
+from .schemas import FooSchema
+from .schemas import QuerySchema
 from apiflask import input
 from apiflask.fields import String
-
-from .schemas import FooSchema
-from .schemas import BarSchema
-from .schemas import QuerySchema
 
 
 def test_input(app, client):
