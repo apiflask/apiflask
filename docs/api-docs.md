@@ -64,52 +64,19 @@ app = APIFlask(__name__, docs_path=None, redoc_path=None)
 
 !!! tip
 
-    If you want to disable the whole OpenAPI support for the application, you
-    can set `enable_openapi` parameter to `False` when creating the `APIFlask` instance:
-
-    ```python
-    from apiflask import APIFlask
-
-    app = APIFlask(__name__, enable_openapi=False)
-    ```
+    If you want to disable the whole OpenAPI support for the application,
+    see *[Disable the OpenAPI support](/openapi/#disable-the-openapi-support)*
+    for more details.
 
 
 ## Disable the API documentations for specific blueprints
 
-To hide blueprints from API documentations (and OpenAPI spec), you can
-set `enable_openapi` parameter to `False` when creating the `APIBlueprint` instance:
-
-```python
-from apiflask import APIBlueprint
-
-bp = APIBlueprint(__name__, 'foo', enable_openapi=False)
-```
+See *[Disable the OpenAPI support for specific blueprints](/openapi/#disable-for-specific-blueprints)* for more details.
 
 
 ## Disable the API documentations for specific view functions
 
-To hide a view function from API documentations (and OpenAPI spec), you
-can set the `hide` parameter to `True` in the `@doc` decorator:
-
-```python hl_lines="1 4"
-from apiflask import doc
-
-@app.get('/secret')
-@doc(hide=True)
-def some_secret():
-    return ''
-```
-
-!!! note
-
-    By default, APIFlask will add a view function into API documentations
-    (and OpenAPI spec) even if the view function doesn't use `@input`, `@output`,
-    and `@doc` decorator. If you want to disable this behavior, set configruration
-    variable `AUTO_200_RESPONSE` to `False`:
-
-    ```python
-    app.config['AUTO_200_RESPONSE'] = False
-    ```
+See *[Disable the OpenAPI support for specific view functions](/openapi/#disable-for-specific-view-functions)* for more details.
 
 
 ## Configure Swagger UI/Redoc
