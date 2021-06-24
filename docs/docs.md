@@ -4,7 +4,7 @@ Welcome to APIFlask's documentation!
 
 Documentation progress:
 
-[=50%]
+[=60%]
 
 
 ## Contents
@@ -17,7 +17,7 @@ Go through the following chapters to learn how to use APIFlask:
 - **Schema, Fields, and Validators**: Introduce how to write an input/output schema.
 - **Request Validating**: The detailed introduction of the `@input` decorator.
 - **Response Formatting**:  The detailed introduction of the `@output` decorator.
-- **OpenAPI Generating**: Introduce how the OpenAPI generation works and how to customize
+- **[OpenAPI Generating](/openapi)**: Introduce how the OpenAPI generation works and how to customize
 it with `@doc` decorator and configuration variables.
 - **Authentication**: Introduce how to implement HTTP Basic and Token-based authentication.
 - **[Swagger UI and Redoc](/api-docs)**: Introduce the usage and configuration of the API
