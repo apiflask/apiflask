@@ -1,6 +1,11 @@
+## Version 0.7.1
+
+Released: -
+
+
 ## Version 0.7.0
 
-0.7.0 plan: <https://github.com/greyli/apiflask/issues/46>
+Released: 2021/6/24
 
 - Support using async error processor and async spec processor
 ([pull #57][pull_57]).
@@ -19,6 +24,9 @@ format explicitly with the `SPEC_FORMAT` config ([issue #67][issue_67]).
 `'https://apiflask.com/_assets/favicon.png'`, set to `None` to disable
 the favicon. OpenAPI UI templates are move to `ui_templates.py`.
 - Revert the renames on pre/post decorators from Marshmallow ([issue #62][issue_62]).
+- Change the default branch to "main".
+- Move the source to the "src" directory.
+- Enable pre-commit.
 
 [pull_57]: https://github.com/greyli/apiflask/pull/57
 [pull_58]: https://github.com/greyli/apiflask/pull/58
