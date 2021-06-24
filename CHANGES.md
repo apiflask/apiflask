@@ -1,6 +1,6 @@
 ## Version 0.8.0
 
-[0.8.0 milestone](https://github.com/greyli/apiflask/milestone/4>
+[0.8.0 milestone](https://github.com/greyli/apiflask/milestone/4)
 
 
 ## Version 0.7.1
@@ -15,9 +15,9 @@ Released: 2021/6/24
 - Support using async error processor and async spec processor
 ([pull #57][pull_57]).
 - Fix auto-tag support for nesting blueprint ([pull #58][pull_58]).
-- Support set the url prefix of the OpenAPI blueprint with the
+- Support set the URL prefix of the OpenAPI blueprint with the
 `openapi_blueprint_url_prefix` argument ([pull #64][pull_64]).
-- Add `flask spec` command to output the OpenAPI spec to stdout
+- Add a `flask spec` command to output the OpenAPI spec to stdout
 or a file, also add new config `LOCAL_SPEC_PATH` and
 `LOCAL_SPEC_JSON_INDENT` ([issue #61][issue_61]).
 - Re-add the `SPEC_FORMAT` config. Remove the auto-detection of
@@ -27,7 +27,8 @@ format explicitly with the `SPEC_FORMAT` config ([issue #67][issue_67]).
 `SYNC_LOCAL_SPEC` ([issue #68][issue_68]).
 - Change the default value of config `DOCS_FAVICON` to
 `'https://apiflask.com/_assets/favicon.png'`, set to `None` to disable
-the favicon. OpenAPI UI templates are move to `ui_templates.py`.
+the favicon.
+- OpenAPI UI templates are move to `ui_templates.py`.
 - Revert the renames on pre/post decorators from Marshmallow ([issue #62][issue_62]).
 - Change the default branch to "main".
 - Move the source to the "src" directory.
