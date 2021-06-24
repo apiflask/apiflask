@@ -286,8 +286,10 @@ See *[Environment Variables From dotenv][_dotenv]{target=_blank}* for more detai
 
 Once you have created the app instance, the interactive API documentation will be
 available at <http://localhost:5000/docs> and <http://localhost:5000/redoc>. On
-top of that, the OpenAPI spec file will be available at
-<http://localhost:5000/openapi.json>.
+top of that, the OpenAPI spec file is available at <http://localhost:5000/openapi.json>.
+
+If you want to preview the spec or save the spec to a local file, use [the `flask spec`
+command](/openapi/#the-flask-spec-command).
 
 You can refresh the documentation whenever you added a new route or added the input
 and output definition for the view function in the following sections.
@@ -1061,6 +1063,7 @@ In the end, let's unpack the whole `apiflask` package to check out what it shipp
 - `app.route()`: A decorator used to register a route. It accepts a `methods`
 parameter to specify a list of accepted methods, default to *GET* only. It can also
 be used on the `MethodView`-based view class.
+- `$ flask run`: A command to output the spec to stdout or a file.
 
 You can learn the details of these APIs in the [API reference](/api/app), or you can
 continue to read the following chapters.

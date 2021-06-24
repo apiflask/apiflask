@@ -221,7 +221,11 @@ Or you can visit the alternative API documentation (Redoc) at <http://localhost:
 
 ![](https://apiflask.com/_assets/redoc.png)
 
-The auto-generated OpenAPI spec file is available at <http://localhost:5000/openapi.json>.
+The auto-generated OpenAPI spec file is available at <http://localhost:5000/openapi.json>. You can also get the spec with [the `flask spec` command](https://apiflask.com/openapi/#the-flask-spec-command):
+
+```bash
+$ flask spec
+```
 
 For some complete examples, see [/examples](https://github.com/greyli/apiflask/tree/main/examples).
 
