@@ -269,7 +269,7 @@ app.config['TAGS'] = [
 
     ```python
     app.tags = ['foo', 'bar', 'baz']
-    ```  
+    ```
 
 When the `TAGS` is set, you can now add tags for each route (OpenAPI operation) with
 the `doc` decorator, see [Operation `tags`](#operation-tags)
@@ -291,7 +291,7 @@ on the view function:
 @output(PetOutSchema)
 def get_pet(pet_id):
     return pets[pet_id]
-``` 
+```
 
 You can set the `description` and `status_code` (default to `200`) through the
 corresponding parameters in the `output` decorator:
@@ -306,7 +306,7 @@ def get_pet(pet_id):
 There are some automatic behaviors on operation `responses` object:
 
 - If the `input` decorator is added on the view function, APIFlask will add
-a `400` response. 
+a `400` response.
 - When the `auth_required` decorator is added on the view function, APIFlask will
 add a `401` response.
 - If the view function only use the route decorator, APIFlask will add a default
@@ -326,7 +326,7 @@ on the view function:
 @input(PetInSchema)
 def create_pet(pet_id):
     pass
-``` 
+```
 
 When you specify a request data location other than `json`, the operation `parameters`
 will be generated instead:
@@ -339,7 +339,7 @@ def get_pets():
 ```
 
 
-### Operation `summary` and `description` 
+### Operation `summary` and `description`
 
 By default, APIFlask will use the name of the view function as operation summary.
 If your view function is named with `get_pet`, then the `summary` will be "Get Pet".
