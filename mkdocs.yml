@@ -1,5 +1,5 @@
 site_name: APIFlask
-site_description: Web APIs for Flask.
+site_description: A lightweight Python web API framework.
 site_url: https://apiflask.com
 docs_dir: docs
 theme:
