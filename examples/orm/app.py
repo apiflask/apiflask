@@ -77,14 +77,25 @@ def create_pet(data):
     db.session.commit()
     return pet
 
+@app.put('/pets/<int:pet_id>')
+@input(PetInSchema(partial=True))
+@output(PetOutSchema)
+def put_pet(pet_id, data):
+    pet = PetModel.query.get_or_404(pet_id)
+    for attr, value in data.items():
+        setattr(pet, attr, value)
+    db.session.commit()
+    return pet
+
 
 @app.patch('/pets/<int:pet_id>')
 @input(PetInSchema(partial=True))
 @output(PetOutSchema)
-def update_pet(pet_id, data):
+def patch_pet(pet_id, data):
     pet = PetModel.query.get_or_404(pet_id)
     for attr, value in data.items():
-        setattr(pet, attr, value)
+        if pet[pet_id][attr] != value:
+            setattr(pet, attr, value)
     db.session.commit()
     return pet
 

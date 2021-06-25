@@ -63,7 +63,7 @@ def create_pet(data):
     return pets[pet_id]
 
 
-@app.patch('/pets/<int:pet_id>')
+@app.put('/pets/<int:pet_id>')
 @input(PetInSchema(partial=True))
 @output(PetOutSchema)
 def update_pet(pet_id, data):
@@ -73,6 +73,16 @@ def update_pet(pet_id, data):
         pets[pet_id][attr] = value
     return pets[pet_id]
 
+@app.patch('/pets/<int:pet_id>')
+@input(PetInSchema(partial=True))
+@output(PetOutSchema)
+def patch_pet(pet_id, data):
+    if pet_id > len(pets) - 1:
+        abort(404)
+    for attr, value in data.items():
+        if pets[pet_id][attr] != value:
+            pets[pet_id][attr] = value
+    return pets[pet_id]
 
 @app.delete('/pets/<int:pet_id>')
 @output({}, 204)
