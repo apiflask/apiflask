@@ -450,7 +450,7 @@ def hello():
 APIFlask (with APISpec) will generate the operation `schema` object from the data schema
 you passed.
 
-To set the OpenAPI spec for fields, you can pass a dict with the `metadata` keyword:
+To set the OpenAPI spec for schema fields, you can pass a dict with the `metadata` keyword:
 
 ```python
 class PetInSchema(Schema):
@@ -458,7 +458,7 @@ class PetInSchema(Schema):
 ```
 
 You can pass the OpenAPI schema field name as the key in this metadata dict. Currently,
-the following field are supported:
+the following fields are supported:
 
 - `format`
 - `title`
@@ -488,7 +488,7 @@ the following field are supported:
 - `xml`
 - `externalDocs`
 - `example`
-- Any custom field start with `x-` prefix
+- Any custom field starts with `x-` prefix
 
 See the details of these fields at
 [OpenAPI docs](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#schemaObject).
@@ -509,7 +509,7 @@ class PetInSchema(Schema):
      )
 ```
 
-Then in the final spec, the `maxLength`, `minLength` and `required` field will have
+Then in the final spec, the `type`, `maxLength`, `minLength` and `required` field will have
 the right value:
 
 ```json
@@ -528,6 +528,16 @@ the right value:
     "type": "object"
 }
 ```
+
+Normally, you only need to set the following fields manually with the `metadata` dict:
+
+- `description`: Some description for this field.
+- `title`: The title of the field.
+- `example`: A example value for this field.
+- `externalDocs`: A link points to the external documentation for this field.
+- `xml`: Adds additional metadata to describe the XML representation format of this field.
+See details in
+*[OpenAPI XML object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#xmlObject)*.
 
 !!! tips
 
