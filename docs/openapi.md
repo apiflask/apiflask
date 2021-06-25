@@ -779,7 +779,7 @@ def update_spec(spec):
     return spec
 ```
 
-Notice the format of the spec depends on the the value of configuration
+Notice the format of the spec depends on the value of the configuration
 variable `SPEC_FORMAT` (defaults to `'json'`):
 
 - `'json'` -> dict
