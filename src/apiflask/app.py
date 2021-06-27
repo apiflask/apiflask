@@ -449,10 +449,10 @@ class APIFlask(Flask):
             @bp.route(self.spec_path)
             def spec() -> ResponseType:
                 if self.config['SPEC_FORMAT'] == 'json':
-                    response = jsonify(self.get_spec('json'))
+                    response = jsonify(self._get_spec('json'))
                     response.mimetype = self.config['JSON_SPEC_MIMETYPE']
                     return response
-                return self.get_spec('yaml'), 200, \
+                return self._get_spec('yaml'), 200, \
                     {'Content-Type': self.config['YAML_SPEC_MIMETYPE']}
 
         if self.docs_path:
@@ -484,8 +484,17 @@ class APIFlask(Flask):
         ):
             self.register_blueprint(bp)
 
-    def get_spec(self, spec_format: t.Optional[str] = None) -> t.Union[dict, str]:
+    def _get_spec(
+        self,
+        spec_format: t.Optional[str] = None,
+        force_update: bool = False
+    ) -> t.Union[dict, str]:
         """Get the current OAS document file.
+
+        This method will return the cached spec on the first call. If you want
+        to get the latest spec, set the `force_update` to `True` or use the
+        public attribute `app.spec`, which will always return the newly generated
+        spec when you call it.
 
         If the config `SYNC_LOCAL_SPEC` is `True`, the local spec
         specified in config `LOCAL_SPEC_PATH` will be automatically updated
@@ -494,22 +503,28 @@ class APIFlask(Flask):
         Arguments:
             spec_format: The format of the spec file, one of `'json'`, `'yaml'`
                 and `'yml'`, defaults to the `SPEC_FORMAT` config.
-
+            force_update: If ture, will generate the spec for every call instead
+                of using the cache.
 
         *Version changed: 0.7.0*
 
         - The default format now rely on the `SPEC_FORMAT` config.
         - Support to sync local spec file.
+
+        *Version changed: 0.7.1*
+
+        - Rename the method name to `_get_spec`.
+        - Add the `force_update` parameter.
         """
         if spec_format is None:
             spec_format = self.config['SPEC_FORMAT']
-        if self._spec is None:
+        if self._spec is None or force_update:
             if spec_format == 'json':
                 self._spec = self._generate_spec().to_dict()
             else:
                 self._spec = self._generate_spec().to_yaml()
             if self.spec_callback:
-                self._spec = self.spec_callback(self._spec)
+                self._spec = self.spec_callback(self._spec)  # type: ignore
         # sync local spec
         if self.config['SYNC_LOCAL_SPEC']:
             spec_path = self.config['LOCAL_SPEC_PATH']
@@ -524,7 +539,7 @@ class APIFlask(Flask):
                 spec = str(self._spec)
             with open(spec_path, 'w') as f:
                 f.write(spec)
-        return self._spec
+        return self._spec  # type: ignore
 
     def spec_processor(self, f: SpecCallbackType) -> SpecCallbackType:
         """A decorator to register a spec handler callback function.
@@ -562,9 +577,14 @@ class APIFlask(Flask):
     def spec(self) -> t.Union[dict, str]:
         """Get the current OAS document file.
 
-        This property will call [get_spec][apiflask.APIFlask.get_spec] method.
+        This property will call `app._get_spec()` method and set the
+        `force_update` parameter to `True`.
+
+        *Version changed: 0.7.1*
+
+        - Generate the spec on every call.
         """
-        return self.get_spec()
+        return self._get_spec(force_update=True)
 
     @staticmethod
     def _schema_name_resolver(schema: t.Type[Schema]) -> str:

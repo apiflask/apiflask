@@ -7,6 +7,12 @@
 
 Released: -
 
+- Rename the private method `app.get_spec` to `app._get_spec`, add new
+parameter `force_update`. The `app.spec` property now will always return
+the latest spec instead of the cached one ([issue #79][issue_79]).
+
+[issue_79]: https://github.com/greyli/apiflask/issues/79
+
 
 ## Version 0.7.0
 

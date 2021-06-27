@@ -354,7 +354,6 @@ will be used in the following conditions:
 
 - Serve the spec via the built-in route.
 - Execute `flask spec` without passing the `--format`/`-f` option.
-- Call `app.get_spec()` without passing the `spec_format` argument.
 
 !!! warning
     The auto-detection of the format from the `APIFlask(spec_path=...)` was

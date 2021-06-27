@@ -33,7 +33,7 @@ def spec_command(format, output, indent):
     *Version added: 0.7.0*
     """
     spec_format = format or current_app.config['SPEC_FORMAT']
-    spec = current_app.get_spec(spec_format)
+    spec = current_app._get_spec(spec_format)
     output_path = output or current_app.config['LOCAL_SPEC_PATH']
     if indent is None:
         indent = current_app.config['LOCAL_SPEC_JSON_INDENT']
