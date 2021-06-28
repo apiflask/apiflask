@@ -485,9 +485,12 @@ the following fields are supported:
 - `properties`
 - `additionalProperties`
 - `readOnly`
+- `writeOnly`
 - `xml`
 - `externalDocs`
 - `example`
+- `nullable`
+- `deprecated`
 - Any custom field starts with `x-` prefix
 
 See the details of these fields at
@@ -534,6 +537,7 @@ Normally, you only need to set the following fields manually with the `metadata`
 - `description`: Some description for this field.
 - `title`: The title of the field.
 - `example`: A example value for this field.
+- `deprecated`: If true, indicates this field is deprecated.
 - `externalDocs`: A link points to the external documentation for this field.
 - `xml`: Adds additional metadata to describe the XML representation format of this field.
 See details in
