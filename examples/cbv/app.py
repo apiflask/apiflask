@@ -48,7 +48,7 @@ class Pet(MethodView):
     @output(PetOutSchema)
     def get(self, pet_id):
         """Get a pet"""
-        if pet_id > len(pets) - 1:
+        if pet_id > len(pets) - 1 or pets[pet_id].get('deleted'):
             abort(404)
         return pets[pet_id]
 
@@ -67,7 +67,8 @@ class Pet(MethodView):
         """Delete a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
-        pets.pop(pet_id)
+        pets[pet_id]['deleted'] = True
+        pets[pet_id]['name'] = 'Ghost'
         return ''
 
 

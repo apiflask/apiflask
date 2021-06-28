@@ -21,7 +21,7 @@ class PetModel(db.Model):
 @app.before_first_request
 def init_database():
     db.create_all()
-    for i in range(100):
+    for i in range(1, 101):
         name = f'Pet {i}'
         category = random.choice(['dog', 'cat'])
         pet = PetModel(name=name, category=category)
