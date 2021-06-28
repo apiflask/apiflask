@@ -197,6 +197,7 @@ from apiflask import APIFlask
 
 app = APIFlask(__name__)
 
+
 @app.get('/')
 async def say_hello():
     await asyncio.sleep(1)

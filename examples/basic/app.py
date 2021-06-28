@@ -42,7 +42,7 @@ def say_hello():
 @app.get('/pets/<int:pet_id>')
 @output(PetOutSchema)
 def get_pet(pet_id):
-    if pet_id > len(pets) - 1:
+    if pet_id > len(pets) - 1 or pets[pet_id].get('deleted'):
         abort(404)
     return pets[pet_id]
 
@@ -79,5 +79,6 @@ def update_pet(pet_id, data):
 def delete_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)
-    pets.pop(pet_id)
+    pets[pet_id]['deleted'] = True
+    pets[pet_id]['name'] = 'Ghost'
     return ''
