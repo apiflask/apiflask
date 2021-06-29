@@ -239,7 +239,7 @@ app.config['LOCAL_SPEC_PATH'] = Path(app.root_path) / 'openapi.json'
 !!! tips
 
     You can also use
-    [`app.instance_path`](https://flask.palletsprojects.com/en/2.0.x/config/#instance-folders){target=_blank},
+    [`app.instance_path`](https://flask.palletsprojects.com/config/#instance-folders){target=_blank},
     it will be useful if your app is inside a package since it returns the path to
     the instance folder located at the project root path.
 
@@ -255,7 +255,7 @@ app.config['LOCAL_SPEC_PATH'] = os.path.join(app.root_path, 'openapi.json')
 
 You can also find the project root path manually based on the current module's
 `__file__` variable when you are using an application factory. In this case,
-your normally put the config into a file called `config.py` located at the
+you normally put the config into a file called `config.py` located at the
 project root path:
 
 ```
