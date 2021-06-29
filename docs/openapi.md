@@ -236,6 +236,13 @@ app.config['SYNC_LOCAL_SPEC'] = True
 app.config['LOCAL_SPEC_PATH'] = Path(app.root_path) / 'openapi.json'
 ```
 
+!!! tips
+
+    You can also use
+    [`app.instance_path`](https://flask.palletsprojects.com/en/2.0.x/config/#instance-folders){target=_blank},
+    it will be useful if your app is inside a package since it returns the path to
+    the instance folder located at the project root path.
+
 Or use the `os` module:
 
 ```python
@@ -247,19 +254,28 @@ app.config['LOCAL_SPEC_PATH'] = os.path.join(app.root_path, 'openapi.json')
 ```
 
 You can also find the project root path manually based on the current module's
-`__file_` variable when you are using an application factory:
+`__file__` variable when you are using an application factory. In this case,
+your normally put the config into a file called `config.py` located at the
+project root path:
+
+```
+- my_project/ -> project folder
+  - app/ -> application package
+  - config.py -> config file
+```
+
+So you can find the base path like this:
 
 ```python
 from pathlib import Path
 
 base_path = Path(__file__).parent
-# you may need to use the following if current module is
+# you may need to use the following if your config module is
 # inside the application package:
 # base_path = Path(__file__).parent.parent
 
-app = APIFlask(__name__)
-app.config['SYNC_LOCAL_SPEC'] = True
-app.config['LOCAL_SPEC_PATH'] = base_path / 'openapi.json'
+SYNC_LOCAL_SPEC = True
+LOCAL_SPEC_PATH = base_path / 'openapi.json'
 ```
 
 Or use the `os` module:
@@ -268,13 +284,12 @@ Or use the `os` module:
 import os
 
 base_path = os.path.dirname(__file__)
-# you may need to use the following if current module is
+# you may need to use the following if your config module is
 # inside the application package:
 # base_path = os.path.dirname(os.path.dirname(__file__))
 
-app = APIFlask(__name__)
-app.config['SYNC_LOCAL_SPEC'] = True
-app.config['LOCAL_SPEC_PATH'] = os.path.join(base_path, 'openapi.json')
+SYNC_LOCAL_SPEC = True
+LOCAL_SPEC_PATH = os.path.join(base_path, 'openapi.json')
 ```
 
 
