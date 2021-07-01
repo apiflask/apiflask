@@ -4,18 +4,10 @@
 #
 #    pip-compile '.\requirements\dev.in'
 #
---trusted-host pypi.python.org
---trusted-host pypi.org
---trusted-host files.pythonhosted.org
-
 appdirs==1.4.4
     # via virtualenv
 asgiref==3.3.4
-    # via -r .\requirements\tests.in
-astunparse==1.6.3
-    # via pytkdocs
-atomicwrites==1.4.0
-    # via pytest
+    # via -r requirements/tests.in
 attrs==21.2.0
     # via
     #   jsonschema
@@ -26,11 +18,6 @@ click==8.0.1
     # via
     #   mkdocs
     #   pip-tools
-colorama==0.4.4
-    # via
-    #   click
-    #   pytest
-    #   tox
 coverage==5.5
     # via pytest-cov
 distlib==0.3.2
@@ -40,7 +27,7 @@ filelock==3.0.12
     #   tox
     #   virtualenv
 flake8==3.9.2
-    # via -r .\requirements\tests.in
+    # via -r requirements/tests.in
 ghp-import==2.0.1
     # via mkdocs
 identify==2.2.10
@@ -74,31 +61,31 @@ mccabe==0.6.1
     # via flake8
 mergedeep==1.3.4
     # via mkdocs
-mkdocs-autorefs==0.2.1
-    # via mkdocstrings
-mkdocs-material-extensions==1.0.1
-    # via mkdocs-material
-mkdocs-material==7.1.8
-    # via
-    #   -r .\requirements\docs.in
-    #   mkdocs-material-extensions
 mkdocs==1.2.1
     # via
     #   mkdocs-autorefs
     #   mkdocs-material
     #   mkdocstrings
+mkdocs-autorefs==0.2.1
+    # via mkdocstrings
+mkdocs-material==7.1.8
+    # via
+    #   -r requirements/docs.in
+    #   mkdocs-material-extensions
+mkdocs-material-extensions==1.0.1
+    # via mkdocs-material
 mkdocstrings==0.15.2
-    # via -r .\requirements\docs.in
+    # via -r requirements/docs.in
+mypy==0.902
+    # via -r requirements/typing.in
 mypy-extensions==0.4.3
     # via mypy
-mypy==0.902
-    # via -r .\requirements\typing.in
 nodeenv==1.6.0
     # via pre-commit
 openapi-schema-validator==0.1.5
     # via openapi-spec-validator
 openapi-spec-validator==0.3.1
-    # via -r .\requirements\tests.in
+    # via -r requirements/tests.in
 packaging==20.9
     # via
     #   mkdocs
@@ -106,14 +93,14 @@ packaging==20.9
     #   tox
 pep517==0.10.0
     # via pip-tools
-pip-tools==6.1.0
-    # via -r .\requirements\dev.in
+pip-tools==6.2.0
+    # via -r requirements/dev.in
 pluggy==0.13.1
     # via
     #   pytest
     #   tox
 pre-commit==2.13.0
-    # via -r .\requirements\dev.in
+    # via -r requirements/dev.in
 py==1.10.0
     # via
     #   pytest
@@ -132,27 +119,26 @@ pyparsing==2.4.7
     # via packaging
 pyrsistent==0.17.3
     # via jsonschema
-pytest-cov==2.12.1
-    # via -r .\requirements\tests.in
 pytest==6.2.4
     # via
-    #   -r .\requirements\tests.in
+    #   -r requirements/tests.in
     #   pytest-cov
+pytest-cov==2.12.1
+    # via -r requirements/tests.in
 python-dateutil==2.8.1
     # via ghp-import
 pytkdocs==0.11.1
     # via mkdocstrings
-pyyaml-env-tag==0.1
-    # via mkdocs
 pyyaml==5.4.1
     # via
     #   mkdocs
     #   openapi-spec-validator
     #   pre-commit
     #   pyyaml-env-tag
+pyyaml-env-tag==0.1
+    # via mkdocs
 six==1.16.0
     # via
-    #   astunparse
     #   isodate
     #   jsonschema
     #   openapi-schema-validator
@@ -169,7 +155,7 @@ toml==0.10.2
     #   pytest-cov
     #   tox
 tox==3.23.1
-    # via -r .\requirements\dev.in
+    # via -r requirements/dev.in
 typing-extensions==3.10.0.0
     # via mypy
 virtualenv==20.4.7
@@ -179,7 +165,7 @@ virtualenv==20.4.7
 watchdog==2.1.2
     # via mkdocs
 wheel==0.36.2
-    # via astunparse
+    # via pip-tools
 zipp==3.4.1
     # via importlib-metadata
 
