@@ -404,6 +404,8 @@ a `400` response.
 add a `401` response.
 - If the view function only use the route decorator, APIFlask will add a default
 `200` response.
+- If the route URL contains a variable (e.g., `'/pets/<int:pet_id>'`), APIFlask will
+add a `404` response (Version >= 0.8).
 
 You can disable these behaviors or configure them through related
 [configuration variables](/configuration#automation-behavior-control).

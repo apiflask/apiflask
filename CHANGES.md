@@ -7,6 +7,11 @@
 
 Released: -
 
+- Automatically add a 404 response in OpenAPI spec for routes contains URL
+variables ([issue #78][issue_78]).
+
+[issue_78]: https://github.com/greyli/apiflask/issues/78
+
 
 ## Version 0.7.0
 

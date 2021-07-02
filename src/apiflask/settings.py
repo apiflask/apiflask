@@ -27,10 +27,12 @@ AUTO_TAGS: bool = True
 AUTO_PATH_SUMMARY: bool = True
 AUTO_PATH_DESCRIPTION: bool = True
 AUTO_200_RESPONSE: bool = True
+AUTO_404_RESPONSE: bool = True
 AUTO_VALIDATION_ERROR_RESPONSE: bool = True
 AUTO_AUTH_ERROR_RESPONSE: bool = True
 # Response customization
 SUCCESS_DESCRIPTION: str = 'Successful response'
+NOT_FOUND_DESCRIPTION: str = 'Not found'
 VALIDATION_ERROR_DESCRIPTION: str = 'Validation error'
 AUTH_ERROR_DESCRIPTION: str = 'Authentication error'
 VALIDATION_ERROR_STATUS_CODE: int = 400

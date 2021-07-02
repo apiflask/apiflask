@@ -15,6 +15,7 @@ from apiflask.security import HTTPBasicAuth
 
 def test_response_description_config(app, client):
     app.config['SUCCESS_DESCRIPTION'] = 'Success'
+    app.config['NOT_FOUND_DESCRIPTION'] = 'Egg not found'
 
     @app.get('/foo')
     @input(FooSchema)  # 200
@@ -36,6 +37,10 @@ def test_response_description_config(app, client):
     def spam():
         pass
 
+    @app.get('/eggs/<int:id>')
+    def eggs():
+        pass
+
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
@@ -47,6 +52,8 @@ def test_response_description_config(app, client):
         '204']['description'] == 'Success'
     assert rv.json['paths']['/spam']['get']['responses'][
         '206']['description'] == 'Success'
+    assert rv.json['paths']['/eggs/{id}']['get']['responses'][
+        '404']['description'] == 'Egg not found'
 
 
 def test_validation_error_status_code_and_description(app, client):

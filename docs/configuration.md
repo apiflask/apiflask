@@ -526,13 +526,13 @@ app.config['AUTO_PATH_DESCRIPTION'] = False
 #### `AUTO_200_RESPONSE`
 
 If a view function doesn't decorate with either `@input`, `@output`, `@auth_required`
-or `@doc`. By default, APIFlask will add a default 200 response for this view
-into OpenAPI spec. Set this config to `False` to disable this behavior.
+or `@doc`, APIFlask will add a default 200 response for this view into OpenAPI spec.
+Set this config to `False` to disable this behavior.
 
 !!! tip
 
     You can change the description of the default 200 response with config
-    `DEFAULT_200_DESCRIPTION`.
+    `SUCCESS_DESCRIPTION`.
 
 - Type: `bool`
 - Default value: `True`
@@ -541,6 +541,30 @@ into OpenAPI spec. Set this config to `False` to disable this behavior.
 ```python
 app.config['AUTO_200_RESPONSE'] = False
 ```
+
+
+#### `AUTO_404_RESPONSE`
+
+If a view function's URL rule contains a variable. By default, APIFlask will add a
+404 response for this view into OpenAPI spec. Set this config to `False` to disable
+this behavior.
+
+!!! tip
+
+    You can change the description of the automatic 404 response with config
+    `NOT_FOUND_DESCRIPTION`.
+
+- Type: `bool`
+- Default value: `True`
+- Examples:
+
+```python
+app.config['AUTO_404_RESPONSE'] = False
+```
+
+!!! warning "Version >= 0.8.0"
+
+    This configuration variable was added in the [version 0.8.0](/changelog/#version-080).
 
 
 #### `AUTO_VALIDATION_ERROR_RESPONSE`
@@ -593,6 +617,23 @@ app.config['SUCCESS_DESCRIPTION'] = 'Success!'
 !!! warning "Version >= 0.4.0"
 
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
+
+
+#### `NOT_FOUND_DESCRIPTION`
+
+The default description of the 404 response.
+
+- Type: `str`
+- Default value: `Not found`
+- Examples:
+
+```python
+app.config['NOT_FOUND_DESCRIPTION'] = 'Missing'
+```
+
+!!! warning "Version >= 0.8.0"
+
+    This configuration variable was added in the [version 0.8.0](/changelog/#version-080).
 
 
 #### `VALIDATION_ERROR_STATUS_CODE`

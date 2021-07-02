@@ -611,7 +611,12 @@ class APIFlask(Flask):
         return tags  # type: ignore
 
     def _generate_spec(self) -> APISpec:
-        """Generate the spec, return an instance of `apispec.APISpec`."""
+        """Generate the spec, return an instance of `apispec.APISpec`.
+
+        *Version changed: 0.8.0*
+
+        - Add automatic 404 response support.
+        """
         kwargs: dict = {}
         if self.servers:
             kwargs['servers'] = self.servers
@@ -844,6 +849,14 @@ class APIFlask(Flask):
                     schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
                     add_response_with_schema(
                         spec, operation, status_code, schema, 'HTTPError', description
+                    )
+
+                # add 404 error response
+                if self.config['AUTO_404_RESPONSE'] and rule.arguments:
+                    description: str = self.config['NOT_FOUND_DESCRIPTION']  # type: ignore
+                    schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
+                    add_response_with_schema(
+                        spec, operation, '404', schema, 'HTTPError', description
                     )
 
                 if view_func._spec.get('responses'):
