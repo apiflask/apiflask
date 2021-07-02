@@ -871,6 +871,10 @@ class APIFlask(Flask):
                     for status_code, description in responses.items():  # type: ignore
                         status_code: str = str(status_code)  # type: ignore
                         if status_code in operation['responses']:
+                            if not isinstance(
+                                view_func._spec.get('responses'), list
+                            ):  # pragma: no cover
+                                operation['responses'][status_code]['description'] = description
                             continue
                         if status_code.startswith('4') or status_code.startswith('5'):
                             # add error response schema for error responses
