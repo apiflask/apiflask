@@ -4,6 +4,7 @@ from .schemas import FooSchema
 from .schemas import HeaderSchema
 from .schemas import PaginationSchema
 from .schemas import QuerySchema
+from apiflask import doc
 from apiflask import input
 from apiflask import output
 
@@ -245,6 +246,11 @@ def test_auto_404_error(app, client):
     def bar():
         pass
 
+    @app.get('/baz/<int:id>')
+    @doc(responses={404: 'Pet not found'})
+    def baz():
+        pass
+
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
@@ -252,3 +258,5 @@ def test_auto_404_error(app, client):
     assert '404' in rv.json['paths']['/bar/{id}']['get']['responses']
     assert rv.json['paths']['/bar/{id}']['get']['responses'][
         '404']['description'] == 'Not found'
+    assert rv.json['paths']['/baz/{id}']['get']['responses'][
+        '404']['description'] == 'Pet not found'

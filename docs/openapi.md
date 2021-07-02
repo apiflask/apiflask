@@ -672,14 +672,15 @@ def hello():
 ### Alternative operation `responses`
 
 As described above, APIFlask will add some responses based on the decorators you added
-on the view function. Sometimes you may want to add alternative responses the view
-function will return, then you can use the `@doc(responses=...)` parameter, it accepts the
-following values:
+on the view function (200, 400, 401, 404). Sometimes you may want to add alternative
+responses the view function will return, then you can use the `@doc(responses=...)`
+parameter, it accepts the following values:
 
 - A list of status code int, for example, `[404, 418]`.
 - A dict in a format of `{<STATUS_CODE>: <DESCRIPTION>}`, this will allow you to
 set a custom description for each status, for example,
-`{404: 'Not Found', 418: 'Blah...'}`.
+`{404: 'Not Found', 418: 'Blah...'}`. If a response with the same status code is
+already exist, the existing description will be overwritten.
 
 ```python hl_lines="2"
 @app.get('/')

@@ -179,11 +179,11 @@ def test_doc_responses(app, client):
     validate_spec(rv.json)
     assert '200' in rv.json['paths']['/foo']['get']['responses']
     assert '400' in rv.json['paths']['/foo']['get']['responses']
-    # don't overwrite exist error description
+    # overwrite existing error descriptions
     assert rv.json['paths']['/foo']['get']['responses'][
-        '200']['description'] == 'Successful response'
+        '200']['description'] == 'success'
     assert rv.json['paths']['/foo']['get']['responses'][
-        '400']['description'] == 'Validation error'
+        '400']['description'] == 'bad'
     assert '404' in rv.json['paths']['/foo']['get']['responses']
     assert rv.json['paths']['/foo']['get']['responses'][
         '404']['description'] == 'not found'
@@ -229,9 +229,9 @@ def test_doc_responses_with_methodview(app, client):
     assert '400' in rv.json['paths']['/foo']['get']['responses']
     # don't overwrite exist error description
     assert rv.json['paths']['/foo']['get']['responses'][
-        '200']['description'] == 'Successful response'
+        '200']['description'] == 'success'
     assert rv.json['paths']['/foo']['get']['responses'][
-        '400']['description'] == 'Validation error'
+        '400']['description'] == 'bad'
     assert '404' in rv.json['paths']['/foo']['get']['responses']
     assert rv.json['paths']['/foo']['get']['responses'][
         '404']['description'] == 'not found'

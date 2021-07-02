@@ -9,6 +9,8 @@ Released: -
 
 - Automatically add a 404 response in OpenAPI spec for routes contains URL
 variables ([issue #78][issue_78]).
+- Support using `doc(responses={<STATUS_CODE>: <DESCRIPTION>})` to overwrite
+existing response descriptions.
 
 [issue_78]: https://github.com/greyli/apiflask/issues/78
 
