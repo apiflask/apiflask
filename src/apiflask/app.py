@@ -846,6 +846,14 @@ class APIFlask(Flask):
                         spec, operation, status_code, schema, 'HTTPError', description
                     )
 
+                # add 404 error response
+                if self.config['AUTO_404_RESPONSE'] and rule.arguments:
+                    description: str = self.config['NOT_FOUND_DESCRIPTION']  # type: ignore
+                    schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
+                    add_response_with_schema(
+                        spec, operation, '404', schema, 'HTTPError', description
+                    )
+
                 if view_func._spec.get('responses'):
                     responses: t.Union[t.List[int], t.Dict[int, str]] \
                         = view_func._spec.get('responses')

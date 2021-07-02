@@ -234,3 +234,21 @@ def test_register_validation_error_response(app, client):
         error_code] is not None
     assert rv.json['paths']['/bar']['get']['responses'][
         error_code]['description'] == 'Validation error'
+
+
+def test_auto_404_error(app, client):
+    @app.get('/foo')
+    def foo():
+        pass
+
+    @app.get('/bar/<int:id>')
+    def bar():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert '404' not in rv.json['paths']['/foo']['get']['responses']
+    assert '404' in rv.json['paths']['/bar/{id}']['get']['responses']
+    assert rv.json['paths']['/bar/{id}']['get']['responses'][
+        '404']['description'] == 'Not found'
