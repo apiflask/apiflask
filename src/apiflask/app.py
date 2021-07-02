@@ -611,7 +611,12 @@ class APIFlask(Flask):
         return tags  # type: ignore
 
     def _generate_spec(self) -> APISpec:
-        """Generate the spec, return an instance of `apispec.APISpec`."""
+        """Generate the spec, return an instance of `apispec.APISpec`.
+
+        *Version changed: 0.8.0*
+
+        - Add automatic 404 response support.
+        """
         kwargs: dict = {}
         if self.servers:
             kwargs['servers'] = self.servers
