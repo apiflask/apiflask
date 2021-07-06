@@ -1,6 +1,7 @@
 -r docs.in
 -r tests.in
 -r typing.in
+-r examples.in
 pip-tools
 tox
 pre-commit
