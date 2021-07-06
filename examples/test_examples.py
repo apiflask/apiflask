@@ -8,13 +8,17 @@ examples = [
     'basic',
     'orm',
     'cbv',
-    'pagination'
+    'pagination',
+    'openapi',
+    'blueprint_tags',
 ]
 
 full_examples = [
     'basic',
     'orm',
-    'cbv'
+    'cbv',
+    'openapi',
+    'blueprint_tags',
 ]
 
 
