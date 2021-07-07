@@ -140,23 +140,34 @@ app.openapi_version = '3.0.2'
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
 
 
-#### `DESCRIPTION`
+#### `SERVERS`
 
-The description of the API (`openapi.info.description`). This configuration can also
-be configured from the `app.description` attribute.
+The server information of the API (`openapi.servers`), accepts multiple
+server dicts. This configuration can also be configured from the `app.servers`
+attribute.
 
-- Type: `str`
+- Type: `List[Dict[str, str]]`
 - Default value: `None`
 - Examples:
 
 ```python
-app.config['DESCRIPTION'] = 'Some description of my API.'
+app.config['SERVERS'] = [
+    {
+        'name': 'Production Server',
+        'url': 'http://api.example.com'
+    }
+]
 ```
 
 Or:
 
 ```python
-app.description = 'Some description of my API.'
+app.servers = [
+    {
+        'name': 'Production Server',
+        'url': 'http://api.example.com'
+    }
+]
 ```
 
 
@@ -211,6 +222,118 @@ app.tags = ['foo', 'bar', 'baz']
 ```
 
 
+#### `EXTERNAL_DOCS`
+
+The external documentation information of the API (`openapi.externalDocs`).
+This configuration can also be configured from the `app.external_docs` attribute.
+
+- Type: `Dict[str, str]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['EXTERNAL_DOCS'] = {
+    'description': 'Find more info here',
+    'url': 'http://docs.example.com'
+}
+```
+
+Or:
+
+```python
+app.external_docs = {
+    'description': 'Find more info here',
+    'url': 'http://docs.example.com'
+}
+```
+
+
+#### `INFO`
+
+The info field of the API (`openapi.info`). This configuration can also be configured
+from the `app.info` attribute. The info object (openapi.info), it accepts a dict contains
+following info fields: `description`, `termsOfService`, `contact`, `license`. You can use
+separate configuration variables to overwrite this dict.
+
+- Type: `Dict[str, str]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['INFO'] = {
+    'description': '...',
+    'termsOfService': 'http://example.com',
+    'contact': {
+        'name': 'API Support',
+        'url': 'http://www.example.com/support',
+        'email': 'support@example.com'
+    },
+    'license': {
+        'name': 'Apache 2.0',
+        'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    }
+}
+```
+
+Or:
+
+```python
+app.info = {
+    'description': '...',
+    'termsOfService': 'http://example.com',
+    'contact': {
+        'name': 'API Support',
+        'url': 'http://www.example.com/support',
+        'email': 'support@example.com'
+    },
+    'license': {
+        'name': 'Apache 2.0',
+        'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    }
+}
+```
+
+
+#### `DESCRIPTION`
+
+The description of the API (`openapi.info.description`). This configuration can also
+be configured from the `app.description` attribute.
+
+- Type: `str`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['DESCRIPTION'] = 'Some description of my API.'
+```
+
+Or:
+
+```python
+app.description = 'Some description of my API.'
+```
+
+
+#### `TERMS_OF_SERVICE`
+
+The terms of service URL of the API (`openapi.info.termsOfService`).
+This configuration can also be configured from the `app.terms_of_service` attribute.
+
+- Type: `str`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['TERMS_OF_SERVICE'] = 'http://example.com/terms/'
+```
+
+Or:
+
+```python
+app.terms_of_service = 'http://example.com/terms/'
+```
+
+
 #### `CONTACT`
 
 The contact information of the API (`openapi.info.contact`).
@@ -262,83 +385,6 @@ app.license = {
     'name': 'Apache 2.0',
     'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
 }
-```
-
-
-#### `SERVERS`
-
-The server information of the API (`openapi.servers`), accepts multiple
-server dicts. This configuration can also be configured from the `app.servers`
-attribute.
-
-- Type: `List[Dict[str, str]]`
-- Default value: `None`
-- Examples:
-
-```python
-app.config['SERVERS'] = [
-    {
-        'name': 'Production Server',
-        'url': 'http://api.example.com'
-    }
-]
-```
-
-Or:
-
-```python
-app.servers = [
-    {
-        'name': 'Production Server',
-        'url': 'http://api.example.com'
-    }
-]
-```
-
-
-#### `EXTERNAL_DOCS`
-
-The external documentation information of the API (`openapi.externalDocs`).
-This configuration can also be configured from the `app.external_docs` attribute.
-
-- Type: `Dict[str, str]`
-- Default value: `None`
-- Examples:
-
-```python
-app.config['EXTERNAL_DOCS'] = {
-    'description': 'Find more info here',
-    'url': 'http://docs.example.com'
-}
-```
-
-Or:
-
-```python
-app.external_docs = {
-    'description': 'Find more info here',
-    'url': 'http://docs.example.com'
-}
-```
-
-
-#### `TERMS_OF_SERVICE`
-
-The terms of service URL of the API (`openapi.info.termsOfService`).
-This configuration can also be configured from the `app.terms_of_service` attribute.
-
-- Type: `str`
-- Default value: `None`
-- Examples:
-
-```python
-app.config['TERMS_OF_SERVICE'] = 'http://example.com/terms/'
-```
-
-Or:
-
-```python
-app.terms_of_service = 'http://example.com/terms/'
 ```
 
 

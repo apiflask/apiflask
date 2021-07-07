@@ -2,8 +2,13 @@ from apiflask import APIFlask, Schema, input, output, abort, doc
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
+# set openapi.info.title and openapi.info.version
 app = APIFlask(__name__, title='Pet API', version='1.0')
 
+# All the OpenAPI field config can be set with the corresponding attributes of the app instance:
+# app.description = '...'
+
+# openapi.info.description
 app.config['DESCRIPTION'] = '''
 The description for this API. It can be very long and **Markdown** is supported.
 
@@ -21,29 +26,48 @@ The source can be found at [examples/blueprint_tags/app.py][_blueprint_tags].
 
 [_blueprint_tags]: https://github.com/greyli/apiflask/tree/main/examples/blueprint_tags/app.py
 '''
-app.config['TAGS'] = [
-    {'name': 'Hello', 'description': 'The description of the **Hello** tag.'},
-    {'name': 'Pet', 'description': 'The description of the **Pet** tag.'}
-]
-# If you don't need to set tag "description" or tag "externalDocs", just pass a list a string:
-# app.config['TAGS'] = ['Hello', 'Pet']
 
-# All the OpenAPI field config can be set with the corresponding attributes of the app instance:
-# app.tags = ['Hello', 'Pet']
+# openapi.info.contact
 app.config['CONTACT'] = {
     'name': 'API Support',
     'url': 'https://greyli.com/en',
     'email': 'withlihui@gmail.com'
 }
+
+# openapi.info.license
 app.config['LICENSE'] = {
     'name': 'MIT',
     'url': 'https://opensource.org/licenses/MIT'
 }
-app.config['EXTERNAL_DOCS'] = {
-    'description': 'Find more info here',
-    'url': 'https://apiflask.com/docs'
-}
+
+# openapi.info.termsOfService
 app.config['TERMS_OF_SERVICE'] = 'http://example.com'
+
+# The four info fields above can be set with the INFO key:
+# app.config['INFO'] = {
+#     'description': '...',
+#     'termsOfService': 'http://example.com',
+#     'contact': {
+#         'name': 'API Support',
+#         'url': 'http://www.example.com/support',
+#         'email': 'support@example.com'
+#     },
+#     'license': {
+#          'name': 'Apache 2.0',
+#          'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
+#      }
+# }
+
+# openapi.tags
+app.config['TAGS'] = [
+    {'name': 'Hello', 'description': 'The description of the **Hello** tag.'},
+    {'name': 'Pet', 'description': 'The description of the **Pet** tag.'}
+]
+
+# If you don't need to set tag "description" or tag "externalDocs", just pass a list a string:
+# app.config['TAGS'] = ['Hello', 'Pet']
+
+# openapi.servers
 app.config['SERVERS'] = [
     {
         'name': 'Development Server',
@@ -58,6 +82,12 @@ app.config['SERVERS'] = [
         'url': 'http://test.example.com'
     }
 ]
+
+# openapi.externalDocs
+app.config['EXTERNAL_DOCS'] = {
+    'description': 'Find more info here',
+    'url': 'https://apiflask.com/docs'
+}
 
 pets = [
     {'id': 0, 'name': 'Kitty', 'category': 'cat'},
