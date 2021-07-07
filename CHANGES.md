@@ -1,11 +1,16 @@
-## Version 0.8.0
+## Version 0.9.0
 
-[0.8.0 milestone](https://github.com/greyli/apiflask/milestone/4)
+[0.9.0 milestone](https://github.com/greyli/apiflask/milestone/5)
 
 
-## Version 0.7.1
+## Version 0.8.1
 
 Released: -
+
+
+## Version 0.8.0
+
+Released: 2021/7/7
 
 - Automatically add a 404 response in OpenAPI spec for routes contains URL
 variables ([issue #78][issue_78]).
