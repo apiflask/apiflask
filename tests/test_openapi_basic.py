@@ -37,12 +37,39 @@ def test_spec_processor(app, client):
 
 @pytest.mark.parametrize('spec_format', ['json', 'yaml', 'yml'])
 def test_get_spec(app, spec_format):
-    spec = app.get_spec(spec_format)
+    spec = app._get_spec(spec_format)
 
     if spec_format == 'json':
         assert isinstance(spec, dict)
     else:
         assert 'title: APIFlask' in spec
+
+
+def test_get_spec_force_update(app):
+    app._get_spec()
+
+    @app.route('/foo')
+    @output(FooSchema)
+    def foo():
+        pass
+
+    spec = app._get_spec()
+    assert '/foo' not in spec['paths']
+
+    new_spec = app._get_spec(force_update=True)
+    assert '/foo' in new_spec['paths']
+
+
+def test_spec_attribute(app):
+    spec = app._get_spec()
+
+    @app.route('/foo')
+    @output(FooSchema)
+    def foo():
+        pass
+
+    assert '/foo' not in spec['paths']
+    assert '/foo' in app.spec['paths']
 
 
 def test_spec_schemas(app):

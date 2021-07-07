@@ -9,6 +9,9 @@ Released: -
 
 - Automatically add a 404 response in OpenAPI spec for routes contains URL
 variables ([issue #78][issue_78]).
+- Rename the private method `app.get_spec` to `app._get_spec`, add new
+parameter `force_update`. The `app.spec` property now will always return
+the latest spec instead of the cached one ([issue #79][issue_79]).
 - Support using `doc(responses={<STATUS_CODE>: <DESCRIPTION>})` to overwrite
 existing response descriptions.
 - Add configration variable `INFO` (and `app.info` attribute), it can be used
@@ -19,6 +22,7 @@ to set the following info fields: `description`, `termsOfService`, `contact`,
     - `AUTO_PATH_DESCRIPTION` -> `AUTO_OPERATION_DESCRIPTION`
 
 [issue_78]: https://github.com/greyli/apiflask/issues/78
+[issue_79]: https://github.com/greyli/apiflask/issues/79
 [issue_98]: https://github.com/greyli/apiflask/issues/98
 [issue_99]: https://github.com/greyli/apiflask/issues/99
 
