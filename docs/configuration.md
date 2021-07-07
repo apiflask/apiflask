@@ -550,6 +550,11 @@ Enable or disable auto path summary from the name or docstring of the view funct
 app.config['AUTO_OPERATION_SUMMARY'] = False
 ```
 
+!!! warning
+
+    This variable was renamed from `AUTO_PATH_SUMMARY` to `AUTO_OPERATION_SUMMARY`
+    since version 0.8.0.
+
 
 #### `AUTO_OPERATION_DESCRIPTION`
 
@@ -567,6 +572,11 @@ Enable or disable auto path description from the docstring of the view function.
 ```python
 app.config['AUTO_OPERATION_DESCRIPTION'] = False
 ```
+
+!!! warning
+
+    This variable was renamed from `AUTO_PATH_DESCRIPTION` to `AUTO_OPERATION_DESCRIPTION`
+    since version 0.8.0.
 
 
 #### `AUTO_200_RESPONSE`

@@ -14,7 +14,7 @@ existing response descriptions.
 - Add configration variable `INFO` (and `app.info` attribute), it can be used
 to set the following info fields: `description`, `termsOfService`, `contact`,
 `license` ([issue #98][issue_98]).
-- Rename the following configuration variables ([issue #99][issue_99]).
+- Rename the following configuration variables ([issue #99][issue_99]):
     - `AUTO_PATH_SUMMARY` -> `AUTO_OPERATION_SUMMARY`
     - `AUTO_PATH_DESCRIPTION` -> `AUTO_OPERATION_DESCRIPTION`
 
