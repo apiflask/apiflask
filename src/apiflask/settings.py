@@ -8,13 +8,14 @@ from .types import TagsType
 
 # OpenAPI fields
 OPENAPI_VERSION: str = '3.0.3'
-DESCRIPTION: t.Optional[str] = None
+SERVERS: t.Optional[t.List[t.Dict[str, str]]] = None
 TAGS: t.Optional[TagsType] = None
+EXTERNAL_DOCS: t.Optional[t.Dict[str, str]] = None
+INFO: t.Optional[t.Dict[str, t.Union[str, dict]]] = None
+DESCRIPTION: t.Optional[str] = None
+TERMS_OF_SERVICE: t.Optional[str] = None
 CONTACT: t.Optional[t.Dict[str, str]] = None
 LICENSE: t.Optional[t.Dict[str, str]] = None
-SERVERS: t.Optional[t.List[t.Dict[str, str]]] = None
-EXTERNAL_DOCS: t.Optional[t.Dict[str, str]] = None
-TERMS_OF_SERVICE: t.Optional[str] = None
 # OpenAPI spec
 SPEC_FORMAT: str = 'json'
 YAML_SPEC_MIMETYPE: str = 'text/vnd.yaml'
@@ -24,8 +25,8 @@ LOCAL_SPEC_JSON_INDENT: int = 2
 SYNC_LOCAL_SPEC: t.Optional[bool] = None
 # Automation behavior control
 AUTO_TAGS: bool = True
-AUTO_PATH_SUMMARY: bool = True
-AUTO_PATH_DESCRIPTION: bool = True
+AUTO_OPERATION_SUMMARY: bool = True
+AUTO_OPERATION_DESCRIPTION: bool = True
 AUTO_200_RESPONSE: bool = True
 AUTO_404_RESPONSE: bool = True
 AUTO_VALIDATION_ERROR_RESPONSE: bool = True
