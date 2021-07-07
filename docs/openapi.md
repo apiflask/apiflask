@@ -331,6 +331,8 @@ variables:
 - `CONTACT`
 - `LICENSE`
 
+You can also set all these four fields with [`INFO`](/configuration#info).
+
 See the [OpenAPI fields](/configuration#openAPI-fields) section in the configuration
 docs for the details.
 
