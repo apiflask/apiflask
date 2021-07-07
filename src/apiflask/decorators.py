@@ -368,7 +368,9 @@ def doc(
             tag name.
         tags: Similar to `tag` but accepts a list of tag names.
         responses: The other responses for this view function, accepts a dict in a format
-            of `{404: 'Not Found'}` or a list of status code (`[404, 418]`).
+            of `{404: 'Not Found'}` or a list of status code (`[404, 418]`). If pass a dict,
+            and a response with the same status code is already exist, the existing
+            description will be overwritten.
         deprecated: Flag this endpoint as deprecated in API docs.
         hide: Hide this endpoint in API docs.
 

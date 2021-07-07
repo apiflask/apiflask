@@ -72,9 +72,20 @@ class APIFlask(Flask):
         openapi_version: The version of OpenAPI Specification (openapi.openapi).
             This attribute can also be configured from the config with the
             `OPENAPI_VERSION` configuration key. Defaults to `'3.0.3'`.
-        description: The description of the API (openapi.info.description).
+        servers: The servers information of the API (openapi.servers), accepts
+            multiple server dicts. Example value:
+
+            ```python
+            app.servers = [
+                {
+                    'name': 'Production Server',
+                    'url': 'http://api.example.com'
+                }
+            ]
+            ```
+
             This attribute can also be configured from the config with the
-            `DESCRIPTION` configuration key. Defaults to `None`.
+            `SERVERS` configuration key. Defaults to `None`.
         tags: The list of tags of the OpenAPI spec documentation (openapi.tags),
             accepts a list of dicts. You can also pass a simple list contains the
             tag name:
@@ -97,6 +108,41 @@ class APIFlask(Flask):
 
             This attribute can also be configured from the config with the
             `TAGS` configuration key. Defaults to `None`.
+        external_docs: The external documentation information of the API
+            (openapi.externalDocs). Example:
+
+            ```python
+            app.external_docs = {
+                'description': 'Find more info here',
+                'url': 'http://docs.example.com'
+            }
+            ```
+
+            This attribute can also be configured from the config with the
+            `EXTERNAL_DOCS` configuration key. Defaults to `None`.
+        info: The info object (openapi.info), it accepts a dict contains following info fields:
+            `description`, `termsOfService`, `contact`, `license`. You can use separate
+            configuration variables to overwrite this dict. Example:
+
+            ```python
+            app.info = {
+                'description': '...',
+                'termsOfService': 'http://example.com',
+                'contact': {
+                    'name': 'API Support',
+                    'url': 'http://www.example.com/support',
+                    'email': 'support@example.com'
+                },
+                'license': {
+                    'name': 'Apache 2.0',
+                    'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
+                }
+            }
+            ```
+
+        description: The description of the API (openapi.info.description).
+            This attribute can also be configured from the config with the
+            `DESCRIPTION` configuration key. Defaults to `None`.
         contact: The contact information of the API (openapi.info.contact). Example:
 
             ```python
@@ -120,32 +166,6 @@ class APIFlask(Flask):
 
             This attribute can also be configured from the config with the
             `LICENSE` configuration key. Defaults to `None`.
-        servers: The servers information of the API (openapi.servers), accepts
-            multiple server dicts. Example value:
-
-            ```python
-            app.servers = [
-                {
-                    'name': 'Production Server',
-                    'url': 'http://api.example.com'
-                }
-            ]
-            ```
-
-            This attribute can also be configured from the config with the
-            `SERVERS` configuration key. Defaults to `None`.
-        external_docs: The external documentation information of the API
-            (openapi.externalDocs). Example:
-
-            ```python
-            app.external_docs = {
-                'description': 'Find more info here',
-                'url': 'http://docs.example.com'
-            }
-            ```
-
-            This attribute can also be configured from the config with the
-            `EXTERNAL_DOCS` configuration key. Defaults to `None`.
         terms_of_service: The terms of service URL of the API
             (openapi.info.termsOfService). Example:
 
@@ -186,11 +206,12 @@ class APIFlask(Flask):
     """
 
     openapi_version: str = ConfigAttribute('OPENAPI_VERSION')  # type: ignore
-    description: t.Optional[str] = ConfigAttribute('DESCRIPTION')  # type: ignore
     tags: t.Optional[TagsType] = ConfigAttribute('TAGS')  # type: ignore
+    servers: t.Optional[t.List[t.Dict[str, str]]] = ConfigAttribute('SERVERS')  # type: ignore
+    info: t.Optional[t.Dict[str, t.Union[str, dict]]] = ConfigAttribute('INFO')  # type: ignore
+    description: t.Optional[str] = ConfigAttribute('DESCRIPTION')  # type: ignore
     contact: t.Optional[t.Dict[str, str]] = ConfigAttribute('CONTACT')  # type: ignore
     license: t.Optional[t.Dict[str, str]] = ConfigAttribute('LICENSE')  # type: ignore
-    servers: t.Optional[t.List[t.Dict[str, str]]] = ConfigAttribute('SERVERS')  # type: ignore
     external_docs: t.Optional[t.Dict[str, str]] = ConfigAttribute('EXTERNAL_DOCS')  # type: ignore
     terms_of_service: t.Optional[str] = ConfigAttribute('TERMS_OF_SERVICE')  # type: ignore
 
@@ -598,7 +619,11 @@ class APIFlask(Flask):
 
     def _make_info(self) -> dict:
         """Make OpenAPI info object."""
-        info: dict = {}
+        info: dict
+        if self.info:
+            info = self.info
+        else:
+            info = {}
         if self.contact:
             info['contact'] = self.contact
         if self.license:
@@ -631,7 +656,12 @@ class APIFlask(Flask):
         return tags  # type: ignore
 
     def _generate_spec(self) -> APISpec:
-        """Generate the spec, return an instance of `apispec.APISpec`."""
+        """Generate the spec, return an instance of `apispec.APISpec`.
+
+        *Version changed: 0.8.0*
+
+        - Add automatic 404 response support.
+        """
         kwargs: dict = {}
         if self.servers:
             kwargs['servers'] = self.servers
@@ -770,10 +800,10 @@ class APIFlask(Flask):
                        not self.config['AUTO_200_RESPONSE']:
                         continue
                     if view_func._spec.get('generated_summary') and \
-                       not self.config['AUTO_PATH_SUMMARY']:
+                       not self.config['AUTO_OPERATION_SUMMARY']:
                         view_func._spec['summary'] = ''
                     if view_func._spec.get('generated_description') and \
-                       not self.config['AUTO_PATH_DESCRIPTION']:
+                       not self.config['AUTO_OPERATION_DESCRIPTION']:
                         view_func._spec['description'] = ''
                     if view_func._spec.get('hide'):
                         continue
@@ -801,7 +831,7 @@ class APIFlask(Flask):
                     operation['summary'] = view_func._spec.get('summary')
                 else:
                     # auto-generate summary from dotstring or view function name
-                    if self.config['AUTO_PATH_SUMMARY']:
+                    if self.config['AUTO_OPERATION_SUMMARY']:
                         operation['summary'] = get_path_summary(view_func)  # type: ignore
 
                 # description
@@ -809,7 +839,7 @@ class APIFlask(Flask):
                     operation['description'] = view_func._spec.get('description')
                 else:
                     # auto-generate description from dotstring
-                    if self.config['AUTO_PATH_DESCRIPTION']:
+                    if self.config['AUTO_OPERATION_DESCRIPTION']:
                         docs = (view_func.__doc__ or '').strip().split('\n')
                         if len(docs) > 1:
                             # use the remain lines of docstring as description
@@ -866,6 +896,14 @@ class APIFlask(Flask):
                         spec, operation, status_code, schema, 'HTTPError', description
                     )
 
+                # add 404 error response
+                if self.config['AUTO_404_RESPONSE'] and rule.arguments:
+                    description: str = self.config['NOT_FOUND_DESCRIPTION']  # type: ignore
+                    schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
+                    add_response_with_schema(
+                        spec, operation, '404', schema, 'HTTPError', description
+                    )
+
                 if view_func._spec.get('responses'):
                     responses: t.Union[t.List[int], t.Dict[int, str]] \
                         = view_func._spec.get('responses')
@@ -878,6 +916,10 @@ class APIFlask(Flask):
                     for status_code, description in responses.items():  # type: ignore
                         status_code: str = str(status_code)  # type: ignore
                         if status_code in operation['responses']:
+                            if not isinstance(
+                                view_func._spec.get('responses'), list
+                            ):  # pragma: no cover
+                                operation['responses'][status_code]['description'] = description
                             continue
                         if status_code.startswith('4') or status_code.startswith('5'):
                             # add error response schema for error responses

@@ -236,6 +236,13 @@ app.config['SYNC_LOCAL_SPEC'] = True
 app.config['LOCAL_SPEC_PATH'] = Path(app.root_path) / 'openapi.json'
 ```
 
+!!! tips
+
+    You can also use
+    [`app.instance_path`](https://flask.palletsprojects.com/config/#instance-folders){target=_blank},
+    it will be useful if your app is inside a package since it returns the path to
+    the instance folder located at the project root path.
+
 Or use the `os` module:
 
 ```python
@@ -247,19 +254,28 @@ app.config['LOCAL_SPEC_PATH'] = os.path.join(app.root_path, 'openapi.json')
 ```
 
 You can also find the project root path manually based on the current module's
-`__file_` variable when you are using an application factory:
+`__file__` variable when you are using an application factory. In this case,
+you normally put the config into a file called `config.py` located at the
+project root path:
+
+```
+- my_project/ -> project folder
+  - app/ -> application package
+  - config.py -> config file
+```
+
+So you can find the base path like this:
 
 ```python
 from pathlib import Path
 
 base_path = Path(__file__).parent
-# you may need to use the following if current module is
+# you may need to use the following if your config module is
 # inside the application package:
 # base_path = Path(__file__).parent.parent
 
-app = APIFlask(__name__)
-app.config['SYNC_LOCAL_SPEC'] = True
-app.config['LOCAL_SPEC_PATH'] = base_path / 'openapi.json'
+SYNC_LOCAL_SPEC = True
+LOCAL_SPEC_PATH = base_path / 'openapi.json'
 ```
 
 Or use the `os` module:
@@ -268,13 +284,12 @@ Or use the `os` module:
 import os
 
 base_path = os.path.dirname(__file__)
-# you may need to use the following if current module is
+# you may need to use the following if your config module is
 # inside the application package:
 # base_path = os.path.dirname(os.path.dirname(__file__))
 
-app = APIFlask(__name__)
-app.config['SYNC_LOCAL_SPEC'] = True
-app.config['LOCAL_SPEC_PATH'] = os.path.join(base_path, 'openapi.json')
+SYNC_LOCAL_SPEC = True
+LOCAL_SPEC_PATH = os.path.join(base_path, 'openapi.json')
 ```
 
 
@@ -389,6 +404,8 @@ a `400` response.
 add a `401` response.
 - If the view function only use the route decorator, APIFlask will add a default
 `200` response.
+- If the route URL contains a variable (e.g., `'/pets/<int:pet_id>'`), APIFlask will
+add a `404` response (Version >= 0.8).
 
 You can disable these behaviors or configure them through related
 [configuration variables](/configuration#automation-behavior-control).
@@ -485,9 +502,12 @@ the following fields are supported:
 - `properties`
 - `additionalProperties`
 - `readOnly`
+- `writeOnly`
 - `xml`
 - `externalDocs`
 - `example`
+- `nullable`
+- `deprecated`
 - Any custom field starts with `x-` prefix
 
 See the details of these fields at
@@ -534,6 +554,7 @@ Normally, you only need to set the following fields manually with the `metadata`
 - `description`: Some description for this field.
 - `title`: The title of the field.
 - `example`: A example value for this field.
+- `deprecated`: If true, indicates this field is deprecated.
 - `externalDocs`: A link points to the external documentation for this field.
 - `xml`: Adds additional metadata to describe the XML representation format of this field.
 See details in
@@ -651,14 +672,15 @@ def hello():
 ### Alternative operation `responses`
 
 As described above, APIFlask will add some responses based on the decorators you added
-on the view function. Sometimes you may want to add alternative responses the view
-function will return, then you can use the `@doc(responses=...)` parameter, it accepts the
-following values:
+on the view function (200, 400, 401, 404). Sometimes you may want to add alternative
+responses the view function will return, then you can use the `@doc(responses=...)`
+parameter, it accepts the following values:
 
 - A list of status code int, for example, `[404, 418]`.
 - A dict in a format of `{<STATUS_CODE>: <DESCRIPTION>}`, this will allow you to
 set a custom description for each status, for example,
-`{404: 'Not Found', 418: 'Blah...'}`.
+`{404: 'Not Found', 418: 'Blah...'}`. If a response with the same status code is
+already exist, the existing description will be overwritten.
 
 ```python hl_lines="2"
 @app.get('/')

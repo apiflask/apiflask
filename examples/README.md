@@ -4,11 +4,13 @@
 - Class-based view example: [/examples/cbv/app.py][_cbv]
 - ORM example (with Flask-SQLAlchemy): [/examples/orm/app.py][_orm]
 - Pagination example (with Flask-SQLAlchemy): [/examples/pagination/app.py][_pagination]
+- OpenAPI example: [/examples/openapi/app.py][_openapi]
 
 [_basic]: https://github.com/greyli/apiflask/tree/main/examples/basic/app.py
 [_cbv]: https://github.com/greyli/apiflask/tree/main/examples/cbv/app.py
 [_orm]: https://github.com/greyli/apiflask/tree/main/examples/orm/app.py
 [_pagination]: https://github.com/greyli/apiflask/tree/main/examples/pagination/app.py
+[_openapi]: https://github.com/greyli/apiflask/tree/main/examples/openapi/app.py
 
 If you have built an application with APIFlask, feel free to submit a pull request to add the source link here.
 
@@ -49,6 +51,7 @@ Each example application store in a sub-folder:
 - `/cbv`: Classed-based view example
 - `/orm`: ORM example (with Flask-SQLAlchemy)
 - `/pagination`: Pagination example (with Flask-SQLAlchemy)
+- `/openapi`: OpenAPI example
 
 To run a specific example, you have to change into the corresponding folder.
 For example, if you want to run the basic example:

@@ -29,7 +29,7 @@ def test_auto_tags(app, client):
 
 @pytest.mark.parametrize('config_value', [True, False])
 def test_auto_path_summary(app, client, config_value):
-    app.config['AUTO_PATH_SUMMARY'] = config_value
+    app.config['AUTO_OPERATION_SUMMARY'] = config_value
 
     @app.get('/foo')
     def foo():
@@ -79,7 +79,7 @@ def test_auto_path_summary(app, client, config_value):
 
 @pytest.mark.parametrize('config_value', [True, False])
 def test_auto_path_summary_with_methodview(app, client, config_value):
-    app.config['AUTO_PATH_SUMMARY'] = config_value
+    app.config['AUTO_OPERATION_SUMMARY'] = config_value
 
     @app.route('/foo')
     class Foo(MethodView):
@@ -121,7 +121,7 @@ def test_auto_path_summary_with_methodview(app, client, config_value):
 
 @pytest.mark.parametrize('config_value', [True, False])
 def test_auto_path_description(app, client, config_value):
-    app.config['AUTO_PATH_DESCRIPTION'] = config_value
+    app.config['AUTO_OPERATION_DESCRIPTION'] = config_value
 
     @app.get('/foo')
     def get_foo():
@@ -267,4 +267,23 @@ def test_auto_auth_error_response(app, client, config_value):
         assert 'HTTPError' in rv.json['components']['schemas']
         assert '#/components/schemas/HTTPError' in \
             rv.json['paths']['/foo']['post']['responses']['401'][
+                'content']['application/json']['schema']['$ref']
+
+
+@pytest.mark.parametrize('config_value', [True, False])
+def test_auto_404_error(app, client, config_value):
+    app.config['AUTO_404_RESPONSE'] = config_value
+
+    @app.get('/foo/<int:id>')
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert bool('404' in rv.json['paths']['/foo/{id}']['get']['responses']) is config_value
+    if config_value:
+        assert 'HTTPError' in rv.json['components']['schemas']
+        assert '#/components/schemas/HTTPError' in \
+            rv.json['paths']['/foo/{id}']['get']['responses']['404'][
                 'content']['application/json']['schema']['$ref']

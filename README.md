@@ -197,13 +197,14 @@ from apiflask import APIFlask
 
 app = APIFlask(__name__)
 
+
 @app.get('/')
 async def say_hello():
     await asyncio.sleep(1)
     return {'message': 'Hello!'}
 ```
 
-See <em><a href="https://flask.palletsprojects.com/en/2.0.x/async-await">Using async and await</a></em> for the details of the async support in Flask 2.0.
+See <em><a href="https://flask.palletsprojects.com/async-await">Using async and await</a></em> for the details of the async support in Flask 2.0.
 
 </details>
 
