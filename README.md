@@ -17,8 +17,6 @@ With APIFlask, you will have:
 - API authentication support (with [Flask-HTTPAuth](https://github.com/migulgrinberg/flask-httpauth))
 - Automatic JSON response for HTTP errors
 
-**Currently, this project is in the active development stage; bugs and breaking changes are expected. Welcome to leave any suggestions or feedbacks in [this issue](https://github.com/greyli/apiflask/issues/1) or submit a pull request to improve it. Thank you!**
-
 
 ## Requirements
 
