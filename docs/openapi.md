@@ -30,8 +30,9 @@ security | Generate secuity info from the auth objects | Use the `auth_required`
 tags | Generate from blueprint names | See *[Tags](#tags)*
 externalDocs | - | Use the configuration variable [`EXTERNAL_DOCS`](/configuration/#external_docs)
 
-It provides two ways to obtain the spec document file:
+It provides three ways to obtain the spec document file:
 
+- An `app.spec` attribute that returns the dict spec.
 - A spec endpoint that serves the spec.
 - A `flask spec` command to output the spec to stdout or file.
 
@@ -75,6 +76,25 @@ use the `flask spec` command, you can change the indentation with the `--indent`
 or `-i` option.
 
 The indentation of the YAML spec is always `2`, and it can't be changed for now.
+
+
+## The `app.spec` attribute
+
+You can get the spec in dict format with the `app.spec` attribute. It will always return the latest spec:
+
+```python
+>>> from apiflask import APIFlask
+>>> app = APIFlask(__name__)
+>>> app.spec
+{'info': {'title': 'APIFlask', 'version': '0.1.0'}, 'tags': [], 'paths': OrderedDict(), 'openapi': '3.0.3'}
+>>> @app.get('/')
+... def hello():
+...     return {'message': 'Hello'}
+...
+>>> app.spec
+{'info': {'title': 'APIFlask', 'version': '0.1.0'}, 'tags': [], 'paths': OrderedDict([('/', {'get': {'parameters': [], 'responses': OrderedDict([('200', {'content': {'application/json': {'schema': {}}}, 'description': 'Successful response'})]), 'summary': 'Hello'}})]), 'openapi': '3.0.3'}
+>>>
+```
 
 
 ## The spec endpoint
