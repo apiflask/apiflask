@@ -780,10 +780,10 @@ class APIFlask(Flask):
                        not self.config['AUTO_200_RESPONSE']:
                         continue
                     if view_func._spec.get('generated_summary') and \
-                       not self.config['AUTO_PATH_SUMMARY']:
+                       not self.config['AUTO_OPERATION_SUMMARY']:
                         view_func._spec['summary'] = ''
                     if view_func._spec.get('generated_description') and \
-                       not self.config['AUTO_PATH_DESCRIPTION']:
+                       not self.config['AUTO_OPERATION_DESCRIPTION']:
                         view_func._spec['description'] = ''
                     if view_func._spec.get('hide'):
                         continue
@@ -811,7 +811,7 @@ class APIFlask(Flask):
                     operation['summary'] = view_func._spec.get('summary')
                 else:
                     # auto-generate summary from dotstring or view function name
-                    if self.config['AUTO_PATH_SUMMARY']:
+                    if self.config['AUTO_OPERATION_SUMMARY']:
                         operation['summary'] = get_path_summary(view_func)  # type: ignore
 
                 # description
@@ -819,7 +819,7 @@ class APIFlask(Flask):
                     operation['description'] = view_func._spec.get('description')
                 else:
                     # auto-generate description from dotstring
-                    if self.config['AUTO_PATH_DESCRIPTION']:
+                    if self.config['AUTO_OPERATION_DESCRIPTION']:
                         docs = (view_func.__doc__ or '').strip().split('\n')
                         if len(docs) > 1:
                             # use the remain lines of docstring as description

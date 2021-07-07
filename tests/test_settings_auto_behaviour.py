@@ -29,7 +29,7 @@ def test_auto_tags(app, client):
 
 @pytest.mark.parametrize('config_value', [True, False])
 def test_auto_path_summary(app, client, config_value):
-    app.config['AUTO_PATH_SUMMARY'] = config_value
+    app.config['AUTO_OPERATION_SUMMARY'] = config_value
 
     @app.get('/foo')
     def foo():
@@ -79,7 +79,7 @@ def test_auto_path_summary(app, client, config_value):
 
 @pytest.mark.parametrize('config_value', [True, False])
 def test_auto_path_summary_with_methodview(app, client, config_value):
-    app.config['AUTO_PATH_SUMMARY'] = config_value
+    app.config['AUTO_OPERATION_SUMMARY'] = config_value
 
     @app.route('/foo')
     class Foo(MethodView):
@@ -121,7 +121,7 @@ def test_auto_path_summary_with_methodview(app, client, config_value):
 
 @pytest.mark.parametrize('config_value', [True, False])
 def test_auto_path_description(app, client, config_value):
-    app.config['AUTO_PATH_DESCRIPTION'] = config_value
+    app.config['AUTO_OPERATION_DESCRIPTION'] = config_value
 
     @app.get('/foo')
     def get_foo():

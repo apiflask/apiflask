@@ -533,7 +533,7 @@ app.config['AUTO_TAGS'] = False
 ```
 
 
-#### `AUTO_PATH_SUMMARY`
+#### `AUTO_OPERATION_SUMMARY`
 
 Enable or disable auto path summary from the name or docstring of the view function.
 
@@ -547,11 +547,11 @@ Enable or disable auto path summary from the name or docstring of the view funct
 - Examples:
 
 ```python
-app.config['AUTO_PATH_SUMMARY'] = False
+app.config['AUTO_OPERATION_SUMMARY'] = False
 ```
 
 
-#### `AUTO_PATH_DESCRIPTION`
+#### `AUTO_OPERATION_DESCRIPTION`
 
 Enable or disable auto path description from the docstring of the view function.
 
@@ -565,7 +565,7 @@ Enable or disable auto path description from the docstring of the view function.
 - Examples:
 
 ```python
-app.config['AUTO_PATH_DESCRIPTION'] = False
+app.config['AUTO_OPERATION_DESCRIPTION'] = False
 ```
 
 

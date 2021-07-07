@@ -25,8 +25,8 @@ LOCAL_SPEC_JSON_INDENT: int = 2
 SYNC_LOCAL_SPEC: t.Optional[bool] = None
 # Automation behavior control
 AUTO_TAGS: bool = True
-AUTO_PATH_SUMMARY: bool = True
-AUTO_PATH_DESCRIPTION: bool = True
+AUTO_OPERATION_SUMMARY: bool = True
+AUTO_OPERATION_DESCRIPTION: bool = True
 AUTO_200_RESPONSE: bool = True
 AUTO_404_RESPONSE: bool = True
 AUTO_VALIDATION_ERROR_RESPONSE: bool = True
