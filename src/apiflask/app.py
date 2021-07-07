@@ -72,9 +72,20 @@ class APIFlask(Flask):
         openapi_version: The version of OpenAPI Specification (openapi.openapi).
             This attribute can also be configured from the config with the
             `OPENAPI_VERSION` configuration key. Defaults to `'3.0.3'`.
-        description: The description of the API (openapi.info.description).
+        servers: The servers information of the API (openapi.servers), accepts
+            multiple server dicts. Example value:
+
+            ```python
+            app.servers = [
+                {
+                    'name': 'Production Server',
+                    'url': 'http://api.example.com'
+                }
+            ]
+            ```
+
             This attribute can also be configured from the config with the
-            `DESCRIPTION` configuration key. Defaults to `None`.
+            `SERVERS` configuration key. Defaults to `None`.
         tags: The list of tags of the OpenAPI spec documentation (openapi.tags),
             accepts a list of dicts. You can also pass a simple list contains the
             tag name:
@@ -97,6 +108,41 @@ class APIFlask(Flask):
 
             This attribute can also be configured from the config with the
             `TAGS` configuration key. Defaults to `None`.
+        external_docs: The external documentation information of the API
+            (openapi.externalDocs). Example:
+
+            ```python
+            app.external_docs = {
+                'description': 'Find more info here',
+                'url': 'http://docs.example.com'
+            }
+            ```
+
+            This attribute can also be configured from the config with the
+            `EXTERNAL_DOCS` configuration key. Defaults to `None`.
+        info: The info object (openapi.info), it accepts a dict contains following info fields:
+            `description`, `termsOfService`, `contact`, `license`. You can use separate
+            configuration variables to overwrite this dict. Example:
+
+            ```python
+            app.info = {
+                'description': '...',
+                'termsOfService': 'http://example.com',
+                'contact': {
+                    'name': 'API Support',
+                    'url': 'http://www.example.com/support',
+                    'email': 'support@example.com'
+                },
+                'license': {
+                    'name': 'Apache 2.0',
+                    'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
+                }
+            }
+            ```
+
+        description: The description of the API (openapi.info.description).
+            This attribute can also be configured from the config with the
+            `DESCRIPTION` configuration key. Defaults to `None`.
         contact: The contact information of the API (openapi.info.contact). Example:
 
             ```python
@@ -120,32 +166,6 @@ class APIFlask(Flask):
 
             This attribute can also be configured from the config with the
             `LICENSE` configuration key. Defaults to `None`.
-        servers: The servers information of the API (openapi.servers), accepts
-            multiple server dicts. Example value:
-
-            ```python
-            app.servers = [
-                {
-                    'name': 'Production Server',
-                    'url': 'http://api.example.com'
-                }
-            ]
-            ```
-
-            This attribute can also be configured from the config with the
-            `SERVERS` configuration key. Defaults to `None`.
-        external_docs: The external documentation information of the API
-            (openapi.externalDocs). Example:
-
-            ```python
-            app.external_docs = {
-                'description': 'Find more info here',
-                'url': 'http://docs.example.com'
-            }
-            ```
-
-            This attribute can also be configured from the config with the
-            `EXTERNAL_DOCS` configuration key. Defaults to `None`.
         terms_of_service: The terms of service URL of the API
             (openapi.info.termsOfService). Example:
 
@@ -186,11 +206,12 @@ class APIFlask(Flask):
     """
 
     openapi_version: str = ConfigAttribute('OPENAPI_VERSION')  # type: ignore
-    description: t.Optional[str] = ConfigAttribute('DESCRIPTION')  # type: ignore
     tags: t.Optional[TagsType] = ConfigAttribute('TAGS')  # type: ignore
+    servers: t.Optional[t.List[t.Dict[str, str]]] = ConfigAttribute('SERVERS')  # type: ignore
+    info: t.Optional[t.Dict[str, t.Union[str, dict]]] = ConfigAttribute('INFO')  # type: ignore
+    description: t.Optional[str] = ConfigAttribute('DESCRIPTION')  # type: ignore
     contact: t.Optional[t.Dict[str, str]] = ConfigAttribute('CONTACT')  # type: ignore
     license: t.Optional[t.Dict[str, str]] = ConfigAttribute('LICENSE')  # type: ignore
-    servers: t.Optional[t.List[t.Dict[str, str]]] = ConfigAttribute('SERVERS')  # type: ignore
     external_docs: t.Optional[t.Dict[str, str]] = ConfigAttribute('EXTERNAL_DOCS')  # type: ignore
     terms_of_service: t.Optional[str] = ConfigAttribute('TERMS_OF_SERVICE')  # type: ignore
 
@@ -578,7 +599,11 @@ class APIFlask(Flask):
 
     def _make_info(self) -> dict:
         """Make OpenAPI info object."""
-        info: dict = {}
+        info: dict
+        if self.info:
+            info = self.info
+        else:
+            info = {}
         if self.contact:
             info['contact'] = self.contact
         if self.license:

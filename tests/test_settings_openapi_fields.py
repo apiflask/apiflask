@@ -59,3 +59,63 @@ def test_openapi_fields(app, client):
     assert rv.json['info']['contact'] == contact
     assert rv.json['info']['license'] == license
     assert rv.json['info']['termsOfService'] == terms_of_service
+
+
+def test_info(app, client):
+    app.config['INFO'] = {
+        'description': 'My API',
+        'termsOfService': 'http://example.com',
+        'contact': {
+            'name': 'API Support',
+            'url': 'http://www.example.com/support',
+            'email': 'support@example.com'
+        },
+        'license': {
+            'name': 'Apache 2.0',
+            'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
+        }
+    }
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['info']['description'] == app.config['INFO']['description']
+    assert rv.json['info']['termsOfService'] == app.config['INFO']['termsOfService']
+    assert rv.json['info']['contact'] == app.config['INFO']['contact']
+    assert rv.json['info']['license'] == app.config['INFO']['license']
+
+
+def test_overwirte_info(app, client):
+    app.config['INFO'] = {
+        'description': 'Not set',
+        'termsOfService': 'Not set',
+        'contact': {
+            'name': 'Not set',
+            'url': 'Not set',
+            'email': 'Not set'
+        },
+        'license': {
+            'name': 'Not set',
+            'url': 'Not set'
+        }
+    }
+
+    app.config['DESCRIPTION'] = 'My API'
+    app.config['CONTACT'] = {
+        'name': 'API Support',
+        'url': 'http://www.example.com/support',
+        'email': 'support@example.com'
+    }
+    app.config['LICENSE'] = {
+        'name': 'Apache 2.0',
+        'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    }
+    app.config['TERMS_OF_SERVICE'] = 'http://example.com/terms/'
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['info']['description'] == app.config['DESCRIPTION']
+    assert rv.json['info']['termsOfService'] == app.config['TERMS_OF_SERVICE']
+    assert rv.json['info']['contact'] == app.config['CONTACT']
+    assert rv.json['info']['license'] == app.config['LICENSE']

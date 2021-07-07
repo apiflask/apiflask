@@ -8,13 +8,14 @@ from .types import TagsType
 
 # OpenAPI fields
 OPENAPI_VERSION: str = '3.0.3'
-DESCRIPTION: t.Optional[str] = None
+SERVERS: t.Optional[t.List[t.Dict[str, str]]] = None
 TAGS: t.Optional[TagsType] = None
+EXTERNAL_DOCS: t.Optional[t.Dict[str, str]] = None
+INFO: t.Optional[t.Dict[str, t.Union[str, dict]]] = None
+DESCRIPTION: t.Optional[str] = None
+TERMS_OF_SERVICE: t.Optional[str] = None
 CONTACT: t.Optional[t.Dict[str, str]] = None
 LICENSE: t.Optional[t.Dict[str, str]] = None
-SERVERS: t.Optional[t.List[t.Dict[str, str]]] = None
-EXTERNAL_DOCS: t.Optional[t.Dict[str, str]] = None
-TERMS_OF_SERVICE: t.Optional[str] = None
 # OpenAPI spec
 SPEC_FORMAT: str = 'json'
 YAML_SPEC_MIMETYPE: str = 'text/vnd.yaml'
