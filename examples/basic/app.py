@@ -5,21 +5,9 @@ from apiflask.validators import Length, OneOf
 app = APIFlask(__name__)
 
 pets = [
-    {
-        'id': 0,
-        'name': 'Kitty',
-        'category': 'cat'
-    },
-    {
-        'id': 1,
-        'name': 'Coco',
-        'category': 'dog'
-    },
-    {
-        'id': 2,
-        'name': 'Flash',
-        'category': 'cat'
-    }
+    {'id': 0, 'name': 'Kitty', 'category': 'cat'},
+    {'id': 1, 'name': 'Coco', 'category': 'dog'},
+    {'id': 2, 'name': 'Flash', 'category': 'cat'}
 ]
 
 

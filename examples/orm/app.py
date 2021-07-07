@@ -9,21 +9,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-pets = [
-    {
-        'name': 'Kitty',
-        'category': 'cat'
-    },
-    {
-        'name': 'Coco',
-        'category': 'dog'
-    },
-    {
-        'name': 'Flash',
-        'category': 'cat'
-    }
-]
-
 
 class PetModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,6 +19,12 @@ class PetModel(db.Model):
 @app.before_first_request
 def init_database():
     db.create_all()
+
+    pets = [
+        {'name': 'Kitty', 'category': 'cat'},
+        {'name': 'Coco', 'category': 'dog'},
+        {'name': 'Flash', 'category': 'cat'}
+    ]
     for pet_data in pets:
         pet = PetModel(**pet_data)
         db.session.add(pet)

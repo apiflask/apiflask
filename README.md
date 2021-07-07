@@ -63,16 +63,8 @@ from apiflask.validators import Length, OneOf
 app = APIFlask(__name__)
 
 pets = [
-    {
-        'id': 0,
-        'name': 'Kitty',
-        'category': 'cat'
-    },
-    {
-        'id': 1,
-        'name': 'Coco',
-        'category': 'dog'
-    }
+    {'id': 0, 'name': 'Kitty', 'category': 'cat'},
+    {'id': 1, 'name': 'Coco', 'category': 'dog'}
 ]
 
 
@@ -128,16 +120,8 @@ from flask.views import MethodView
 app = APIFlask(__name__)
 
 pets = [
-    {
-        'id': 0,
-        'name': 'Kitty',
-        'category': 'cat'
-    },
-    {
-        'id': 1,
-        'name': 'Coco',
-        'category': 'dog'
-    }
+    {'id': 0, 'name': 'Kitty', 'category': 'cat'},
+    {'id': 1, 'name': 'Coco', 'category': 'dog'}
 ]
 
 
