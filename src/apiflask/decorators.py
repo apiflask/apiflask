@@ -15,6 +15,7 @@ from .schemas import Schema
 from .types import DecoratedType
 from .types import DictSchemaType
 from .types import HTTPAuthType
+from .types import OpenAPISchemaType
 from .types import RequestType
 from .types import ResponseType
 from .types import SchemaType
@@ -299,7 +300,17 @@ def output(
             """From Flask-Marshmallow, see the NOTICE file for license information."""
             if many is _sentinel:
                 many = schema.many  # type: ignore
-            data = schema.dump(obj, many=many)  # type: ignore
+            base_schema: OpenAPISchemaType = current_app.config['BASE_RESPONSE_SCHEMA']
+            if base_schema is not None and status_code != 204:
+                data_key: str = current_app.config['BASE_RESPONSE_DATA_KEY']
+                if data_key not in obj:
+                    raise ValueError(
+                        f'The data key "{data_key}" is not found in the returned dict.'
+                    )
+                obj[data_key] = schema.dump(obj[data_key], many=many)  # type: ignore
+                data = base_schema().dump(obj)  # type: ignore
+            else:
+                data = schema.dump(obj, many=many)  # type: ignore
             return jsonify(data, *args, **kwargs)
 
         @wraps(f)
