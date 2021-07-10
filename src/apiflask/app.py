@@ -660,6 +660,10 @@ class APIFlask(Flask):
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`.
 
+        *Version changed: 0.9.0*
+
+        - Add base response customization support.
+
         *Version changed: 0.8.0*
 
         - Add automatic 404 response support.

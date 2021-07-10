@@ -7,6 +7,11 @@
 
 Released: -
 
+- Support base response schema customization, add config `BASE_RESPONSE_SCHEMA`
+and `BASE_RESPONSE_DATA_KEY` ([issue #65][issue_65]).
+
+[issue_65]: https://github.com/greyli/apiflask/issues/65
+
 
 ## Version 0.8.0
 

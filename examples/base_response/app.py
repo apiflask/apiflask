@@ -12,6 +12,8 @@ class BaseResponseSchema(Schema):
 
 
 app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
+# the data key should match the data field name in the base response schema
+# defaults to "data"
 app.config['BASE_RESPONSE_DATA_KEY '] = 'data'
 
 pets = [

@@ -260,6 +260,11 @@ def output(
                 },
             }
             ```
+
+    *Version changed: 0.9.0*
+
+    - Add base response customization support.
+
     *Version changed: 0.6.0*
 
     - Support decorating async views.
