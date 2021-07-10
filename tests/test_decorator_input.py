@@ -94,7 +94,7 @@ def test_input_with_query_location(app, client):
 
 
 def test_bad_input_location(app):
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ValueError):
         @app.route('/foo')
         @input(QuerySchema, 'bad')
         def foo(query):

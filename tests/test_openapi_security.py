@@ -70,7 +70,7 @@ def test_unknown_auth_security_scheme(app):
     def foo():
         pass
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         app.spec
 
 
