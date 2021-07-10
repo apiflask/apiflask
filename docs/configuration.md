@@ -763,12 +763,58 @@ The schema of generic HTTP error response, accepts a schema class or
 a dict of OpenAPI schema definition.
 
 - Type: `Union[Schema, dict]`
-- Default value: `'Empty response'`
+- Default value: `apiflask.schemas.http_error_schema`
 - Examples:
 
 ```python
 app.config['HTTP_ERROR_SCHEMA'] = CustomHTTPErrorSchema
 ```
+
+
+#### `BASE_RESPONSE_SCHEMA`
+
+The schema of base response schema, accepts a schema class or a dict of
+OpenAPI schema definition.
+
+- Type: `Union[Schema, dict]`
+- Default value: `None`
+- Examples:
+
+```python
+from apiflask import APIFlask, Schema
+from apiflask.fields import String, Integer, Field
+
+app = APIFlask(__name__)
+
+class BaseResponseSchema(Schema):
+    message = String()
+    status_code = Integer()
+    data = Field()
+
+app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
+```
+
+!!! warning "Version >= 0.9.0"
+
+    This configuration variable was added in the [version 0.9.0](/changelog/#version-090).
+
+
+#### `BASE_RESPONSE_DATA_KEY`
+
+The data key of the base response, it should match the data field name in the base
+response schema.
+
+- Type: `str`
+- Default value: `'data'`
+- Examples:
+
+```python
+app.config['BASE_RESPONSE_DATA_KEY'] = 'data'
+```
+
+!!! warning "Version >= 0.9.0"
+
+    This configuration variable was added in the [version 0.9.0](/changelog/#version-090).
 
 
 ### Swagger UI and Redoc

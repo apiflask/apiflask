@@ -7,6 +7,7 @@ from apispec import APISpec
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
 from .types import HTTPAuthType
+from .types import OpenAPISchemaType
 from .types import SchemaType
 
 if t.TYPE_CHECKING:  # pragma: no cover
@@ -168,7 +169,7 @@ def add_response_with_schema(
     spec: APISpec,
     operation: dict,
     status_code: str,
-    schema: SchemaType,
+    schema: OpenAPISchemaType,
     schema_name: str,
     description: str
 ) -> None:

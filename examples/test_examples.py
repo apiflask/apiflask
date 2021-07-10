@@ -4,21 +4,17 @@ from importlib import reload
 
 import pytest
 
-examples = [
-    'basic',
-    'orm',
-    'cbv',
-    'pagination',
-    'openapi',
-    'blueprint_tags',
-]
-
 full_examples = [
     'basic',
     'orm',
     'cbv',
     'openapi',
     'blueprint_tags',
+    'base_response',
+]
+
+examples = full_examples + [
+    'pagination'
 ]
 
 
@@ -41,7 +37,11 @@ def test_say_hello(client):
     rv = client.get('/')
     assert rv.status_code == 200
     assert rv.json
-    assert rv.json['message'] == 'Hello!'
+    if client._example == 'base_response':
+        data = rv.json['data']
+    else:
+        data = rv.json
+    assert data['message'] == 'Hello!'
 
 
 @pytest.mark.parametrize('client', examples, indirect=True)
@@ -49,14 +49,18 @@ def test_get_pet(client):
     rv = client.get('/pets/1')
     assert rv.status_code == 200
     assert rv.json
-    if client._example == 'orm':
-        assert rv.json['name'] == 'Kitty'
-        assert rv.json['category'] == 'cat'
-    elif client._example == 'pagination':
-        assert rv.json['name'] == 'Pet 1'
+    if client._example == 'base_response':
+        data = rv.json['data']
     else:
-        assert rv.json['name'] == 'Coco'
-        assert rv.json['category'] == 'dog'
+        data = rv.json
+    if client._example == 'orm':
+        assert data['name'] == 'Kitty'
+        assert data['category'] == 'cat'
+    elif client._example == 'pagination':
+        assert data['name'] == 'Pet 1'
+    else:
+        assert data['name'] == 'Coco'
+        assert data['category'] == 'dog'
 
     rv = client.get('/pets/13')
     if client._example != 'pagination':
@@ -69,9 +73,13 @@ def test_get_pets(client):
     rv = client.get('/pets')
     assert rv.status_code == 200
     assert rv.json
+    if client._example == 'base_response':
+        data = rv.json['data']
+    else:
+        data = rv.json
     assert len(rv.json) == 3
-    assert rv.json[0]['name'] == 'Kitty'
-    assert rv.json[0]['category'] == 'cat'
+    assert data[0]['name'] == 'Kitty'
+    assert data[0]['category'] == 'cat'
 
 
 @pytest.mark.parametrize('client', full_examples, indirect=True)
@@ -82,8 +90,12 @@ def test_create_pet(client):
     })
     assert rv.status_code == 201
     assert rv.json
-    assert rv.json['name'] == 'Grey'
-    assert rv.json['category'] == 'cat'
+    if client._example == 'base_response':
+        data = rv.json['data']
+    else:
+        data = rv.json
+    assert data['name'] == 'Grey'
+    assert data['category'] == 'cat'
 
 
 @pytest.mark.parametrize('client', full_examples, indirect=True)
@@ -112,8 +124,12 @@ def test_update_pet(client):
 
     rv = client.get('/pets/1')
     assert rv.status_code == 200
-    assert rv.json['name'] == new_data['name']
-    assert rv.json['category'] == new_data['category']
+    if client._example == 'base_response':
+        data = rv.json['data']
+    else:
+        data = rv.json
+    assert data['name'] == new_data['name']
+    assert data['category'] == new_data['category']
 
     rv = client.patch('/pets/13', json=new_data)
     assert rv.status_code == 404

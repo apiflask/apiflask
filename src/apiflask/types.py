@@ -35,6 +35,7 @@ ErrorCallbackType = t.Callable[[int, str, t.Any, t.Mapping[str, str]], ResponseT
 
 DictSchemaType = t.Dict[str, t.Union['Field', type]]
 SchemaType = t.Union['Schema', t.Type['Schema'], DictSchemaType]
+OpenAPISchemaType = t.Union['Schema', t.Type['Schema'], dict]
 HTTPAuthType = t.Union['HTTPBasicAuth', 'HTTPTokenAuth']
 TagsType = t.Union[t.List[str], t.List[t.Dict[str, t.Any]]]
 
