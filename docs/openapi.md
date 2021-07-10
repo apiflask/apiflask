@@ -60,7 +60,17 @@ app = APIFlask(__name__)
 app.config['SPEC_FORMAT'] == 'yaml'
 ```
 
-This config will also control the format output by the `flask spec` command.
+The default URL path for spec endpoint is `/openapi.json`, you may also want to update
+it when you want to use YAML format:
+
+```python hl_line="3"
+from apiflask import APIFlask
+
+app = APIFlask(__name__, spec_path='/openapi.yaml')
+app.config['SPEC_FORMAT'] == 'yaml'
+```
+
+The `SPEC_FORMAT` config will also control the spec format output of the `flask spec` command.
 
 
 ### The indentation of the JSON spec
@@ -838,3 +848,6 @@ variable `SPEC_FORMAT` (defaults to `'json'`):
 
 - `'json'` -> dict
 - `'yaml'` -> string
+
+Check out [the example application](https://github.com/greyli/apiflask/tree/main/examples/openapi/app.py)
+for OpenAPI support, see [the examples page](/examples) for running the example application.

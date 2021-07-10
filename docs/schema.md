@@ -90,4 +90,4 @@ def get_pet(pet_id):
 ```
 
 Check out [the complete example application](https://github.com/greyli/apiflask/tree/main/examples/base_response/app.py)
-for more details, see [the examples page](/examples) for running the application.
+for more details, see [the examples page](/examples) for running the example application.
