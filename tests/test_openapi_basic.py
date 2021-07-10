@@ -224,5 +224,5 @@ def test_sync_local_yaml_spec(app, client, tmp_path):
 def test_sync_local_spec_no_path(app):
     app.config['SYNC_LOCAL_SPEC'] = True
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         app.spec

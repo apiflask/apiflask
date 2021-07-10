@@ -102,7 +102,7 @@ def test_validation_error_schema_bad_type(app):
     def foo():
         pass
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         app.spec
 
 
@@ -188,5 +188,5 @@ def test_http_error_schema_bad_type(app):
     def foo():
         pass
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         app.spec

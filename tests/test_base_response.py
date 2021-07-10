@@ -92,11 +92,11 @@ def test_base_response_spec(app, client, base_schema):
         return {'message': 'Success.', 'status_code': '200', 'data': data}
 
     if base_schema == '':
-        with pytest.raises(ValueError) as e:
+        with pytest.raises(TypeError) as e:
             app.spec
         assert 'Marshmallow' in str(e.value)
     elif base_schema in [BadBaseResponseSchema, bad_base_response_schema_dict]:
-        with pytest.raises(ValueError) as e:
+        with pytest.raises(RuntimeError) as e:
             app.spec
         assert 'data key' in str(e.value)
     else:

@@ -187,7 +187,7 @@ def input(
         if location not in [
             'json', 'query', 'headers', 'cookies', 'files', 'form', 'querystring'
         ]:
-            raise RuntimeError(
+            raise ValueError(
                 'Unknown input location. The supported locations are: "json", "files",'
                 ' "form", "cookies", "headers", "query" (same as "querystring").'
                 f' Got "{location}" instead.'
@@ -309,7 +309,7 @@ def output(
             if base_schema is not None and status_code != 204:
                 data_key: str = current_app.config['BASE_RESPONSE_DATA_KEY']
                 if data_key not in obj:
-                    raise ValueError(
+                    raise RuntimeError(
                         f'The data key "{data_key}" is not found in the returned dict.'
                     )
                 obj[data_key] = schema.dump(obj[data_key], many=many)  # type: ignore

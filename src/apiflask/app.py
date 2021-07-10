@@ -31,6 +31,7 @@ from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .exceptions import HTTPError
 from .exceptions import _default_error_handler
+from .exceptions import _bad_schema_message
 from .helpers import get_reason_phrase
 from .route import route_shortcuts
 from .route import route_patch
@@ -552,7 +553,9 @@ class APIFlask(Flask):
         if self.config['SYNC_LOCAL_SPEC']:
             spec_path = self.config['LOCAL_SPEC_PATH']
             if spec_path is None:
-                raise RuntimeError('The spec path should be a valid path string.')
+                raise TypeError(
+                    'The spec path (LOCAL_SPEC_PATH) should be a valid path string.'
+                )
             spec: str
             if spec_format == 'json':
                 spec = json.dumps(
@@ -871,15 +874,12 @@ class APIFlask(Flask):
                         elif isinstance(base_schema, dict):
                             base_schema_spec = base_schema
                         else:
-                            raise ValueError(
-                                'The schema must be a Marshmallow schema \
-                                class or an OpenAPI schema dict.'
-                            )
+                            raise TypeError(_bad_schema_message)
                         data_key: str = self.config['BASE_RESPONSE_DATA_KEY']
                         if data_key not in base_schema_spec['properties']:
-                            raise ValueError(
-                                f'The data key "{data_key}" is not found in \
-                                the base response schema spec.'
+                            raise RuntimeError(
+                                f'The data key "{data_key}" is not found in'
+                                ' the base response schema spec.'
                             )
                         base_schema_spec['properties'][data_key] = schema
                         schema = base_schema_spec

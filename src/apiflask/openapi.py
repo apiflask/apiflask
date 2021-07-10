@@ -4,6 +4,7 @@ import typing as t
 
 from apispec import APISpec
 
+from .exceptions import _bad_schema_message
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
 from .types import HTTPAuthType
@@ -69,7 +70,7 @@ def get_auth_name(
         else:
             name = 'ApiKeyAuth'
     else:
-        raise RuntimeError('Unknown authentication scheme.')
+        raise TypeError('Unknown authentication scheme.')
     if name in auth_names:
         v = 2
         new_name = f'{name}_{v}'
@@ -183,10 +184,7 @@ def add_response_with_schema(
         schema_ref = {'$ref': f'#/components/schemas/{schema_name}'}
         add_response(operation, status_code, schema_ref, description)
     else:
-        raise RuntimeError(
-            'The schema must be a Marshmallow schema \
-            class or an OpenAPI schema dict.'
-        )
+        raise TypeError(_bad_schema_message)
 
 
 def get_argument(argument_type: str, argument_name: str) -> t.Dict[str, t.Any]:

@@ -4,6 +4,8 @@ from werkzeug.exceptions import default_exceptions
 
 from .helpers import get_reason_phrase
 
+_bad_schema_message = 'The schema must be a Marshmallow schema class or an OpenAPI schema dict.'
+
 
 class HTTPError(Exception):
     """The exception to end the request handling and return an JSON error response.
