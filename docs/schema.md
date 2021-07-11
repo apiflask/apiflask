@@ -1,6 +1,48 @@
 # Schema, Fields, and Validators
 
 
+## Schema name resolver
+
+!!! warning "Version >= 0.9.0"
+
+    This feature was added in the [version 0.9.0](/changelog/#version-090).
+
+The OpenAPI schema name of each schema is resolved based on a resolver function, here is
+the default schema name resolver used in APIFlask:
+
+```python
+def schema_name_resolver(schema):
+    name = schema.__class__.__name__  # get schema class name
+    if name.endswith('Schema'):  # remove the "Schema" suffix
+        name = name[:-6] or name
+    if schema.partial:  # add a "Update" suffix for partial schema
+        name += 'Update'
+    return name
+```
+
+You can provide a custom schema name resolver by setting the `APIFlask.schema_name_resolver`
+attribute:
+
+```python hl_lines="14"
+from apiflask import APIFlask
+
+
+def my_schema_name_resolver(schema):
+    name = schema.__class__.__name__
+    if name.endswith('Schema'):
+        name = name[:-6] or name
+    if schema.partial:
+        name += 'Partial'
+    return name
+
+
+app = APIFlask(__name__)
+app.schema_name_resolver = my_schema_name_resolver
+```
+
+The schema name resolver should accept the schema object as argument and return the name.
+
+
 ## Base response schema customization
 
 !!! warning "Version >= 0.9.0"
