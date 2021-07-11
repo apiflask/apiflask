@@ -9,8 +9,11 @@ Released: -
 
 - Support base response schema customization, add config `BASE_RESPONSE_SCHEMA`
 and `BASE_RESPONSE_DATA_KEY` ([issue #65][issue_65]).
+- Support setting custom schema name resolver via the `APIFlask.schema_name_resolver`
+attribute ([issue #105][issue_105]).
 
 [issue_65]: https://github.com/greyli/apiflask/issues/65
+[issue_105]: https://github.com/greyli/apiflask/issues/105
 
 
 ## Version 0.8.0

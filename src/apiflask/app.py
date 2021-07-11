@@ -206,6 +206,28 @@ class APIFlask(Flask):
 
             app.error_processor = my_error_handler
             ```
+
+        schema_name_resolver: It stores the function that used to decided the schema name.
+            The schema name resolver should accept the schema object as argument and return
+            the name.
+            Example:
+
+            ```python
+            # this is the default schema name resolver used in APIFlask
+            def schema_name_resolver(schema):
+                name = schema.__class__.__name__  # get schema class name
+                if name.endswith('Schema'):  # remove the "Schema" suffix
+                    name = name[:-6] or name
+                if schema.partial:  # add a "Update" suffix for partial schema
+                    name += 'Update'
+                return name
+
+            app.schema_name_resolver = schema_name_resolver
+            ```
+
+    *Version changed: 0.9.0*
+
+    - Add instance attribute `schema_name_resolver`.
     """
 
     openapi_version: str = ConfigAttribute('OPENAPI_VERSION')  # type: ignore
@@ -263,7 +285,7 @@ class APIFlask(Flask):
 
         Other keyword arguments are directly passed to `flask.Flask`.
 
-        *Version Changed: 0.7.0*
+        *Version changed: 0.7.0*
 
         - Add `openapi_blueprint_url_prefix` argument.
         """
@@ -295,6 +317,8 @@ class APIFlask(Flask):
 
         self.spec_callback: t.Optional[SpecCallbackType] = None
         self.error_callback: ErrorCallbackType = _default_error_handler  # type: ignore
+        self.schema_name_resolver = self._schema_name_resolver
+
         self._spec: t.Optional[t.Union[dict, str]] = None
         self._register_openapi_blueprint()
         self._register_error_handlers()
@@ -443,7 +467,7 @@ class APIFlask(Flask):
         the detailed information about the validation error when the validation error
         happened.
 
-        *Version Changed: 0.7.0*
+        *Version changed: 0.7.0*
 
         - Support registering an async callback function.
         """
@@ -678,7 +702,7 @@ class APIFlask(Flask):
             kwargs['externalDocs'] = self.external_docs
 
         ma_plugin: MarshmallowPlugin = MarshmallowPlugin(
-            schema_name_resolver=self._schema_name_resolver
+            schema_name_resolver=self.schema_name_resolver
         )
         spec: APISpec = APISpec(
             title=self.title,
@@ -862,7 +886,7 @@ class APIFlask(Flask):
                 if view_func._spec.get('response'):
                     converter = OpenAPIConverter(
                         self.openapi_version,
-                        self._schema_name_resolver,
+                        self.schema_name_resolver,
                         spec
                     )
                     schema = view_func._spec.get('response')['schema']
