@@ -5,8 +5,6 @@ from flask import g
 from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 
-from .exceptions import _default_error_handler
-
 
 class _AuthBase:
     """Base class for `HTTPBasicAuth` and `HTTPBasicAuth`."""
@@ -26,9 +24,12 @@ def handle_auth_error(
 
     This handler will return JSON response when `app.json_errors` is `True` (default).
     """
+    error_message = 'Unauthorized Access'
     if current_app.json_errors:  # type: ignore
-        return _default_error_handler(status_code)
-    return 'Unauthorized Access', status_code
+        return current_app.error_callback(
+            status_code, message=error_message, detail=None, headers=None
+        )
+    return error_message, status_code
 
 
 class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
