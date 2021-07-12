@@ -30,7 +30,6 @@ with warnings.catch_warnings():
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .exceptions import HTTPError
-from .exceptions import _default_error_handler
 from .exceptions import _bad_schema_message
 from .helpers import get_reason_phrase
 from .route import route_shortcuts
@@ -316,7 +315,7 @@ class APIFlask(Flask):
         self.json_errors = json_errors
 
         self.spec_callback: t.Optional[SpecCallbackType] = None
-        self.error_callback: ErrorCallbackType = _default_error_handler  # type: ignore
+        self.error_callback: ErrorCallbackType = self._error_handler  # type: ignore
         self.schema_name_resolver = self._schema_name_resolver
 
         self._spec: t.Optional[t.Union[dict, str]] = None
@@ -389,6 +388,33 @@ class APIFlask(Flask):
             return view_function(**req.view_args)  # type: ignore
         else:
             return view_function(*req.view_args.values())  # type: ignore
+
+    @staticmethod
+    def _error_handler(
+        status_code: int,
+        message: t.Optional[str] = None,
+        detail: t.Optional[t.Any] = None,
+        headers: t.Optional[t.Mapping[str, str]] = None
+    ) -> t.Union[t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
+        """The default error handler.
+
+        Arguments:
+            status_code: The status code of the error (4XX and 5xx).
+            message: The simple description of the error. If not provided,
+                the reason phrase of the status code will be used.
+            detail: The detailed information of the error, you can use it to
+                provide the addition information such as custom error code,
+                documentation URL, etc.
+            headers: A dict of headers used in the error response.
+        """
+        if message is None:
+            message = get_reason_phrase(status_code, 'Unknown error')
+        if detail is None:
+            detail = {}
+        body = {'detail': detail, 'message': message, 'status_code': status_code}
+        if headers is None:
+            return body, status_code
+        return body, status_code, headers
 
     def error_processor(
         self,
