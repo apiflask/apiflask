@@ -13,7 +13,7 @@ class _AuthBase:
 
     def __init__(self, description: t.Optional[str] = None) -> None:
         self.description = description
-        self.error_handler(self._auth_error_handler)
+        self.error_handler(self._auth_error_handler)  # type: ignore
 
     @property
     def current_user(self) -> t.Union[None, t.Any]:
@@ -34,7 +34,7 @@ class _AuthBase:
         """
         error = HTTPError(status_code)
         if current_app.json_errors:  # type: ignore
-            return current_app.error_callback(error)
+            return current_app.error_callback(error)  # type: ignore
         return error.message, status_code
 
 

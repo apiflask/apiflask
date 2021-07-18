@@ -341,7 +341,7 @@ class APIFlask(Flask):
             def handle_werkzeug_errrors(
                 error: WerkzeugHTTPException
             ) -> ResponseType:
-                error = HTTPError(error.code, error.name)
+                error = HTTPError(error.code, error.name)  # type: ignore
                 return self.error_callback(error)
 
     def dispatch_request(self) -> ResponseType:
@@ -406,8 +406,6 @@ class APIFlask(Flask):
             'message': error.message,
             'status_code': error.status_code
         }
-        if error.headers is None:
-            return body, error.status_code
         return body, error.status_code, error.headers
 
     def error_processor(

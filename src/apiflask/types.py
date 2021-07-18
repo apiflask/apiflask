@@ -14,6 +14,7 @@ if t.TYPE_CHECKING:  # pragma: no cover
     from .schemas import Schema  # noqa: F401
     from .security import HTTPBasicAuth  # noqa: F401
     from .security import HTTPTokenAuth  # noqa: F401
+    from .exceptions import HTTPError  # noqa: F401
 
 
 DecoratedType = t.TypeVar('DecoratedType', bound=t.Callable[..., t.Any])
@@ -31,7 +32,7 @@ ResponseType = t.Union[
     'WSGIApplication'
 ]
 SpecCallbackType = t.Callable[[t.Union[dict, str]], t.Union[dict, str]]
-ErrorCallbackType = t.Callable[[int, str, t.Any, t.Mapping[str, str]], ResponseType]
+ErrorCallbackType = t.Callable[['HTTPError'], ResponseType]
 
 DictSchemaType = t.Dict[str, t.Union['Field', type]]
 SchemaType = t.Union['Schema', t.Type['Schema'], DictSchemaType]
