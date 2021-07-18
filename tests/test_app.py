@@ -95,7 +95,7 @@ def test_view_function_arguments_order(app, client):
 
 def test_error_callback(app, client):
     @app.error_processor
-    def custom_error_handler(status_code, message, detail, headers):
+    def custom_error_handler(e):
         return {'message': 'something was wrong'}, 200
 
     @app.get('/')

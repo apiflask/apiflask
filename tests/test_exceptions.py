@@ -61,7 +61,8 @@ def test_abort(app, client, kwargs):
     {'message': 'bad', 'detail': {'location': 'json'}, 'headers': {'X-FOO': 'bar'}}
 ])
 def test_default_error_handler(app, kwargs):
-    rv = app._error_handler(400, **kwargs)
+    error = HTTPError(400, **kwargs)
+    rv = app._error_handler(error)
     assert rv[1] == 400
     if 'message' not in kwargs:
         assert rv[0]['message'] == 'Bad Request'
