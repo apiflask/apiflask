@@ -5,31 +5,37 @@ from flask import g
 from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 
+from .exceptions import HTTPError
+
 
 class _AuthBase:
     """Base class for `HTTPBasicAuth` and `HTTPBasicAuth`."""
 
     def __init__(self, description: t.Optional[str] = None) -> None:
         self.description = description
+        self.error_handler(self._auth_error_handler)
 
     @property
     def current_user(self) -> t.Union[None, t.Any]:
         return g.get('flask_httpauth_user', None)
 
+    @staticmethod
+    def _auth_error_handler(
+        status_code: int
+    ) -> t.Union[t.Tuple[str, int], t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
+        """The default error handler for Flask-HTTPAuth.
 
-def handle_auth_error(
-    status_code: int
-) -> t.Union[t.Tuple[str, int], t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
-    """The default error handler for Flask-HTTPAuth.
+        This handler will return JSON response when set `APIFlask(json_errors=True)` (default).
 
-    This handler will return JSON response when `app.json_errors` is `True` (default).
-    """
-    error_message = 'Unauthorized Access'
-    if current_app.json_errors:  # type: ignore
-        return current_app.error_callback(
-            status_code, message=error_message, detail=None, headers=None
-        )
-    return error_message, status_code
+        *Version changed: 0.9.0*
+
+        - The default reason phrase is used for auth errors.
+        - It will call the `app.error_callback` for auth errors.
+        """
+        error = HTTPError(status_code)
+        if current_app.json_errors:  # type: ignore
+            return current_app.error_callback(error)
+        return error.message, status_code
 
 
 class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
@@ -64,9 +70,8 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
                 a scope of protection, defaults to use `'Authentication Required'`.
             description: The description of the security scheme.
         """
-        super().__init__(description=description)
         BaseHTTPBasicAuth.__init__(self, scheme=scheme, realm=realm)
-        self.error_handler(handle_auth_error)
+        super().__init__(description=description)
 
 
 class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
@@ -110,6 +115,5 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
 
             description: The description of the security scheme.
         """
-        super().__init__(description=description)
         BaseHTTPTokenAuth.__init__(self, scheme=scheme, realm=realm, header=header)
-        self.error_handler(handle_auth_error)
+        super().__init__(description=description)

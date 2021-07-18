@@ -32,7 +32,7 @@ def test_bypasss_default_auth_error_handler():
     rv = app.test_client().get('/foo')
     assert rv.status_code == 401
     assert rv.headers['Content-Type'] == 'text/html; charset=utf-8'
-    assert b'Unauthorized Access' in rv.data
+    assert b'Unauthorized' in rv.data
     assert 'WWW-Authenticate' in rv.headers
 
 
