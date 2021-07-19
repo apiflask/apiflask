@@ -41,7 +41,7 @@ class _AuthBase:
     def error_processor(
         self,
         f: ErrorCallbackType
-    ) -> ErrorCallbackType:
+    ) -> None:
         """A decorator to register an error callback function for auth errors (401/403).
 
         The error callback function will be called when authentication errors happened.
@@ -69,7 +69,7 @@ class _AuthBase:
 
         *Version added: 0.9.0*
         """
-        self.error_handler(lambda status_code: f(HTTPError(status_code)))
+        self.error_handler(lambda status_code: f(HTTPError(status_code)))  # type: ignore
 
 
 class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
