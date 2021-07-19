@@ -43,6 +43,10 @@ class HTTPError(Exception):
                 provide the addition information such as custom error code,
                 documentation URL, etc.
             headers: A dict of headers used in the error response.
+
+        *Version changed: 0.9.0*
+
+        - Set `detail` and `headers` to empty dict if not set.
         """
         super().__init__()
         if status_code not in default_exceptions:
@@ -51,8 +55,8 @@ class HTTPError(Exception):
                 ' valid error status code are "4XX" and "5XX".'
             )
         self.status_code = status_code
-        self.detail = detail
-        self.headers = headers
+        self.detail = detail or {}
+        self.headers = headers or {}
         self.message = get_reason_phrase(status_code, 'Unknown error') \
             if message is None else message
 
@@ -101,33 +105,7 @@ def abort(
         headers: A dict of headers used in the error response.
 
     *Version changed: 0.4.0*
+
     - Rename the function name from `abort_json` to `abort`.
     """
     raise HTTPError(status_code, message, detail, headers)
-
-
-def _default_error_handler(
-    status_code: int,
-    message: t.Optional[str] = None,
-    detail: t.Optional[t.Any] = None,
-    headers: t.Optional[t.Mapping[str, str]] = None
-) -> t.Union[t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
-    """The default error handler in APIFlask.
-
-    Arguments:
-        status_code: The status code of the error (4XX and 5xx).
-        message: The simple description of the error. If not provided,
-            the reason phrase of the status code will be used.
-        detail: The detailed information of the error, you can use it to
-            provide the addition information such as custom error code,
-            documentation URL, etc.
-        headers: A dict of headers used in the error response.
-    """
-    if message is None:
-        message = get_reason_phrase(status_code, 'Unknown error')
-    if detail is None:
-        detail = {}
-    body = {'detail': detail, 'message': message, 'status_code': status_code}
-    if headers is None:
-        return body, status_code
-    return body, status_code, headers

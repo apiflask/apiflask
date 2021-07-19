@@ -11,9 +11,18 @@ Released: -
 and `BASE_RESPONSE_DATA_KEY` ([issue #65][issue_65]).
 - Support setting custom schema name resolver via the `APIFlask.schema_name_resolver`
 attribute ([issue #105][issue_105]).
+- Improve error handling ([issue #107][issue_107]):
+    - Authentication error now calls app error processor function when `APIFlask(json_errors=True)`.
+    The default HTTP reason phrase is used for auth errors.
+    - Always pass an `HTTPError` instance to error processors. When you set a custom error
+    processor, now you need to accept an `HTTPError` instance as the argument. The `detail` and
+    `headers` attribute of the instance will be empty dict if not set.
+    - Add an `error_processor` decorator for `HTTPTokenAuth` and `HTTPBasicAuth`, it can be used
+    to register a custom error processor for auth errors.
 
 [issue_65]: https://github.com/greyli/apiflask/issues/65
 [issue_105]: https://github.com/greyli/apiflask/issues/105
+[issue_107]: https://github.com/greyli/apiflask/issues/107
 
 
 ## Version 0.8.0
@@ -183,7 +192,7 @@ Released: 2021/4/20
     - `AUTO_HTTP_ERROR_RESPONSE`
     - `AUTH_ERROR_SCHEMA`
 - Add new configuration variables `YAML_SPEC_MIMETYPE` and `JSON_SPEC_MIMETYPE` to support
-    to customize the MIME type of spec response ([pull #3][pull_3]).
+to customize the MIME type of spec response ([pull #3][pull_3]).
 - Remove configuration variable `SPEC_TYPE`.
 - Fix the support to pass an empty dict as schema for 204 response ([pull #12][pull_12]).
 - Support set multiple examples for request/response body with `@output(examples=...)`

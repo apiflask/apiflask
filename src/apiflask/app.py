@@ -30,7 +30,6 @@ with warnings.catch_warnings():
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .exceptions import HTTPError
-from .exceptions import _default_error_handler
 from .exceptions import _bad_schema_message
 from .helpers import get_reason_phrase
 from .route import route_shortcuts
@@ -194,15 +193,16 @@ class APIFlask(Flask):
         error_callback: It stores the function object registerd by
             [`error_processor`][apiflask.APIFlask.error_processor]. You can also
             pass a callback function to it directly without using `error_processor`.
+            See the docstring of `error_processor` for more details.
             Example:
 
             ```python
-            def my_error_handler(status_code, message, detail, headers):
+            def my_error_handler(error):
                 return {
-                    'status_code': status_code,
-                    'message': message,
-                    'detail': detail
-                }, status_code, headers
+                    'status_code': error.status_code,
+                    'message': error.message,
+                    'detail': error.detail
+                }, error.status_code, error.headers
 
             app.error_processor = my_error_handler
             ```
@@ -316,7 +316,7 @@ class APIFlask(Flask):
         self.json_errors = json_errors
 
         self.spec_callback: t.Optional[SpecCallbackType] = None
-        self.error_callback: ErrorCallbackType = _default_error_handler  # type: ignore
+        self.error_callback: ErrorCallbackType = self._error_handler  # type: ignore
         self.schema_name_resolver = self._schema_name_resolver
 
         self._spec: t.Optional[t.Union[dict, str]] = None
@@ -324,29 +324,25 @@ class APIFlask(Flask):
         self._register_error_handlers()
 
     def _register_error_handlers(self) -> None:
-        """Register default error handlers for HTTPError and WerkzeugHTTPException."""
+        """Register default error handlers for HTTPError and WerkzeugHTTPException.
+
+        *Version changed: 0.9.0*
+
+        - Always pass an `HTTPError` instance to error handlers.
+        """
         @self.errorhandler(HTTPError)  # type: ignore
-        def handle_http_error(
+        def handle_http_errors(
             error: HTTPError
         ) -> ResponseType:
-            return self.error_callback(
-                error.status_code,
-                error.message,
-                error.detail,
-                error.headers  # type: ignore
-            )
+            return self.error_callback(error)
 
         if self.json_errors:
             @self.errorhandler(WerkzeugHTTPException)  # type: ignore
-            def handle_werkzeug_errrors(
+            def handle_werkzeug_errors(
                 error: WerkzeugHTTPException
             ) -> ResponseType:
-                return self.error_callback(
-                    error.code,  # type: ignore
-                    error.name,
-                    detail=None,
-                    headers=None
-                )
+                error = HTTPError(error.code, error.name)  # type: ignore
+                return self.error_callback(error)
 
     def dispatch_request(self) -> ResponseType:
         """Overwrite the default dispatch method in Flask.
@@ -390,6 +386,28 @@ class APIFlask(Flask):
         else:
             return view_function(*req.view_args.values())  # type: ignore
 
+    @staticmethod
+    def _error_handler(
+        error: HTTPError
+    ) -> t.Union[t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
+        """The default error handler.
+
+        Arguments:
+            status_code: The status code of the error (4XX and 5xx).
+            message: The simple description of the error. If not provided,
+                the reason phrase of the status code will be used.
+            detail: The detailed information of the error, you can use it to
+                provide the addition information such as custom error code,
+                documentation URL, etc.
+            headers: A dict of headers used in the error response.
+        """
+        body = {
+            'detail': error.detail,
+            'message': error.message,
+            'status_code': error.status_code
+        }
+        return body, error.status_code, error.headers
+
     def error_processor(
         self,
         f: ErrorCallbackType
@@ -406,26 +424,27 @@ class APIFlask(Flask):
         instance, this callback function will also be used for normal HTTP errors,
         for example, 404 and 500 errors, etc. You can still register a specific error
         handler for a specific error code or exception with the
-        `app.errorhanlder(code_or_exection)` decorator, in that case, the return
+        `app.errorhandler(code_or_exection)` decorator, in that case, the return
         value of the error handler will be used as the response when the corresponding
         error or exception happened.
 
-        The callback function must accept four positional arguments (i.e.,
-        `status_code, message, detail, headers`) and return a valid response.
+        The callback function must accept an error object as argument and return a valid
+        response.
 
         Examples:
 
         ```python
         @app.error_processor
-        def my_error_processor(status_code, message, detail, headers):
+        def my_error_processor(error):
             return {
-                'status_code': status_code,
-                'message': message,
-                'detail': detail
-            }, status_code, headers
+                'status_code': error.status_code,
+                'message': error.message,
+                'detail': error.detail
+            }, error.status_code, error.headers
         ```
 
-        The arguments are:
+        The error object is an instance of [`HTTPError`][apiflask.exceptions.HTTPError],
+        so you can get error information via it's attributes:
 
         - status_code: If the error triggered by validation error, the value will be
             400 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
@@ -459,8 +478,8 @@ class APIFlask(Flask):
 
         ```python
         @app.error_processor
-        def my_error_processor(status_code, message, detail, headers):
-            return {'error_detail': detail}, status_code, headers
+        def my_error_processor(error):
+            return {'error_detail': error.detail}, error.status_code, error.headers
         ```
 
         However, I would recommend keeping the `detail` in the response since it contains

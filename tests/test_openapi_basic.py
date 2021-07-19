@@ -104,8 +104,7 @@ def test_spec_schemas(app):
     def schema():
         pass
 
-    with app.app_context():
-        spec = app.spec
+    spec = app.spec
     assert len(spec['components']['schemas']) == 5
     assert 'FooUpdate' in spec['components']['schemas']
     assert 'Bar' in spec['components']['schemas']

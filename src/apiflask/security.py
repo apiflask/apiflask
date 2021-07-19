@@ -5,7 +5,8 @@ from flask import g
 from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 
-from .exceptions import _default_error_handler
+from .exceptions import HTTPError
+from .types import ErrorCallbackType
 
 
 class _AuthBase:
@@ -13,22 +14,62 @@ class _AuthBase:
 
     def __init__(self, description: t.Optional[str] = None) -> None:
         self.description = description
+        self.error_handler(self._auth_error_handler)  # type: ignore
 
     @property
     def current_user(self) -> t.Union[None, t.Any]:
         return g.get('flask_httpauth_user', None)
 
+    @staticmethod
+    def _auth_error_handler(
+        status_code: int
+    ) -> t.Union[t.Tuple[str, int], t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
+        """The default error handler for Flask-HTTPAuth.
 
-def handle_auth_error(
-    status_code: int
-) -> t.Union[t.Tuple[str, int], t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
-    """The default error handler for Flask-HTTPAuth.
+        This handler will return JSON response when set `APIFlask(json_errors=True)` (default).
 
-    This handler will return JSON response when `app.json_errors` is `True` (default).
-    """
-    if current_app.json_errors:  # type: ignore
-        return _default_error_handler(status_code)
-    return 'Unauthorized Access', status_code
+        *Version changed: 0.9.0*
+
+        - The default reason phrase is used for auth errors.
+        - It will call the `app.error_callback` for auth errors.
+        """
+        error = HTTPError(status_code)
+        if current_app.json_errors:  # type: ignore
+            return current_app.error_callback(error)  # type: ignore
+        return error.message, status_code
+
+    def error_processor(
+        self,
+        f: ErrorCallbackType
+    ) -> None:
+        """A decorator to register an error callback function for auth errors (401/403).
+
+        The error callback function will be called when authentication errors happened.
+        It should accept an `HTTPError` instance and return a valid response. APIFlask will pass
+        the callback function you decorated to Flask-HTTPAuth's `error_handler` method internally.
+
+        Example:
+
+        ```python
+        from apiflask import APIFlask, HTTPTokenAuth
+
+        app = APIFlask(__name__)
+        auth = HTTPTokenAuth()
+
+        @auth.error_processor
+        def my_auth_error_processor(error):
+            return {
+                'status_code': error.status_code,
+                'message': error.message
+            }, error.status_code
+        ```
+
+        See more details of the error object in
+        [APIFlask.error_processor][apiflask.APIFlask.error_processor].
+
+        *Version added: 0.9.0*
+        """
+        self.error_handler(lambda status_code: f(HTTPError(status_code)))  # type: ignore
 
 
 class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
@@ -63,9 +104,8 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
                 a scope of protection, defaults to use `'Authentication Required'`.
             description: The description of the security scheme.
         """
-        super().__init__(description=description)
         BaseHTTPBasicAuth.__init__(self, scheme=scheme, realm=realm)
-        self.error_handler(handle_auth_error)
+        super().__init__(description=description)
 
 
 class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
@@ -109,6 +149,5 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
 
             description: The description of the security scheme.
         """
-        super().__init__(description=description)
         BaseHTTPTokenAuth.__init__(self, scheme=scheme, realm=realm, header=header)
-        self.error_handler(handle_auth_error)
+        super().__init__(description=description)

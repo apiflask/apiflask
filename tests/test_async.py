@@ -47,8 +47,8 @@ def test_async_error_processor(app, client):
     skip_flask1(app)
 
     @app.error_processor
-    async def custom_error_processor(status_code, message, detail, headers):
-        return {'foo': 'test'}, status_code, headers
+    async def custom_error_processor(e):
+        return {'foo': 'test'}, e.status_code, e.headers
 
     rv = client.get('/foo')
     assert rv.status_code == 404

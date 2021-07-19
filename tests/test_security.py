@@ -32,7 +32,50 @@ def test_bypasss_default_auth_error_handler():
     rv = app.test_client().get('/foo')
     assert rv.status_code == 401
     assert rv.headers['Content-Type'] == 'text/html; charset=utf-8'
-    assert b'Unauthorized Access' in rv.data
+    assert b'Unauthorized' in rv.data
+    assert 'WWW-Authenticate' in rv.headers
+
+
+def test_custom_auth_error_handler(app, client):
+    auth = HTTPTokenAuth()
+
+    @auth.error_handler
+    def handle_auth_error(status_code):
+        return 'auth error', status_code
+
+    @app.route('/foo')
+    @auth_required(auth)
+    def foo():
+        pass
+
+    rv = client.get('/foo')
+    assert rv.status_code == 401
+    assert rv.headers['Content-Type'] == 'text/html; charset=utf-8'
+    assert b'auth error' in rv.data
+    assert 'WWW-Authenticate' in rv.headers
+
+
+def test_auth_error_processor(app, client):
+    auth = HTTPTokenAuth()
+
+    @auth.error_processor
+    def auth_error_processor(e):
+        assert e.status_code == 401
+        assert e.message == 'Unauthorized'
+        assert e.detail == {}
+        assert e.headers == {}
+        return {'message': 'custom auth error message'}, e.status_code
+
+    @app.route('/foo')
+    @auth_required(auth)
+    def foo():
+        pass
+
+    rv = client.get('/foo')
+    assert rv.status_code == 401
+    assert rv.headers['Content-Type'] == 'application/json'
+    assert 'message' in rv.json
+    assert rv.json['message'] == 'custom auth error message'
     assert 'WWW-Authenticate' in rv.headers
 
 
