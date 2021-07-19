@@ -331,14 +331,14 @@ class APIFlask(Flask):
         - Always pass an `HTTPError` instance to error handlers.
         """
         @self.errorhandler(HTTPError)  # type: ignore
-        def handle_http_error(
+        def handle_http_errors(
             error: HTTPError
         ) -> ResponseType:
             return self.error_callback(error)
 
         if self.json_errors:
             @self.errorhandler(WerkzeugHTTPException)  # type: ignore
-            def handle_werkzeug_errrors(
+            def handle_werkzeug_errors(
                 error: WerkzeugHTTPException
             ) -> ResponseType:
                 error = HTTPError(error.code, error.name)  # type: ignore
@@ -424,7 +424,7 @@ class APIFlask(Flask):
         instance, this callback function will also be used for normal HTTP errors,
         for example, 404 and 500 errors, etc. You can still register a specific error
         handler for a specific error code or exception with the
-        `app.errorhanlder(code_or_exection)` decorator, in that case, the return
+        `app.errorhandler(code_or_exection)` decorator, in that case, the return
         value of the error handler will be used as the response when the corresponding
         error or exception happened.
 
