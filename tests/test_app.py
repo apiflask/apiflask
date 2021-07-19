@@ -96,6 +96,10 @@ def test_view_function_arguments_order(app, client):
 def test_error_callback(app, client):
     @app.error_processor
     def custom_error_handler(e):
+        assert e.status_code == 500
+        assert e.detail == {}
+        assert e.headers == {}
+        assert e.message == 'Internal Server Error'
         return {'message': 'something was wrong'}, 200
 
     @app.get('/')

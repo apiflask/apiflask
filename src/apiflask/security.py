@@ -6,6 +6,7 @@ from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 
 from .exceptions import HTTPError
+from .types import ErrorCallbackType
 
 
 class _AuthBase:
@@ -36,6 +37,39 @@ class _AuthBase:
         if current_app.json_errors:  # type: ignore
             return current_app.error_callback(error)  # type: ignore
         return error.message, status_code
+
+    def error_processor(
+        self,
+        f: ErrorCallbackType
+    ) -> ErrorCallbackType:
+        """A decorator to register an error callback function for auth errors (401/403).
+
+        The error callback function will be called when authentication errors happened.
+        It should accept an `HTTPError` instance and return a valid response. APIFlask will pass
+        the callback function you decorated to Flask-HTTPAuth's `error_handler` method internally.
+
+        Example:
+
+        ```python
+        from apiflask import APIFlask, HTTPTokenAuth
+
+        app = APIFlask(__name__)
+        auth = HTTPTokenAuth()
+
+        @auth.error_processor
+        def my_auth_error_processor(error):
+            return {
+                'status_code': error.status_code,
+                'message': error.message
+            }, error.status_code
+        ```
+
+        See more details of the error object in
+        [APIFlask.error_processor][apiflask.APIFlask.error_processor].
+
+        *Version added: 0.9.0*
+        """
+        self.error_handler(lambda status_code: f(HTTPError(status_code)))
 
 
 class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
