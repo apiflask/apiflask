@@ -15,10 +15,10 @@ attribute ([issue #105][issue_105]).
     - Authentication error now calls app error processor function when `APIFlask(json_errors=True)`.
     The default HTTP reason phrase is used for auth errors.
     - Always pass an `HTTPError` instance to error processors. When you set a custom error
-    processor, now you need to accept an `HTTPError` instance as argument. The `detail` and `headers`
-    attribute of the instance will be empty dict if not set.
-    - Add a `error_processor` decorator for `HTTPTokenAuth` and `HTTPBasicAuth`, it can be used
-    to register an custom error processor for auth errors.
+    processor, now you need to accept an `HTTPError` instance as the argument. The `detail` and
+    `headers` attribute of the instance will be empty dict if not set.
+    - Add an `error_processor` decorator for `HTTPTokenAuth` and `HTTPBasicAuth`, it can be used
+    to register a custom error processor for auth errors.
 
 [issue_65]: https://github.com/greyli/apiflask/issues/65
 [issue_105]: https://github.com/greyli/apiflask/issues/105
