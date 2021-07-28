@@ -11,7 +11,6 @@ if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pra
 
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-from apispec.ext.marshmallow import OpenAPIConverter
 from flask import Blueprint
 from flask import Flask
 from flask import jsonify
@@ -903,17 +902,14 @@ class APIFlask(Flask):
 
                 # responses
                 if view_func._spec.get('response'):
-                    converter = OpenAPIConverter(
-                        self.openapi_version,
-                        self.schema_name_resolver,
-                        spec
-                    )
                     schema = view_func._spec.get('response')['schema']
                     base_schema: OpenAPISchemaType = self.config['BASE_RESPONSE_SCHEMA']
                     if base_schema is not None:
                         base_schema_spec: dict
                         if isinstance(base_schema, type):
-                            base_schema_spec = converter.schema2jsonschema(base_schema())
+                            base_schema_spec = ma_plugin.converter.schema2jsonschema(
+                                base_schema()
+                            )
                         elif isinstance(base_schema, dict):
                             base_schema_spec = base_schema
                         else:
