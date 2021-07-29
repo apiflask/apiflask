@@ -63,7 +63,7 @@ app.config['SPEC_FORMAT'] == 'yaml'
 The default URL path for spec endpoint is `/openapi.json`, you may also want to update
 it when you want to use YAML format:
 
-```python hl_line="3"
+```python hl_lines="3"
 from apiflask import APIFlask
 
 app = APIFlask(__name__, spec_path='/openapi.yaml')
