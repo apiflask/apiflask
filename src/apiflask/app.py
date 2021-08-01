@@ -877,6 +877,9 @@ class APIFlask(Flask):
                 if operation_tags:
                     operation['tags'] = operation_tags
 
+                docs = [line.strip() for line in (
+                    view_func.__doc__ or '').strip().split('\n')]
+                    
                 # summary
                 if view_func._spec.get('summary'):
                     operation['summary'] = view_func._spec.get('summary')
