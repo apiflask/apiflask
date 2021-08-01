@@ -876,7 +876,7 @@ class APIFlask(Flask):
                 }
                 if operation_tags:
                     operation['tags'] = operation_tags
-                # remove indentation spaces from docstrings 
+                # remove indentation spaces from docstrings
                 docs = [line.strip() for line in (
                     view_func.__doc__ or '').strip().split('\n')]
                 # summary
