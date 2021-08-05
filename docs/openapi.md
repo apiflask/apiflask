@@ -57,7 +57,7 @@ Now you can change the format via the `SPEC_FORMAT` config:
 from apiflask import APIFlask
 
 app = APIFlask(__name__)
-app.config['SPEC_FORMAT'] == 'yaml'
+app.config['SPEC_FORMAT'] = 'yaml'
 ```
 
 The default URL path for spec endpoint is `/openapi.json`, you may also want to update
@@ -67,7 +67,7 @@ it when you want to use YAML format:
 from apiflask import APIFlask
 
 app = APIFlask(__name__, spec_path='/openapi.yaml')
-app.config['SPEC_FORMAT'] == 'yaml'
+app.config['SPEC_FORMAT'] = 'yaml'
 ```
 
 The `SPEC_FORMAT` config will also control the spec format output of the `flask spec` command.
