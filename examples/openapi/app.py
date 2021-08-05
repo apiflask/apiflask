@@ -121,8 +121,9 @@ def say_hello():
     """Just Say Hello
 
     It will always return a greeting like this:
-
+    ```
     {'message': 'Hello!'}
+    ```
     """
     return {'message': 'Hello!'}
 
