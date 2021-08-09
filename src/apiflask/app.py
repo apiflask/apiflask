@@ -876,9 +876,7 @@ class APIFlask(Flask):
                 }
                 if operation_tags:
                     operation['tags'] = operation_tags
-                # remove indentation spaces from docstrings
-                docs = [line.strip() for line in (
-                    view_func.__doc__ or '').strip().split('\n')]
+
                 # summary
                 if view_func._spec.get('summary'):
                     operation['summary'] = view_func._spec.get('summary')
@@ -893,7 +891,9 @@ class APIFlask(Flask):
                 else:
                     # auto-generate description from dotstring
                     if self.config['AUTO_OPERATION_DESCRIPTION']:
-                        docs = (view_func.__doc__ or '').strip().split('\n')
+                        docs = [
+                            line.strip() for line in (view_func.__doc__ or '').strip().split('\n')
+                        ]
                         if len(docs) > 1:
                             # use the remain lines of docstring as description
                             operation['description'] = '\n'.join(docs[1:]).strip()
