@@ -26,6 +26,21 @@ def test_redoc_standalone_js(app, client):
     assert b'src="https://cdn.example.com/redoc.js"' in rv.data
 
 
+@pytest.mark.parametrize('config_value', [
+    {}, {'disableSearch': True, 'hideLoading': True}
+])
+def test_redoc_config(app, client, config_value):
+    app.config['REDOC_CONFIG'] = config_value
+
+    rv = client.get('/redoc')
+    assert rv.status_code == 200
+    if config_value == {}:
+        assert b'{},' in rv.data
+    else:
+        assert b'"disableSearch": true' in rv.data
+        assert b'"hideLoading": true' in rv.data
+
+
 def test_swagger_ui_resources(app, client):
     app.config['SWAGGER_UI_CSS'] = 'https://cdn.example.com/swagger-ui.css'
     app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdn.example.com/swagger-ui.bundle.js'

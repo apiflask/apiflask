@@ -85,6 +85,7 @@ The following configuration variables can be used to config Swagger UI/Redoc:
 
 - `DOCS_FAVICON`
 - `REDOC_USE_GOOGLE_FONT`
+- `REDOC_CONFIG`
 - `SWAGGER_UI_LAYOUT`
 - `SWAGGER_UI_CONFIG`
 - `SWAGGER_UI_OAUTH_CONFIG`
