@@ -19,10 +19,12 @@ attribute ([issue #105][issue_105]).
     `headers` attribute of the instance will be empty dict if not set.
     - Add an `error_processor` decorator for `HTTPTokenAuth` and `HTTPBasicAuth`, it can be used
     to register a custom error processor for auth errors.
+- Support to config Redoc via the configuration variable `REDOC_CONFIG` ([issue #121][issue_121]).
 
 [issue_65]: https://github.com/greyli/apiflask/issues/65
 [issue_105]: https://github.com/greyli/apiflask/issues/105
 [issue_107]: https://github.com/greyli/apiflask/issues/107
+[issue_121]: https://github.com/greyli/apiflask/issues/121
 
 
 ## Version 0.8.0

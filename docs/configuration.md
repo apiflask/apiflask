@@ -849,6 +849,20 @@ app.config['REDOC_USE_GOOGLE_FONT'] = False
 ```
 
 
+#### `REDOC_CONFIG`
+
+The configuration options pass to Redoc. See the available options in the
+[Redoc documentation](https://github.com/Redocly/redoc#redoc-options-object).
+
+- Type: `dict`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['REDOC_CONFIG'] = {'disableSearch': True, 'hideLoading': True}
+```
+
+
 #### `REDOC_STANDALONE_JS`
 
 The absolute or relative URL of the Redoc standalone JavaScript file.

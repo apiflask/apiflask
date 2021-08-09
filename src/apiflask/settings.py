@@ -47,6 +47,7 @@ DOCS_FAVICON: str = 'https://apiflask.com/_assets/favicon.png'
 REDOC_USE_GOOGLE_FONT: bool = True
 REDOC_STANDALONE_JS: str = 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/\
 redoc.standalone.js'
+REDOC_CONFIG: t.Optional[dict] = None
 SWAGGER_UI_CSS: str = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css'
 SWAGGER_UI_BUNDLE_JS: str = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/\
 swagger-ui-bundle.js'

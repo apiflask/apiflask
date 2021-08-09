@@ -20,8 +20,16 @@ redoc_template = '''
 </head>
 
 <body>
-  <redoc spec-url="{{ url_for('openapi.spec') }}"></redoc>
+  <div id="redoc"></div>
+
   <script src="{{ config.REDOC_STANDALONE_JS }}"> </script>
+  <script>
+    Redoc.init(
+      "{{ url_for('openapi.spec') }}",
+      {% if config.REDOC_CONFIG %}{{ config.REDOC_CONFIG | tojson }}{% else %}{}{% endif %},
+      document.getElementById("redoc")
+    )
+  </script>
 </body>
 
 </html>
@@ -65,7 +73,7 @@ swagger_ui_template = '''
   <script>
     var baseConfig = {
       url: "{{ url_for('openapi.spec') }}",
-      dom_id: '#swagger-ui',
+      dom_id: "#swagger-ui",
       deepLinking: true,
       presets: [
         SwaggerUIBundle.presets.apis,
@@ -78,7 +86,7 @@ swagger_ui_template = '''
             {% if oauth2_redirect_path %} oauth2RedirectUrl: "{{ oauth2_redirect_path }}"{% endif %}
         }
     {% if config.SWAGGER_UI_CONFIG %}
-    var userConfig = {{ config.SWAGGER_UI_CONFIG| tojson }}
+    var userConfig = {{ config.SWAGGER_UI_CONFIG | tojson }}
     for (var attr in userConfig) {
       baseConfig[attr] = userConfig[attr]
     }
@@ -87,7 +95,7 @@ swagger_ui_template = '''
       const ui = SwaggerUIBundle(baseConfig)
       {% if config.SWAGGER_UI_OAUTH_CONFIG %}
       oauthConfig = {}
-      var userOauthConfig = {{ config.SWAGGER_UI_OAUTH_CONFIG| tojson
+      var userOauthConfig = {{ config.SWAGGER_UI_OAUTH_CONFIG | tojson
     }}
     for (var attr in userOauthConfig) {
       oauthConfig[attr] = userOauthConfig[attr]
