@@ -862,6 +862,10 @@ The configuration options pass to Redoc. See the available options in the
 app.config['REDOC_CONFIG'] = {'disableSearch': True, 'hideLoading': True}
 ```
 
+!!! warning "Version >= 0.9.0"
+
+    This configuration variable was added in the [version 0.9.0](/changelog/#version-090).
+
 
 #### `REDOC_STANDALONE_JS`
 

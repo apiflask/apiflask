@@ -1,11 +1,11 @@
+## Version 0.10.0
+
+[0.10.0 milestone](https://github.com/greyli/apiflask/milestone/6)
+
+
 ## Version 0.9.0
 
-[0.9.0 milestone](https://github.com/greyli/apiflask/milestone/5)
-
-
-## Version 0.8.1
-
-Released: -
+Released: 2021/8/10
 
 - Support base response schema customization, add config `BASE_RESPONSE_SCHEMA`
 and `BASE_RESPONSE_DATA_KEY` ([issue #65][issue_65]).
