@@ -67,7 +67,7 @@ With APIFlask, you can accept the arguments in the view function in a natural wa
 def get_article(category, article_id, query, data)
 ```
 
-However, with APIFairy, Flask-Smorest, or Webargs, the path variables
+However, with APIFairy, Flask-Smorest, or webargs, the path variables
 (`category` and `article_id`) need to be declared after the input data:
 
 ```python
@@ -132,7 +132,7 @@ is production-ready. The latter is still in the early stage.
 - For the web part, FastAPI builds on top of Starlette, while APIFlask builts on top of
 Flask.
 - For the data part (serialization/deserialization, OpenAPI support), FastAPI relies
-on Pydantic, while APIFlask uses marshmallow-code projects (Marshmallow, Webargs, APISpec).
+on Pydantic, while APIFlask uses marshmallow-code projects (marshmallow, webargs, apispec).
 - APIFlask builds on top of Flask, so it's compatible with Flask extensions.
 - FastAPI support async. APIFlask will have the basic async support with Flask 2.0.
 - APIFlask provides more decorators to help organize things better.

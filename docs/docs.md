@@ -41,11 +41,11 @@ advanced usages, you may need to read the documentation of the framework, tools
 that APIFlask based on:
 
 - **[Flask][_flask]{target=_blank}**: The knowledge of Flask is required.
-- **[Marshmallow][_marshmallow]{target=_blank}**: Advanced reference for schema.
+- **[marshmallow][_marshmallow]{target=_blank}**: Advanced reference for schema.
 - **[Flask-HTTPAuth][_flask_httpauth]{target=_blank}**: Advanced reference for
 the usage of `HTTPBasicAuth` and `HTTPTokenAuth`.
-- **[Webargs][_webargs]{target=_blank}**: Useful for contributors.
-- **[APISpec][_apispec]{target=_blank}**: Useful for contributors.
+- **[webargs][_webargs]{target=_blank}**: Useful for contributors.
+- **[apispec][_apispec]{target=_blank}**: Useful for contributors.
 - **[OpenAPI][_openapi]{target=_blank}**: The OpenAPI Specification.
 - **[JSON Schema][_jsonschema]{target=_blank}**: Useful when you want to set a custom
 error schema and you don't want to use schema class.

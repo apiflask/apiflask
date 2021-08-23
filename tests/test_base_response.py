@@ -94,7 +94,7 @@ def test_base_response_spec(app, client, base_schema):
     if base_schema == '':
         with pytest.raises(TypeError) as e:
             app.spec
-        assert 'Marshmallow' in str(e.value)
+        assert 'marshmallow' in str(e.value)
     elif base_schema in [BadBaseResponseSchema, bad_base_response_schema_dict]:
         with pytest.raises(RuntimeError) as e:
             app.spec

@@ -496,7 +496,7 @@ def hello():
 
 ### Response and request `schema`
 
-APIFlask (with APISpec) will generate the operation `schema` object from the data schema
+APIFlask (with apispec) will generate the operation `schema` object from the data schema
 you passed.
 
 To set the OpenAPI spec for schema fields, you can pass a dict with the `metadata` keyword:

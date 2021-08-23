@@ -4,7 +4,7 @@ from werkzeug.exceptions import default_exceptions
 
 from .helpers import get_reason_phrase
 
-_bad_schema_message = 'The schema must be a Marshmallow schema class or an OpenAPI schema dict.'
+_bad_schema_message = 'The schema must be a marshmallow schema class or an OpenAPI schema dict.'
 
 
 class HTTPError(Exception):

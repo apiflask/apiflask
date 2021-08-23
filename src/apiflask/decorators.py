@@ -149,7 +149,7 @@ def input(
     ```
 
     Arguments:
-        schema: The Marshmallow schema of the input data.
+        schema: The marshmallow schema of the input data.
         location: The location of the input data, one of `'json'` (default),
             `'files'`, `'form'`, `'cookies'`, `'headers'`, `'query'`
             (same as `'querystring'`).
@@ -217,12 +217,12 @@ def output(
     `app.post`, etc.).
 
     The decorator will format the return value of your view function with
-    provided Marshmallow schema. You can return a dict or an object (such
+    provided marshmallow schema. You can return a dict or an object (such
     as a model class instance of ORMs). APIFlask will handle the formatting
     and turn your return value into a JSON response.
 
-    P.S. The output data will not be validated; it's a design choice of Marshmallow.
-    Marshmallow 4.0 may be support the output validation.
+    P.S. The output data will not be validated; it's a design choice of marshmallow.
+    marshmallow 4.0 may be support the output validation.
 
     Examples:
 

@@ -72,7 +72,7 @@ format explicitly with the `SPEC_FORMAT` config ([issue #67][issue_67]).
 `'https://apiflask.com/_assets/favicon.png'`, set to `None` to disable
 the favicon.
 - OpenAPI UI templates are move to `ui_templates.py`.
-- Revert the renames on pre/post decorators from Marshmallow ([issue #62][issue_62]).
+- Revert the renames on pre/post decorators from marshmallow ([issue #62][issue_62]).
 - Change the default branch to "main".
 - Move the source to the "src" directory.
 - Enable pre-commit.
@@ -127,7 +127,7 @@ Released: 2021/5/11
 - Support using the `output` decorator on async views ([pull #41][pull_41]).
 - Add `PaginationSchema` and `pagination_builder` as basic pagination support
 ([pull #42][pull_42]).
-- Import and rename the decorators from Marshmallow ([pull #43][pull_43]).
+- Import and rename the decorators from marshmallow ([pull #43][pull_43]).
 - Rename `utils` module to `helpers` ([pull #44][pull_44]).
 - Add `default` parameter for `get_reason_phrase` ([pull #45][pull_45]).
 
@@ -312,7 +312,7 @@ Released: 2021-1-27
 
 - Add view functions without response schema into spec ([commit](https://github.com/greyli/apiflask/commit/aabf427590227001e0e443d8d6a3bf5f56dc5964))
 - Set default response descriptions ([commit](https://github.com/greyli/apiflask/commit/b9edf9e8f5731a8f45b359f6a101b4d39ba3f2f5))
-- Stop rely on Flask-Marshmallow ([commit](https://github.com/greyli/apiflask/commit/cce7a0b8b97f345e087973b127c6d25c884dbc8f))
+- Stop relying on Flask-Marshmallow ([commit](https://github.com/greyli/apiflask/commit/cce7a0b8b97f345e087973b127c6d25c884dbc8f))
 - Change default spec path to `openapi.json` ([commit](https://github.com/greyli/apiflask/commit/09d0d278a1fc27fa5868ef5848f3931bd8f76ef4))
 - Add support for enabling Swagger UI and Redoc at the same time ([commit](https://github.com/greyli/apiflask/commit/d5176418b8c22e523d8b82e1f9af8f2403fa70bb))
 - Change default spec title and version ([commit](https://github.com/greyli/apiflask/commit/0953c310327539f96bcdfad142772c7800285d56))

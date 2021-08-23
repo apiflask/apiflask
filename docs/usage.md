@@ -411,7 +411,7 @@ def delete_pet(pet_id):
 
 To validate and deserialize a request body or request query parameters, we need to
 create a resource schema class first. Think of it as a way to describe the valid
-incoming data. If you already familiar with Marshmallow, then you already know
+incoming data. If you already familiar with marshmallow, then you already know
 how to write a resource schema.
 
 Here is a simple input schema for a Pet input resource:
@@ -1052,9 +1052,9 @@ In the end, let's unpack the whole `apiflask` package to check out what it shipp
 - `HTTPError`: An exception used to return error response (used by `abort()`).
 - `HTTPBasicAuth`: A class used to create an auth instance.
 - `HTTPTokenAuth`: A class used to create an auth instance.
-- `Schema`: A base class for resource schemas (Will be a wrapper for Marshmallow's `Schema`).
-- `fields`: A module contains all the fields (from Marshmallow).
-- `validators`: A module contains all the field validators (from Marshmallow).
+- `Schema`: A base class for resource schemas (Will be a wrapper for marshmallow's `Schema`).
+- `fields`: A module contains all the fields (from marshmallow).
+- `validators`: A module contains all the field validators (from marshmallow).
 - `app.get()`: A decorator used to register a route that only accepts *GET* request.
 - `app.post()`: A decorator used to register a route that only accepts *POST* request.
 - `app.put()`: A decorator used to register a route that only accepts *PUT* request.
