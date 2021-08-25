@@ -63,17 +63,19 @@ def route_patch(cls):
     ):
         """Record the spec for view classes before calling the actual `add_url_rule` method.
 
-        The `view_func` argument can be view function, view class or `ViewClass.as_view()`.
+        When calling this method directly, the `view_func` argument can be a view function or
+        a view function created by `ViewClass.as_view()`. It only accepts a view class when
+        using the route decorator on a view class.
         """
         view_class: ViewClassType
         is_view_class: bool = False
 
         if hasattr(view_func, 'view_class'):
-            # MethodViewClass.as_view()
+            # a function returned by MethodViewClass.as_view()
             is_view_class = True
             view_class = view_func.view_class  # type: ignore
         elif isinstance(view_func, MethodViewType):
-            # MethodView class
+            # a MethodView class passed with the route decorator
             is_view_class = True
             view_class = view_func  # type: ignore
             if endpoint is None:

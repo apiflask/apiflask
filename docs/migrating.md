@@ -109,21 +109,11 @@ class Pet(MethodView):
         pass
 ```
 
-Beware that the view class should be registered with the `route` decorator instead of
-the `add_ul_rule()` method:
-
-```python hl_lines="1"
-@app.route('/pets/<int:pet_id>', endpoint='pet')
-class Pet(MethodView):
-    ...
-```
+APIFlask supports to use the `route` decorator on a `MethodView`-based view class as a
+shortcut, but you can also use the `add_url_rule` method to regeister it for flexibility.
 
 The `View`-based view class is not supported, you can still use it but currently
 APIFlask can't generate OpenAPI spec (and API documentation) for it.
-
-!!! tips
-
-    If the `endpoint` argument isn't provided, the class name will be used as endpoint.
 
 
 ## Other behavior changes and notes

@@ -2,6 +2,10 @@
 
 [0.10.0 milestone](https://github.com/greyli/apiflask/milestone/6)
 
+- Support using `add_url_rule` method on view classes ([issue #110][issue_110]).
+
+[issue_110]: https://github.com/greyli/apiflask/issues/110
+
 
 ## Version 0.9.0
 
