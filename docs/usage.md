@@ -881,7 +881,7 @@ class Pet(MethodView):
 When creating a view class, it needs to inherit from the `MethodView` class, since APIFlask
 can only generate OpenAPI spec for `MethodView`-based view classes.:
 
-```python hl_lines="1 4"
+```python
 from flask.views import MethodView
 
 @app.route('/pets/<int:pet_id>', endpoint='pet')
@@ -891,7 +891,7 @@ class Pet(MethodView):
 
 APIFlask supports to use the `route` decorator on view classes as a shortcut for `add_url_rule`:
 
-```python hl_lines="1"
+```python
 @app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
     # ...
@@ -905,7 +905,7 @@ class Pet(MethodView):
 
 Now, you can define view methods for each HTTP method, use the (HTTP) method name as method name:
 
-```python hl_lines="4 7 10 13 16"
+```python
 @app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 
@@ -940,7 +940,7 @@ app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
 ```
 
 You still don't need to set the `methods`, but you will need if you want to register multiple rules
-for one view classes based on the methods, this can only be accehived with `add_url_rule`. For
+for one view classes based on the methods, this can only be achieved with `add_url_rule`. For
 example, the `post` method you created above normally has a different URL rule than the others:
 
 ```python
