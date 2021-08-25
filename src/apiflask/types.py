@@ -8,6 +8,7 @@ else:  # pragma: no cover
 
 if t.TYPE_CHECKING:  # pragma: no cover
     from flask.wrappers import Response  # noqa: F401
+    from flask.views import View  # noqa: F401
     from werkzeug.datastructures import Headers  # noqa: F401
     from wsgiref.types import WSGIApplication  # noqa: F401
     from .fields import Field  # noqa: F401
@@ -39,6 +40,8 @@ SchemaType = t.Union['Schema', t.Type['Schema'], DictSchemaType]
 OpenAPISchemaType = t.Union['Schema', t.Type['Schema'], dict]
 HTTPAuthType = t.Union['HTTPBasicAuth', 'HTTPTokenAuth']
 TagsType = t.Union[t.List[str], t.List[t.Dict[str, t.Any]]]
+ViewClassType = t.Type['View']
+ViewFuncOrClassType = t.Union[t.Callable, ViewClassType]
 
 
 class PaginationType(Protocol):
