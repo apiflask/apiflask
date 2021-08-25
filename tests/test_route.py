@@ -156,3 +156,51 @@ def test_overwrite_class_attribute_decorators(app, client):
     assert rv.json['paths']['/']['post']['tags'] == ['foo']
     assert rv.json['paths']['/']['delete']['tags'] == ['bar']
     assert 'deprecated' not in rv.json['paths']['/']['post']
+
+
+def test_add_url_rule_with_method_view(app, client):
+    class Foo(MethodView):
+        def get(self):
+            return 'get'
+
+        def post(self):
+            """Create foo"""
+            return 'post'
+
+    app.add_url_rule('/', view_func=Foo, methods=['GET', 'POST'])
+
+    rv = client.get('/')
+    assert rv.data == b'get'
+    rv = client.post('/')
+    assert rv.data == b'post'
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/']['get']['summary'] == 'Get Foo'
+    assert rv.json['paths']['/']['post']['summary'] == 'Create foo'
+
+
+def test_add_url_rule_with_method_view_as_view(app, client):
+    class Foo(MethodView):
+        def get(self):
+            return 'get'
+
+        def post(self):
+            """Create foo"""
+            return 'post'
+
+    foo_view = Foo.as_view('foo')
+    app.add_url_rule('/foo/get', view_func=foo_view, methods=['GET'])
+    app.add_url_rule('/foo/post', view_func=foo_view, methods=['POST'])
+
+    rv = client.get('/foo/get')
+    assert rv.data == b'get'
+    rv = client.post('/foo/post')
+    assert rv.data == b'post'
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo/get']['get']['summary'] == 'Get Foo'
+    assert rv.json['paths']['/foo/post']['post']['summary'] == 'Create foo'

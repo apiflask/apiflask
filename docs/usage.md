@@ -878,9 +878,10 @@ class Pet(MethodView):
         return '', 204
 ```
 
-When creating a view class, it needs to inherit from the `MethodView` class:
+When creating a view class, it needs to inherit from the `MethodView` class, since APIFlask
+can only generate OpenAPI spec for `MethodView`-based view classes.:
 
-```python hl_lines="1 4"
+```python
 from flask.views import MethodView
 
 @app.route('/pets/<int:pet_id>', endpoint='pet')
@@ -888,9 +889,9 @@ class Pet(MethodView):
     # ...
 ```
 
-The class should be decorated with the `route` decorator:
+APIFlask supports to use the `route` decorator on view classes as a shortcut for `add_url_rule`:
 
-```python hl_lines="1"
+```python
 @app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
     # ...
@@ -902,14 +903,9 @@ class Pet(MethodView):
     endpoint. You don't need to pass a `methods` argument, since Flask will handle
     it for you.
 
-!!! warning
-
-    You should use `app.route` to register a view class instead of using
-    `app.add_url_rule` method.
-
 Now, you can define view methods for each HTTP method, use the (HTTP) method name as method name:
 
-```python hl_lines="4 7 10 13 16"
+```python
 @app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 
@@ -932,6 +928,29 @@ class Pet(MethodView):
 With the example application above, when the user sends a *GET* request to
 `/pets/<int:pet_id>`, the `get()` method of the `Pet` class will be called,
 and so on for the others.
+
+From [version 0.10.0](/changelog/#version-0100), you can also use the `add_url_rule` method to register
+view classes:
+
+```python
+class Pet(MethodView):
+    # ...
+
+app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
+```
+
+You still don't need to set the `methods`, but you will need if you want to register multiple rules
+for one view classes based on the methods, this can only be achieved with `add_url_rule`. For
+example, the `post` method you created above normally has a different URL rule than the others:
+
+```python
+class Pet(MethodView):
+    # ...
+
+pet_view = Pet.as_view('pet')
+app.add_url_rule('/pets/<int:pet_id>', view_func=pet_view, methods=['GET', 'PUT', 'DELETE', 'PATCH'])
+app.add_url_rule('/pets', view_func=pet_view, methods=['POST'])
+```
 
 When you use decorators like `@input`, `@output`, be sure to use it on method
 instead of class:
