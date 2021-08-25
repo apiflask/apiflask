@@ -26,6 +26,11 @@ def route_patch(cls):
         view_func: ViewFuncType,
         view_class: ViewClassType
     ) -> ViewFuncType:
+        # when the user call add_url_rule multiple times for one view class,
+        # we only need to extract info from view class once since it will
+        # loop all the methods of the class.
+        if hasattr(view_func, '_method_spec'):
+            return view_func
         view_func._method_spec = {}
         if not hasattr(view_func, '_spec'):
             view_func._spec = {}
