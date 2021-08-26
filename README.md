@@ -259,8 +259,8 @@ APIFlask accepts marshmallow schema as data schema, uses webargs to validate the
 You can build marshmallow schemas just like before, but APIFlask also exposes some marshmallow APIs for convenience (it's optional, you can still import everything from marshamallow directly):
 
 - `apiflask.Schema`: The base marshmallow schema class.
-- `apiflask.fields`: The marshmallow fields, contain the fields from both marshmallow and Flask-Marshmallow. Beware that the alias (`Url`, `Str`, `Int`, `Bool`, etc.) were skipped.
-- `apiflask.validators`: The marshmallow validators.
+- `apiflask.fields`: The marshmallow fields, contain the fields from both marshmallow and Flask-Marshmallow. Beware that the aliases (`Url`, `Str`, `Int`, `Bool`, etc.) were removed (vote in [marshmallow #1828](https://github.com/marshmallow-code/marshmallow/issues/1828) to remove these aliases from marshmallow).
+- `apiflask.validators`: The marshmallow validators (vote in [marshmallow #1829](https://github.com/marshmallow-code/marshmallow/issues/1829) for better names for validate-related APIs in marshmallow).
 
 ```python
 from apiflask import Schema
