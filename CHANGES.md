@@ -3,8 +3,8 @@
 [0.10.0 milestone](https://github.com/greyli/apiflask/milestone/6)
 
 - Support using `add_url_rule` method on view classes ([issue #110][issue_110]).
-- Revert the name changes on `validates` and `validates_schema` from marshmallow ([issue #62][issue_62]).
-- Only expose marshmallow `fields`, `validators` and `Schema` in APIFlask.
+- Revoke the undocumented name changes on `validates` and `validates_schema` from marshmallow ([issue #62][issue_62]).
+- Only expose marshmallow `fields`, `validators`, and `Schema` in APIFlask.
 
 [issue_110]: https://github.com/greyli/apiflask/issues/110
 [issue_62]: https://github.com/greyli/apiflask/issues/62
