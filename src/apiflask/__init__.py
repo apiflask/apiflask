@@ -1,11 +1,3 @@
-from marshmallow import post_dump as post_dump
-from marshmallow import post_load as post_load
-from marshmallow import pre_dump as pre_dump
-from marshmallow import pre_load as pre_load
-from marshmallow import validates as validate
-from marshmallow import validates_schema as validate_schema
-from marshmallow import ValidationError as ValidationError
-
 from . import fields as fields
 from . import validators as validators
 from .app import APIFlask as APIFlask
