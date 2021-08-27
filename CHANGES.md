@@ -5,9 +5,11 @@
 - Support using `add_url_rule` method on view classes ([issue #110][issue_110]).
 - Revoke the undocumented name changes on `validates` and `validates_schema` from marshmallow ([issue #62][issue_62]).
 - Only expose marshmallow `fields`, `validators`, and `Schema` in APIFlask.
+- Remove the `status_code` field from the default error response ([issue #124][issue_124]).
 
 [issue_110]: https://github.com/greyli/apiflask/issues/110
 [issue_62]: https://github.com/greyli/apiflask/issues/62
+[issue_124]: https://github.com/greyli/apiflask/issues/124
 
 
 ## Version 0.9.0

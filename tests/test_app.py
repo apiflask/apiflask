@@ -31,7 +31,6 @@ def test_json_errors(app, client):
     assert rv.headers['Content-Type'] == 'application/json'
     assert 'message' in rv.json
     assert 'detail' in rv.json
-    assert rv.json['status_code'] == 404
 
     app = APIFlask(__name__, json_errors=False)
     assert app.json_errors is False

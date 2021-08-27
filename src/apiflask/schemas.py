@@ -31,9 +31,6 @@ validation_error_schema: t.Dict[str, t.Any] = {
         "message": {
             "type": "string"
         },
-        "status_code": {
-            "type": "integer"
-        }
     },
     "type": "object"
 }
@@ -48,9 +45,6 @@ http_error_schema: t.Dict[str, t.Any] = {
         "message": {
             "type": "string"
         },
-        "status_code": {
-            "type": "integer"
-        }
     },
     "type": "object"
 }

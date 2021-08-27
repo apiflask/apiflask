@@ -28,8 +28,7 @@ def test_input(app, client):
             'detail': {
                 'json': {'name': ['Missing data for required field.']}
             },
-            'message': 'Validation error',
-            'status_code': 400
+            'message': 'Validation error'
         }
 
         rv = client.post(rule, json={'id': 1})
@@ -38,8 +37,7 @@ def test_input(app, client):
             'detail': {
                 'json': {'name': ['Missing data for required field.']}
             },
-            'message': 'Validation error',
-            'status_code': 400
+            'message': 'Validation error'
         }
 
         rv = client.post(rule, json={'id': 1, 'name': 'bar'})
@@ -70,8 +68,7 @@ def test_input_with_query_location(app, client):
         'detail': {
             'query': {'name': ['Missing data for required field.']}
         },
-        'message': 'Validation error',
-        'status_code': 400
+        'message': 'Validation error'
     }
 
     rv = client.post('/foo?id=1&name=bar')
@@ -80,8 +77,7 @@ def test_input_with_query_location(app, client):
         'detail': {
             'query': {'name2': ['Missing data for required field.']}
         },
-        'message': 'Validation error',
-        'status_code': 400
+        'message': 'Validation error'
     }
 
     rv = client.post('/foo?id=1&name=bar&id2=2&name2=baz')
@@ -132,8 +128,7 @@ def test_input_with_dict_schema(app, client):
         'detail': {
             'query': {'name': ['Missing data for required field.']}
         },
-        'message': 'Validation error',
-        'status_code': 400
+        'message': 'Validation error'
     }
 
     rv = client.get('/foo?name=grey')
@@ -146,8 +141,7 @@ def test_input_with_dict_schema(app, client):
         'detail': {
             'json': {'name': ['Missing data for required field.']}
         },
-        'message': 'Validation error',
-        'status_code': 400
+        'message': 'Validation error'
     }
 
     rv = client.post('/bar', json={'name': 'grey'})
