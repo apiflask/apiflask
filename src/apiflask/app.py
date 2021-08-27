@@ -399,11 +399,14 @@ class APIFlask(Flask):
                 provide the addition information such as custom error code,
                 documentation URL, etc.
             headers: A dict of headers used in the error response.
+
+        *Version changed: 0.10.0*
+
+        - Remove the `status_code` field from the response.
         """
         body = {
             'detail': error.detail,
-            'message': error.message,
-            'status_code': error.status_code
+            'message': error.message
         }
         return body, error.status_code, error.headers
 
@@ -411,7 +414,7 @@ class APIFlask(Flask):
         self,
         f: ErrorCallbackType
     ) -> ErrorCallbackType:
-        """A decorator to register an error response processor function.
+        """A decorator to register a custom error response processor function.
 
         The decorated callback function will be called in the following situations:
 
