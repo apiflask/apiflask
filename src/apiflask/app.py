@@ -449,15 +449,15 @@ class APIFlask(Flask):
         so you can get error information via it's attributes:
 
         - status_code: If the error triggered by validation error, the value will be
-            400 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
-            If the error triggered by [`HTTPError`][apiflask.exceptions.HTTPError]
-            or [`abort`][apiflask.exceptions.abort], it will be the status code
-            you passed. Otherwise, it will be the status code set by Werkzueg when
-            processing the request.
+          400 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
+          If the error triggered by [`HTTPError`][apiflask.exceptions.HTTPError]
+          or [`abort`][apiflask.exceptions.abort], it will be the status code
+          you passed. Otherwise, it will be the status code set by Werkzueg when
+          processing the request.
         - message: The error description for this error, either you passed or grab from
-            Werkzeug.
+          Werkzeug.
         - detail: The detail of the error. When the validation error happened, it will
-            be filled automatically in the following structure:
+          be filled automatically in the following structure:
 
             ```python
             "<location>": {
@@ -471,9 +471,9 @@ class APIFlask(Flask):
             ...
             ```
 
-            The value of `location` can be `json` (i.e., request body) or `query`
-            (i.e., query string) depend on the place where the validation error
-            happened.
+          The value of `location` can be `json` (i.e., request body) or `query`
+          (i.e., query string) depend on the place where the validation error
+          happened.
         - headers: The value will be `None` unless you pass it in HTTPError or abort.
 
         If you want, you can rewrite the whole response body to anything you like:
