@@ -287,3 +287,34 @@ def test_auto_404_error(app, client, config_value):
         assert '#/components/schemas/HTTPError' in \
             rv.json['paths']['/foo/{id}']['get']['responses']['404'][
                 'content']['application/json']['schema']['$ref']
+
+
+@pytest.mark.parametrize('config_value', [True, False])
+def test_auto_operationid(app, client, config_value):
+    app.config['AUTO_OPERATION_ID'] = config_value
+
+    @app.get('/foo')
+    def foo():
+        pass
+
+    bp = APIBlueprint('test', __name__)
+
+    @bp.get('/foo')
+    def bp_foo():
+        pass
+
+    @bp.post('/bar')
+    def bar():
+        pass
+
+    app.register_blueprint(bp, url_prefix='/test')
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert bool('operationId' in rv.json['paths']['/foo']['get']) == config_value
+    assert bool('operationId' in rv.json['paths']['/test/foo']['get']) == config_value
+    if config_value:
+        assert rv.json['paths']['/foo']['get']['operationId'] == 'get_foo'
+        assert rv.json['paths']['/test/foo']['get']['operationId'] == 'get_test_bp_foo'
+        assert rv.json['paths']['/test/bar']['post']['operationId'] == 'post_test_bar'

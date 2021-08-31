@@ -251,3 +251,20 @@ def test_doc_responses_with_methodview(app, client):
     assert '500' in rv.json['paths']['/bar']['get']['responses']
     assert rv.json['paths']['/bar']['get']['responses'][
         '500']['description'] == 'Internal Server Error'
+
+
+def test_doc_operationid(app, client):
+    @app.route('/foo')
+    @doc(operation_id='getSomeFoo')
+    def foo():
+        pass
+
+    @app.route('/bar')
+    def bar():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['get']['operationId'] == 'getSomeFoo'
+    assert 'operationId' not in rv.json['paths']['/bar']['get']

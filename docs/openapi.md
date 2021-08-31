@@ -734,6 +734,31 @@ def hello():
 ```
 
 
+### Set `operationId`
+
+!!! warning "Version >= 0.10.0"
+
+    This feature was added in the [version 0.10.0](/changelog/#version-0100).
+
+You can set `operationId` for a view funtion (operation) with the `operation_id` parameter:
+
+```python hl_lines="2"
+@app.get('/')
+@doc(operation_id='myCustomHello')
+def hello():
+    return 'Hello'
+```
+
+APIFlask supports to generate operationId automatically. The auto-generating behavior is disabled
+as default, you can enable it by setting the following configuration variable to `True`:
+
+```python
+app.config['AUTO_OPERATION_ID'] = True
+```
+
+The auto-operationId will in the format of `{HTTP method}_{endpoint of the view}` (e.g. `get_hello`).
+
+
 ## Security information
 
 APIFlask will generate the `security` object and operation `security` field based on
