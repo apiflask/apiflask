@@ -347,7 +347,8 @@ def doc(
     tags: t.Optional[t.List[str]] = None,
     responses: t.Optional[t.Union[t.List[int], t.Dict[int, str]]] = None,
     deprecated: t.Optional[bool] = None,
-    hide: t.Optional[bool] = None
+    hide: t.Optional[bool] = None,
+    operation_id: t.Optional[str] = None,
 ) -> t.Callable[[DecoratedType], DecoratedType]:
     """Set up the OpenAPI Spec for view functions.
 
@@ -389,6 +390,12 @@ def doc(
             description will be overwritten.
         deprecated: Flag this endpoint as deprecated in API docs.
         hide: Hide this endpoint in API docs.
+        operation_id: The `operationId` of this endpoint. Set config `AUTO_OPERATION_ID` to `True`
+            to enable the auto-generating of operationId (in the format of `{method}_{endpoint}`).
+
+    *Version changed: 0.10.0*
+
+    - Add parameter `operation_id`.
 
     *Version changed: 0.5.0*
 
@@ -419,7 +426,8 @@ def doc(
             tags=_tags,
             responses=responses,
             deprecated=deprecated,
-            hide=hide
+            hide=hide,
+            operation_id=operation_id,
         )
         return f
     return decorator

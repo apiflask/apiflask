@@ -578,6 +578,24 @@ app.config['AUTO_OPERATION_DESCRIPTION'] = False
     since version 0.8.0.
 
 
+#### `AUTO_OPERATION_ID`
+
+!!! warning "Version >= 0.10.0"
+
+    This feature was added in the [version 0.10.0](/changelog/#version-0100).
+
+Enable or disable auto operationId from the method and endpoint of the view function.
+See more details in [Set `operationId`](/openapi/#set-operationid).
+
+- Type: `bool`
+- Default value: `False`
+- Examples:
+
+```python
+app.config['AUTO_OPERATION_ID'] = True
+```
+
+
 #### `AUTO_200_RESPONSE`
 
 If a view function doesn't decorate with either `@input`, `@output`, `@auth_required`

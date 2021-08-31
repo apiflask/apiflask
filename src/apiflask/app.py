@@ -708,6 +708,10 @@ class APIFlask(Flask):
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`.
 
+        *Version changed: 0.10.0*
+
+        - Add support for `operationId`.
+
         *Version changed: 0.9.0*
 
         - Add base response customization support.
@@ -904,6 +908,15 @@ class APIFlask(Flask):
                 # deprecated
                 if view_func._spec.get('deprecated'):
                     operation['deprecated'] = view_func._spec.get('deprecated')
+
+                # operationId
+                operation_id = view_func._spec.get('operation_id')
+                if operation_id is None:
+                    if self.config['AUTO_OPERATION_ID']:
+                        operation['operationId'] = \
+                            f"{method.lower()}_{rule.endpoint.replace('.', '_')}"
+                else:
+                    operation['operationId'] = operation_id
 
                 # responses
                 if view_func._spec.get('response'):
