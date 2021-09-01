@@ -7,12 +7,15 @@
 - Only expose marshmallow `fields`, `validators`, and `Schema` in APIFlask.
 - Remove the `status_code` field from the default error response ([issue #124][issue_124]).
 - Add parameter `extra_fields` to `abort` and `HTTPError`, it accepts a dict that will be added
-to the error response ([issue #125][issue_125]).
+  to the error response ([issue #125][issue_125]).
+- Support passing `operation_id` in the `doc` decorator. The auo-generating of operationId
+  can be enabled with config `AUTO_OPERATION_ID`, defaults to `False` ([pull #131][pull_131]).
 
 [issue_110]: https://github.com/greyli/apiflask/issues/110
 [issue_62]: https://github.com/greyli/apiflask/issues/62
 [issue_124]: https://github.com/greyli/apiflask/issues/124
 [issue_125]: https://github.com/greyli/apiflask/issues/125
+[pull_131]: https://github.com/greyli/apiflask/pull/131
 
 
 ## Version 0.9.0
@@ -20,17 +23,17 @@ to the error response ([issue #125][issue_125]).
 Released: 2021/8/10
 
 - Support base response schema customization, add config `BASE_RESPONSE_SCHEMA`
-and `BASE_RESPONSE_DATA_KEY` ([issue #65][issue_65]).
+  and `BASE_RESPONSE_DATA_KEY` ([issue #65][issue_65]).
 - Support setting custom schema name resolver via the `APIFlask.schema_name_resolver`
-attribute ([issue #105][issue_105]).
+  attribute ([issue #105][issue_105]).
 - Improve error handling ([issue #107][issue_107]):
     - Authentication error now calls app error processor function when `APIFlask(json_errors=True)`.
-    The default HTTP reason phrase is used for auth errors.
+      The default HTTP reason phrase is used for auth errors.
     - Always pass an `HTTPError` instance to error processors. When you set a custom error
-    processor, now you need to accept an `HTTPError` instance as the argument. The `detail` and
-    `headers` attribute of the instance will be empty dict if not set.
+      processor, now you need to accept an `HTTPError` instance as the argument. The `detail` and
+      `headers` attribute of the instance will be empty dict if not set.
     - Add an `error_processor` decorator for `HTTPTokenAuth` and `HTTPBasicAuth`, it can be used
-    to register a custom error processor for auth errors.
+      to register a custom error processor for auth errors.
 - Support to config Redoc via the configuration variable `REDOC_CONFIG` ([issue #121][issue_121]).
 
 [issue_65]: https://github.com/greyli/apiflask/issues/65
@@ -44,14 +47,14 @@ attribute ([issue #105][issue_105]).
 Released: 2021/7/7
 
 - Automatically add a 404 response in OpenAPI spec for routes contains URL
-variables ([issue #78][issue_78]).
+  variables ([issue #78][issue_78]).
 - Rename the private method `app.get_spec` to `app._get_spec`, add new
-parameter `force_update`. The `app.spec` property now will always return
-the latest spec instead of the cached one ([issue #79][issue_79]).
+  parameter `force_update`. The `app.spec` property now will always return
+  the latest spec instead of the cached one ([issue #79][issue_79]).
 - Support using `doc(responses={<STATUS_CODE>: <DESCRIPTION>})` to overwrite
-existing response descriptions.
+  existing response descriptions.
 - Add configration variable `INFO` (and `app.info` attribute), it can be used
-to set the following info fields: `description`, `termsOfService`, `contact`,
+  to set the following info fields: `description`, `termsOfService`, `contact`,
 `license` ([issue #98][issue_98]).
 - Rename the following configuration variables ([issue #99][issue_99]):
     - `AUTO_PATH_SUMMARY` -> `AUTO_OPERATION_SUMMARY`
@@ -71,18 +74,18 @@ Released: 2021/6/24
 ([pull #57][pull_57]).
 - Fix auto-tag support for nesting blueprint ([pull #58][pull_58]).
 - Support set the URL prefix of the OpenAPI blueprint with the
-`openapi_blueprint_url_prefix` argument ([pull #64][pull_64]).
+  `openapi_blueprint_url_prefix` argument ([pull #64][pull_64]).
 - Add a `flask spec` command to output the OpenAPI spec to stdout
-or a file, also add new config `LOCAL_SPEC_PATH` and
-`LOCAL_SPEC_JSON_INDENT` ([issue #61][issue_61]).
+  or a file, also add new config `LOCAL_SPEC_PATH` and
+  `LOCAL_SPEC_JSON_INDENT` ([issue #61][issue_61]).
 - Re-add the `SPEC_FORMAT` config. Remove the auto-detection of
-the format from `APIFlask(spec_path=...)`, now you have to set the
-format explicitly with the `SPEC_FORMAT` config ([issue #67][issue_67]).
+  the format from `APIFlask(spec_path=...)`, now you have to set the
+  format explicitly with the `SPEC_FORMAT` config ([issue #67][issue_67]).
 - Support to sync the local OpenAPI spec automatically. Add new config
-`SYNC_LOCAL_SPEC` ([issue #68][issue_68]).
+  `SYNC_LOCAL_SPEC` ([issue #68][issue_68]).
 - Change the default value of config `DOCS_FAVICON` to
-`'https://apiflask.com/_assets/favicon.png'`, set to `None` to disable
-the favicon.
+  `'https://apiflask.com/_assets/favicon.png'`, set to `None` to disable
+  the favicon.
 - OpenAPI UI templates are move to `ui_templates.py`.
 - Revert the renames on pre/post decorators from marshmallow ([issue #62][issue_62]).
 - Change the default branch to "main".
@@ -138,7 +141,7 @@ Released: 2021/5/11
 
 - Support using the `output` decorator on async views ([pull #41][pull_41]).
 - Add `PaginationSchema` and `pagination_builder` as basic pagination support
-([pull #42][pull_42]).
+  ([pull #42][pull_42]).
 - Import and rename the decorators from marshmallow ([pull #43][pull_43]).
 - Rename `utils` module to `helpers` ([pull #44][pull_44]).
 - Add `default` parameter for `get_reason_phrase` ([pull #45][pull_45]).
@@ -155,8 +158,8 @@ Released: 2021/5/11
 Released: 2021/4/29
 
 - Allow returning a `Response` object in a view function decorated with the `output`
-decorator. In this case, APIFlask will do nothing but return it directly
-([pull #38][pull_38]).
+  decorator. In this case, APIFlask will do nothing but return it directly
+  ([pull #38][pull_38]).
 - Skip Flask's `Blueprint` object when generating the OpenAPI spec ([pull #37][pull_37]).
 
 [pull_38]: https://github.com/greyli/apiflask/pull/38
@@ -168,7 +171,7 @@ decorator. In this case, APIFlask will do nothing but return it directly
 Released: 2021/4/28
 
 - Change the default endpoint of the view class to the original class name
-([pull #36][pull_36]).
+  ([pull #36][pull_36]).
 - Allow passing the `methods` argument for the `route` decorator on view classes.
 
 [pull_36]: https://github.com/greyli/apiflask/pull/36
@@ -179,11 +182,12 @@ Released: 2021/4/28
 Released: 2021/4/27
 
 - Remove the support to generate `info.description` and tag description from module
-docstring, and also remove the `AUTO_DESCRIPTION` config ([pull #30][pull_30]).
+  docstring, and also remove the `AUTO_DESCRIPTION` config ([pull #30][pull_30]).
 - Remove the configuration variable `DOCS_HIDE_BLUEPRINTS`, add `APIBlueprint.enable_openapi`
-as a replacement.
-- Support class-based views, now the `route` decorator can be used on `MethodView` class. Other decorators (i.e., `@input`, `@output`, etc.) can be used on view methods (i.e., `get()`, `post()`,
-etc.) ([pull #32][pull_32]).
+  as a replacement.
+- Support class-based views, now the `route` decorator can be used on `MethodView` class.
+  Other decorators (i.e., `@input`, `@output`, etc.) can be used on view methods
+  (i.e., `get()`, `post()`, etc.) ([pull #32][pull_32]).
 - No longer support to mix the use of `flask.Bluerpint` and `apiflask.APIBluerpint`.
 - Support to use the `auth_required` decorator on app-wide `before_request` functions
 ([pull #34][pull_34]).
@@ -206,15 +210,15 @@ Released: 2021/4/20
     - `AUTO_HTTP_ERROR_RESPONSE`
     - `AUTH_ERROR_SCHEMA`
 - Add new configuration variables `YAML_SPEC_MIMETYPE` and `JSON_SPEC_MIMETYPE` to support
-to customize the MIME type of spec response ([pull #3][pull_3]).
+  to customize the MIME type of spec response ([pull #3][pull_3]).
 - Remove configuration variable `SPEC_TYPE`.
 - Fix the support to pass an empty dict as schema for 204 response ([pull #12][pull_12]).
 - Support set multiple examples for request/response body with `@output(examples=...)`
-and `@iniput(examples=...)` ([pull #23][pull_23]).
+  and `@iniput(examples=...)` ([pull #23][pull_23]).
 - Add `auth_required(roles=...)` and `doc(tags=...)` parameters for list value, `role` and
-`tag` parameter now only accept string value ([pull #26][pull_26]).
+  `tag` parameter now only accept string value ([pull #26][pull_26]).
 - Add new configuration variable `OPENAPI_VERSION` to set the version of OAS
-([pull #27][pull_27]).
+  ([pull #27][pull_27]).
 - Rename `abort_json()` to `abort()` ([pull #29][pull_29]).
 
 [pull_3]: https://github.com/greyli/apiflask/pull/3

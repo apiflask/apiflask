@@ -446,15 +446,15 @@ class APIFlask(Flask):
         so you can get error information via it's attributes:
 
         - status_code: If the error triggered by validation error, the value will be
-            400 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
-            If the error triggered by [`HTTPError`][apiflask.exceptions.HTTPError]
-            or [`abort`][apiflask.exceptions.abort], it will be the status code
-            you passed. Otherwise, it will be the status code set by Werkzueg when
-            processing the request.
+          400 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
+          If the error triggered by [`HTTPError`][apiflask.exceptions.HTTPError]
+          or [`abort`][apiflask.exceptions.abort], it will be the status code
+          you passed. Otherwise, it will be the status code set by Werkzueg when
+          processing the request.
         - message: The error description for this error, either you passed or grab from
-            Werkzeug.
+          Werkzeug.
         - detail: The detail of the error. When the validation error happened, it will
-            be filled automatically in the following structure:
+          be filled automatically in the following structure:
 
             ```python
             "<location>": {
@@ -468,9 +468,9 @@ class APIFlask(Flask):
             ...
             ```
 
-            The value of `location` can be `json` (i.e., request body) or `query`
-            (i.e., query string) depend on the place where the validation error
-            happened.
+          The value of `location` can be `json` (i.e., request body) or `query`
+          (i.e., query string) depend on the place where the validation error
+          happened.
         - headers: The value will be `None` unless you pass it in HTTPError or abort.
         - extra_fields: Additional error information.
 
@@ -707,6 +707,10 @@ class APIFlask(Flask):
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`.
 
+        *Version changed: 0.10.0*
+
+        - Add support for `operationId`.
+
         *Version changed: 0.9.0*
 
         - Add base response customization support.
@@ -903,6 +907,15 @@ class APIFlask(Flask):
                 # deprecated
                 if view_func._spec.get('deprecated'):
                     operation['deprecated'] = view_func._spec.get('deprecated')
+
+                # operationId
+                operation_id = view_func._spec.get('operation_id')
+                if operation_id is None:
+                    if self.config['AUTO_OPERATION_ID']:
+                        operation['operationId'] = \
+                            f"{method.lower()}_{rule.endpoint.replace('.', '_')}"
+                else:
+                    operation['operationId'] = operation_id
 
                 # responses
                 if view_func._spec.get('response'):
