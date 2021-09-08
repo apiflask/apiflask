@@ -397,12 +397,12 @@ class APIFlask(Flask):
         *Version changed: 0.10.0*
 
         - Remove the `status_code` field from the response.
-        - Add `HTTPError.extra_fields` to the reponse body.
+        - Add `HTTPError.extra_data` to the reponse body.
         """
         body = {
             'detail': error.detail,
             'message': error.message,
-            **error.extra_fields
+            **error.extra_data
         }
         return body, error.status_code, error.headers
 
@@ -438,7 +438,7 @@ class APIFlask(Flask):
                 'status_code': error.status_code,
                 'message': error.message,
                 'detail': error.detail,
-                **error.extra_fields
+                **error.extra_data
             }, error.status_code, error.headers
         ```
 
@@ -472,14 +472,14 @@ class APIFlask(Flask):
           (i.e., query string) depend on the place where the validation error
           happened.
         - headers: The value will be `None` unless you pass it in HTTPError or abort.
-        - extra_fields: Additional error information.
+        - extra_data: Additional error information.
 
         If you want, you can rewrite the whole response body to anything you like:
 
         ```python
         @app.error_processor
         def my_error_processor(error):
-            body = {'error_detail': error.detail, **error.extra_fields}
+            body = {'error_detail': error.detail, **error.extra_data}
             return body, error.status_code, error.headers
         ```
 

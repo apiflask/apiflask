@@ -6,7 +6,7 @@
 - Revoke the undocumented name changes on `validates` and `validates_schema` from marshmallow ([issue #62][issue_62]).
 - Only expose marshmallow `fields`, `validators`, and `Schema` in APIFlask.
 - Remove the `status_code` field from the default error response ([issue #124][issue_124]).
-- Add parameter `extra_fields` to `abort` and `HTTPError`, it accepts a dict that will be added
+- Add parameter `extra_data` to `abort` and `HTTPError`, it accepts a dict that will be added
   to the error response ([issue #125][issue_125]).
 - Support passing `operation_id` in the `doc` decorator. The auo-generating of operationId
   can be enabled with config `AUTO_OPERATION_ID`, defaults to `False` ([pull #131][pull_131]).

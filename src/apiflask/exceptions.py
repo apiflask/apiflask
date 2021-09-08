@@ -32,7 +32,7 @@ class HTTPError(Exception):
         message: t.Optional[str] = None,
         detail: t.Optional[t.Any] = None,
         headers: t.Optional[t.Mapping[str, str]] = None,
-        extra_fields: t.Optional[dict] = None
+        extra_data: t.Optional[dict] = None
     ) -> None:
         """Initialize the error response.
 
@@ -44,7 +44,7 @@ class HTTPError(Exception):
                 provide the addition information such as custom error code,
                 documentation URL, etc.
             headers: A dict of headers used in the error response.
-            extra_fields: A dict of additioinal fields (custom error information) that will
+            extra_data: A dict of additioinal fields (custom error information) that will
                 added to the error response body.
 
         *Version changed: 0.9.0*
@@ -53,7 +53,7 @@ class HTTPError(Exception):
 
         *Version changed: 0.10.0*
 
-        - Add `extra_fields` parameter to accept additional error information.
+        - Add `extra_data` parameter to accept additional error information.
         """
         super().__init__()
         if status_code not in default_exceptions:
@@ -66,7 +66,7 @@ class HTTPError(Exception):
         self.headers = headers or {}
         self.message = get_reason_phrase(status_code, 'Unknown error') \
             if message is None else message
-        self.extra_fields = extra_fields or {}
+        self.extra_data = extra_data or {}
 
 
 class _ValidationError(HTTPError):
@@ -80,7 +80,7 @@ def abort(
     message: t.Optional[str] = None,
     detail: t.Optional[t.Any] = None,
     headers: t.Optional[t.Mapping[str, str]] = None,
-    extra_fields: t.Optional[dict] = None
+    extra_data: t.Optional[dict] = None
 ) -> None:
     """A function to raise HTTPError exception.
 
@@ -112,7 +112,7 @@ def abort(
             provide the addition information such as custom error code,
             documentation URL, etc.
         headers: A dict of headers used in the error response.
-        extra_fields: A dict of additioinal fields (custom error information) that will
+        extra_data: A dict of additioinal fields (custom error information) that will
             added to the error response body.
 
     *Version changed: 0.4.0*
@@ -121,6 +121,6 @@ def abort(
 
     *Version changed: 0.10.0*
 
-    - Add new parameter `extra_fields`.
+    - Add new parameter `extra_data`.
     """
-    raise HTTPError(status_code, message, detail, headers, extra_fields)
+    raise HTTPError(status_code, message, detail, headers, extra_data)
