@@ -392,21 +392,17 @@ class APIFlask(Flask):
         """The default error handler.
 
         Arguments:
-            status_code: The status code of the error (4XX and 5xx).
-            message: The simple description of the error. If not provided,
-                the reason phrase of the status code will be used.
-            detail: The detailed information of the error, you can use it to
-                provide the addition information such as custom error code,
-                documentation URL, etc.
-            headers: A dict of headers used in the error response.
+            error: An instance of [`HTTPError`][apiflask.exceptions.HTTPError].
 
         *Version changed: 0.10.0*
 
         - Remove the `status_code` field from the response.
+        - Add `HTTPError.extra_data` to the reponse body.
         """
         body = {
             'detail': error.detail,
-            'message': error.message
+            'message': error.message,
+            **error.extra_data
         }
         return body, error.status_code, error.headers
 
@@ -441,7 +437,8 @@ class APIFlask(Flask):
             return {
                 'status_code': error.status_code,
                 'message': error.message,
-                'detail': error.detail
+                'detail': error.detail,
+                **error.extra_data
             }, error.status_code, error.headers
         ```
 
@@ -475,13 +472,15 @@ class APIFlask(Flask):
           (i.e., query string) depend on the place where the validation error
           happened.
         - headers: The value will be `None` unless you pass it in HTTPError or abort.
+        - extra_data: Additional error information.
 
         If you want, you can rewrite the whole response body to anything you like:
 
         ```python
         @app.error_processor
         def my_error_processor(error):
-            return {'error_detail': error.detail}, error.status_code, error.headers
+            body = {'error_detail': error.detail, **error.extra_data}
+            return body, error.status_code, error.headers
         ```
 
         However, I would recommend keeping the `detail` in the response since it contains

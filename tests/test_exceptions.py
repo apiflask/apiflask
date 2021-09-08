@@ -33,7 +33,8 @@ def test_httperror(app, client, kwargs):
     {},
     {'message': 'missing'},
     {'message': 'missing', 'detail': {'location': 'query'}},
-    {'message': 'missing', 'detail': {'location': 'query'}, 'headers': {'X-BAR': 'foo'}}
+    {'message': 'missing', 'detail': {'location': 'query'}, 'headers': {'X-BAR': 'foo'}},
+    {'message': 'missing', 'extra_data': {'code': 123, 'status': 'not_found'}}
 ])
 def test_abort(app, client, kwargs):
     @app.get('/bar')
@@ -52,6 +53,9 @@ def test_abort(app, client, kwargs):
         assert rv.json['detail'] == {'location': 'query'}
     if 'headers' in kwargs:
         assert rv.headers['X-BAR'] == 'foo'
+    if 'extra_data' in kwargs:
+        assert rv.json['code'] == 123
+        assert rv.json['status'] == 'not_found'
 
 
 @pytest.mark.parametrize('kwargs', [
