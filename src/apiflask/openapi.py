@@ -20,7 +20,8 @@ default_response = {
     'status_code': 200,
     'description': None,
     'example': None,
-    'examples': None
+    'examples': None,
+    'links': None,
 }
 
 
@@ -148,8 +149,14 @@ def add_response(
     description: str,
     example: t.Optional[t.Any] = None,
     examples: t.Optional[t.Dict[str, t.Any]] = None,
+    links: t.Optional[t.Dict[str, t.Any]] = None,
 ) -> None:
-    """Add response to operation."""
+    """Add response to operation.
+
+    *Version changed: 0.10.0*
+
+    - Add `links` parameter.
+    """
     operation['responses'][status_code] = {}
     if status_code != '204':
         operation['responses'][status_code]['content'] = {
@@ -164,6 +171,8 @@ def add_response(
     if examples is not None:
         operation['responses'][status_code]['content'][
             'application/json']['examples'] = examples
+    if links is not None:
+        operation['responses'][status_code]['links'] = links
 
 
 def add_response_with_schema(

@@ -209,7 +209,8 @@ def output(
     description: t.Optional[str] = None,
     schema_name: t.Optional[str] = None,
     example: t.Optional[t.Any] = None,
-    examples: t.Optional[t.Dict[str, t.Any]] = None
+    examples: t.Optional[t.Dict[str, t.Any]] = None,
+    links: t.Optional[t.Dict[str, t.Any]] = None,
 ) -> t.Callable[[DecoratedType], DecoratedType]:
     """Add output settings for view functions.
 
@@ -260,6 +261,26 @@ def output(
                 },
             }
             ```
+        links: The `links` of response. It accepts a dict which maps a link name to
+            a link object. Example:
+
+            ```python
+            {
+                'getAddressByUserId': {
+                    'operationId': 'getUserAddress',
+                    'parameters': {
+                        'userId': '$request.path.id'
+                    }
+                }
+            }
+            ```
+
+            See the [docs](https://apiflask.com/openapi/#response-links) for more details
+            about setting response links.
+
+    *Version changed: 0.10.0*
+
+    - Add `links` parameter.
 
     *Version changed: 0.9.0*
 
@@ -293,7 +314,8 @@ def output(
             'status_code': status_code,
             'description': description,
             'example': example,
-            'examples': examples
+            'examples': examples,
+            'links': links,
         })
 
         def _jsonify(
