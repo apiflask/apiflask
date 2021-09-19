@@ -658,6 +658,10 @@ def get_pets():
 
 ## Response `links`
 
+!!! warning "Version >= 0.10.0"
+
+    This feature was added in the [version 0.10.0](/changelog/#version-0100).
+
 You can pass the links with `links` keyword in the `output` decorator:
 
 ```python
