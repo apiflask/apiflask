@@ -160,6 +160,7 @@ def test_input_with_dict_schema(app, client):
         }
     }
     # TODO check the excess item "'x-scope': ['']" in schema object
+    # https://github.com/p1c2u/openapi-spec-validator/issues/53
     assert rv.json['paths']['/bar']['post']['requestBody'][
         'content']['application/json']['schema']['$ref'] == '#/components/schemas/MyName'
     assert rv.json['components']['schemas']['MyName'] == {

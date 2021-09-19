@@ -107,6 +107,8 @@ def test_base_response_spec(app, client, base_schema):
             'application/json']['schema']
         schema_ref = '#/components/schemas/Foo'
         # TODO the output schema ref contains unused `'x-scope': ['']` field
+        # it seems related to openapi-spec-validator:
+        # https://github.com/p1c2u/openapi-spec-validator/issues/53
         if base_schema in [BaseResponseSchema, base_response_schema_dict]:
             properties = schema['properties']
             assert properties['data']['$ref'] == schema_ref
