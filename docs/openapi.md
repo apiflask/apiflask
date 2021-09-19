@@ -656,6 +656,51 @@ def get_pets():
     ```
 
 
+## Response `links`
+
+You can pass the links with `links` keyword in the `output` decorator:
+
+```python
+pet_links = {
+    'getAddressByUserId': {
+        'operationId': 'getUserAddress',
+        'parameters': {
+            'userId': '$request.path.id'
+        }
+    }
+}
+
+@app.post('/pets')
+@output(PetOutSchem, links=pet_links)
+def new_pet(data):
+    pass
+```
+
+Or you can also add links to components then reference it in operation:
+
+```python
+links = {
+    'getAddressByUserId': {
+        'operationId': 'getUserAddress',
+        'parameters': {
+            'userId': '$request.path.id'
+        }
+    }
+}
+
+@app.spec_processor
+def update_spec(spec):
+    spec['components']['links'] = links
+    return spec
+
+
+@app.post('/pets')
+@output(PetOutSchem, links={'getAddressByUserId': {'$ref': '#/components/links/getAddressByUserId'}})
+def new_pet(data):
+    pass
+```
+
+
 ## Use the `doc` decorator
 
 There is also a `doc` decorator that can be used to set operation fields explicitly.

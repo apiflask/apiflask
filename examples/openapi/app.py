@@ -129,8 +129,8 @@ def say_hello():
 
 
 @app.get('/pets/<int:pet_id>')
-@doc(tag='Pet')
 @output(PetOutSchema, description='The pet with given ID')
+@doc(tag='Pet', operation_id='getPet')
 def get_pet(pet_id):
     """Get a Pet
 
@@ -154,7 +154,17 @@ def get_pets():
 
 @app.post('/pets')
 @input(PetInSchema)
-@output(PetOutSchema, 201, description='The pet you just created')
+@output(
+    PetOutSchema,
+    201,
+    description='The pet you just created',
+    links={'getPetById': {
+        'operationId': 'getPet',
+        'parameters': {
+            'pet_id': '$response.body#/id'
+        }
+    }}
+)
 @doc(tag='Pet')
 def create_pet(data):
     """Create a Pet

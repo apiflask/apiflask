@@ -710,6 +710,7 @@ class APIFlask(Flask):
         *Version changed: 0.10.0*
 
         - Add support for `operationId`.
+        - Add support for response `links`.
 
         *Version changed: 0.9.0*
 
@@ -945,8 +946,9 @@ class APIFlask(Flask):
                         self.config['SUCCESS_DESCRIPTION']
                     example = view_func._spec.get('response')['example']
                     examples = view_func._spec.get('response')['examples']
+                    links = view_func._spec.get('response')['links']
                     add_response(
-                        operation, status_code, schema, description, example, examples
+                        operation, status_code, schema, description, example, examples, links
                     )
                 else:
                     # add a default 200 response for views without using @output

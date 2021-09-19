@@ -10,12 +10,14 @@
   to the error response ([issue #125][issue_125]).
 - Support passing `operation_id` in the `doc` decorator. The auo-generating of operationId
   can be enabled with config `AUTO_OPERATION_ID`, defaults to `False` ([pull #131][pull_131]).
+- Support setting response links via `@output(links=...)` ([issue #138][issue_138]).
 
 [issue_110]: https://github.com/greyli/apiflask/issues/110
 [issue_62]: https://github.com/greyli/apiflask/issues/62
 [issue_124]: https://github.com/greyli/apiflask/issues/124
 [issue_125]: https://github.com/greyli/apiflask/issues/125
 [pull_131]: https://github.com/greyli/apiflask/pull/131
+[issue_138]: https://github.com/greyli/apiflask/issues/138
 
 
 ## Version 0.9.0
