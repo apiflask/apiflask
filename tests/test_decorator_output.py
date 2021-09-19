@@ -237,3 +237,50 @@ def test_output_response_object_directly(app, client):
     rv = client.get('/foo')
     assert rv.status_code == 200
     assert rv.json['message'] == 'hello'
+
+
+def test_response_links(app, client):
+    links = {
+        'foo': {
+            'operationId': 'getFoo',
+            'parameters': {'id': 1}
+        },
+        'bar': {
+            'operationId': 'getBar',
+            'parameters': {'id': 2}
+        },
+    }
+
+    @app.get('/foo')
+    @output(FooSchema, links=links)
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['get']['responses']['200']['links'] == links
+
+
+def test_response_links_ref(app, client):
+    links = {'getFoo': {'$ref': '#/components/links/foo'}}
+
+    @app.spec_processor
+    def add_links(spec):
+        spec['components']['links'] = {
+            'foo': {
+                'operationId': 'getFoo',
+                'parameters': {'id': 1}
+            }
+        }
+        return spec
+
+    @app.get('/foo')
+    @output(FooSchema, links=links)
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert 'getFoo' in rv.json['paths']['/foo']['get']['responses']['200']['links']
