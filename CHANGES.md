@@ -1,3 +1,8 @@
+## Version 0.11.0
+
+[0.11.0 milestone](https://github.com/greyli/apiflask/milestone/7)
+
+
 ## Version 0.10.0
 
 Released: 2021/9/19
