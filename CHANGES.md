@@ -1,6 +1,6 @@
 ## Version 0.10.0
 
-[0.10.0 milestone](https://github.com/greyli/apiflask/milestone/6)
+Released: 2021/9/19
 
 - Support using `add_url_rule` method on view classes ([issue #110][issue_110]).
 - Revoke the undocumented name changes on `validates` and `validates_schema` from marshmallow ([issue #62][issue_62]).
