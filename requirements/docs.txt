@@ -34,7 +34,7 @@ mkdocs==1.2.2
     #   mkdocstrings
 mkdocs-autorefs==0.2.1
     # via mkdocstrings
-mkdocs-material==7.2.5
+mkdocs-material==7.3.0
     # via
     #   -r requirements/docs.in
     #   mkdocs-material-extensions
