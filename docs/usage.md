@@ -723,7 +723,7 @@ class Pet(Model):
     category = String()
 ```
 
-!!! tip "What if I want to use a different field name in the schema?"
+!!! tip "What if I want to use a different external field name?"
 
     For example, in your ORM model class, you have a `phone` field that
     store the user's phone number:
@@ -733,13 +733,24 @@ class Pet(Model):
         phone = String()
     ```
 
-    Now you want to output the field with the name `phone_number`, then you
-    can use `data_key` argument to declare the actual key name to load from:
+    Now you want to output the field with the name `phone_number`, then you can use
+    `data_key` to declare the actual key name to dump to:
 
     ```python
     class UserOutSchema(Schema):
-        phone_number = String(data_key='phone')
+        phone = String(data_key='phone_number')
     ```
+
+    This schema will generate something like `{'phone_number': ...}`.
+
+    Similarly, you can tell APIFlask to load from different key in input schema:
+
+    ```python
+    class UserInSchema(Schema):
+        phone = String(data_key='phone_number')
+    ```
+
+    This schema expects the user input is something like `{'phone_number': ...}`.
 
 The default status code is `200`, if you want to use a different status code,
 you can pass a `status_code` argument in the `@output` decorator:
