@@ -14,7 +14,7 @@ With APIFlask, you will have:
 - Automatic response formatting and serialization (with [marshmallow](https://github.com/marshmallow-code/marshmallow))
 - Automatic [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) (OAS, formerly Swagger Specification) document generation (with [apispec](https://github.com/marshmallow-code/apispec))
 - Automatic interactive API documentation (with [Swagger UI](https://github.com/swagger-api/swagger-ui) and [Redoc](https://github.com/Redocly/redoc))
-- API authentication support (with [Flask-HTTPAuth](https://github.com/migulgrinberg/flask-httpauth))
+- API authentication support (with [Flask-HTTPAuth](https://github.com/miguelgrinberg/flask-httpauth))
 - Automatic JSON response for HTTP errors
 
 
