@@ -19,7 +19,7 @@ click==8.0.1
     #   flask
     #   mkdocs
     #   pip-tools
-coverage==5.5
+coverage[toml]==5.5
     # via pytest-cov
 distlib==0.3.2
     # via virtualenv
@@ -133,7 +133,7 @@ pytest==6.2.5
     # via
     #   -r requirements/tests.in
     #   pytest-cov
-pytest-cov==2.12.1
+pytest-cov==3.0.0
     # via -r requirements/tests.in
 python-dateutil==2.8.1
     # via ghp-import
@@ -160,11 +160,11 @@ sqlalchemy==1.4.20
     # via flask-sqlalchemy
 toml==0.10.2
     # via
+    #   coverage
     #   mypy
     #   pep517
     #   pre-commit
     #   pytest
-    #   pytest-cov
     #   tox
 tox==3.24.4
     # via -r requirements/dev.in

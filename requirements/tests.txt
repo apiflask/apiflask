@@ -10,7 +10,7 @@ attrs==21.2.0
     # via
     #   jsonschema
     #   pytest
-coverage==5.5
+coverage[toml]==5.5
     # via pytest-cov
 flake8==3.9.2
     # via -r requirements/tests.in
@@ -46,7 +46,7 @@ pytest==6.2.5
     # via
     #   -r requirements/tests.in
     #   pytest-cov
-pytest-cov==2.12.1
+pytest-cov==3.0.0
     # via -r requirements/tests.in
 pyyaml==5.4.1
     # via openapi-spec-validator
@@ -57,8 +57,8 @@ six==1.16.0
     #   openapi-spec-validator
 toml==0.10.2
     # via
+    #   coverage
     #   pytest
-    #   pytest-cov
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
