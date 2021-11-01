@@ -12,7 +12,7 @@ attrs==21.2.0
     #   pytest
 coverage==5.5
     # via pytest-cov
-flake8==3.9.2
+flake8==4.0.1
     # via -r requirements/tests.in
 iniconfig==1.1.1
     # via pytest
@@ -34,9 +34,9 @@ pluggy==0.13.1
     # via pytest
 py==1.10.0
     # via pytest
-pycodestyle==2.7.0
+pycodestyle==2.8.0
     # via flake8
-pyflakes==2.3.1
+pyflakes==2.4.0
     # via flake8
 pyparsing==2.4.7
     # via packaging
