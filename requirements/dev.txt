@@ -29,7 +29,7 @@ filelock==3.0.12
     #   virtualenv
 flake8==3.9.2
     # via -r requirements/tests.in
-flask==2.0.1
+flask==2.0.2
     # via flask-sqlalchemy
 flask-sqlalchemy==2.5.1
     # via -r requirements/examples.in

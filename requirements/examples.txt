@@ -6,7 +6,7 @@
 #
 click==8.0.1
     # via flask
-flask==2.0.1
+flask==2.0.2
     # via flask-sqlalchemy
 flask-sqlalchemy==2.5.1
     # via -r requirements/examples.in
