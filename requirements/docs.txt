@@ -56,7 +56,7 @@ python-dateutil==2.8.1
     # via ghp-import
 pytkdocs==0.11.1
     # via mkdocstrings
-pyyaml==5.4.1
+pyyaml==6.0
     # via
     #   mkdocs
     #   pyyaml-env-tag
