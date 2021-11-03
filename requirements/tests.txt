@@ -10,15 +10,15 @@ attrs==21.2.0
     # via
     #   jsonschema
     #   pytest
-coverage==5.5
+coverage[toml]==6.1.1
     # via pytest-cov
-flake8==3.9.2
+flake8==4.0.1
     # via -r requirements/tests.in
 iniconfig==1.1.1
     # via pytest
 isodate==0.6.0
     # via openapi-schema-validator
-jsonschema==3.2.0
+jsonschema==4.1.2
     # via
     #   openapi-schema-validator
     #   openapi-spec-validator
@@ -28,37 +28,33 @@ openapi-schema-validator==0.1.5
     # via openapi-spec-validator
 openapi-spec-validator==0.3.1
     # via -r requirements/tests.in
-packaging==20.9
+packaging==21.2
     # via pytest
-pluggy==0.13.1
+pluggy==1.0.0
     # via pytest
 py==1.10.0
     # via pytest
-pycodestyle==2.7.0
+pycodestyle==2.8.0
     # via flake8
-pyflakes==2.3.1
+pyflakes==2.4.0
     # via flake8
 pyparsing==2.4.7
     # via packaging
-pyrsistent==0.17.3
+pyrsistent==0.18.0
     # via jsonschema
 pytest==6.2.5
     # via
     #   -r requirements/tests.in
     #   pytest-cov
-pytest-cov==2.12.1
+pytest-cov==3.0.0
     # via -r requirements/tests.in
-pyyaml==5.4.1
+pyyaml==6.0
     # via openapi-spec-validator
 six==1.16.0
     # via
-    #   jsonschema
     #   openapi-schema-validator
     #   openapi-spec-validator
 toml==0.10.2
-    # via
-    #   pytest
-    #   pytest-cov
-
-# The following packages are considered to be unsafe in a requirements file:
-# setuptools
+    # via pytest
+tomli==1.2.2
+    # via coverage

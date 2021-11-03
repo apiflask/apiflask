@@ -4,21 +4,19 @@
 #
 #    pip-compile requirements/examples.in
 #
-click==8.0.1
+click==8.0.3
     # via flask
-flask==2.0.1
+flask==2.0.2
     # via flask-sqlalchemy
 flask-sqlalchemy==2.5.1
     # via -r requirements/examples.in
-greenlet==1.1.0
-    # via sqlalchemy
 itsdangerous==2.0.1
     # via flask
-jinja2==3.0.1
+jinja2==3.0.2
     # via flask
 markupsafe==2.0.1
     # via jinja2
-sqlalchemy==1.4.19
+sqlalchemy==1.4.26
     # via flask-sqlalchemy
-werkzeug==2.0.1
+werkzeug==2.0.2
     # via flask
