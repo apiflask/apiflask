@@ -414,7 +414,8 @@ class APIFlask(Flask):
 
         The decorated callback function will be called in the following situations:
 
-        - An validation error happened when parsing a request.
+        - Any HTTP exception is raised by Flask when `APIFlask(json_errors=True)` (default).
+        - A validation error happened when parsing a request.
         - An exception triggered with [`HTTPError`][apiflask.exceptions.HTTPError]
         - An exception triggered with [`abort`][apiflask.exceptions.abort].
 
@@ -445,15 +446,15 @@ class APIFlask(Flask):
         The error object is an instance of [`HTTPError`][apiflask.exceptions.HTTPError],
         so you can get error information via it's attributes:
 
-        - status_code: If the error triggered by validation error, the value will be
+        - status_code: If the error is triggered by a validation error, the value will be
           400 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
-          If the error triggered by [`HTTPError`][apiflask.exceptions.HTTPError]
+          If the error is triggered by [`HTTPError`][apiflask.exceptions.HTTPError]
           or [`abort`][apiflask.exceptions.abort], it will be the status code
           you passed. Otherwise, it will be the status code set by Werkzueg when
           processing the request.
-        - message: The error description for this error, either you passed or grab from
+        - message: The error description for this error, either you passed or grabbed from
           Werkzeug.
-        - detail: The detail of the error. When the validation error happened, it will
+        - detail: The detail of the error. When the validation error happens, it will
           be filled automatically in the following structure:
 
             ```python
@@ -469,9 +470,9 @@ class APIFlask(Flask):
             ```
 
           The value of `location` can be `json` (i.e., request body) or `query`
-          (i.e., query string) depend on the place where the validation error
+          (i.e., query string) depending on the place where the validation error
           happened.
-        - headers: The value will be `None` unless you pass it in HTTPError or abort.
+        - headers: The value will be `{}` unless you pass it in `HTTPError` or `abort`.
         - extra_data: Additional error information.
 
         If you want, you can rewrite the whole response body to anything you like:
