@@ -26,7 +26,7 @@ class _AuthBase:
     ) -> t.Union[t.Tuple[str, int], t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
         """The default error handler for Flask-HTTPAuth.
 
-        This handler will return JSON response when set `APIFlask(json_errors=True)` (default).
+        This handler will return JSON response when setting `APIFlask(json_errors=True)` (default).
 
         *Version changed: 0.9.0*
 

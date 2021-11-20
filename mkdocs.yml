@@ -42,6 +42,7 @@ nav:
   - OpenAPI Generating: openapi.md
   - Swagger UI and Redoc: api-docs.md
   - Configuration: configuration.md
+  - Error Handling: error-handling.md
   - Examples: examples.md
   - API Reference:
     - APIFlask: api/app.md
