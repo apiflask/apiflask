@@ -40,6 +40,16 @@ def test_json_errors(app, client):
     assert b'!DOCTYPE' in rv.data
 
 
+def test_json_errors_reuse_werkzeug_headers(app, client):
+    @app.get('/foo')
+    def foo():
+        pass
+
+    rv = client.post('/foo')
+    assert rv.status_code == 405
+    assert 'Allow' in rv.headers
+
+
 def test_view_function_arguments_order(app, client):
 
     class QuerySchema(Schema):
