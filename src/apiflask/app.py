@@ -336,11 +336,18 @@ class APIFlask(Flask):
             return self.error_callback(error)
 
         if self.json_errors:
-            @self.errorhandler(WerkzeugHTTPException)
+            @self.errorhandler(WerkzeugHTTPException)  # type: ignore
             def handle_werkzeug_errors(
-                error: WerkzeugHTTPException
+                e: WerkzeugHTTPException
             ) -> ResponseType:
-                error = HTTPError(error.code, error.name)  # type: ignore
+                headers = dict(e.get_headers())
+                # remove the original MIME header
+                del headers['Content-Type']
+                error = HTTPError(
+                    e.code,  # type: ignore
+                    message=e.name,
+                    headers=headers
+                )
                 return self.error_callback(error)
 
     def dispatch_request(self) -> ResponseType:

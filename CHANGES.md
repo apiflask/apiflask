@@ -3,6 +3,15 @@
 [0.11.0 milestone](https://github.com/greyli/apiflask/milestone/7)
 
 
+## Version 0.10.1
+
+Released: 2021/11/24
+
+- Reuse headers from Werkzeug exceptions for JSON error responses ([issue #173][issue_173]).
+
+[issue_173]: https://github.com/greyli/apiflask/issues/173
+
+
 ## Version 0.10.0
 
 Released: 2021/9/19
