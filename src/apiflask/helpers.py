@@ -50,8 +50,8 @@ def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
     ...
 
     class PetQuerySchema(Schema):
-        page = Integer(missing=1)
-        per_page = Integer(missing=20, validate=Range(max=30))
+        page = Integer(load_default=1)
+        per_page = Integer(load_default=20, validate=Range(max=30))
 
 
     class PetsOutSchema(Schema):

@@ -114,7 +114,7 @@ def test_output_with_methodview(app, client):
 
 def test_output_with_dict_schema(app, client):
     dict_schema = {
-        'name': String(default='grey')
+        'name': String(dump_default='grey')
     }
 
     @app.get('/foo')

@@ -477,10 +477,10 @@ class PetInSchema(Schema):
 
     Notice we mark the field as a required field with the `required` parameter.
     If you want to set a default value for an input field when is missing in
-    the input data, you can use the `missing` parameter:
+    the input data, you can use the `load_default` parameter:
 
     ```python
-    name = String(missing='default name')
+    name = String(load_default='default name')
     ```
 
 With this schema, we declare that the input request body should appear in the
@@ -583,10 +583,10 @@ schema.
 
 !!! tip
 
-    You can set a default value for output field with `default` argument:
+    You can set a default value for output field with the `dump_default` argument:
 
     ```python
-    name = String(default='default name')
+    name = String(dump_default='default name')
     ```
 
 Now add it to the view function which used to get a pet resource:

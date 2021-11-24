@@ -58,7 +58,7 @@ def test_view_function_arguments_order(app, client):
 
     class PetSchema(Schema):
         name = String(required=True)
-        age = Integer(default=123)
+        age = Integer(dump_default=123)
 
     @app.post('/pets/<int:pet_id>/toys/<int:toy_id>')
     @input(QuerySchema, 'query')
