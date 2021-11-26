@@ -5,7 +5,7 @@
 
 ## Version 0.10.1
 
-Released: 2021/11/24
+Released: 2021/11/26
 
 - Reuse headers from Werkzeug exceptions for JSON error responses ([issue #173][issue_173]).
 
