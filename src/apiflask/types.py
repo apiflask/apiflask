@@ -21,19 +21,25 @@ if t.TYPE_CHECKING:  # pragma: no cover
 DecoratedType = t.TypeVar('DecoratedType', bound=t.Callable[..., t.Any])
 RequestType = t.TypeVar('RequestType')
 
-_Body = t.Union[str, bytes, t.Dict[str, t.Any], t.Generator[str, None, None], 'Response']
-_Status = t.Union[str, int]
-_Header = t.Union[str, t.List[str], t.Tuple[str, ...]]
-_Headers = t.Union[t.Dict[str, _Header], t.List[t.Tuple[str, _Header]], 'Headers']
-ResponseType = t.Union[
-    _Body,
-    t.Tuple[_Body, _Status],
-    t.Tuple[_Body, _Headers],
-    t.Tuple[_Body, _Status, _Headers],
+ResponseBodyType = t.Union[str, bytes, t.Dict[str, t.Any], t.Generator[str, None, None], 'Response']
+ResponseStatusType = t.Union[str, int]
+_HeaderName = str
+_HeaderValue = t.Union[str, t.List[str], t.Tuple[str, ...]]
+ResponseHeaderType = t.Union[
+    t.Dict[_HeaderName, _HeaderValue],
+    t.Mapping[_HeaderName, _HeaderValue],
+    t.List[t.Tuple[_HeaderName, _HeaderValue]],
+    'Headers'
+]
+ResponseReturnValueType = t.Union[
+    ResponseBodyType,
+    t.Tuple[ResponseBodyType, ResponseStatusType],
+    t.Tuple[ResponseBodyType, ResponseHeaderType],
+    t.Tuple[ResponseBodyType, ResponseStatusType, ResponseHeaderType],
     'WSGIApplication'
 ]
 SpecCallbackType = t.Callable[[t.Union[dict, str]], t.Union[dict, str]]
-ErrorCallbackType = t.Callable[['HTTPError'], ResponseType]
+ErrorCallbackType = t.Callable[['HTTPError'], ResponseReturnValueType]
 
 DictSchemaType = t.Dict[str, t.Union['Field', type]]
 SchemaType = t.Union['Schema', t.Type['Schema'], DictSchemaType]

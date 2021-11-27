@@ -7,6 +7,7 @@ from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 
 from .exceptions import HTTPError
 from .types import ErrorCallbackType
+from .types import ResponseReturnValueType
 
 
 class _AuthBase:
@@ -23,7 +24,7 @@ class _AuthBase:
     @staticmethod
     def _auth_error_handler(
         status_code: int
-    ) -> t.Union[t.Tuple[str, int], t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
+    ) -> ResponseReturnValueType:
         """The default error handler for Flask-HTTPAuth.
 
         This handler will return JSON response when setting `APIFlask(json_errors=True)` (default).
@@ -36,7 +37,7 @@ class _AuthBase:
         error = HTTPError(status_code)
         if current_app.json_errors:  # type: ignore
             return current_app.error_callback(error)  # type: ignore
-        return error.message, status_code
+        return error.message, status_code  # type: ignore
 
     def error_processor(
         self,
