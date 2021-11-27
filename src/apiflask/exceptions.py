@@ -3,6 +3,7 @@ import typing as t
 from werkzeug.exceptions import default_exceptions
 
 from .helpers import get_reason_phrase
+from .types import ResponseHeaderType
 
 _bad_schema_message = 'The schema must be a marshmallow schema class or an OpenAPI schema dict.'
 
@@ -25,19 +26,24 @@ class HTTPError(Exception):
         return f'Hello, escape{name}'!
     ```
     """
+    status_code: int = 500
+    message: t.Optional[str] = None
+    detail: t.Any = {}
+    headers: ResponseHeaderType = {}
+    extra_data: t.Mapping[str, t.Any] = {}
 
     def __init__(
         self,
-        status_code: int,
+        status_code: t.Optional[int] = None,
         message: t.Optional[str] = None,
         detail: t.Optional[t.Any] = None,
-        headers: t.Optional[t.Mapping[str, str]] = None,
-        extra_data: t.Optional[dict] = None
+        headers: t.Optional[ResponseHeaderType] = None,
+        extra_data: t.Optional[t.Mapping[str, t.Any]] = None
     ) -> None:
         """Initialize the error response.
 
         Arguments:
-            status_code: The status code of the error (4XX and 5xx).
+            status_code: The status code of the error (4XX and 5xx), defaults to 500.
             message: The simple description of the error. If not provided,
                 the reason phrase of the status code will be used.
             detail: The detailed information of the error, you can use it to
@@ -54,19 +60,33 @@ class HTTPError(Exception):
         *Version changed: 0.10.0*
 
         - Add `extra_data` parameter to accept additional error information.
+
+        *Version changed: 0.11.0*
+
+        - Change `status_code` from position argument to keyword argument, defaults to 500.
+          Add class attributes with default values to support error subclasses.
         """
         super().__init__()
-        if status_code not in default_exceptions:
-            raise LookupError(
-                f'No exception for status code "{status_code}",'
-                ' valid error status code are "4XX" and "5XX".'
-            )
-        self.status_code = status_code
-        self.detail = detail or {}
-        self.headers = headers or {}
-        self.message = get_reason_phrase(status_code, 'Unknown error') \
-            if message is None else message
-        self.extra_data = extra_data or {}
+        if status_code is not None:
+            # TODO: support use custom error status code?
+            if status_code not in default_exceptions:
+                raise LookupError(
+                    f'No exception for status code "{status_code}",'
+                    ' valid error status code are "4XX" and "5XX".'
+                )
+            self.status_code = status_code
+        if detail is not None:
+            self.detail = detail
+        if headers is not None:
+            self.headers = headers
+        if message is not None:
+            self.message = message
+        if extra_data is not None:
+            self.extra_data = extra_data
+
+        if self.message is None:
+            # make sure the error message is not empty
+            self.message: str = get_reason_phrase(self.status_code, 'Unknown error')
 
 
 class _ValidationError(HTTPError):
@@ -79,7 +99,7 @@ def abort(
     status_code: int,
     message: t.Optional[str] = None,
     detail: t.Optional[t.Any] = None,
-    headers: t.Optional[t.Mapping[str, str]] = None,
+    headers: t.Optional[ResponseHeaderType] = None,
     extra_data: t.Optional[dict] = None
 ) -> None:
     """A function to raise HTTPError exception.
@@ -98,6 +118,7 @@ def abort(
     def hello(name):
         if name == 'Foo':
             abort(404, 'This man is missing.')
+            # or just `abort(404)`
         return f'Hello, escape{name}'!
     ```
 
