@@ -31,6 +31,8 @@ def test_json_errors(app, client):
     assert rv.headers['Content-Type'] == 'application/json'
     assert 'message' in rv.json
     assert 'detail' in rv.json
+    assert rv.json['message'] == 'Not Found'
+    assert rv.json['detail'] == {}
 
     app = APIFlask(__name__, json_errors=False)
     assert app.json_errors is False
@@ -41,6 +43,7 @@ def test_json_errors(app, client):
 
 
 def test_json_errors_reuse_werkzeug_headers(app, client):
+    # test automatic 405
     @app.get('/foo')
     def foo():
         pass
@@ -48,6 +51,17 @@ def test_json_errors_reuse_werkzeug_headers(app, client):
     rv = client.post('/foo')
     assert rv.status_code == 405
     assert 'Allow' in rv.headers
+
+    # test manually raise 405
+    @app.get('/bar')
+    def bar():
+        from werkzeug.exceptions import MethodNotAllowed
+        raise MethodNotAllowed(valid_methods=['GET'])
+
+    rv = client.get('/bar')
+    assert rv.status_code == 405
+    assert rv.headers['Content-Type'] == 'application/json'
+    assert rv.headers['Allow'] == 'GET'
 
 
 def test_view_function_arguments_order(app, client):
