@@ -6,8 +6,6 @@
 #
 asgiref==3.4.1
     # via -r requirements/tests.in
-astunparse==1.6.3
-    # via pytkdocs
 attrs==21.2.0
     # via
     #   jsonschema
@@ -37,6 +35,8 @@ flask-sqlalchemy==2.5.1
     # via -r requirements/examples.in
 ghp-import==2.0.2
     # via mkdocs
+greenlet==1.1.2
+    # via sqlalchemy
 identify==2.3.3
     # via pre-commit
 importlib-metadata==4.8.1
@@ -79,7 +79,7 @@ mkdocs==1.2.3
     #   mkdocstrings
 mkdocs-autorefs==0.3.0
     # via mkdocstrings
-mkdocs-material==7.3.6
+mkdocs-material==8.0.2
     # via -r requirements/docs.in
 mkdocs-material-extensions==1.0.3
     # via mkdocs-material
@@ -150,7 +150,6 @@ pyyaml-env-tag==0.1
     # via mkdocs
 six==1.16.0
     # via
-    #   astunparse
     #   isodate
     #   openapi-schema-validator
     #   openapi-spec-validator
@@ -182,9 +181,7 @@ watchdog==2.1.6
 werkzeug==2.0.2
     # via flask
 wheel==0.37.0
-    # via
-    #   astunparse
-    #   pip-tools
+    # via pip-tools
 zipp==3.6.0
     # via importlib-metadata
 
