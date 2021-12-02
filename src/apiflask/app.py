@@ -329,7 +329,7 @@ class APIFlask(Flask):
 
         - Always pass an `HTTPError` instance to error handlers.
         """
-        @self.errorhandler(HTTPError)  # type: ignore
+        @self.errorhandler(HTTPError)
         def handle_http_errors(
             error: HTTPError
         ) -> ResponseReturnValueType:
