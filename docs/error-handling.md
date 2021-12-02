@@ -4,7 +4,7 @@ The error handling in APIFlask is based on the following basic concepts:
 
 - All the automatic errors (404, 405, 500) will be in JSON format by default.
 - Use `abort`, `HTTPError` to generate an error response.
-- Use `app.errror_processor` (`app` is an instance of `apiflask.APIFlask`) to register a
+- Use `app.error_processor` (`app` is an instance of `apiflask.APIFlask`) to register a
   custom error response processor.
 - Subclass `HTTPError` to create custom error classes for your errors.
 
