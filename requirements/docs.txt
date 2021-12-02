@@ -4,8 +4,6 @@
 #
 #    pip-compile requirements/docs.in
 #
-astunparse==1.6.3
-    # via pytkdocs
 click==8.0.3
     # via mkdocs
 ghp-import==2.0.2
@@ -37,7 +35,7 @@ mkdocs==1.2.3
     #   mkdocstrings
 mkdocs-autorefs==0.3.0
     # via mkdocstrings
-mkdocs-material==7.3.6
+mkdocs-material==8.0.2
     # via -r requirements/docs.in
 mkdocs-material-extensions==1.0.3
     # via mkdocs-material
@@ -64,12 +62,8 @@ pyyaml==6.0
 pyyaml-env-tag==0.1
     # via mkdocs
 six==1.16.0
-    # via
-    #   astunparse
-    #   python-dateutil
+    # via python-dateutil
 watchdog==2.1.6
     # via mkdocs
-wheel==0.37.0
-    # via astunparse
 zipp==3.6.0
     # via importlib-metadata
