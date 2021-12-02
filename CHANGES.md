@@ -2,6 +2,11 @@
 
 [0.11.0 milestone](https://github.com/greyli/apiflask/milestone/7)
 
+- Support creating custom error classes based on `HTTPError`. The position argument `status_code` of
+  `HTTPError` is changed to a keyword argument, defaults to `500`.([issue #172][issue_172]).
+
+[issue_172]: https://github.com/greyli/apiflask/issues/172
+
 
 ## Version 0.10.1
 

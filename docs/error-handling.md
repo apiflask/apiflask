@@ -3,9 +3,10 @@
 The error handling in APIFlask is based on the following basic concepts:
 
 - All the automatic errors (404, 405, 500) will be in JSON format by default.
-- Use `abort` and `HTTPError` to generate an error response.
+- Use `abort`, `HTTPError` to generate an error response.
 - Use `app.errror_processor` (`app` is an instance of `apiflask.APIFlask`) to register a
   custom error response processor.
+- Subclass `HTTPError` to create custom error classes for your errors.
 
 !!! tip
 
@@ -87,7 +88,7 @@ Here are all the parameters you can pass to `abort` and `HTTPError`:
 
 | Name | Type | Default Value | Description |
 | ---- | ---- | ------------- | ----------- |
-| `status_code` | int | - | The status code of the error response. |
+| `status_code` | int | - | The HTTP status code of the error response. |
 | `message` | string | - | The error message. Used as the `message` field in the response body. |
 | `detail` | dict | `{}` | The detailed information of the validation error. Used as the `detail` field in the response body. |
 | `headers` | dict | - | The headers of the error response. |
@@ -115,6 +116,69 @@ will produce the below response:
     "error_code": 1234
 }
 ```
+
+In most cases, you should create custom error classes with preset values instead of passing them to
+`abort` or `HTTPError` directly. See more details in the section below.
+
+
+## Custom error classes
+
+!!! warning "Version >= 0.11.0"
+
+    This feature was added in the [version 0.11.0](/changelog/#version-0110).
+
+To reuse errors, you can create custom error classes with preset error information. The
+custom error classes should be inherited from `HTTPError`, and you can use the following attributes
+in the error class:
+
+- status_code
+- message
+- detail
+- extra_data
+- headers
+
+Here is a simple example:
+
+```python
+from apiflask import HTTPError
+
+class PetNotFound(HTTPError):
+    status_code = 404
+    message = 'This pet is missing.'
+    extra_data = {
+        'error_code': '2323',
+        'error_docs': 'https://example.com/docs/missing'
+    }
+```
+
+Then you can `raise` this exception class in your view function:
+
+```python hl_lines="5"
+@app.get('/pets/<pet_id>')
+def get_pet(pet_id):
+    pets = [1, 2, 3]
+    if pet_id not in pets:
+        raise PetNotFound
+    return {'message': 'Pet'}
+```
+
+!!! tips "Use exception classes from Werkzeug"
+
+    If you didn't set the `json_errors` to `False` when creating `app` instance,
+    APIFlask will catch all the Werkzeug exceptions, including the one you raised
+    directly:
+
+    ```python
+    from werkzeug.exceptions import NotFound
+
+    @app.get('/')
+    def say_hello():
+        if user is None:
+            raise NotFound
+        return {'message': 'Hello!'}
+    ```
+
+    However, the `description` and `body` of the exception will be discarded.
 
 
 ## Custom error status code and description

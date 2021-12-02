@@ -17,7 +17,7 @@ from .types import DictSchemaType
 from .types import HTTPAuthType
 from .types import OpenAPISchemaType
 from .types import RequestType
-from .types import ResponseType
+from .types import ResponseReturnValueType
 from .types import SchemaType
 
 
@@ -341,7 +341,7 @@ def output(
             return jsonify(data, *args, **kwargs)
 
         @wraps(f)
-        def _response(*args: t.Any, **kwargs: t.Any) -> ResponseType:
+        def _response(*args: t.Any, **kwargs: t.Any) -> ResponseReturnValueType:
             if hasattr(current_app, 'ensure_sync'):  # pragma: no cover
                 rv = current_app.ensure_sync(f)(*args, **kwargs)
             else:  # pragma: no cover

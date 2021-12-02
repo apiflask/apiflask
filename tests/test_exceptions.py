@@ -15,6 +15,10 @@ def test_httperror(app, client, kwargs):
     def foo():
         raise HTTPError(400, **kwargs)
 
+    @app.get('/bar')
+    def bar():
+        raise HTTPError
+
     rv = client.get('/foo')
     assert rv.status_code == 400
     if 'message' not in kwargs:
@@ -27,6 +31,12 @@ def test_httperror(app, client, kwargs):
         assert rv.json['detail'] == {'location': 'json'}
     if 'headers' in kwargs:
         assert rv.headers['X-FOO'] == 'bar'
+
+    # test default error status code
+    rv = client.get('/bar')
+    assert rv.status_code == 500
+    assert rv.json['message'] == 'Internal Server Error'
+    assert rv.json['detail'] == {}
 
 
 @pytest.mark.parametrize('kwargs', [
@@ -86,3 +96,45 @@ def test_invalid_error_status_code():
 
     with pytest.raises(LookupError):
         raise HTTPError(204)
+
+
+def test_custom_error_classes(app, client):
+    class PetDown(HTTPError):
+        status_code = 400
+        message = 'The pet is down.'
+        extra_data = {
+            'error_code': '123',
+            'error_docs': 'https://example.com/docs/down'
+        }
+        headers = {'X-Foo': 'bar'}
+
+    class PetNotFound(HTTPError):
+        status_code = 404
+        message = 'The pet is gone.'
+        extra_data = {
+            'error_code': '345',
+            'error_docs': 'https://example.com/docs/gone'
+        }
+
+    @app.get('/foo')
+    def foo():
+        raise PetDown
+
+    @app.get('/bar')
+    def bar():
+        raise PetNotFound
+
+    rv = client.get('/foo')
+    assert rv.status_code == 400
+    assert rv.json['message'] == 'The pet is down.'
+    assert rv.json['error_code'] == '123'
+    assert rv.json['error_docs'] == 'https://example.com/docs/down'
+    assert rv.json['detail'] == {}
+    assert rv.headers['X-FOO'] == 'bar'
+
+    rv = client.get('/bar')
+    assert rv.status_code == 404
+    assert rv.json['message'] == 'The pet is gone.'
+    assert rv.json['error_code'] == '345'
+    assert rv.json['error_docs'] == 'https://example.com/docs/gone'
+    assert rv.json['detail'] == {}

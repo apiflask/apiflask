@@ -34,7 +34,7 @@ from .helpers import get_reason_phrase
 from .route import route_shortcuts
 from .route import route_patch
 from .schemas import Schema
-from .types import ResponseType
+from .types import ResponseReturnValueType
 from .types import ViewFuncType
 from .types import ErrorCallbackType
 from .types import SpecCallbackType
@@ -315,7 +315,7 @@ class APIFlask(Flask):
         self.json_errors = json_errors
 
         self.spec_callback: t.Optional[SpecCallbackType] = None
-        self.error_callback: ErrorCallbackType = self._error_handler  # type: ignore
+        self.error_callback: ErrorCallbackType = self._error_handler
         self.schema_name_resolver = self._schema_name_resolver
 
         self._spec: t.Optional[t.Union[dict, str]] = None
@@ -332,25 +332,25 @@ class APIFlask(Flask):
         @self.errorhandler(HTTPError)
         def handle_http_errors(
             error: HTTPError
-        ) -> ResponseType:
+        ) -> ResponseReturnValueType:
             return self.error_callback(error)
 
         if self.json_errors:
             @self.errorhandler(WerkzeugHTTPException)  # type: ignore
             def handle_werkzeug_errors(
                 e: WerkzeugHTTPException
-            ) -> ResponseType:
+            ) -> ResponseReturnValueType:
                 headers = dict(e.get_headers())
                 # remove the original MIME header
                 del headers['Content-Type']
                 error = HTTPError(
-                    e.code,  # type: ignore
+                    e.code,
                     message=e.name,
                     headers=headers
                 )
                 return self.error_callback(error)
 
-    def dispatch_request(self) -> ResponseType:
+    def dispatch_request(self) -> ResponseReturnValueType:
         """Overwrite the default dispatch method in Flask.
 
         With this overwrite, view arguments are passed as positional
@@ -395,7 +395,7 @@ class APIFlask(Flask):
     @staticmethod
     def _error_handler(
         error: HTTPError
-    ) -> t.Union[t.Tuple[dict, int], t.Tuple[dict, int, t.Mapping[str, str]]]:
+    ) -> ResponseReturnValueType:
         """The default error handler.
 
         Arguments:
@@ -523,7 +523,7 @@ class APIFlask(Flask):
 
         if self.spec_path:
             @bp.route(self.spec_path)
-            def spec() -> ResponseType:
+            def spec() -> ResponseReturnValueType:
                 if self.config['SPEC_FORMAT'] == 'json':
                     response = jsonify(self._get_spec('json'))
                     response.mimetype = self.config['JSON_SPEC_MIMETYPE']
