@@ -8,7 +8,7 @@ in APIFlask.
 !!! note "Code-first or Design-first"
 
     There are two approaches when working with OpenAPI: Code-first and Design-first.
-    APIFlask currently only supports the last way. It generates the OpenAPI spec
+    APIFlask currently only supports the first way. It generates the OpenAPI spec
     for you after you write the code. We will try to support the Design-first
     approach after the 1.0 version is released.
 
