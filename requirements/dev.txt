@@ -85,7 +85,7 @@ mkdocs-material-extensions==1.0.3
     # via mkdocs-material
 mkdocstrings==0.17.0
     # via -r requirements/docs.in
-mypy==0.910
+mypy==0.931
     # via -r requirements/typing.in
 mypy-extensions==0.4.3
     # via mypy
@@ -160,13 +160,13 @@ sqlalchemy==1.4.26
     # via flask-sqlalchemy
 toml==0.10.2
     # via
-    #   mypy
     #   pre-commit
     #   pytest
     #   tox
 tomli==1.2.2
     # via
     #   coverage
+    #   mypy
     #   pep517
 tox==3.24.5
     # via -r requirements/dev.in
