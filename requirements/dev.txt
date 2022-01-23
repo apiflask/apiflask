@@ -168,7 +168,7 @@ tomli==1.2.2
     # via
     #   coverage
     #   pep517
-tox==3.24.4
+tox==3.24.5
     # via -r requirements/dev.in
 typing-extensions==3.10.0.2
     # via mypy
