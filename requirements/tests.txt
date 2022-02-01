@@ -16,17 +16,15 @@ flake8==4.0.1
     # via -r requirements/tests.in
 iniconfig==1.1.1
     # via pytest
-isodate==0.6.0
-    # via openapi-schema-validator
 jsonschema==4.1.2
     # via
     #   openapi-schema-validator
     #   openapi-spec-validator
 mccabe==0.6.1
     # via flake8
-openapi-schema-validator==0.1.5
+openapi-schema-validator==0.2.3
     # via openapi-spec-validator
-openapi-spec-validator==0.3.1
+openapi-spec-validator==0.4.0
     # via -r requirements/tests.in
 packaging==21.2
     # via pytest
@@ -50,10 +48,6 @@ pytest-cov==3.0.0
     # via -r requirements/tests.in
 pyyaml==6.0
     # via openapi-spec-validator
-six==1.16.0
-    # via
-    #   openapi-schema-validator
-    #   openapi-spec-validator
 toml==0.10.2
     # via pytest
 tomli==1.2.2

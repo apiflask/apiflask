@@ -43,8 +43,6 @@ importlib-metadata==4.8.1
     # via mkdocs
 iniconfig==1.1.1
     # via pytest
-isodate==0.6.0
-    # via openapi-schema-validator
 itsdangerous==2.0.1
     # via flask
 jinja2==3.0.2
@@ -91,9 +89,9 @@ mypy-extensions==0.4.3
     # via mypy
 nodeenv==1.6.0
     # via pre-commit
-openapi-schema-validator==0.1.5
+openapi-schema-validator==0.2.3
     # via openapi-spec-validator
-openapi-spec-validator==0.3.1
+openapi-spec-validator==0.4.0
     # via -r requirements/tests.in
 packaging==21.2
     # via
@@ -150,9 +148,6 @@ pyyaml-env-tag==0.1
     # via mkdocs
 six==1.16.0
     # via
-    #   isodate
-    #   openapi-schema-validator
-    #   openapi-spec-validator
     #   python-dateutil
     #   tox
     #   virtualenv
