@@ -12,11 +12,11 @@ flask-sqlalchemy==2.5.1
     # via -r requirements/examples.in
 itsdangerous==2.0.1
     # via flask
-jinja2==3.0.2
+jinja2==3.0.3
     # via flask
 markupsafe==2.0.1
     # via jinja2
-sqlalchemy==1.4.26
+sqlalchemy==1.4.31
     # via flask-sqlalchemy
-werkzeug==2.0.2
+werkzeug==2.0.3
     # via flask
