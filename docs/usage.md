@@ -700,7 +700,7 @@ def get_pet(pet_id):
     return {
         'id': 1,
         'name': 'Coco',
-        'category: 'dog'
+        'category': 'dog'
     }
 ```
 
