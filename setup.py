@@ -4,11 +4,12 @@ from setuptools import setup
 setup(
     name='APIFlask',
     install_requires=[
-        'flask >= 1.1.0',
+        'flask >= 1.1.0, <= 2.0.3',
         'flask-marshmallow >= 0.12.0',
-        'webargs >= 6',
+        'marshmallow >= 3, <= 3.14.1',
+        'webargs >= 6, <= 8',
         'flask-httpauth >= 4',
-        'apispec >= 4.2.0',
+        'apispec >= 4.2.0, <= 5.1.1',
         'typing-extensions; python_version < "3.8"',
     ],
     tests_require=[
