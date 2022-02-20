@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements/dev.in
 #
-asgiref==3.5.0
+asgiref==3.4.1
     # via -r requirements/tests.in
 astunparse==1.6.3
     # via pytkdocs
