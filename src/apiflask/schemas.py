@@ -57,7 +57,7 @@ class EmptySchema(Schema):
 
     ```python
     @app.delete('/foo')
-    @output(EmptySchema)
+    @app.output(EmptySchema)
     def delete_foo():
         return ''
     ```
@@ -66,7 +66,7 @@ class EmptySchema(Schema):
 
     ```python
     @app.delete('/foo')
-    @output({}, 204)
+    @app.output({}, 204)
     def delete_foo():
         return ''
     ```

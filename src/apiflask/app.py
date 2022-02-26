@@ -54,10 +54,12 @@ from .openapi import get_security_and_security_schemes
 from .ui_templates import redoc_template
 from .ui_templates import swagger_ui_template
 from .ui_templates import swagger_ui_oauth2_redirect_template
+from .decorators import api_decorators
 
 
 @route_patch
 @route_shortcuts
+@api_decorators
 class APIFlask(Flask):
     """The `Flask` object with some web API support.
 
@@ -361,8 +363,8 @@ class APIFlask(Flask):
 
         ```python
         @app.get('/pets/<name>/<int:pet_id>/<age>')  # -> name, pet_id, age
-        @input(QuerySchema)  # -> query
-        @output(PetSchema)  # -> pet
+        @app.input(QuerySchema)  # -> query
+        @app.output(PetSchema)  # -> pet
         def get_pet(name, pet_id, age, query, pet):
             pass
         ```
@@ -837,7 +839,7 @@ class APIFlask(Flask):
                         skip = False
                 if skip:
                     continue
-            # skip views flagged with @doc(hide=True)
+            # skip views flagged with @app.doc(hide=True)
             if view_func._spec.get('hide'):
                 continue
 
@@ -959,8 +961,8 @@ class APIFlask(Flask):
                         operation, status_code, schema, description, example, examples, links
                     )
                 else:
-                    # add a default 200 response for views without using @output
-                    # or @doc(responses={...})
+                    # add a default 200 response for views without using @app.output
+                    # or @app.doc(responses={...})
                     if not view_func._spec.get('responses') and self.config['AUTO_200_RESPONSE']:
                         add_response(
                             operation, '200', {}, self.config['SUCCESS_DESCRIPTION']
