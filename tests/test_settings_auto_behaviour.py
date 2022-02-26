@@ -5,9 +5,6 @@ from openapi_spec_validator import validate_spec
 from .schemas import FooSchema
 from .schemas import QuerySchema
 from apiflask import APIBlueprint
-from apiflask import auth_required
-from apiflask import doc
-from apiflask import input
 from apiflask.security import HTTPBasicAuth
 
 
@@ -53,7 +50,7 @@ def test_auto_path_summary(app, client, config_value):
         pass
 
     @app.get('/eggs')
-    @doc(summary='Eggs from doc decortor')
+    @app.doc(summary='Eggs from doc decortor')
     def get_eggs():
         """Eggs Summary
 
@@ -97,7 +94,7 @@ def test_auto_path_summary_with_methodview(app, client, config_value):
             """
             pass
 
-        @doc(summary='Put from doc decortor')
+        @app.doc(summary='Put from doc decortor')
         def put(self):
             """Delete Summary
 
@@ -132,7 +129,7 @@ def test_auto_path_description(app, client, config_value):
         pass
 
     @app.get('/bar')
-    @doc(description='bar from doc decortor')
+    @app.doc(description='bar from doc decortor')
     def get_bar():
         """Bar
 
@@ -149,7 +146,7 @@ def test_auto_path_description(app, client, config_value):
             """
             pass
 
-        @doc(description='post from doc decortor')
+        @app.doc(description='post from doc decortor')
         def post(self):
             """Baz
 
@@ -191,7 +188,7 @@ def test_auto_200_response_for_bare_views(app, client, config_value):
         def get(self):
             pass
 
-        @input(FooSchema)
+        @app.input(FooSchema)
         def post(self):
             pass
 
@@ -210,13 +207,13 @@ def test_auto_200_response_for_no_output_views(app, client, config_value):
     app.config['AUTO_200_RESPONSE'] = config_value
 
     @app.get('/foo')
-    @input(QuerySchema, 'query')
+    @app.input(QuerySchema, 'query')
     def foo():
         pass
 
     @app.route('/bar')
     class Bar(MethodView):
-        @input(QuerySchema, 'query')
+        @app.input(QuerySchema, 'query')
         def get(self):
             pass
 
@@ -234,7 +231,7 @@ def test_auto_validation_error_response(app, client, config_value):
     app.config['AUTO_VALIDATION_ERROR_RESPONSE'] = config_value
 
     @app.post('/foo')
-    @input(FooSchema)
+    @app.input(FooSchema)
     def foo():
         pass
 
@@ -255,7 +252,7 @@ def test_auto_auth_error_response(app, client, config_value):
     auth = HTTPBasicAuth()
 
     @app.post('/foo')
-    @auth_required(auth)
+    @app.auth_required(auth)
     def foo():
         pass
 

@@ -1,4 +1,4 @@
-from apiflask import APIFlask, Schema, input, output
+from apiflask import APIFlask, Schema
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 from flask_sqlalchemy import SQLAlchemy
@@ -48,20 +48,20 @@ def say_hello():
 
 
 @app.get('/pets/<int:pet_id>')
-@output(PetOutSchema)
+@app.output(PetOutSchema)
 def get_pet(pet_id):
     return PetModel.query.get_or_404(pet_id)
 
 
 @app.get('/pets')
-@output(PetOutSchema(many=True))
+@app.output(PetOutSchema(many=True))
 def get_pets():
     return PetModel.query.all()
 
 
 @app.post('/pets')
-@input(PetInSchema)
-@output(PetOutSchema, 201)
+@app.input(PetInSchema)
+@app.output(PetOutSchema, 201)
 def create_pet(data):
     pet = PetModel(**data)
     db.session.add(pet)
@@ -70,8 +70,8 @@ def create_pet(data):
 
 
 @app.patch('/pets/<int:pet_id>')
-@input(PetInSchema(partial=True))
-@output(PetOutSchema)
+@app.input(PetInSchema(partial=True))
+@app.output(PetOutSchema)
 def update_pet(pet_id, data):
     pet = PetModel.query.get_or_404(pet_id)
     for attr, value in data.items():
@@ -81,7 +81,7 @@ def update_pet(pet_id, data):
 
 
 @app.delete('/pets/<int:pet_id>')
-@output({}, 204)
+@app.output({}, 204)
 def delete_pet(pet_id):
     pet = PetModel.query.get_or_404(pet_id)
     db.session.delete(pet)

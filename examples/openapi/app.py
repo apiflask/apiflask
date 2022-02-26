@@ -1,4 +1,4 @@
-from apiflask import APIFlask, Schema, input, output, abort, doc
+from apiflask import APIFlask, Schema, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
@@ -116,7 +116,7 @@ class PetOutSchema(Schema):
 
 
 @app.get('/')
-@doc(tag='Hello')
+@app.doc(tag='Hello')
 def say_hello():
     """Just Say Hello
 
@@ -129,8 +129,8 @@ def say_hello():
 
 
 @app.get('/pets/<int:pet_id>')
-@output(PetOutSchema, description='The pet with given ID')
-@doc(tag='Pet', operation_id='getPet')
+@app.output(PetOutSchema, description='The pet with given ID')
+@app.doc(tag='Pet', operation_id='getPet')
 def get_pet(pet_id):
     """Get a Pet
 
@@ -142,8 +142,8 @@ def get_pet(pet_id):
 
 
 @app.get('/pets')
-@output(PetOutSchema(many=True), description='A list of pets')
-@doc(tag='Pet')
+@app.output(PetOutSchema(many=True), description='A list of pets')
+@app.doc(tag='Pet')
 def get_pets():
     """Get All Pet
 
@@ -153,8 +153,8 @@ def get_pets():
 
 
 @app.post('/pets')
-@input(PetInSchema)
-@output(
+@app.input(PetInSchema)
+@app.output(
     PetOutSchema,
     201,
     description='The pet you just created',
@@ -165,7 +165,7 @@ def get_pets():
         }
     }}
 )
-@doc(tag='Pet')
+@app.doc(tag='Pet')
 def create_pet(data):
     """Create a Pet
 
@@ -178,9 +178,9 @@ def create_pet(data):
 
 
 @app.patch('/pets/<int:pet_id>')
-@input(PetInSchema(partial=True))
-@output(PetOutSchema, description='The updated pet')
-@doc(tag='Pet')
+@app.input(PetInSchema(partial=True))
+@app.output(PetOutSchema, description='The updated pet')
+@app.doc(tag='Pet')
 def update_pet(pet_id, data):
     """Update a Pet
 
@@ -194,8 +194,8 @@ def update_pet(pet_id, data):
 
 
 @app.delete('/pets/<int:pet_id>')
-@output({}, 204, description='Empty')
-@doc(tag='Pet')
+@app.output({}, 204, description='Empty')
+@app.doc(tag='Pet')
 def delete_pet(pet_id):
     """Delete a Pet
 

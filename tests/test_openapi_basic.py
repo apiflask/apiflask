@@ -6,9 +6,6 @@ from openapi_spec_validator import validate_spec
 from .schemas import BarSchema
 from .schemas import BazSchema
 from .schemas import FooSchema
-from apiflask import doc
-from apiflask import input
-from apiflask import output
 from apiflask import Schema as BaseSchema
 from apiflask.fields import Integer
 
@@ -49,7 +46,7 @@ def test_get_spec_force_update(app):
     app._get_spec()
 
     @app.route('/foo')
-    @output(FooSchema)
+    @app.output(FooSchema)
     def foo():
         pass
 
@@ -64,7 +61,7 @@ def test_spec_attribute(app):
     spec = app._get_spec()
 
     @app.route('/foo')
-    @output(FooSchema)
+    @app.output(FooSchema)
     def foo():
         pass
 
@@ -74,17 +71,17 @@ def test_spec_attribute(app):
 
 def test_spec_schemas(app):
     @app.route('/foo')
-    @output(FooSchema(partial=True))
+    @app.output(FooSchema(partial=True))
     def foo():
         pass
 
     @app.route('/bar')
-    @output(BarSchema(many=True))
+    @app.output(BarSchema(many=True))
     def bar():
         pass
 
     @app.route('/baz')
-    @output(BazSchema)
+    @app.output(BazSchema)
     def baz():
         pass
 
@@ -92,7 +89,7 @@ def test_spec_schemas(app):
         id = Integer()
 
     @app.route('/spam')
-    @output(Spam)
+    @app.output(Spam)
     def spam():
         pass
 
@@ -100,7 +97,7 @@ def test_spec_schemas(app):
         id = Integer()
 
     @app.route('/schema')
-    @output(Schema)
+    @app.output(Schema)
     def schema():
         pass
 
@@ -157,22 +154,22 @@ def test_auto_200_response(app, client):
         pass
 
     @app.get('/bar')
-    @input(FooSchema)
+    @app.input(FooSchema)
     def only_input():
         pass
 
     @app.get('/baz')
-    @doc(summary='some summary')
+    @app.doc(summary='some summary')
     def only_doc():
         pass
 
     @app.get('/eggs')
-    @output(FooSchema, 204)
+    @app.output(FooSchema, 204)
     def output_204():
         pass
 
     @app.get('/spam')
-    @doc(responses={204: 'empty'})
+    @app.doc(responses={204: 'empty'})
     def doc_responses():
         pass
 

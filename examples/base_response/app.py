@@ -1,4 +1,4 @@
-from apiflask import APIFlask, Schema, input, output, abort
+from apiflask import APIFlask, Schema, abort
 from apiflask.fields import Integer, String, Field
 from apiflask.validators import Length, OneOf
 
@@ -47,7 +47,7 @@ def say_hello():
 
 
 @app.get('/pets/<int:pet_id>')
-@output(PetOutSchema)
+@app.output(PetOutSchema)
 def get_pet(pet_id):
     if pet_id > len(pets) - 1 or pets[pet_id].get('deleted'):
         abort(404)
@@ -55,14 +55,14 @@ def get_pet(pet_id):
 
 
 @app.get('/pets')
-@output(PetOutSchema(many=True))
+@app.output(PetOutSchema(many=True))
 def get_pets():
     return make_resp('Success!', 200, pets)
 
 
 @app.post('/pets')
-@input(PetInSchema)
-@output(PetOutSchema, 201)
+@app.input(PetInSchema)
+@app.output(PetOutSchema, 201)
 def create_pet(data):
     pet_id = len(pets)
     data['id'] = pet_id
@@ -71,8 +71,8 @@ def create_pet(data):
 
 
 @app.patch('/pets/<int:pet_id>')
-@input(PetInSchema(partial=True))
-@output(PetOutSchema)
+@app.input(PetInSchema(partial=True))
+@app.output(PetOutSchema)
 def update_pet(pet_id, data):
     if pet_id > len(pets) - 1:
         abort(404)
@@ -82,7 +82,7 @@ def update_pet(pet_id, data):
 
 
 @app.delete('/pets/<int:pet_id>')
-@output({}, 204)
+@app.output({}, 204)
 def delete_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)

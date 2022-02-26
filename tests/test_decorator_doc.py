@@ -2,19 +2,16 @@ from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from .schemas import FooSchema
-from apiflask import doc
-from apiflask import input
-from apiflask import output
 
 
 def test_doc_summary_and_description(app, client):
     @app.route('/foo')
-    @doc(summary='summary from doc decorator')
+    @app.doc(summary='summary from doc decorator')
     def foo():
         pass
 
     @app.route('/bar')
-    @doc(summary='summary for bar', description='some description for bar')
+    @app.doc(summary='summary for bar', description='some description for bar')
     def bar():
         pass
 
@@ -30,11 +27,11 @@ def test_doc_summary_and_description(app, client):
 def test_doc_summary_and_description_with_methodview(app, client):
     @app.route('/baz')
     class Baz(MethodView):
-        @doc(summary='summary from doc decorator')
+        @app.doc(summary='summary from doc decorator')
         def get(self):
             pass
 
-        @doc(summary='summary for baz', description='some description for baz')
+        @app.doc(summary='summary for baz', description='some description for baz')
         def post(self):
             pass
 
@@ -51,12 +48,12 @@ def test_doc_tags(app, client):
     app.tags = ['foo', 'bar']
 
     @app.route('/foo')
-    @doc(tag='foo')
+    @app.doc(tag='foo')
     def foo():
         pass
 
     @app.route('/bar')
-    @doc(tags=['foo', 'bar'])
+    @app.doc(tags=['foo', 'bar'])
     def bar():
         pass
 
@@ -70,11 +67,11 @@ def test_doc_tags(app, client):
 def test_doc_tags_with_methodview(app, client):
     @app.route('/baz')
     class Baz(MethodView):
-        @doc(tag='foo')
+        @app.doc(tag='foo')
         def get(self):
             pass
 
-        @doc(tags=['foo', 'bar'])
+        @app.doc(tags=['foo', 'bar'])
         def post(self):
             pass
 
@@ -87,7 +84,7 @@ def test_doc_tags_with_methodview(app, client):
 
 def test_doc_hide(app, client):
     @app.route('/foo')
-    @doc(hide=True)
+    @app.doc(hide=True)
     def foo():
         pass
 
@@ -96,7 +93,7 @@ def test_doc_hide(app, client):
         pass
 
     @app.post('/baz')
-    @doc(hide=True)
+    @app.doc(hide=True)
     def post_baz():
         pass
 
@@ -115,13 +112,13 @@ def test_doc_hide_with_methodview(app, client):
         def get(self):
             pass
 
-        @doc(hide=True)
+        @app.doc(hide=True)
         def post(self):
             pass
 
     @app.route('/secret')
     class Secret(MethodView):
-        @doc(hide=True)
+        @app.doc(hide=True)
         def get(self):
             pass
 
@@ -136,7 +133,7 @@ def test_doc_hide_with_methodview(app, client):
 
 def test_doc_deprecated(app, client):
     @app.route('/foo')
-    @doc(deprecated=True)
+    @app.doc(deprecated=True)
     def foo():
         pass
 
@@ -149,7 +146,7 @@ def test_doc_deprecated(app, client):
 def test_doc_deprecated_with_methodview(app, client):
     @app.route('/foo')
     class Foo(MethodView):
-        @doc(deprecated=True)
+        @app.doc(deprecated=True)
         def get(self):
             pass
 
@@ -161,16 +158,16 @@ def test_doc_deprecated_with_methodview(app, client):
 
 def test_doc_responses(app, client):
     @app.route('/foo')
-    @input(FooSchema)
-    @output(FooSchema)
-    @doc(responses={200: 'success', 400: 'bad', 404: 'not found', 500: 'server error'})
+    @app.input(FooSchema)
+    @app.output(FooSchema)
+    @app.doc(responses={200: 'success', 400: 'bad', 404: 'not found', 500: 'server error'})
     def foo():
         pass
 
     @app.route('/bar')
-    @input(FooSchema)
-    @output(FooSchema)
-    @doc(responses=[200, 400, 404, 500])
+    @app.input(FooSchema)
+    @app.output(FooSchema)
+    @app.doc(responses=[200, 400, 404, 500])
     def bar():
         pass
 
@@ -208,17 +205,17 @@ def test_doc_responses(app, client):
 def test_doc_responses_with_methodview(app, client):
     @app.route('/foo')
     class Foo(MethodView):
-        @input(FooSchema)
-        @output(FooSchema)
-        @doc(responses={200: 'success', 400: 'bad', 404: 'not found', 500: 'server error'})
+        @app.input(FooSchema)
+        @app.output(FooSchema)
+        @app.doc(responses={200: 'success', 400: 'bad', 404: 'not found', 500: 'server error'})
         def get(self):
             pass
 
     @app.route('/bar')
     class Bar(MethodView):
-        @input(FooSchema)
-        @output(FooSchema)
-        @doc(responses=[200, 400, 404, 500])
+        @app.input(FooSchema)
+        @app.output(FooSchema)
+        @app.doc(responses=[200, 400, 404, 500])
         def get(self):
             pass
 
@@ -255,7 +252,7 @@ def test_doc_responses_with_methodview(app, client):
 
 def test_doc_operationid(app, client):
     @app.route('/foo')
-    @doc(operation_id='getSomeFoo')
+    @app.doc(operation_id='getSomeFoo')
     def foo():
         pass
 

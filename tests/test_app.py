@@ -8,8 +8,6 @@ from .schemas import FooSchema
 from .schemas import PaginationSchema
 from apiflask import APIBlueprint
 from apiflask import APIFlask
-from apiflask import input
-from apiflask import output
 from apiflask import Schema
 from apiflask.fields import Integer
 from apiflask.fields import String
@@ -75,18 +73,18 @@ def test_view_function_arguments_order(app, client):
         age = Integer(dump_default=123)
 
     @app.post('/pets/<int:pet_id>/toys/<int:toy_id>')
-    @input(QuerySchema, 'query')
-    @input(PaginationSchema, 'query')
-    @input(PetSchema)
+    @app.input(QuerySchema, 'query')
+    @app.input(PaginationSchema, 'query')
+    @app.input(PetSchema)
     def pets(pet_id, toy_id, query, pagination, body):
         return {'pet_id': pet_id, 'toy_id': toy_id,
                 'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **body}
 
     @app.route('/animals/<int:pet_id>/toys/<int:toy_id>')
     class Animals(MethodView):
-        @input(QuerySchema, 'query')
-        @input(PaginationSchema, 'query')
-        @input(PetSchema)
+        @app.input(QuerySchema, 'query')
+        @app.input(PaginationSchema, 'query')
+        @app.input(PetSchema)
         def post(self, pet_id, toy_id, query, pagination, body):
             return {'pet_id': pet_id, 'toy_id': toy_id,
                     'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **body}
@@ -183,7 +181,7 @@ def test_dispatch_static_request(app, client):
 
     # positional arguments
     @app.get('/mystatic/<int:pet_id>')
-    @input(FooSchema)
+    @app.input(FooSchema)
     def mystatic(pet_id, foo):  # endpoint: mystatic
         return {'pet_id': pet_id, 'foo': foo}
 
@@ -225,12 +223,12 @@ def test_schema_name_resolver(app, client, resolver):
     app.schema_name_resolver = resolver
 
     @app.route('/foo')
-    @output(FooSchema)
+    @app.output(FooSchema)
     def foo():
         pass
 
     @app.route('/bar')
-    @output(BarSchema(partial=True))
+    @app.output(BarSchema(partial=True))
     def bar():
         pass
 

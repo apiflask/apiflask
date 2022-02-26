@@ -2,7 +2,6 @@ from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from apiflask import APIBlueprint
-from apiflask import auth_required
 from apiflask.security import HTTPBasicAuth
 from apiflask.security import HTTPTokenAuth
 
@@ -28,17 +27,17 @@ def test_auth_required(app, client):
         return 'normal'
 
     @app.route('/foo')
-    @auth_required(auth)
+    @app.auth_required(auth)
     def foo():
         return auth.current_user
 
     @app.route('/bar')
-    @auth_required(auth, role='admin')
+    @app.auth_required(auth, role='admin')
     def bar():
         return auth.current_user
 
     @app.route('/baz')
-    @auth_required(auth, roles=['admin', 'moderator'])
+    @app.auth_required(auth, roles=['admin', 'moderator'])
     def baz():
         return auth.current_user
 
@@ -107,15 +106,15 @@ def test_auth_required_with_methodview(app, client):
 
     @app.route('/')
     class Foo(MethodView):
-        @auth_required(auth)
+        @app.auth_required(auth)
         def get(self):
             return auth.current_user
 
-        @auth_required(auth, role='admin')
+        @app.auth_required(auth, role='admin')
         def post(self):
             return auth.current_user
 
-        @auth_required(auth, roles=['admin', 'moderator'])
+        @app.auth_required(auth, roles=['admin', 'moderator'])
         def delete(self):
             return auth.current_user
 
@@ -168,7 +167,7 @@ def test_auth_required_at_blueprint_before_request(app, client):
     auth = HTTPTokenAuth()
 
     @bp.before_request
-    @auth_required(auth)
+    @app.auth_required(auth)
     def before():
         pass
 
@@ -223,7 +222,7 @@ def test_auth_required_at_app_before_request(app, client):
             return {'user': 'foo'}
 
     @app.before_request
-    @auth_required(auth)
+    @app.auth_required(auth)
     def before():
         pass
 

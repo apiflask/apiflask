@@ -5,19 +5,18 @@ from openapi_spec_validator import validate_spec
 from .schemas import BarSchema
 from .schemas import FooSchema
 from .schemas import QuerySchema
-from apiflask import input
 from apiflask.fields import String
 
 
 def test_input(app, client):
     @app.route('/foo', methods=['POST'])
-    @input(FooSchema)
+    @app.input(FooSchema)
     def foo(schema):
         return schema
 
     @app.route('/bar')
     class Bar(MethodView):
-        @input(FooSchema)
+        @app.input(FooSchema)
         def post(self, data):
             return data
 
@@ -57,8 +56,8 @@ def test_input(app, client):
 
 def test_input_with_query_location(app, client):
     @app.route('/foo', methods=['POST'])
-    @input(FooSchema, location='query')
-    @input(BarSchema, location='query')
+    @app.input(FooSchema, location='query')
+    @app.input(BarSchema, location='query')
     def foo(schema, schema2):
         return {'name': schema['name'], 'name2': schema2['name2']}
 
@@ -92,7 +91,7 @@ def test_input_with_query_location(app, client):
 def test_bad_input_location(app):
     with pytest.raises(ValueError):
         @app.route('/foo')
-        @input(QuerySchema, 'bad')
+        @app.input(QuerySchema, 'bad')
         def foo(query):
             pass
 
@@ -103,22 +102,22 @@ def test_input_with_dict_schema(app, client):
     }
 
     @app.get('/foo')
-    @input(dict_schema, 'query')
+    @app.input(dict_schema, 'query')
     def foo(query):
         return query
 
     @app.post('/bar')
-    @input(dict_schema, schema_name='MyName')
+    @app.input(dict_schema, schema_name='MyName')
     def bar(body):
         return body
 
     @app.post('/baz')
-    @input(dict_schema)
+    @app.input(dict_schema)
     def baz(body):
         return body
 
     @app.post('/spam')
-    @input(dict_schema)
+    @app.input(dict_schema)
     def spam(body):
         return body
 
@@ -193,22 +192,22 @@ def test_input_body_example(app, client):
     }
 
     @app.post('/foo')
-    @input(FooSchema, example=example)
+    @app.input(FooSchema, example=example)
     def foo():
         pass
 
     @app.post('/bar')
-    @input(FooSchema, examples=examples)
+    @app.input(FooSchema, examples=examples)
     def bar():
         pass
 
     @app.route('/baz')
     class Baz(MethodView):
-        @input(FooSchema, example=example)
+        @app.input(FooSchema, example=example)
         def get(self):
             pass
 
-        @input(FooSchema, examples=examples)
+        @app.input(FooSchema, examples=examples)
         def post(self):
             pass
 

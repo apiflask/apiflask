@@ -1,7 +1,6 @@
 import pytest
 
 from apiflask import get_reason_phrase
-from apiflask import output
 from apiflask import pagination_builder
 from apiflask import PaginationSchema
 
@@ -39,7 +38,7 @@ def test_pagination_builder(app, client):
         has_prev = False
 
     @app.get('/pets')
-    @output(PaginationSchema)
+    @app.output(PaginationSchema)
     def get_pets():
         pagination = Pagination()
         return pagination_builder(pagination)

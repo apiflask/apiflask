@@ -7,7 +7,6 @@ from apiflask import APIBlueprint
 from apiflask import auth_required
 from apiflask import doc
 from apiflask import HTTPTokenAuth
-from apiflask import output
 
 
 @pytest.mark.parametrize('method', ['get', 'post', 'put', 'patch', 'delete'])
@@ -16,7 +15,7 @@ def test_route_shortcuts(app, client, method):
     client_method = getattr(client, method)
 
     @route_method('/pet')
-    @output(FooSchema)
+    @app.output(FooSchema)
     def test_shortcuts():
         return {'name': method}
 
@@ -140,11 +139,11 @@ def test_overwrite_class_attribute_decorators(app, client):
         def get(self):
             pass
 
-        @doc(deprecated=False)
+        @app.doc(deprecated=False)
         def post(self):
             pass
 
-        @doc(tag='bar')
+        @app.doc(tag='bar')
         def delete(self):
             pass
 

@@ -2,7 +2,6 @@ import pytest
 from openapi_spec_validator import validate_spec
 
 from .schemas import FooSchema
-from apiflask import output
 
 
 def skip_flask1(app):
@@ -26,7 +25,7 @@ def test_output_on_async_view(app, client):
     skip_flask1(app)
 
     @app.get('/foo')
-    @output(FooSchema)
+    @app.output(FooSchema)
     async def foo():
         return {'id': 1, 'name': 'foo'}
 
