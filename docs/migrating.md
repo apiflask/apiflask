@@ -90,21 +90,21 @@ class Pet(MethodView):
 
     decorators = [doc(responses=[404])]
 
-    @output(PetOutSchema)
+    @app.output(PetOutSchema)
     def get(self, pet_id):
         pass
 
-    @output({}, 204)
+    @app.output({}, 204)
     def delete(self, pet_id):
         pass
 
-    @input(PetInSchema)
-    @output(PetOutSchema)
+    @app.input(PetInSchema)
+    @app.output(PetOutSchema)
     def put(self, pet_id, data):
         pass
 
-    @input(PetInSchema(partial=True))
-    @output(PetOutSchema)
+    @app.input(PetInSchema(partial=True))
+    @app.output(PetOutSchema)
     def patch(self, pet_id, data):
         pass
 ```
@@ -219,9 +219,9 @@ def bar():
 
 ### The return values of view function
 
-When you added a `@output` decorator for your view function, APIFlask expects you to
+When you added a `@app.output` decorator for your view function, APIFlask expects you to
 return an ORM/ODM model object or a dict that matches the schema you passed in the
-`@output` decorator. If you return a `Response` object, APIFlask will return it
+`@app.output` decorator. If you return a `Response` object, APIFlask will return it
 directly without any process.
 
 

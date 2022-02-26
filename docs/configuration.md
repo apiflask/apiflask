@@ -539,7 +539,7 @@ Enable or disable auto path summary from the name or docstring of the view funct
 !!! tip
 
     This automation behavior only happens when the view function doesn't decorate
-    with `@doc(summary=...)`.
+    with `@app.doc(summary=...)`.
 
 - Type: `bool`
 - Default value: `True`
@@ -562,7 +562,7 @@ Enable or disable auto path description from the docstring of the view function.
 !!! tip
 
     This automation behavior only happens when the view function doesn't decorate
-    with `@doc(description=...)`.
+    with `@app.doc(description=...)`.
 
 - Type: `bool`
 - Default value: `True`
@@ -598,8 +598,8 @@ app.config['AUTO_OPERATION_ID'] = True
 
 #### `AUTO_200_RESPONSE`
 
-If a view function doesn't decorate with either `@input`, `@output`, `@auth_required`
-or `@doc`, APIFlask will add a default 200 response for this view into OpenAPI spec.
+If a view function doesn't decorate with either `@app.input`, `@app.output`, `@app.auth_required`
+or `@app.doc`, APIFlask will add a default 200 response for this view into OpenAPI spec.
 Set this config to `False` to disable this behavior.
 
 !!! tip
@@ -642,7 +642,7 @@ app.config['AUTO_404_RESPONSE'] = False
 
 #### `AUTO_VALIDATION_ERROR_RESPONSE`
 
-If a view function uses `@input` to validate input request data, APIFlask will add a
+If a view function uses `@app.input` to validate input request data, APIFlask will add a
 validation error response into OpenAPI spec for this view. Set this config to `False`
 to disable this behavior.
 
@@ -657,7 +657,7 @@ app.config['AUTO_VALIDATION_ERROR_RESPONSE'] = False
 
 #### `AUTO_AUTH_ERROR_RESPONSE`
 
-If a view function uses `@auth_required` to restrict the access, APIFlask will add
+If a view function uses `@app.auth_required` to restrict the access, APIFlask will add
 an authentication error response into OpenAPI spec for this view. Set this
 config to `False` to disable this behavior.
 
