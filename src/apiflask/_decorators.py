@@ -1,4 +1,5 @@
 import typing as t
+import warnings
 from collections.abc import Mapping as ABCMapping
 from functools import wraps
 
@@ -50,6 +51,13 @@ use_args: t.Callable = parser.use_args
 
 
 def _annotate(f: t.Any, **kwargs: t.Any) -> None:
+    warnings.warn(
+        'The standalone decorators are deprecated, use app decorators instead. '
+        '(e.g. @input() -> @app.input(), etc.) '
+        'The old decorators will be removed in the 1.0.0 version.',
+        DeprecationWarning,
+        stacklevel=3,
+    )
     if not hasattr(f, '_spec'):
         f._spec = {}
     for key, value in kwargs.items():

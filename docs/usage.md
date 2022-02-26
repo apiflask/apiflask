@@ -800,7 +800,7 @@ def create_pet(data)
     will use the status code you returned at the end of the view function.
 
 
-## The OpenAPI generating support and the `doc` decorator
+## The OpenAPI generating support and the `@app.doc` decorator
 
 APIFlask provides automatic OpenAPI spec generating support, while also allows
 you to customize the spec:
@@ -1074,10 +1074,10 @@ In the end, let's unpack the whole `apiflask` package to check out what it shipp
 
 - `APIFlask`: A class used to create an application instance (A wrapper for Flask's `Flask` class).
 - `APIBlueprint`: A class used to create a blueprint instance (A wrapper for Flask's `Blueprint` class)..
-- `@app.input`: A decorator used to validate the input/request data from request body, query string, etc.
-- `@app.output`: A decorator used to format the response.
-- `@app.auth_required`: A decorator used to protect a view from unauthenticated users.
-- `@app.doc`: A decorator used to set up the OpenAPI spec for view functions.
+- `@app.input()`: A decorator used to validate the input/request data from request body, query string, etc.
+- `@app.output()`: A decorator used to format the response.
+- `@app.auth_required()`: A decorator used to protect a view from unauthenticated users.
+- `@app.doc()`: A decorator used to set up the OpenAPI spec for view functions.
 - `abort()`: A function used to abort the request handling process and return an error response. The JSON version of Flask's `flask.abort()` function.
 - `HTTPError`: An exception used to return error response (used by `abort()`).
 - `HTTPBasicAuth`: A class used to create an auth instance.

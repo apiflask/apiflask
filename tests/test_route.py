@@ -4,8 +4,6 @@ from openapi_spec_validator import validate_spec
 
 from .schemas import FooSchema
 from apiflask import APIBlueprint
-from apiflask import auth_required
-from apiflask import doc
 from apiflask import HTTPTokenAuth
 
 
@@ -109,7 +107,7 @@ def test_class_attribute_decorators(app, client):
 
     @app.route('/')
     class Foo(MethodView):
-        decorators = [auth_required(auth), doc(responses=[404])]
+        decorators = [app.auth_required(auth), app.doc(responses=[404])]
 
         def get(self):
             pass
@@ -134,7 +132,7 @@ def test_class_attribute_decorators(app, client):
 def test_overwrite_class_attribute_decorators(app, client):
     @app.route('/')
     class Foo(MethodView):
-        decorators = [doc(deprecated=True, tag='foo')]
+        decorators = [app.doc(deprecated=True, tag='foo')]
 
         def get(self):
             pass
