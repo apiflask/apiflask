@@ -1,3 +1,0 @@
-# Decorators
-
-::: apiflask.decorators
