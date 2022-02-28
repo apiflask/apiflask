@@ -407,6 +407,43 @@ def delete_pet(pet_id):
     application.
 
 
+## Move to new API decorators
+
+From APIFlask 0.12, the four standalone API decorators (i.e. `@input`, `@output`,
+`@doc`, and `@auth_required`) were moved to `APIFlask` and `APIBlueprint` classes.
+Now access them with your application or blueprint instance:
+
+```python
+from apiflask import APIFlask
+
+app = APIFlask(__name__)
+
+@app.get('/')
+@app.input(FooSchema)
+@app.output(BarSchema)
+def hello():
+    return {'message': 'Hello'}
+```
+
+instead of:
+
+```python
+from apiflask import APIFlask, input, output
+
+app = APIFlask(__name__)
+
+@app.get('/')
+@input(FooSchema)
+@output(BarSchema)
+def hello():
+    return {'message': 'Hello'}
+```
+
+The old standalone decorators were deprecated since 0.12, and will be removed in the
+1.0 version. Notice all the usage in the docs are updated, you may want to
+[upgrade APIFlask](/changelog/) to update the usage.
+
+
 ## Use `@app.input` to validate and deserialize request data
 
 To validate and deserialize a request body or request query parameters, we need to

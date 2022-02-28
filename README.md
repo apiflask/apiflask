@@ -84,7 +84,7 @@ def say_hello():
 
 
 @app.get('/pets/<int:pet_id>')
-@app.output(PetOutSchema)
+@output(PetOutSchema)
 def get_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)
@@ -94,8 +94,8 @@ def get_pet(pet_id):
 
 
 @app.patch('/pets/<int:pet_id>')
-@app.input(PetInSchema(partial=True))
-@app.output(PetOutSchema)
+@input(PetInSchema(partial=True))
+@output(PetOutSchema)
 def update_pet(pet_id, data):
     # the validated and parsed input data will
     # be injected into the view function as a dict
@@ -146,15 +146,15 @@ class Hello(MethodView):
 @app.route('/pets/<int:pet_id>')
 class Pet(MethodView):
 
-    @app.output(PetOutSchema)
+    @output(PetOutSchema)
     def get(self, pet_id):
         """Get a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
         return pets[pet_id]
 
-    @app.input(PetInSchema(partial=True))
-    @app.output(PetOutSchema)
+    @input(PetInSchema(partial=True))
+    @output(PetOutSchema)
     def patch(self, pet_id, data):
         """Update a pet"""
         if pet_id > len(pets) - 1:

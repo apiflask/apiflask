@@ -66,6 +66,10 @@ def _generate_schema_from_mapping(
 
 
 def api_decorators(cls):
+    """A class decorator that adds API related decorators to APIFlask and APIBlueprint.
+
+    *Version added: 0.12.0*
+    """
 
     def auth_required(
         self,
@@ -104,6 +108,10 @@ def api_decorators(cls):
             optional: Set to `True` to allow the view to execute even the authentication
                 information is not included with the request, in which case the attribute
                 `auth.current_user` will be `None`.
+
+        *Version changed: 0.12.0*
+
+        - Move to APIFlask and APIBlueprint classes.
 
         *Version changed: 0.4.0*
 
@@ -177,6 +185,10 @@ def api_decorators(cls):
                     },
                 }
                 ```
+
+        *Version changed: 0.12.0*
+
+        - Move to APIFlask and APIBlueprint classes.
 
         *Version changed: 0.4.0*
 
@@ -281,6 +293,10 @@ def api_decorators(cls):
 
                 See the [docs](https://apiflask.com/openapi/#response-links) for more details
                 about setting response links.
+
+        *Version changed: 0.12.0*
+
+        - Move to APIFlask and APIBlueprint classes.
 
         *Version changed: 0.10.0*
 
@@ -419,6 +435,10 @@ def api_decorators(cls):
             operation_id: The `operationId` of this endpoint. Set config `AUTO_OPERATION_ID` to
                 `True` to enable the auto-generating of operationId (in the format of
                 `{method}_{endpoint}`).
+
+        *Version changed: 0.12.0*
+
+        - Move to APIFlask and APIBlueprint classes.
 
         *Version changed: 0.10.0*
 

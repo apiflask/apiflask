@@ -2,13 +2,20 @@
 
 [0.12.0 milestone](https://github.com/greyli/apiflask/milestone/8)
 
+Released: --
+
+- Move standalone decorators (input, output, auth_required, doc) to APIFlask/APIBlueprint
+  classes. The old decorators are deprecated and will be removed in 1.0. ([issue #187][issue_187]).
+
+[issue_187]: https://github.com/greyli/apiflask/issues/187
+
 
 ## Version 0.11.0
 
 Released: 2021/12/6
 
 - Support creating custom error classes based on `HTTPError`. The position argument `status_code` of
-  `HTTPError` is changed to a keyword argument, defaults to `500`.([issue #172][issue_172]).
+  `HTTPError` is changed to a keyword argument, defaults to `500` ([issue #172][issue_172]).
 
 [issue_172]: https://github.com/greyli/apiflask/issues/172
 
