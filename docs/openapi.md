@@ -413,7 +413,7 @@ on the view function:
 
 ```python hl_lines="2"
 @app.get('/pets/<int:pet_id>')
-@output(PetOutSchema)
+@app.output(PetOutSchema)
 def get_pet(pet_id):
     return pets[pet_id]
 ```
@@ -423,7 +423,7 @@ corresponding parameters in the `output` decorator:
 
 ```python hl_lines="2"
 @app.get('/pets/<int:pet_id>')
-@output(PetOutSchema, status_code=200, description='Output data of a pet')
+@app.output(PetOutSchema, status_code=200, description='Output data of a pet')
 def get_pet(pet_id):
     return pets[pet_id]
 ```
@@ -450,7 +450,7 @@ on the view function:
 
 ```python hl_lines="2"
 @app.post('/pets')
-@input(PetInSchema)
+@app.input(PetInSchema)
 def create_pet(pet_id):
     pass
 ```
@@ -460,7 +460,7 @@ will be generated instead:
 
 ```python hl_lines="2"
 @app.get('/pets')
-@input(PetQuerySchema, location='query')
+@app.input(PetQuerySchema, location='query')
 def get_pets():
     pass
 ```
@@ -478,7 +478,7 @@ the `description`.
 !!! note "The precedence of summary setting"
 
     ```
-    @doc(summary='blah') > the first line of docstring > the view function name
+    @app.doc(summary='blah') > the first line of docstring > the view function name
     ```
 
 Here is an example of set `summary` and `description` with docstring:
@@ -608,7 +608,7 @@ from apiflask import APIFlask, input
 app = APIFlask(__name__)
 
 @app.post('/pets')
-@input(PetInSchema, example={'name': 'foo', 'category': 'cat'})
+@app.input(PetInSchema, example={'name': 'foo', 'category': 'cat'})
 def create_pet():
     pass
 ```
@@ -633,7 +633,7 @@ examples = {
 }
 
 @app.get('/pets')
-@output(PetOutSchema, examples=examples)
+@app.output(PetOutSchema, examples=examples)
 def get_pets():
     pass
 ```
@@ -675,7 +675,7 @@ pet_links = {
 }
 
 @app.post('/pets')
-@output(PetOutSchem, links=pet_links)
+@app.output(PetOutSchem, links=pet_links)
 def new_pet(data):
     pass
 ```
@@ -699,7 +699,7 @@ def update_spec(spec):
 
 
 @app.post('/pets')
-@output(PetOutSchem, links={'getAddressByUserId': {'$ref': '#/components/links/getAddressByUserId'}})
+@app.output(PetOutSchem, links={'getAddressByUserId': {'$ref': '#/components/links/getAddressByUserId'}})
 def new_pet(data):
     pass
 ```
@@ -720,7 +720,7 @@ from apiflask import APIFlask, doc
 app = APIFlask(__name__)
 
 @app.get('/hello')
-@doc(summary='Say hello', description='Some description for the /hello')
+@app.doc(summary='Say hello', description='Some description for the /hello')
 def hello():
     return 'Hello'
 ```
@@ -734,7 +734,7 @@ There are two parameters for `tags` available:
 
 ```python hl_lines="2"
 @app.get('/')
-@doc(tag='Foo')
+@app.doc(tag='Foo')
 def hello():
     return 'Hello'
 ```
@@ -744,7 +744,7 @@ tags for one route (OpenAPI operation):
 
 ```python hl_lines="2"
 @app.get('/')
-@doc(tags=['Foo', 'Bar', 'Baz'])
+@app.doc(tags=['Foo', 'Bar', 'Baz'])
 def hello():
     return 'Hello'
 ```
@@ -754,7 +754,7 @@ def hello():
 
 As described above, APIFlask will add some responses based on the decorators you added
 on the view function (200, 400, 401, 404). Sometimes you may want to add alternative
-responses the view function will return, then you can use the `@doc(responses=...)`
+responses the view function will return, then you can use the `@app.doc(responses=...)`
 parameter, it accepts the following values:
 
 - A list of status code int, for example, `[404, 418]`.
@@ -765,7 +765,7 @@ already exist, the existing description will be overwritten.
 
 ```python hl_lines="2"
 @app.get('/')
-@doc(responses=[204, 404])
+@app.doc(responses=[204, 404])
 def hello():
     return 'Hello'
 ```
@@ -777,7 +777,7 @@ You can mark an operation as deprecated with the `deprecated` parameter:
 
 ```python hl_lines="2"
 @app.get('/')
-@doc(deprecated=True)
+@app.doc(deprecated=True)
 def hello():
     return 'Hello'
 ```
@@ -793,7 +793,7 @@ You can set `operationId` for a view funtion (operation) with the `operation_id`
 
 ```python hl_lines="2"
 @app.get('/')
-@doc(operation_id='myCustomHello')
+@app.doc(operation_id='myCustomHello')
 def hello():
     return 'Hello'
 ```
@@ -820,7 +820,7 @@ app = APIFlask(__name__)
 auth = HTTPTokenAuth()
 
 @app.get('/')
-@auth_required(auth)
+@app.auth_required(auth)
 def hello():
     return 'Hello'!
 ```
@@ -883,7 +883,7 @@ from apiflask import APIFlask, doc
 app = APIFlask(__name__)
 
 @app.get('/secret')
-@doc(hide=True)
+@app.doc(hide=True)
 def some_secret():
     return ''
 ```

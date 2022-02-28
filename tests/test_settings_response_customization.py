@@ -4,10 +4,6 @@ from openapi_spec_validator import validate_spec
 from .schemas import FooSchema
 from .schemas import HTTPErrorSchema
 from .schemas import ValidationErrorSchema
-from apiflask import auth_required
-from apiflask import doc
-from apiflask import input
-from apiflask import output
 from apiflask.schemas import EmptySchema
 from apiflask.schemas import http_error_schema
 from apiflask.security import HTTPBasicAuth
@@ -18,22 +14,22 @@ def test_response_description_config(app, client):
     app.config['NOT_FOUND_DESCRIPTION'] = 'Egg not found'
 
     @app.get('/foo')
-    @input(FooSchema)  # 200
+    @app.input(FooSchema)  # 200
     def only_body_schema(foo):
         pass
 
     @app.get('/bar')
-    @output(FooSchema, 201)
+    @app.output(FooSchema, 201)
     def create():
         pass
 
     @app.get('/baz')
-    @output(EmptySchema)  # 204
+    @app.output(EmptySchema)  # 204
     def no_schema():
         pass
 
     @app.get('/spam')
-    @output(FooSchema, 206)
+    @app.output(FooSchema, 206)
     def spam():
         pass
 
@@ -61,7 +57,7 @@ def test_validation_error_status_code_and_description(app, client):
     app.config['VALIDATION_ERROR_DESCRIPTION'] = 'Bad'
 
     @app.post('/foo')
-    @input(FooSchema)
+    @app.input(FooSchema)
     def foo():
         pass
 
@@ -81,7 +77,7 @@ def test_validation_error_schema(app, client, schema):
     app.config['VALIDATION_ERROR_SCHEMA'] = schema
 
     @app.post('/foo')
-    @input(FooSchema)
+    @app.input(FooSchema)
     def foo():
         pass
 
@@ -98,7 +94,7 @@ def test_validation_error_schema_bad_type(app):
     app.config['VALIDATION_ERROR_SCHEMA'] = 'schema'
 
     @app.post('/foo')
-    @input(FooSchema)
+    @app.input(FooSchema)
     def foo():
         pass
 
@@ -112,7 +108,7 @@ def test_auth_error_status_code_and_description(app, client):
     auth = HTTPBasicAuth()
 
     @app.post('/foo')
-    @auth_required(auth)
+    @app.auth_required(auth)
     def foo():
         pass
 
@@ -128,7 +124,7 @@ def test_auth_error_schema(app, client):
     auth = HTTPBasicAuth()
 
     @app.post('/foo')
-    @auth_required(auth)
+    @app.auth_required(auth)
     def foo():
         pass
 
@@ -141,8 +137,8 @@ def test_auth_error_schema(app, client):
 
 def test_http_auth_error_response(app, client):
     @app.get('/foo')
-    @output(FooSchema)
-    @doc(responses={204: 'empty', 400: 'bad', 404: 'not found', 500: 'server error'})
+    @app.output(FooSchema)
+    @app.doc(responses={204: 'empty', 400: 'bad', 404: 'not found', 500: 'server error'})
     def foo():
         pass
 
@@ -167,8 +163,8 @@ def test_http_error_schema(app, client, schema):
     app.config['HTTP_ERROR_SCHEMA'] = schema
 
     @app.get('/foo')
-    @output(FooSchema)
-    @doc(responses={400: 'bad', 404: 'not found', 500: 'server error'})
+    @app.output(FooSchema)
+    @app.doc(responses={400: 'bad', 404: 'not found', 500: 'server error'})
     def foo():
         pass
 
@@ -183,8 +179,8 @@ def test_http_error_schema_bad_type(app):
     app.config['HTTP_ERROR_SCHEMA'] = 'schema'
 
     @app.get('/foo')
-    @output(FooSchema)
-    @doc(responses={400: 'bad', 404: 'not found', 500: 'server error'})
+    @app.output(FooSchema)
+    @app.doc(responses={400: 'bad', 404: 'not found', 500: 'server error'})
     def foo():
         pass
 

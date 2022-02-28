@@ -9,7 +9,7 @@ APIFlask is a lightweight Python web API framework based on [Flask](https://gith
 
 With APIFlask, you will have:
 
-- More sugars for view function (`@input()`, `@output()`, `@app.get()`, `@app.post()` and more)
+- More sugars for view function (`@app.input()`, `@app.output()`, `@app.get()`, `@app.post()` and more)
 - Automatic request validation and deserialization (with [webargs](https://github.com/marshmallow-code/webargs))
 - Automatic response formatting and serialization (with [marshmallow](https://github.com/marshmallow-code/marshmallow))
 - Automatic [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) (OAS, formerly Swagger Specification) document generation (with [apispec](https://github.com/marshmallow-code/apispec))

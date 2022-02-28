@@ -54,8 +54,8 @@ Assume a view like this:
 
 ```python
 @app.get('/<category>/articles/<int:article_id>')  # category, article_id
-@input(ArticleQuerySchema, location='query')  # query
-@input(ArticleInSchema)  # data
+@app.input(ArticleQuerySchema, location='query')  # query
+@app.input(ArticleInSchema)  # data
 def get_article(category, article_id, query, data):
     pass
 ```

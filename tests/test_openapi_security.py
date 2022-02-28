@@ -1,7 +1,6 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from apiflask import auth_required
 from apiflask import HTTPBasicAuth
 from apiflask import HTTPTokenAuth
 
@@ -10,7 +9,7 @@ def test_httpbasicauth_security_scheme(app, client):
     auth = HTTPBasicAuth()
 
     @app.get('/')
-    @auth_required(auth)
+    @app.auth_required(auth)
     def foo():
         pass
 
@@ -28,7 +27,7 @@ def test_httptokenauth_security_scheme(app, client):
     auth = HTTPTokenAuth()
 
     @app.get('/')
-    @auth_required(auth)
+    @app.auth_required(auth)
     def foo():
         pass
 
@@ -46,7 +45,7 @@ def test_apikey_auth_security_scheme(app, client):
     auth = HTTPTokenAuth('apiKey', header='X-API-Key')
 
     @app.get('/')
-    @auth_required(auth)
+    @app.auth_required(auth)
     def foo():
         pass
 
@@ -66,7 +65,7 @@ def test_unknown_auth_security_scheme(app):
     auth = HTTPDigestAuth()
 
     @app.get('/')
-    @auth_required(auth)
+    @app.auth_required(auth)
     def foo():
         pass
 
@@ -80,17 +79,17 @@ def test_multiple_auth_names(app, client):
     auth3 = HTTPBasicAuth()
 
     @app.get('/foo')
-    @auth_required(auth1)
+    @app.auth_required(auth1)
     def foo():
         pass
 
     @app.get('/bar')
-    @auth_required(auth2)
+    @app.auth_required(auth2)
     def bar():
         pass
 
     @app.get('/baz')
-    @auth_required(auth3)
+    @app.auth_required(auth3)
     def baz():
         pass
 
@@ -107,12 +106,12 @@ def test_security_schemes_description(app, client):
     token_auth = HTTPTokenAuth(description='some description for bearer auth')
 
     @app.get('/foo')
-    @auth_required(basic_auth)
+    @app.auth_required(basic_auth)
     def foo():
         pass
 
     @app.get('/bar')
-    @auth_required(token_auth)
+    @app.auth_required(token_auth)
     def bar():
         pass
 

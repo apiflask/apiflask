@@ -1,7 +1,7 @@
 import random
 
 from flask_sqlalchemy import SQLAlchemy
-from apiflask import APIFlask, Schema, input, output, PaginationSchema, pagination_builder
+from apiflask import APIFlask, Schema, PaginationSchema, pagination_builder
 from apiflask.fields import Integer, String, List, Nested
 from apiflask.validators import Range
 
@@ -51,14 +51,14 @@ def say_hello():
 
 
 @app.get('/pets/<int:pet_id>')
-@output(PetOutSchema)
+@app.output(PetOutSchema)
 def get_pet(pet_id):
     return PetModel.query.get_or_404(pet_id)
 
 
 @app.get('/pets')
-@input(PetQuerySchema, 'query')
-@output(PetsOutSchema)
+@app.input(PetQuerySchema, 'query')
+@app.output(PetsOutSchema)
 def get_pets(query):
     pagination = PetModel.query.paginate(
         page=query['page'],

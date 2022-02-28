@@ -60,8 +60,8 @@ def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
 
 
     @app.get('/pets')
-    @input(PetQuerySchema, 'query')
-    @output(PetsOutSchema)
+    @app.input(PetQuerySchema, 'query')
+    @app.output(PetsOutSchema)
     def get_pets(query):
         pagination = PetModel.query.paginate(
             page=query['page'],

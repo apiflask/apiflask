@@ -2,7 +2,6 @@ import pytest
 from openapi_spec_validator import validate_spec
 
 from .schemas import FooSchema
-from apiflask import output
 from apiflask import Schema
 from apiflask.fields import Field
 from apiflask.fields import Integer
@@ -56,7 +55,7 @@ def test_output_base_response(app, client):
     app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
 
     @app.get('/')
-    @output(FooSchema)
+    @app.output(FooSchema)
     def foo():
         data = {'id': '123', 'name': 'test'}
         return {'message': 'Success.', 'status_code': '200', 'data': data}
@@ -86,7 +85,7 @@ def test_base_response_spec(app, client, base_schema):
     app.config['BASE_RESPONSE_SCHEMA'] = base_schema
 
     @app.get('/')
-    @output(FooSchema)
+    @app.output(FooSchema)
     def foo():
         data = {'id': '123', 'name': 'test'}
         return {'message': 'Success.', 'status_code': '200', 'data': data}
@@ -126,7 +125,7 @@ def test_base_response_data_key(app, client):
     app.config['BASE_RESPONSE_DATA_KEY '] = 'data'
 
     @app.get('/')
-    @output(FooSchema)
+    @app.output(FooSchema)
     def foo():
         data = {'id': '123', 'name': 'test'}
         return {'message': 'Success.', 'status_code': '200', 'info': data}
@@ -139,7 +138,7 @@ def test_base_response_204(app, client):
     app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
 
     @app.get('/')
-    @output({}, 204)
+    @app.output({}, 204)
     def foo():
         return ''
 
@@ -153,7 +152,7 @@ def test_base_response_many(app, client):
     app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
 
     @app.get('/')
-    @output(FooSchema(many=True))
+    @app.output(FooSchema(many=True))
     def foo():
         data = {'id': '123', 'name': 'test'}
         return {'message': 'Success.', 'status_code': '200', 'data': data}

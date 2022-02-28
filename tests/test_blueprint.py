@@ -2,7 +2,6 @@ from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from apiflask import APIBlueprint
-from apiflask import auth_required
 from apiflask.security import HTTPBasicAuth
 from apiflask.security import HTTPTokenAuth
 
@@ -24,7 +23,7 @@ def test_blueprint_enable_openapi(app, client):
     auth = HTTPBasicAuth()
 
     @app.get('/hello')
-    @auth_required(auth)
+    @app.auth_required(auth)
     def hello():
         pass
 
@@ -32,7 +31,7 @@ def test_blueprint_enable_openapi(app, client):
     auth = HTTPTokenAuth()
 
     @bp.before_request
-    @auth_required(auth)
+    @bp.auth_required(auth)
     def before():
         pass
 
@@ -57,7 +56,7 @@ def test_blueprint_enable_openapi_with_methodview(app, client):
     auth = HTTPBasicAuth()
 
     @app.get('/hello')
-    @auth_required(auth)
+    @app.auth_required(auth)
     def hello():
         pass
 
@@ -65,7 +64,7 @@ def test_blueprint_enable_openapi_with_methodview(app, client):
     auth = HTTPTokenAuth()
 
     @bp.before_request
-    @auth_required(auth)
+    @bp.auth_required(auth)
     def before():
         pass
 

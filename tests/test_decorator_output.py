@@ -4,25 +4,23 @@ from openapi_spec_validator import validate_spec
 
 from .schemas import FooSchema
 from .schemas import QuerySchema
-from apiflask import input
-from apiflask import output
 from apiflask.fields import String
 
 
 def test_output(app, client):
     @app.route('/foo')
-    @output(FooSchema)
+    @app.output(FooSchema)
     def foo():
         return {'name': 'bar'}
 
     @app.route('/bar')
-    @output(FooSchema, status_code=201)
+    @app.output(FooSchema, status_code=201)
     def bar():
         return {'name': 'foo'}
 
     @app.route('/baz')
-    @input(QuerySchema, 'query')
-    @output(FooSchema, status_code=201)
+    @app.input(QuerySchema, 'query')
+    @app.output(FooSchema, status_code=201)
     def baz(query):
         if query['id'] == 1:
             return {'name': 'baz'}, 202
@@ -64,16 +62,16 @@ def test_output(app, client):
 def test_output_with_methodview(app, client):
     @app.route('/')
     class Foo(MethodView):
-        @output(FooSchema)
+        @app.output(FooSchema)
         def get(self):
             return {'name': 'bar'}
 
-        @output(FooSchema, status_code=201)
+        @app.output(FooSchema, status_code=201)
         def post(self):
             return {'name': 'foo'}
 
-        @input(QuerySchema, 'query')
-        @output(FooSchema, status_code=201)
+        @app.input(QuerySchema, 'query')
+        @app.output(FooSchema, status_code=201)
         def delete(self, query):
             if query['id'] == 1:
                 return {'name': 'baz'}, 202
@@ -118,27 +116,27 @@ def test_output_with_dict_schema(app, client):
     }
 
     @app.get('/foo')
-    @output(dict_schema, schema_name='MyName')
+    @app.output(dict_schema, schema_name='MyName')
     def foo():
         return ''
 
     @app.get('/bar')
-    @output(dict_schema, schema_name='MyName')
+    @app.output(dict_schema, schema_name='MyName')
     def bar():
         return {'name': 'peter'}
 
     @app.get('/baz')
-    @output(dict_schema)
+    @app.output(dict_schema)
     def baz():
         pass
 
     @app.get('/spam')
-    @output(dict_schema)
+    @app.output(dict_schema)
     def spam():
         pass
 
     @app.get('/eggs')
-    @output({})
+    @app.output({})
     def eggs():
         pass
 
@@ -186,12 +184,12 @@ def test_output_body_example(app, client):
     }
 
     @app.get('/foo')
-    @output(FooSchema, example=example)
+    @app.output(FooSchema, example=example)
     def foo():
         pass
 
     @app.get('/bar')
-    @output(FooSchema, examples=examples)
+    @app.output(FooSchema, examples=examples)
     def bar():
         pass
 
@@ -206,13 +204,13 @@ def test_output_body_example(app, client):
 
 def test_output_with_empty_dict_as_schema(app, client):
     @app.delete('/foo')
-    @output({}, 204)
+    @app.output({}, 204)
     def delete_foo():
         return ''
 
     @app.route('/bar')
     class Bar(MethodView):
-        @output({}, 204)
+        @app.output({}, 204)
         def delete(self):
             return ''
 
@@ -230,7 +228,7 @@ def test_output_with_empty_dict_as_schema(app, client):
 
 def test_output_response_object_directly(app, client):
     @app.get('/foo')
-    @output(FooSchema)
+    @app.output(FooSchema)
     def foo():
         return make_response({'message': 'hello'})
 
@@ -252,7 +250,7 @@ def test_response_links(app, client):
     }
 
     @app.get('/foo')
-    @output(FooSchema, links=links)
+    @app.output(FooSchema, links=links)
     def foo():
         pass
 
@@ -276,7 +274,7 @@ def test_response_links_ref(app, client):
         return spec
 
     @app.get('/foo')
-    @output(FooSchema, links=links)
+    @app.output(FooSchema, links=links)
     def foo():
         pass
 

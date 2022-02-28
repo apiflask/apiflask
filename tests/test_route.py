@@ -4,10 +4,7 @@ from openapi_spec_validator import validate_spec
 
 from .schemas import FooSchema
 from apiflask import APIBlueprint
-from apiflask import auth_required
-from apiflask import doc
 from apiflask import HTTPTokenAuth
-from apiflask import output
 
 
 @pytest.mark.parametrize('method', ['get', 'post', 'put', 'patch', 'delete'])
@@ -16,7 +13,7 @@ def test_route_shortcuts(app, client, method):
     client_method = getattr(client, method)
 
     @route_method('/pet')
-    @output(FooSchema)
+    @app.output(FooSchema)
     def test_shortcuts():
         return {'name': method}
 
@@ -110,7 +107,7 @@ def test_class_attribute_decorators(app, client):
 
     @app.route('/')
     class Foo(MethodView):
-        decorators = [auth_required(auth), doc(responses=[404])]
+        decorators = [app.auth_required(auth), app.doc(responses=[404])]
 
         def get(self):
             pass
@@ -135,16 +132,16 @@ def test_class_attribute_decorators(app, client):
 def test_overwrite_class_attribute_decorators(app, client):
     @app.route('/')
     class Foo(MethodView):
-        decorators = [doc(deprecated=True, tag='foo')]
+        decorators = [app.doc(deprecated=True, tag='foo')]
 
         def get(self):
             pass
 
-        @doc(deprecated=False)
+        @app.doc(deprecated=False)
         def post(self):
             pass
 
-        @doc(tag='bar')
+        @app.doc(tag='bar')
         def delete(self):
             pass
 
