@@ -14,8 +14,6 @@ coverage[toml]==6.3.1
     # via pytest-cov
 flake8==4.0.1
     # via -r requirements/tests.in
-importlib-resources==5.4.0
-    # via jsonschema
 iniconfig==1.1.1
     # via pytest
 jsonschema==4.4.0
@@ -42,7 +40,7 @@ pyparsing==3.0.7
     # via packaging
 pyrsistent==0.18.1
     # via jsonschema
-pytest==7.0.0
+pytest==7.0.1
     # via
     #   -r requirements/tests.in
     #   pytest-cov
@@ -54,8 +52,6 @@ tomli==2.0.1
     # via
     #   coverage
     #   pytest
-zipp==3.7.0
-    # via importlib-resources
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
