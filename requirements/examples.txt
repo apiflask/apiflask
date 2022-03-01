@@ -6,10 +6,12 @@
 #
 click==8.0.3
     # via flask
-flask==2.0.2
+flask==2.0.3
     # via flask-sqlalchemy
 flask-sqlalchemy==2.5.1
     # via -r requirements/examples.in
+greenlet==1.1.2
+    # via sqlalchemy
 itsdangerous==2.0.1
     # via flask
 jinja2==3.0.3
