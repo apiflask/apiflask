@@ -94,10 +94,10 @@ See *[Configuration](/configuration/#swagger-ui-and-redoc)* for the
 introduction and examples of these configuration variables.
 
 
-## Use different CND server for Swagger UI/Redoc resources
+## Use different CDN server for Swagger UI/Redoc resources
 
 Each resource (JavaScript/CSS files) URL has a configuration variable. You can pass
-the URL from your preferred CND server to the corresponding configuration variables:
+the URL from your preferred CDN server to the corresponding configuration variables:
 
 - `REDOC_STANDALONE_JS`
 - `SWAGGER_UI_CSS`
