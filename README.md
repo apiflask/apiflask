@@ -54,7 +54,7 @@ For Windows:
 ## Example
 
 ```python
-from apiflask import APIFlask, Schema, input, output, abort
+from apiflask import APIFlask, Schema, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
@@ -84,7 +84,7 @@ def say_hello():
 
 
 @app.get('/pets/<int:pet_id>')
-@output(PetOutSchema)
+@app.output(PetOutSchema)
 def get_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)
@@ -94,8 +94,8 @@ def get_pet(pet_id):
 
 
 @app.patch('/pets/<int:pet_id>')
-@input(PetInSchema(partial=True))
-@output(PetOutSchema)
+@app.input(PetInSchema(partial=True))
+@app.output(PetOutSchema)
 def update_pet(pet_id, data):
     # the validated and parsed input data will
     # be injected into the view function as a dict
@@ -106,11 +106,16 @@ def update_pet(pet_id, data):
     return pets[pet_id]
 ```
 
+Notice: The `input`, `output`, `doc`, and `auth_required` decorators are now bound
+to application/blueprint instances, use standalone decorators if you are still using
+APIFlask < 0.12, see [here](https://apiflask.com/usage/#move-to-new-api-decorators)
+for more details.
+
 <details>
 <summary>You can also use class-based views with <code>MethodView</code></summary>
 
 ```python
-from apiflask import APIFlask, Schema, input, output, abort
+from apiflask import APIFlask, Schema, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 from flask.views import MethodView
@@ -146,15 +151,15 @@ class Hello(MethodView):
 @app.route('/pets/<int:pet_id>')
 class Pet(MethodView):
 
-    @output(PetOutSchema)
+    @app.output(PetOutSchema)
     def get(self, pet_id):
         """Get a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
         return pets[pet_id]
 
-    @input(PetInSchema(partial=True))
-    @output(PetOutSchema)
+    @app.input(PetInSchema(partial=True))
+    @app.output(PetOutSchema)
     def patch(self, pet_id, data):
         """Update a pet"""
         if pet_id > len(pets) - 1:
