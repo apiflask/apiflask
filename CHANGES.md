@@ -2,7 +2,7 @@
 
 [0.12.0 milestone](https://github.com/greyli/apiflask/milestone/8)
 
-Released: --
+Released: 2022/3/2
 
 - Move standalone decorators (input, output, auth_required, doc) to APIFlask/APIBlueprint
   classes. The old decorators are deprecated and will be removed in 1.0. ([issue #187][issue_187]).
