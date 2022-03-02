@@ -1,6 +1,11 @@
-## Version 0.12.0
+## Version 1.0.0
 
-[0.12.0 milestone](https://github.com/greyli/apiflask/milestone/8)
+[1.0.0 milestone](https://github.com/greyli/apiflask/milestone/3)
+
+Released: --
+
+
+## Version 0.12.0
 
 Released: 2022/3/2
 
