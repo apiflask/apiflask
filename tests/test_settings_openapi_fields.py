@@ -119,3 +119,25 @@ def test_overwirte_info(app, client):
     assert rv.json['info']['termsOfService'] == app.config['TERMS_OF_SERVICE']
     assert rv.json['info']['contact'] == app.config['CONTACT']
     assert rv.json['info']['license'] == app.config['LICENSE']
+
+
+def test_security_shemes(app, client):
+    app.config['SECURITY_SCHEMES'] = {
+        'ApiKeyAuth': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'X-API-Key'
+        },
+        'BasicAuth': {
+            'type': 'http',
+            'scheme': 'basic',
+        },
+    }
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['components']['securitySchemes']['ApiKeyAuth'] == \
+        app.config['SECURITY_SCHEMES']['ApiKeyAuth']
+    assert rv.json['components']['securitySchemes']['BasicAuth'] == \
+        app.config['SECURITY_SCHEMES']['BasicAuth']

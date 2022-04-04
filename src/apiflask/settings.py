@@ -16,6 +16,7 @@ DESCRIPTION: t.Optional[str] = None
 TERMS_OF_SERVICE: t.Optional[str] = None
 CONTACT: t.Optional[t.Dict[str, str]] = None
 LICENSE: t.Optional[t.Dict[str, str]] = None
+SECURITY_SCHEMES: t.Optional[t.Dict[str, t.Any]] = None
 # OpenAPI spec
 SPEC_FORMAT: str = 'json'
 YAML_SPEC_MIMETYPE: str = 'text/vnd.yaml'
