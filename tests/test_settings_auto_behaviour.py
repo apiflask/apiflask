@@ -268,6 +268,54 @@ def test_auto_auth_error_response(app, client, config_value):
 
 
 @pytest.mark.parametrize('config_value', [True, False])
+def test_blueprint_level_auto_auth_error_response(app, client, config_value):
+    app.config['AUTO_AUTH_ERROR_RESPONSE'] = config_value
+    bp = APIBlueprint('auth', __name__)
+    no_auth_bp = APIBlueprint('no-auth', __name__)
+
+    auth = HTTPBasicAuth()
+
+    @bp.before_request
+    @bp.auth_required(auth)
+    def before():
+        pass
+
+    @bp.post('/foo')
+    def foo():
+        pass
+
+    @bp.post('/bar')
+    def bar():
+        pass
+
+    @no_auth_bp.post('/baz')
+    def baz():
+        return 'no auth'
+
+    app.register_blueprint(bp)
+    app.register_blueprint(no_auth_bp)
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+
+    assert 'auth' in app._auth_blueprints
+    assert 'no-auth' not in app._auth_blueprints
+
+    assert bool('401' in rv.json['paths']['/foo']['post']['responses']) is config_value
+    assert bool('401' in rv.json['paths']['/bar']['post']['responses']) is config_value
+    assert '401' not in rv.json['paths']['/baz']['post']['responses']
+    if config_value:
+        assert 'HTTPError' in rv.json['components']['schemas']
+        assert '#/components/schemas/HTTPError' in \
+            rv.json['paths']['/foo']['post']['responses']['401'][
+                'content']['application/json']['schema']['$ref']
+        assert '#/components/schemas/HTTPError' in \
+            rv.json['paths']['/bar']['post']['responses']['401'][
+                'content']['application/json']['schema']['$ref']
+
+
+@pytest.mark.parametrize('config_value', [True, False])
 def test_auto_404_error(app, client, config_value):
     app.config['AUTO_404_RESPONSE'] = config_value
 

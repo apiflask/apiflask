@@ -318,6 +318,8 @@ class APIFlask(APIScaffold, Flask):
         self.schema_name_resolver = self._schema_name_resolver
 
         self._spec: t.Optional[t.Union[dict, str]] = None
+        self._auth_blueprints: t.Dict[t.Optional[str], t.Dict[str, t.Any]] = {}
+
         self._register_openapi_blueprint()
         self._register_error_handlers()
 
@@ -711,6 +713,48 @@ class APIFlask(APIScaffold, Flask):
                     tags.append(tag)  # type: ignore
         return tags  # type: ignore
 
+    def _collect_security_info(self) -> t.Tuple[t.List[str], t.List[HTTPAuthType]]:
+        # security schemes
+        auth_names: t.List[str] = []
+        auth_schemes: t.List[HTTPAuthType] = []
+
+        def _update_auth_info(auth: HTTPAuthType) -> None:
+            # update auth_schemes and auth_names
+            auth_schemes.append(auth)
+            auth_name: str = get_auth_name(auth, auth_names)
+            auth_names.append(auth_name)
+
+        # collect auth info on blueprint before_request functions
+        for blueprint_name, funcs in self.before_request_funcs.items():
+            # skip app-level before_request functions (blueprint_name is None)
+            if blueprint_name is None or \
+               not self.blueprints[blueprint_name].enable_openapi:  # type: ignore
+                continue
+            for f in funcs:
+                if hasattr(f, '_spec'):  # pragma: no cover
+                    auth = f._spec.get('auth')  # type: ignore
+                    if auth is not None and auth not in auth_schemes:
+                        self._auth_blueprints[blueprint_name] = {
+                            'auth': auth,
+                            'roles': f._spec.get('roles')  # type: ignore
+                        }
+                        _update_auth_info(auth)
+        # collect auth info on view functions
+        for rule in self.url_map.iter_rules():
+            view_func: ViewFuncType = self.view_functions[rule.endpoint]  # type: ignore
+            if hasattr(view_func, '_spec'):
+                auth = view_func._spec.get('auth')
+                if auth is not None and auth not in auth_schemes:
+                    _update_auth_info(auth)
+            # method views
+            if hasattr(view_func, '_method_spec'):
+                for method_spec in view_func._method_spec.values():
+                    auth = method_spec.get('auth')
+                    if auth is not None and auth not in auth_schemes:
+                        _update_auth_info(auth)
+
+        return auth_names, auth_schemes
+
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`.
 
@@ -754,45 +798,7 @@ class APIFlask(APIScaffold, Flask):
             ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = \
                 ('string', 'url')
 
-        # security schemes
-        auth_names: t.List[str] = []
-        auth_schemes: t.List[HTTPAuthType] = []
-        auth_blueprints: t.Dict[t.Optional[str], t.Dict[str, t.Any]] = {}
-
-        def _update_auth_info(auth: HTTPAuthType) -> None:
-            # update auth_schemes and auth_names
-            auth_schemes.append(auth)
-            auth_name: str = get_auth_name(auth, auth_names)
-            auth_names.append(auth_name)
-
-        # detect auth_required on before_request functions
-        for blueprint_name, funcs in self.before_request_funcs.items():
-            if blueprint_name is not None and \
-               not self.blueprints[blueprint_name].enable_openapi:  # type: ignore
-                continue
-            for f in funcs:
-                if hasattr(f, '_spec'):  # pragma: no cover
-                    auth = f._spec.get('auth')  # type: ignore
-                    if auth is not None and auth not in auth_schemes:
-                        auth_blueprints[blueprint_name] = {
-                            'auth': auth,
-                            'roles': f._spec.get('roles')  # type: ignore
-                        }
-                        _update_auth_info(auth)
-        # collect auth info
-        for rule in self.url_map.iter_rules():
-            view_func: ViewFuncType = self.view_functions[rule.endpoint]  # type: ignore
-            if hasattr(view_func, '_spec'):
-                auth = view_func._spec.get('auth')
-                if auth is not None and auth not in auth_schemes:
-                    _update_auth_info(auth)
-            # method views
-            if hasattr(view_func, '_method_spec'):
-                for method_spec in view_func._method_spec.values():
-                    auth = method_spec.get('auth')
-                    if auth is not None and auth not in auth_schemes:
-                        _update_auth_info(auth)
-
+        auth_names, auth_schemes = self._collect_security_info()
         security, security_schemes = get_security_and_security_schemes(
             auth_names, auth_schemes
         )
@@ -980,10 +986,11 @@ class APIFlask(APIScaffold, Flask):
                     )
 
                 # add authentication error response
+                has_bp_level_auth = blueprint_name is not None and \
+                    blueprint_name in self._auth_blueprints
+                view_func_auth = view_func._spec.get('auth')
                 if self.config['AUTO_AUTH_ERROR_RESPONSE'] and \
-                   (view_func._spec.get('auth') or (
-                       blueprint_name is not None and blueprint_name in auth_blueprints
-                   )):
+                   (has_bp_level_auth or view_func_auth):
                     status_code: str = str(  # type: ignore
                         self.config['AUTH_ERROR_STATUS_CODE']
                     )
@@ -1046,24 +1053,16 @@ class APIFlask(APIScaffold, Flask):
                             'application/json']['examples'] = examples
 
                 # security
-                # app-wide auth
-                if None in auth_blueprints:
+                if has_bp_level_auth:
                     operation['security'] = [{
-                        security[auth_blueprints[None]['auth']]:
-                            auth_blueprints[None]['roles']
-                    }]
-
-                # blueprint-wide auth
-                if blueprint_name is not None and blueprint_name in auth_blueprints:
-                    operation['security'] = [{
-                        security[auth_blueprints[blueprint_name]['auth']]:
-                            auth_blueprints[blueprint_name]['roles']
+                        security[self._auth_blueprints[blueprint_name]['auth']]:
+                            self._auth_blueprints[blueprint_name]['roles']
                     }]
 
                 # view-wide auth
-                if view_func._spec.get('auth'):
+                if view_func_auth:
                     operation['security'] = [{
-                        security[view_func._spec['auth']]: view_func._spec['roles']
+                        security[view_func_auth]: view_func._spec['roles']
                     }]
 
                 operations[method.lower()] = operation
