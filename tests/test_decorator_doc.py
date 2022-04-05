@@ -1,3 +1,4 @@
+import pytest
 from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
@@ -265,3 +266,40 @@ def test_doc_operationid(app, client):
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['get']['operationId'] == 'getSomeFoo'
     assert 'operationId' not in rv.json['paths']['/bar']['get']
+
+
+def test_doc_security(app, client):
+    @app.route('/foo')
+    @app.doc(security='ApiKeyAuth')
+    def foo():
+        pass
+
+    @app.route('/bar')
+    @app.doc(security=['BasicAuth', 'ApiKeyAuth'])
+    def bar():
+        pass
+
+    @app.route('/baz')
+    @app.doc(security=[{'OAuth2': ['read', 'write']}])
+    def baz():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['get']['security'] == [{'ApiKeyAuth': []}]
+    assert rv.json['paths']['/bar']['get']['security'] == [
+        {'BasicAuth': []}, {'ApiKeyAuth': []}
+    ]
+    assert rv.json['paths']['/baz']['get']['security'] == [{'OAuth2': ['read', 'write']}]
+
+
+def test_doc_security_invalid_value(app):
+
+    @app.route('/foo')
+    @app.doc(security={'BasicAuth': []})
+    def foo():
+        pass
+
+    with pytest.raises(ValueError):
+        app.spec

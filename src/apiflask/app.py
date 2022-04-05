@@ -175,6 +175,21 @@ class APIFlask(APIScaffold, Flask):
 
             This attribute can also be configured from the config with the
             `TERMS_OF_SERVICE` configuration key. Defaults to `None`.
+        security_schemes: The security schemes of the API
+            (openapi.components.securitySchemes). Example:
+
+            ```python
+            app.security_schemes = [
+                'ApiKeyAuth': {
+                    'type': 'apiKey',
+                    'in': 'header',
+                    'name': 'X-API-Key'
+                }
+            ]
+            ```
+
+            This attribute can also be configured from the config with the
+            `SECURITY_SCHEMES` configuration key. Defaults to `None`.
         spec_callback: It stores the function object registerd by
             [`spec_processor`][apiflask.APIFlask.spec_processor]. You can also
             pass a callback function to it directly without using `spec_processor`.
@@ -225,6 +240,10 @@ class APIFlask(APIScaffold, Flask):
 
     *Version changed: 0.9.0*
 
+    - Add instance attribute `security_schemes` as an alias of config `SECURITY_SCHEMES`.
+
+    *Version changed: 0.9.0*
+
     - Add instance attribute `schema_name_resolver`.
     """
 
@@ -237,6 +256,8 @@ class APIFlask(APIScaffold, Flask):
     license: t.Optional[t.Dict[str, str]] = ConfigAttribute('LICENSE')  # type: ignore
     external_docs: t.Optional[t.Dict[str, str]] = ConfigAttribute('EXTERNAL_DOCS')  # type: ignore
     terms_of_service: t.Optional[str] = ConfigAttribute('TERMS_OF_SERVICE')  # type: ignore
+    security_schemes: t.Optional[t.Dict[str, t.Any]] = \
+        ConfigAttribute('SECURITY_SCHEMES')  # type: ignore
 
     def __init__(
         self,
@@ -799,10 +820,14 @@ class APIFlask(APIScaffold, Flask):
             ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = \
                 ('string', 'url')
 
-        auth_names, auth_schemes = self._collect_security_info()
-        security, security_schemes = get_security_and_security_schemes(
-            auth_names, auth_schemes
-        )
+        if self.config['SECURITY_SCHEMES'] is not None:
+            security_schemes = self.config['SECURITY_SCHEMES']
+        else:
+            auth_names, auth_schemes = self._collect_security_info()
+            security, security_schemes = get_security_and_security_schemes(
+                auth_names, auth_schemes
+            )
+
         for name, scheme in security_schemes.items():
             spec.components.security_scheme(name, scheme)
 
@@ -990,8 +1015,9 @@ class APIFlask(APIScaffold, Flask):
                 has_bp_level_auth = blueprint_name is not None and \
                     blueprint_name in self._auth_blueprints
                 view_func_auth = view_func._spec.get('auth')
+                custom_security = view_func._spec.get('security')
                 if self.config['AUTO_AUTH_ERROR_RESPONSE'] and \
-                   (has_bp_level_auth or view_func_auth):
+                   (has_bp_level_auth or view_func_auth or custom_security):
                     status_code: str = str(  # type: ignore
                         self.config['AUTH_ERROR_STATUS_CODE']
                     )
@@ -1054,17 +1080,34 @@ class APIFlask(APIScaffold, Flask):
                             'application/json']['examples'] = examples
 
                 # security
-                if has_bp_level_auth:
-                    bp_auth_info = self._auth_blueprints[blueprint_name]  # type: ignore
-                    operation['security'] = [{
-                        security[bp_auth_info['auth']]: bp_auth_info['roles']
-                    }]
+                if custom_security:  # custom security
+                    # TODO: validate the security name and the format
+                    operation['security'] = []
+                    operation_security = custom_security
+                    if isinstance(operation_security, str):  # 'A' -> [{'A': []}]
+                        operation['security'] = [{operation_security: []}]
+                    elif isinstance(operation_security, list):
+                        # ['A', 'B'] -> [{'A': []}, {'B': []}]
+                        if isinstance(operation_security[0], str):
+                            operation['security'] = [{name: []} for name in operation_security]
+                        else:
+                            operation['security'] = operation_security
+                    else:
+                        raise ValueError(
+                            'The operation security must be a string or a list.'
+                        )
+                else:
+                    if has_bp_level_auth:
+                        bp_auth_info = self._auth_blueprints[blueprint_name]  # type: ignore
+                        operation['security'] = [{
+                            security[bp_auth_info['auth']]: bp_auth_info['roles']
+                        }]
 
-                # view-wide auth
-                if view_func_auth:
-                    operation['security'] = [{
-                        security[view_func_auth]: view_func._spec['roles']
-                    }]
+                    # view-wide auth
+                    if view_func_auth:
+                        operation['security'] = [{
+                            security[view_func_auth]: view_func._spec['roles']
+                        }]
 
                 operations[method.lower()] = operation
 

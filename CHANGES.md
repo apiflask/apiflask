@@ -7,8 +7,11 @@ Released: --
 - Add a base class (`apiflask.scaffold.APIScaffold`) for common logic of `APIFlask` and
   `APIBlueprint`, move route decorators and API-related decorators to this base class
   to improve the IDE auto-completion ([issue #231][issue_231]).
+- Support customizing OpenAPI securitySchemes and operation security, this makes it
+  possible to use any external authentication libraries ([pull #232][pull_232]).
 
 [issue_231]: https://github.com/greyli/apiflask/issues/231
+[pull_232]: https://github.com/greyli/apiflask/pull/232
 
 
 ## Version 0.12.0
