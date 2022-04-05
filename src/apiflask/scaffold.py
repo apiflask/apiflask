@@ -5,6 +5,7 @@ from functools import wraps
 from flask import current_app
 from flask import jsonify
 from flask import Response
+from flask.views import MethodViewType
 from marshmallow import ValidationError as MarshmallowValidationError
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 
@@ -65,11 +66,47 @@ def _generate_schema_from_mapping(
     return Schema.from_dict(schema, name=schema_name)()  # type: ignore
 
 
-def api_decorators(cls):
-    """A class decorator that adds API related decorators to APIFlask and APIBlueprint.
+class APIScaffold:
+    """A base class for [`APIFlask`][apiflask.app.APIFlask] and
+    [`APIBlueprint`][apiflask.blueprint.APIBlueprint].
 
-    *Version added: 0.12.0*
+    This class contains the route shortcut decorators (i.e. `get`, `post`, etc.) and
+    API-related decorators (i.e. `auth_required`, `input`, `output`, `doc`).
+
+    *Version added: 1.0*
     """
+    def _method_route(self, method: str, rule: str, options: t.Any):
+        if 'methods' in options:
+            raise RuntimeError('Use the "route" decorator to use the "methods" argument.')
+
+        def decorator(f):
+            if isinstance(f, MethodViewType):
+                raise RuntimeError(
+                    'The route shortcuts cannot be used with "MethodView" classes, '
+                    'use the "route" decorator instead.'
+                )
+            return self.route(rule, methods=[method], **options)(f)
+        return decorator
+
+    def get(self, rule: str, **options: t.Any):
+        """Shortcut for `app.route()` or `app.route(methods=['GET'])`."""
+        return self._method_route('GET', rule, options)
+
+    def post(self, rule: str, **options: t.Any):
+        """Shortcut for `app.route(methods=['POST'])`."""
+        return self._method_route('POST', rule, options)
+
+    def put(self, rule: str, **options: t.Any):
+        """Shortcut for `app.route(methods=['PUT'])`."""
+        return self._method_route('PUT', rule, options)
+
+    def patch(self, rule: str, **options: t.Any):
+        """Shortcut for `app.route(methods=['PATCH'])`."""
+        return self._method_route('PATCH', rule, options)
+
+    def delete(self, rule: str, **options: t.Any):
+        """Shortcut for `app.route(methods=['DELETE'])`."""
+        return self._method_route('DELETE', rule, options)
 
     def auth_required(
         self,
@@ -391,6 +428,7 @@ def api_decorators(cls):
         deprecated: t.Optional[bool] = None,
         hide: t.Optional[bool] = None,
         operation_id: t.Optional[str] = None,
+        security: t.Optional[t.Union[str, t.List[t.Union[str, t.Dict[str, list]]]]] = None,
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Set up the OpenAPI Spec for view functions.
 
@@ -435,6 +473,14 @@ def api_decorators(cls):
             operation_id: The `operationId` of this endpoint. Set config `AUTO_OPERATION_ID` to
                 `True` to enable the auto-generating of operationId (in the format of
                 `{method}_{endpoint}`).
+            security: The `security` used for this endpoint. Match the security info specified in
+                the `SECURITY_SCHEMES` configuration. If you don't need specify the scopes, just
+                pass a security name (equals to `[{'foo': []}]`) or a list of security names (equals
+                to `[{'foo': []}, {'bar': []}]`).
+
+        *Version changed: 1.0*
+
+        - Add `security` parameter to support customizing security info.
 
         *Version changed: 0.12.0*
 
@@ -475,13 +521,7 @@ def api_decorators(cls):
                 deprecated=deprecated,
                 hide=hide,
                 operation_id=operation_id,
+                security=security,
             )
             return f
         return decorator
-
-    cls.auth_required = auth_required
-    cls.input = input
-    cls.output = output
-    cls.doc = doc
-
-    return cls

@@ -2,16 +2,13 @@ import typing as t
 
 from flask import Blueprint
 
-from .decorators import api_decorators
 from .helpers import _sentinel
 from .route import route_patch
-from .route import route_shortcuts
+from .scaffold import APIScaffold
 
 
 @route_patch
-@route_shortcuts
-@api_decorators
-class APIBlueprint(Blueprint):
+class APIBlueprint(APIScaffold, Blueprint):
     """Flask's `Blueprint` object with some web API support.
 
     Examples:
