@@ -162,12 +162,13 @@ def test_auth_required_with_methodview(app, client):
 
 
 def test_auth_required_at_blueprint_before_request(app, client):
-    bp = APIBlueprint('test', __name__)
+    bp = APIBlueprint('auth', __name__)
+    no_auth_bp = APIBlueprint('no-auth', __name__)
 
     auth = HTTPTokenAuth()
 
     @bp.before_request
-    @app.auth_required(auth)
+    @bp.auth_required(auth)
     def before():
         pass
 
@@ -187,7 +188,12 @@ def test_auth_required_at_blueprint_before_request(app, client):
         def post(self):
             pass
 
+    @no_auth_bp.get('/eggs')
+    def eggs():
+        return 'no auth'
+
     app.register_blueprint(bp)
+    app.register_blueprint(no_auth_bp)
 
     rv = client.get('/foo')
     assert rv.status_code == 401
@@ -195,12 +201,16 @@ def test_auth_required_at_blueprint_before_request(app, client):
     assert rv.status_code == 401
     rv = client.get('/baz')
     assert rv.status_code == 401
-    rv = client.post('/baz')
-    assert rv.status_code == 401
+    rv = client.get('/eggs')
+    assert rv.status_code == 200
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
+
+    assert 'auth' in app._auth_blueprints
+    assert 'no-auth' not in app._auth_blueprints
+
     assert 'BearerAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BearerAuth'] == {
         'scheme': 'Bearer',
@@ -211,67 +221,4 @@ def test_auth_required_at_blueprint_before_request(app, client):
     assert 'BearerAuth' in rv.json['paths']['/bar']['get']['security'][0]
     assert 'BearerAuth' in rv.json['paths']['/baz']['get']['security'][0]
     assert 'BearerAuth' in rv.json['paths']['/baz']['post']['security'][0]
-
-
-def test_auth_required_at_app_before_request(app, client):
-    auth = HTTPBasicAuth()
-
-    @auth.verify_password
-    def verify_password(username, password):
-        if username == 'foo' and password == 'bar':
-            return {'user': 'foo'}
-
-    @app.before_request
-    @app.auth_required(auth)
-    def before():
-        pass
-
-    @app.get('/foo')
-    def foo():
-        pass
-
-    @app.route('/bar')
-    class Bar(MethodView):
-        def get(self):
-            pass
-
-        def post(self):
-            pass
-
-    bp = APIBlueprint('test', __name__)
-
-    @bp.get('/baz')
-    def baz():
-        pass
-
-    @bp.get('/eggs')
-    def eggs():
-        pass
-
-    app.register_blueprint(bp)
-
-    rv = client.get('/foo')
-    assert rv.status_code == 401
-    rv = client.get('/bar')
-    assert rv.status_code == 401
-    rv = client.post('/bar')
-    assert rv.status_code == 401
-    rv = client.get('/baz')
-    assert rv.status_code == 401
-    rv = client.get('/eggs')
-    assert rv.status_code == 401
-
-    rv = client.get('/openapi.json', headers={'Authorization': 'Basic Zm9vOmJhcg=='})
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert 'BasicAuth' in rv.json['components']['securitySchemes']
-    assert rv.json['components']['securitySchemes']['BasicAuth'] == {
-        'scheme': 'Basic',
-        'type': 'http'
-    }
-
-    assert 'BasicAuth' in rv.json['paths']['/foo']['get']['security'][0]
-    assert 'BasicAuth' in rv.json['paths']['/bar']['get']['security'][0]
-    assert 'BasicAuth' in rv.json['paths']['/bar']['post']['security'][0]
-    assert 'BasicAuth' in rv.json['paths']['/baz']['get']['security'][0]
-    assert 'BasicAuth' in rv.json['paths']['/eggs']['get']['security'][0]
+    assert 'security' not in rv.json['paths']['/eggs']['get']
