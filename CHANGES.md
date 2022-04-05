@@ -4,6 +4,12 @@
 
 Released: --
 
+- Add a base class (`apiflask.scaffold.APIScaffold`) for common logic of `APIFlask` and
+  `APIBlueprint`, move route decorators and API-related decorators to this base class
+  to improve the IDE auto-completion ([issue #231][issue_231]).
+
+[issue_231]: https://github.com/greyli/apiflask/issues/231
+
 
 ## Version 0.12.0
 

@@ -31,7 +31,6 @@ from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 from .exceptions import HTTPError
 from .exceptions import _bad_schema_message
 from .helpers import get_reason_phrase
-from .route import route_shortcuts
 from .route import route_patch
 from .schemas import Schema
 from .types import ResponseReturnValueType
@@ -54,13 +53,11 @@ from .openapi import get_security_and_security_schemes
 from .ui_templates import redoc_template
 from .ui_templates import swagger_ui_template
 from .ui_templates import swagger_ui_oauth2_redirect_template
-from .decorators import api_decorators
+from .scaffold import APIScaffold
 
 
 @route_patch
-@route_shortcuts
-@api_decorators
-class APIFlask(Flask):
+class APIFlask(APIScaffold, Flask):
     """The `Flask` object with some web API support.
 
     Examples:
@@ -331,7 +328,7 @@ class APIFlask(Flask):
 
         - Always pass an `HTTPError` instance to error handlers.
         """
-        @self.errorhandler(HTTPError)
+        @self.errorhandler(HTTPError)  # type: ignore
         def handle_http_errors(
             error: HTTPError
         ) -> ResponseReturnValueType:
@@ -352,7 +349,7 @@ class APIFlask(Flask):
                 )
                 return self.error_callback(error)
 
-    def dispatch_request(self) -> ResponseReturnValueType:
+    def dispatch_request(self) -> ResponseReturnValueType:  # type: ignore
         """Overwrite the default dispatch method in Flask.
 
         With this overwrite, view arguments are passed as positional
