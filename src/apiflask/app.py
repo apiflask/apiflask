@@ -328,7 +328,7 @@ class APIFlask(APIScaffold, Flask):
 
         - Always pass an `HTTPError` instance to error handlers.
         """
-        @self.errorhandler(HTTPError)
+        @self.errorhandler(HTTPError)  # type: ignore
         def handle_http_errors(
             error: HTTPError
         ) -> ResponseReturnValueType:
@@ -349,7 +349,7 @@ class APIFlask(APIScaffold, Flask):
                 )
                 return self.error_callback(error)
 
-    def dispatch_request(self) -> ResponseReturnValueType:
+    def dispatch_request(self) -> ResponseReturnValueType:  # type: ignore
         """Overwrite the default dispatch method in Flask.
 
         With this overwrite, view arguments are passed as positional
