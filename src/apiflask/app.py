@@ -1055,9 +1055,9 @@ class APIFlask(APIScaffold, Flask):
 
                 # security
                 if has_bp_level_auth:
+                    bp_auth_info = self._auth_blueprints[blueprint_name]  # type: ignore
                     operation['security'] = [{
-                        security[self._auth_blueprints[blueprint_name]['auth']]:
-                            self._auth_blueprints[blueprint_name]['roles']
+                        security[bp_auth_info['auth']]: bp_auth_info['roles']
                     }]
 
                 # view-wide auth
