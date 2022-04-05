@@ -318,7 +318,7 @@ class APIFlask(APIScaffold, Flask):
         self.schema_name_resolver = self._schema_name_resolver
 
         self._spec: t.Optional[t.Union[dict, str]] = None
-        self._auth_blueprints: t.Dict[t.Optional[str], t.Dict[str, t.Any]] = {}
+        self._auth_blueprints: t.Dict[str, t.Dict[str, t.Any]] = {}
 
         self._register_openapi_blueprint()
         self._register_error_handlers()
@@ -714,6 +714,7 @@ class APIFlask(APIScaffold, Flask):
         return tags  # type: ignore
 
     def _collect_security_info(self) -> t.Tuple[t.List[str], t.List[HTTPAuthType]]:
+        """Detect `auth_required` on blueprint before_request functions and view functions."""
         # security schemes
         auth_names: t.List[str] = []
         auth_schemes: t.List[HTTPAuthType] = []
