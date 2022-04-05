@@ -238,7 +238,7 @@ class APIFlask(APIScaffold, Flask):
             app.schema_name_resolver = schema_name_resolver
             ```
 
-    *Version changed: 0.9.0*
+    *Version changed: 1.0*
 
     - Add instance attribute `security_schemes` as an alias of config `SECURITY_SCHEMES`.
 
