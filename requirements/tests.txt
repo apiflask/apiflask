@@ -40,7 +40,7 @@ pyparsing==3.0.7
     # via packaging
 pyrsistent==0.18.1
     # via jsonschema
-pytest==7.0.1
+pytest==7.1.1
     # via
     #   -r requirements/tests.in
     #   pytest-cov
