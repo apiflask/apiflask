@@ -585,7 +585,7 @@ Normally, you only need to set the following fields manually with the `metadata`
 
 - `description`: Some description for this field.
 - `title`: The title of the field.
-- `example`: A example value for this field.
+- `example`: A example value for this field (property-level example).
 - `deprecated`: If true, indicates this field is deprecated.
 - `externalDocs`: A link points to the external documentation for this field.
 - `xml`: Adds additional metadata to describe the XML representation format of this field.
@@ -638,17 +638,11 @@ def get_pets():
     pass
 ```
 
-!!! tips
-
-    The `example` metadata passed in the field of the data schema will be overwritten
-    with the example passed in the `input` and `output` decorator.
-
-
 !!! note
 
     Currently, the `example`/`examples` parameter in the `input` decorator is only
-    support JSON body . When you need to set a custom example for query data,
-    you can set the field example in the data schema:
+    support JSON body. When you need to set a custom example for query data,
+    you can set the field example (property-level example) in the data schema:
 
     ```python
     class PetQuerySchema(Schema):
