@@ -9,7 +9,10 @@ Released: --
   to improve the IDE auto-completion ([issue #231][issue_231]).
 - Support customizing OpenAPI securitySchemes and operation security, this makes it
   possible to use any external authentication libraries ([pull #232][pull_232]).
+- Improve the way to detect blueprint from view endpoint to support the endpoints that
+  contain dots ([issue #211][issue_211]).
 
+[issue_211]: https://github.com/greyli/apiflask/issues/211
 [issue_231]: https://github.com/greyli/apiflask/issues/231
 [pull_232]: https://github.com/greyli/apiflask/pull/232
 
