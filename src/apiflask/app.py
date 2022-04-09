@@ -846,10 +846,14 @@ class APIFlask(APIScaffold, Flask):
             blueprint_name: t.Optional[str] = None  # type: ignore
             if '.' in rule.endpoint:
                 blueprint_name: str = rule.endpoint.rsplit('.', 1)[0]  # type: ignore
-                blueprint = self.blueprints[blueprint_name]  # type: ignore
-                if not hasattr(blueprint, 'enable_openapi') or \
-                   not blueprint.enable_openapi:  # type: ignore
-                    continue
+                blueprint = self.blueprints.get(blueprint_name)  # type: ignore
+                if blueprint is None:
+                    # just a normal view with dots in its endpoint, reset blueprint_name
+                    blueprint_name = None
+                else:
+                    if not hasattr(blueprint, 'enable_openapi') or \
+                       not blueprint.enable_openapi:  # type: ignore
+                        continue
             # add a default 200 response for bare views
             if not hasattr(view_func, '_spec'):
                 if self.config['AUTO_200_RESPONSE']:

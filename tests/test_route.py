@@ -201,3 +201,14 @@ def test_add_url_rule_with_method_view_as_view(app, client):
     validate_spec(rv.json)
     assert rv.json['paths']['/foo/get']['get']['summary'] == 'Get Foo'
     assert rv.json['paths']['/foo/post']['post']['summary'] == 'Create foo'
+
+
+def test_view_endpoint_contains_dot(app, client):
+    @app.route('/', endpoint='hello.world')
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/']['get']
