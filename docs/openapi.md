@@ -389,7 +389,7 @@ app.config['TAGS'] = [
 
 !!! tips
 
-    The `app.tags` attribute is equels to the configuration variable `TAGS`, so you
+    The `app.tags` attribute is equals to the configuration variable `TAGS`, so you
     can also use:
 
     ```python
@@ -722,23 +722,16 @@ def hello():
 
 ### Operation `tags`
 
-There are two parameters for `tags` available:
+When you are using blueprints in your application, APIFlask provides an automatic tagging system,
+see [Tags](#tags) for more details.
 
-- `tag`, accepts a tag name string. It will be used in most cases:
-
-```python hl_lines="2"
-@app.get('/')
-@app.doc(tag='Foo')
-def hello():
-    return 'Hello'
-```
-
-- `tags`, accepts a list of tag name string. Only needed when you want to set multiple
-tags for one route (OpenAPI operation):
+You only need to set the tag if you are not using a blueprint or you want to control the tags by
+yourself. The `tags` parameter accepts a list of tag name string, they should match the values you
+passed in `TAGS` config or `app.tags` attribute:
 
 ```python hl_lines="2"
 @app.get('/')
-@app.doc(tags=['Foo', 'Bar', 'Baz'])
+@app.doc(tags=['Foo'])
 def hello():
     return 'Hello'
 ```

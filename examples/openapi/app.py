@@ -116,7 +116,7 @@ class PetOutSchema(Schema):
 
 
 @app.get('/')
-@app.doc(tag='Hello')
+@app.doc(tags=['Hello'])
 def say_hello():
     """Just Say Hello
 
@@ -130,7 +130,7 @@ def say_hello():
 
 @app.get('/pets/<int:pet_id>')
 @app.output(PetOutSchema, description='The pet with given ID')
-@app.doc(tag='Pet', operation_id='getPet')
+@app.doc(tags=['Pet'], operation_id='getPet')
 def get_pet(pet_id):
     """Get a Pet
 
@@ -143,7 +143,7 @@ def get_pet(pet_id):
 
 @app.get('/pets')
 @app.output(PetOutSchema(many=True), description='A list of pets')
-@app.doc(tag='Pet')
+@app.doc(tags=['Pet'])
 def get_pets():
     """Get All Pet
 
@@ -165,7 +165,7 @@ def get_pets():
         }
     }}
 )
-@app.doc(tag='Pet')
+@app.doc(tags=['Pet'])
 def create_pet(data):
     """Create a Pet
 
@@ -180,7 +180,7 @@ def create_pet(data):
 @app.patch('/pets/<int:pet_id>')
 @app.input(PetInSchema(partial=True))
 @app.output(PetOutSchema, description='The updated pet')
-@app.doc(tag='Pet')
+@app.doc(tags=['Pet'])
 def update_pet(pet_id, data):
     """Update a Pet
 
@@ -195,7 +195,7 @@ def update_pet(pet_id, data):
 
 @app.delete('/pets/<int:pet_id>')
 @app.output({}, 204, description='Empty')
-@app.doc(tag='Pet')
+@app.doc(tags=['Pet'])
 def delete_pet(pet_id):
     """Delete a Pet
 
