@@ -1,18 +1,4 @@
-from .schemas import FooSchema
 from apiflask import APIBlueprint
-from apiflask import input
-
-
-def test_deprecation_warning_for_standalone_decorators(recwarn, app, client):
-
-    @app.get('/foo')
-    @input(FooSchema)
-    def foo():
-        pass
-
-    client.get('/foo')
-    w = recwarn.pop(DeprecationWarning)
-    assert 'The standalone decorators are deprecated,' in str(w)
 
 
 def test_app_decorators(app):
