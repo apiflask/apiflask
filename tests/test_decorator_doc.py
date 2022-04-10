@@ -49,7 +49,7 @@ def test_doc_tags(app, client):
     app.tags = ['foo', 'bar']
 
     @app.route('/foo')
-    @app.doc(tag='foo')
+    @app.doc(tags=['foo'])
     def foo():
         pass
 
@@ -68,7 +68,7 @@ def test_doc_tags(app, client):
 def test_doc_tags_with_methodview(app, client):
     @app.route('/baz')
     class Baz(MethodView):
-        @app.doc(tag='foo')
+        @app.doc(tags=['foo'])
         def get(self):
             pass
 

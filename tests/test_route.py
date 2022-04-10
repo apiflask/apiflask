@@ -132,7 +132,7 @@ def test_class_attribute_decorators(app, client):
 def test_overwrite_class_attribute_decorators(app, client):
     @app.route('/')
     class Foo(MethodView):
-        decorators = [app.doc(deprecated=True, tag='foo')]
+        decorators = [app.doc(deprecated=True, tags=['foo'])]
 
         def get(self):
             pass
@@ -141,7 +141,7 @@ def test_overwrite_class_attribute_decorators(app, client):
         def post(self):
             pass
 
-        @app.doc(tag='bar')
+        @app.doc(tags=['bar'])
         def delete(self):
             pass
 

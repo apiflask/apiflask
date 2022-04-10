@@ -32,7 +32,7 @@ def test_auth_required(app, client):
         return auth.current_user
 
     @app.route('/bar')
-    @app.auth_required(auth, role='admin')
+    @app.auth_required(auth, roles=['admin'])
     def bar():
         return auth.current_user
 
@@ -110,7 +110,7 @@ def test_auth_required_with_methodview(app, client):
         def get(self):
             return auth.current_user
 
-        @app.auth_required(auth, role='admin')
+        @app.auth_required(auth, roles=['admin'])
         def post(self):
             return auth.current_user
 

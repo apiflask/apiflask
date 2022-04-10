@@ -1,4 +1,5 @@
 import typing as t
+import warnings
 from collections.abc import Mapping as ABCMapping
 from functools import wraps
 
@@ -138,17 +139,21 @@ class APIScaffold:
             auth: The `auth` object, an instance of
                 [`HTTPBasicAuth`][apiflask.security.HTTPBasicAuth]
                 or [`HTTPTokenAuth`][apiflask.security.HTTPTokenAuth].
-            role: The selected role to allow to visit this view, accepts a string.
+            role: Deprecated since 1.0, use `roles` instead.
+            roles: The selected roles to allow to visit this view, accepts a list of role names.
                 See [Flask-HTTPAuth's documentation][_role]{target:_blank} for more details.
                 [_role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
-            roles: Similar to `role` but accepts a list of role names.
             optional: Set to `True` to allow the view to execute even the authentication
                 information is not included with the request, in which case the attribute
                 `auth.current_user` will be `None`.
 
+        *Version changed: 1.0.0*
+
+        - The `role` parameter is deprecated.
+
         *Version changed: 0.12.0*
 
-        - Move to APIFlask and APIBlueprint classes.
+        - Move to `APIFlask` and `APIBlueprint` classes.
 
         *Version changed: 0.4.0*
 
@@ -156,6 +161,12 @@ class APIScaffold:
         """
         _roles = None
         if role is not None:
+            warnings.warn(
+                'The `role` parameter is deprecated and will be removed in 1.1, '
+                'use `roles` and always pass a list instead.',
+                DeprecationWarning,
+                stacklevel=3,
+            )
             _roles = [role]
         elif roles is not None:
             _roles = roles
@@ -443,7 +454,7 @@ class APIScaffold:
         app = APIFlask(__name__)
 
         @app.get('/')
-        @app.doc(summary='Say hello', tag='Foo')
+        @app.doc(summary='Say hello', tags=['Foo'])
         def hello():
             return 'Hello'
         ```
@@ -460,10 +471,9 @@ class APIScaffold:
 
             description: The description of this endpoint. If not set, the lines after the empty
                 line of the docstring will be used.
-            tag: The tag name of this endpoint, map the tags you passed in the `app.tags`
-                attribute. If `app.tags` is not set, the blueprint name will be used as
-                tag name.
-            tags: Similar to `tag` but accepts a list of tag names.
+            tag: Deprecated since 1.0, use `tags` instead.
+            tags: A list of tag names of this endpoint, map the tags you passed in the `app.tags`
+                attribute. If `app.tags` is not set, the blueprint name will be used as tag name.
             responses: The other responses for this view function, accepts a dict in a format
                 of `{404: 'Not Found'}` or a list of status code (`[404, 418]`). If pass a dict,
                 and a response with the same status code is already exist, the existing
@@ -481,10 +491,11 @@ class APIScaffold:
         *Version changed: 1.0*
 
         - Add `security` parameter to support customizing security info.
+        - The `role` parameter is deprecated.
 
         *Version changed: 0.12.0*
 
-        - Move to APIFlask and APIBlueprint classes.
+        - Move to `APIFlask` and `APIBlueprint` classes.
 
         *Version changed: 0.10.0*
 
@@ -507,6 +518,12 @@ class APIScaffold:
         """
         _tags = None
         if tag is not None:
+            warnings.warn(
+                'The `tag` parameter is deprecated and will be removed in 1.1, '
+                'use `tags` and always pass a list instead.',
+                DeprecationWarning,
+                stacklevel=2,
+            )
             _tags = [tag]
         elif tags is not None:
             _tags = tags
