@@ -34,3 +34,11 @@ from marshmallow.fields import TimeDelta as TimeDelta
 from marshmallow.fields import Tuple as Tuple
 from marshmallow.fields import URL as URL
 from marshmallow.fields import UUID as UUID
+
+
+class File(Field):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'type' not in self.metadata:
+            self.metadata['type'] = 'file'

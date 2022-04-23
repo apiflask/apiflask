@@ -1067,9 +1067,10 @@ class APIFlask(APIScaffold, Flask):
 
                 # requestBody
                 if view_func._spec.get('body'):
+                    content_type = view_func._spec.get('content_type', 'application/json')
                     operation['requestBody'] = {
                         'content': {
-                            'application/json': {
+                            content_type: {
                                 'schema': view_func._spec['body'],
                             }
                         }
@@ -1077,11 +1078,11 @@ class APIFlask(APIScaffold, Flask):
                     if view_func._spec.get('body_example'):
                         example = view_func._spec.get('body_example')
                         operation['requestBody']['content'][
-                            'application/json']['example'] = example
+                            content_type]['example'] = example
                     if view_func._spec.get('body_examples'):
                         examples = view_func._spec.get('body_examples')
                         operation['requestBody']['content'][
-                            'application/json']['examples'] = examples
+                            content_type]['examples'] = examples
 
                 # security
                 if custom_security:  # custom security

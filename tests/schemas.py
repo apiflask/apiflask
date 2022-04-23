@@ -1,6 +1,7 @@
 from marshmallow import EXCLUDE
 
 from apiflask import Schema
+from apiflask.fields import File
 from apiflask.fields import Integer
 from apiflask.fields import String
 
@@ -31,6 +32,19 @@ class QuerySchema(Schema):
         unknown = EXCLUDE
 
     id = Integer(load_default=1)
+
+
+class FormSchema(Schema):
+    name = String()
+
+
+class FilesSchema(Schema):
+    image = File()
+
+
+class FormAndFilesSchema(Schema):
+    name = String()
+    image = File()
 
 
 class PaginationSchema(Schema):
