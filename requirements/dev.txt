@@ -165,7 +165,7 @@ tomli==2.0.1
     #   mypy
     #   pep517
     #   pytest
-tox==3.24.5
+tox==3.25.0
     # via -r requirements/dev.in
 typing-extensions==4.0.1
     # via mypy
