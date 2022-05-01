@@ -46,12 +46,12 @@ def test_output(app, client):
     rv = client.get('/baz?id=2')
     assert rv.status_code == 201
     assert rv.json == {'id': 123, 'name': 'baz'}
-    assert rv.headers['Location'] == 'http://localhost/baz'
+    assert rv.headers['Location'].endswith('/baz')
 
     rv = client.get('/baz?id=3')
     assert rv.status_code == 202
     assert rv.json == {'id': 123, 'name': 'baz'}
-    assert rv.headers['Location'] == 'http://localhost/baz'
+    assert rv.headers['Location'].endswith('/baz')
 
     rv = client.get('/baz?id=4')
     assert rv.status_code == 201
@@ -97,12 +97,12 @@ def test_output_with_methodview(app, client):
     rv = client.delete('/?id=2')
     assert rv.status_code == 201
     assert rv.json == {'id': 123, 'name': 'baz'}
-    assert rv.headers['Location'] == 'http://localhost/baz'
+    assert rv.headers['Location'].endswith('/baz')
 
     rv = client.delete('/?id=3')
     assert rv.status_code == 202
     assert rv.json == {'id': 123, 'name': 'baz'}
-    assert rv.headers['Location'] == 'http://localhost/baz'
+    assert rv.headers['Location'].endswith('/baz')
 
     rv = client.delete('/?id=4')
     assert rv.status_code == 201
