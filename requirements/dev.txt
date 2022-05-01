@@ -85,7 +85,7 @@ mkdocstrings==0.18.1
     #   mkdocstrings-python-legacy
 mkdocstrings-python-legacy==0.2.1
     # via mkdocstrings
-mypy==0.942
+mypy==0.950
     # via -r requirements/typing.in
 mypy-extensions==0.4.3
     # via mypy
