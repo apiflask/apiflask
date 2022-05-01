@@ -813,12 +813,14 @@ class APIFlask(APIScaffold, Flask):
         )
 
         # configure flask-marshmallow URL types
-        ma_plugin.converter.field_mapping[fields.URLFor] = ('string', 'url')
-        ma_plugin.converter.field_mapping[fields.AbsoluteURLFor] = \
-            ('string', 'url')
+        ma_plugin.converter.field_mapping[fields.URLFor] = ('string', 'url')  # type: ignore
+        ma_plugin.converter.field_mapping[fields.AbsoluteURLFor] = (  # type: ignore
+            'string', 'url'
+        )
         if sqla is not None:  # pragma: no cover
-            ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = \
-                ('string', 'url')
+            ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = (  # type: ignore
+                'string', 'url'
+            )
 
         if self.config['SECURITY_SCHEMES'] is not None:
             security_schemes = self.config['SECURITY_SCHEMES']
@@ -968,9 +970,10 @@ class APIFlask(APIScaffold, Flask):
                     if base_schema is not None:
                         base_schema_spec: dict
                         if isinstance(base_schema, type):
-                            base_schema_spec = ma_plugin.converter.schema2jsonschema(
-                                base_schema()
-                            )
+                            base_schema_spec = \
+                                ma_plugin.converter.schema2jsonschema(  # type: ignore
+                                    base_schema()
+                                )
                         elif isinstance(base_schema, dict):
                             base_schema_spec = base_schema
                         else:
@@ -1138,6 +1141,7 @@ class APIFlask(APIScaffold, Flask):
             for method in ['get', 'post', 'put', 'patch', 'delete']:
                 if method in operations:
                     sorted_operations[method] = operations[method]
-            spec.path(path=path, operations=sorted_operations)
+            # TODO: remove the type ignore comment when apispec 5.3.0 released
+            spec.path(path=path, operations=sorted_operations)  # type: ignore
 
         return spec

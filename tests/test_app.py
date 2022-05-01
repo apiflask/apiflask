@@ -37,7 +37,7 @@ def test_json_errors(app, client):
     rv = app.test_client().get('/not-exist')
     assert rv.status_code == 404
     assert rv.headers['Content-Type'] == 'text/html; charset=utf-8'
-    assert b'!DOCTYPE' in rv.data
+    assert b'!doctype' in rv.data.lower()
 
 
 def test_json_errors_reuse_werkzeug_headers(app, client):
