@@ -358,19 +358,22 @@ class APIFlask(APIScaffold, Flask):
             return self.error_callback(error)
 
         if self.json_errors:
-            @self.errorhandler(WerkzeugHTTPException)  # type: ignore
-            def handle_werkzeug_errors(
-                e: WerkzeugHTTPException
-            ) -> ResponseReturnValueType:
-                headers = dict(e.get_headers())
-                # remove the original MIME header
-                del headers['Content-Type']
-                error = HTTPError(
-                    e.code,
-                    message=e.name,
-                    headers=headers
-                )
-                return self.error_callback(error)
+            self._apply_error_callback_to_werkzeug_errors()
+
+    def _apply_error_callback_to_werkzeug_errors(self) -> None:
+        @self.errorhandler(WerkzeugHTTPException)  # type: ignore
+        def handle_werkzeug_errors(
+            e: WerkzeugHTTPException
+        ) -> ResponseReturnValueType:
+            headers = dict(e.get_headers())
+            # remove the original MIME header
+            del headers['Content-Type']
+            error = HTTPError(
+                e.code,
+                message=e.name,
+                headers=headers
+            )
+            return self.error_callback(error)
 
     def dispatch_request(self) -> ResponseReturnValueType:  # type: ignore
         """Overwrite the default dispatch method in Flask.
@@ -443,18 +446,15 @@ class APIFlask(APIScaffold, Flask):
 
         The decorated callback function will be called in the following situations:
 
-        - Any HTTP exception is raised by Flask when `APIFlask(json_errors=True)` (default).
+        - Any HTTP exception is raised by Flask when handling request.
         - A validation error happened when parsing a request.
         - An exception triggered with [`HTTPError`][apiflask.exceptions.HTTPError]
         - An exception triggered with [`abort`][apiflask.exceptions.abort].
 
-        If you have set the `json_errors` argument to `True` when creating the `app`
-        instance, this callback function will also be used for normal HTTP errors,
-        for example, 404 and 500 errors, etc. You can still register a specific error
-        handler for a specific error code or exception with the
-        `app.errorhandler(code_or_exection)` decorator, in that case, the return
-        value of the error handler will be used as the response when the corresponding
-        error or exception happened.
+        You can still register a specific error handler for a specific error code
+        or exception with the `app.errorhandler(code_or_exection)` decorator,
+        in that case, the return value of the specific error handler will be used as the
+        response when the corresponding error or exception happened.
 
         The callback function must accept an error object as argument and return a valid
         response.
@@ -517,6 +517,11 @@ class APIFlask(APIScaffold, Flask):
         the detailed information about the validation error when the validation error
         happened.
 
+        *Version changed: 1.0*
+
+        - Apply this error processor to normal HTTP errors even when
+          `json_error` is set to `False` when creating `APIFlask` instance.
+
         *Version changed: 0.7.0*
 
         - Support registering an async callback function.
@@ -525,6 +530,7 @@ class APIFlask(APIScaffold, Flask):
             self.error_callback = self.ensure_sync(f)
         else:  # pragma: no cover
             self.error_callback = f
+        self._apply_error_callback_to_werkzeug_errors()
         return f
 
     def _register_openapi_blueprint(self) -> None:
