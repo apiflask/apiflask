@@ -1,9 +1,15 @@
+import io
+
 import pytest
 from flask.views import MethodView
 from openapi_spec_validator import validate_spec
+from werkzeug.datastructures import FileStorage
 
 from .schemas import BarSchema
+from .schemas import FilesSchema
 from .schemas import FooSchema
+from .schemas import FormAndFilesSchema
+from .schemas import FormSchema
 from .schemas import QuerySchema
 from apiflask.fields import String
 
@@ -86,6 +92,107 @@ def test_input_with_query_location(app, client):
     rv = client.post('/foo?name=bar&name2=baz')
     assert rv.status_code == 200
     assert rv.json == {'name': 'bar', 'name2': 'baz'}
+
+
+def test_input_with_form_location(app, client):
+    @app.post('/')
+    @app.input(FormSchema, location='form')
+    def index(form_data):
+        return form_data
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert 'application/x-www-form-urlencoded' in rv.json['paths']['/']['post']['requestBody'][
+        'content']
+    assert rv.json['paths']['/']['post']['requestBody']['content'][
+        'application/x-www-form-urlencoded']['schema']['$ref'] == '#/components/schemas/Form'
+    assert 'Form' in rv.json['components']['schemas']
+
+    rv = client.post('/', data={'name': 'foo'})
+    assert rv.status_code == 200
+    assert rv.json == {'name': 'foo'}
+
+
+def test_input_with_files_location(app, client):
+    @app.post('/')
+    @app.input(FilesSchema, location='files')
+    def index(files_data):
+        data = {}
+        if 'image' in files_data and isinstance(files_data['image'], FileStorage):
+            data['image'] = True
+        return data
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    # TODO: Failed validating 'oneOf' in schema
+    # https://github.com/p1c2u/openapi-spec-validator/issues/113
+    # validate_spec(rv.json)
+    assert 'multipart/form-data' in rv.json['paths']['/']['post']['requestBody']['content']
+    assert rv.json['paths']['/']['post']['requestBody'][
+        'content']['multipart/form-data']['schema']['$ref'] == '#/components/schemas/Files'
+    assert 'image' in rv.json['components']['schemas']['Files']['properties']
+    assert rv.json['components']['schemas']['Files']['properties']['image']['type'] == 'string'
+    assert rv.json['components']['schemas']['Files']['properties']['image']['format'] == 'binary'
+
+    rv = client.post(
+        '/',
+        data={
+            'image': (io.BytesIO(b'test'), 'test.jpg'),
+        },
+        content_type='multipart/form-data'
+    )
+    assert rv.status_code == 200
+    assert rv.json == {'image': True}
+
+
+def test_input_with_form_and_files_location(app, client):
+    @app.post('/')
+    @app.input(FormAndFilesSchema, location='form_and_files')
+    def index(form_data):
+        data = {}
+        if 'name' in form_data:
+            data['name'] = True
+        if 'image' in form_data and isinstance(form_data['image'], FileStorage):
+            data['image'] = True
+        return data
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    # TODO: Failed validating 'oneOf' in schema
+    # https://github.com/p1c2u/openapi-spec-validator/issues/113
+    # validate_spec(rv.json)
+    assert 'multipart/form-data' in rv.json['paths']['/']['post']['requestBody']['content']
+    assert rv.json['paths']['/']['post']['requestBody'][
+        'content']['multipart/form-data']['schema']['$ref'] == '#/components/schemas/FormAndFiles'
+    assert 'name' in rv.json['components']['schemas']['FormAndFiles']['properties']
+    assert 'image' in rv.json['components']['schemas']['FormAndFiles']['properties']
+    assert rv.json['components']['schemas']['FormAndFiles']['properties']['image'][
+        'type'] == 'string'
+    assert rv.json['components']['schemas']['FormAndFiles']['properties']['image'][
+        'format'] == 'binary'
+
+    rv = client.post(
+        '/',
+        data={'name': 'foo', 'image': (io.BytesIO(b'test'), 'test.jpg')},
+        content_type='multipart/form-data'
+    )
+    assert rv.status_code == 200
+    assert rv.json == {'name': True, 'image': True}
+
+
+@pytest.mark.parametrize('locations', [
+    ['files', 'form'],
+    ['files', 'json'],
+    ['form', 'json'],
+])
+def test_multiple_input_body_location(app, locations):
+    with pytest.raises(RuntimeError):
+        @app.route('/foo')
+        @app.input(FooSchema, locations[0])
+        @app.input(BarSchema, locations[1])
+        def foo(query):
+            pass
 
 
 def test_bad_input_location(app):

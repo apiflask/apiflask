@@ -16,11 +16,18 @@ Released: --
   possible to use any external authentication libraries ([pull #232][pull_232]).
 - Improve the way to detect blueprint from view endpoint to support the endpoints that
   contain dots ([issue #211][issue_211]).
+- Support file uploading ([issue #123][issue_123]):
+  - Fix the content type of `form` and `files` input locations.
+  - Raise error if the user uses multiple body input locations ("files", "form", "json").
+  - Add `Form` field and `form_and_files` location for better form upload support.
+  - Rewrite the `files` to act like `form_and_files`, so that failed parsed file will
+    be included in the returned data.
 
 [issue_211]: https://github.com/greyli/apiflask/issues/211
 [issue_231]: https://github.com/greyli/apiflask/issues/231
 [pull_232]: https://github.com/greyli/apiflask/pull/232
 [issue_237]: https://github.com/greyli/apiflask/issues/237
+[issue_123]: https://github.com/greyli/apiflask/issues/123
 
 
 ## Version 0.12.0

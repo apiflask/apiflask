@@ -9,6 +9,7 @@ from flask import Response
 from flask.views import MethodViewType
 from marshmallow import ValidationError as MarshmallowValidationError
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
+from webargs.multidictproxy import MultiDictProxy
 
 from .exceptions import _ValidationError
 from .helpers import _sentinel
@@ -49,6 +50,22 @@ class FlaskParser(BaseFlaskParser):
 
 parser: FlaskParser = FlaskParser()
 use_args: t.Callable = parser.use_args
+
+
+def _get_files_and_form(request, schema):
+    form_and_files_data = request.files.copy()
+    form_and_files_data.update(request.form)
+    return MultiDictProxy(form_and_files_data, schema)
+
+
+@parser.location_loader('form_and_files')
+def load_form_and_files(request, schema):
+    return _get_files_and_form(request, schema)
+
+
+@parser.location_loader('files')
+def load_files(request, schema):
+    return _get_files_and_form(request, schema)
 
 
 def _annotate(f: t.Any, **kwargs: t.Any) -> None:
@@ -234,6 +251,13 @@ class APIScaffold:
                 }
                 ```
 
+        *Version changed: 1.0*
+
+        - Ensure only one input body location was used.
+        - Add `form_and_files` location.
+        - Rewrite `files` to act as `form_and_files`.
+        - Use correct request content type for `form` and `files`.
+
         *Version changed: 0.12.0*
 
         - Move to APIFlask and APIBlueprint classes.
@@ -248,20 +272,48 @@ class APIScaffold:
             schema = schema()
 
         def decorator(f):
+            if location in ['json', 'files', 'form'] and hasattr(f, '_spec') and 'body' in f._spec:
+                raise RuntimeError(
+                    'When using the app.input() decorator, you can only declare one request '
+                    'body location (one of "json", "form", "files", or "form_and_files").'
+                )
             if location not in [
-                'json', 'query', 'headers', 'cookies', 'files', 'form', 'querystring'
+                'json',
+                'query',
+                'headers',
+                'cookies',
+                'files',
+                'form',
+                'querystring',
+                'form_and_files'
             ]:
                 raise ValueError(
                     'Unknown input location. The supported locations are: "json", "files",'
-                    ' "form", "cookies", "headers", "query" (same as "querystring").'
-                    f' Got "{location}" instead.'
+                    ' "form", "cookies", "headers", "query" (same as "querystring"), and '
+                    f'"form_and_files". Got "{location}" instead.'
                 )
             if location == 'json':
                 _annotate(f, body=schema, body_example=example, body_examples=examples)
+            elif location == 'form':
+                _annotate(
+                    f,
+                    body=schema,
+                    body_example=example,
+                    body_examples=examples,
+                    content_type='application/x-www-form-urlencoded'
+                )
+            elif location in ['files', 'form_and_files']:
+                _annotate(
+                    f,
+                    body=schema,
+                    body_example=example,
+                    body_examples=examples,
+                    content_type='multipart/form-data'
+                )
             else:
                 if not hasattr(f, '_spec') or f._spec.get('args') is None:
                     _annotate(f, args=[])
-                # Todo: Support set example for request parameters
+                # TODO: Support set example for request parameters
                 f._spec['args'].append((schema, location))
             return use_args(schema, location=location, **kwargs)(f)
         return decorator
