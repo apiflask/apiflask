@@ -3,6 +3,7 @@ import io
 import pytest
 from flask.views import MethodView
 from openapi_spec_validator import validate_spec
+from werkzeug.datastructures import FileStorage
 
 from .schemas import BarSchema
 from .schemas import FilesSchema
@@ -118,7 +119,7 @@ def test_input_with_files_location(app, client):
     @app.input(FilesSchema, location='files')
     def index(files_data):
         data = {}
-        if 'image' in files_data:
+        if 'image' in files_data and isinstance(files_data['image'], FileStorage):
             data['image'] = True
         return data
 
@@ -131,11 +132,14 @@ def test_input_with_files_location(app, client):
     assert rv.json['paths']['/']['post']['requestBody'][
         'content']['multipart/form-data']['schema']['$ref'] == '#/components/schemas/Files'
     assert 'image' in rv.json['components']['schemas']['Files']['properties']
-    assert rv.json['components']['schemas']['Files']['properties']['image']['type'] == 'file'
+    assert rv.json['components']['schemas']['Files']['properties']['image']['type'] == 'string'
+    assert rv.json['components']['schemas']['Files']['properties']['image']['format'] == 'binary'
 
     rv = client.post(
         '/',
-        data={'image': (io.BytesIO(b'test'), 'test.jpg')},
+        data={
+            'image': (io.BytesIO(b'test'), 'test.jpg'),
+        },
         content_type='multipart/form-data'
     )
     assert rv.status_code == 200
@@ -149,7 +153,7 @@ def test_input_with_form_and_files_location(app, client):
         data = {}
         if 'name' in form_data:
             data['name'] = True
-        if 'image' in form_data:
+        if 'image' in form_data and isinstance(form_data['image'], FileStorage):
             data['image'] = True
         return data
 
@@ -163,7 +167,10 @@ def test_input_with_form_and_files_location(app, client):
         'content']['multipart/form-data']['schema']['$ref'] == '#/components/schemas/FormAndFiles'
     assert 'name' in rv.json['components']['schemas']['FormAndFiles']['properties']
     assert 'image' in rv.json['components']['schemas']['FormAndFiles']['properties']
-    assert rv.json['components']['schemas']['FormAndFiles']['properties']['image']['type'] == 'file'
+    assert rv.json['components']['schemas']['FormAndFiles']['properties']['image'][
+        'type'] == 'string'
+    assert rv.json['components']['schemas']['FormAndFiles']['properties']['image'][
+        'format'] == 'binary'
 
     rv = client.post(
         '/',
@@ -172,6 +179,20 @@ def test_input_with_form_and_files_location(app, client):
     )
     assert rv.status_code == 200
     assert rv.json == {'name': True, 'image': True}
+
+
+@pytest.mark.parametrize('locations', [
+    ['files', 'form'],
+    ['files', 'json'],
+    ['form', 'json'],
+])
+def test_multiple_input_body_location(app, locations):
+    with pytest.raises(RuntimeError):
+        @app.route('/foo')
+        @app.input(FooSchema, locations[0])
+        @app.input(BarSchema, locations[1])
+        def foo(query):
+            pass
 
 
 def test_bad_input_location(app):

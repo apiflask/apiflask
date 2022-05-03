@@ -52,11 +52,20 @@ parser: FlaskParser = FlaskParser()
 use_args: t.Callable = parser.use_args
 
 
-@parser.location_loader('form_and_files')
-def load_form_and_files(request, schema):
+def _get_files_and_form(request, schema):
     form_and_files_data = request.files.copy()
     form_and_files_data.update(request.form)
     return MultiDictProxy(form_and_files_data, schema)
+
+
+@parser.location_loader('form_and_files')
+def load_form_and_files(request, schema):
+    return _get_files_and_form(request, schema)
+
+
+@parser.location_loader('files')
+def load_files(request, schema):
+    return _get_files_and_form(request, schema)
 
 
 def _annotate(f: t.Any, **kwargs: t.Any) -> None:
@@ -242,6 +251,13 @@ class APIScaffold:
                 }
                 ```
 
+        *Version changed: 1.0*
+
+        - Ensure only one input body location was used.
+        - Add `form_and_files` location.
+        - Rewrite `files` to act as `form_and_files`.
+        - Use correct request content type for `form` and `files`.
+
         *Version changed: 0.12.0*
 
         - Move to APIFlask and APIBlueprint classes.
@@ -256,6 +272,11 @@ class APIScaffold:
             schema = schema()
 
         def decorator(f):
+            if location in ['json', 'files', 'form'] and hasattr(f, '_spec') and 'body' in f._spec:
+                raise RuntimeError(
+                    'When using the app.input() decorator, you can only declare one request '
+                    'body location (one of "json", "form", "files", or "form_and_files").'
+                )
             if location not in [
                 'json',
                 'query',
