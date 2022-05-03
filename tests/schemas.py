@@ -3,6 +3,7 @@ from marshmallow import EXCLUDE
 from apiflask import Schema
 from apiflask.fields import File
 from apiflask.fields import Integer
+from apiflask.fields import List
 from apiflask.fields import String
 
 
@@ -40,6 +41,10 @@ class FormSchema(Schema):
 
 class FilesSchema(Schema):
     image = File()
+
+
+class FilesListSchema(Schema):
+    images = List(File())
 
 
 class FormAndFilesSchema(Schema):

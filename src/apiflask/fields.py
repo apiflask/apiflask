@@ -1,4 +1,5 @@
 # Field aliases were skipped (e.g., Str, Int, Url, etc.)
+import typing as t
 import warnings
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
@@ -37,8 +38,84 @@ from marshmallow.fields import UUID as UUID
 
 
 class File(Field):
+    """A binary file field, it should only be used in an input schema.
+
+    Examples:
+
+    ```python
+    import os
+
+    from werkzeug.utils import secure_filename
+    from apiflask.fields import File
+
+
+    class ImageSchema(Schema):
+        image = File()
+
+
+    @app.post('/images')
+    @app.input(ImageSchema, location='files')
+    def upload_image(data):
+        f = data['image']
+        # use `secure_filename` to clean the filename, notice it will only keep ascii characters
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(the_path_to_uploads, filename))
+
+        return {'message': f'file {filename} saved.'}
+    ```
+    The file object is a instance of `werkzeug.datastructures.FileStorage`, see more details
+    [in the docs][_docs].
+
+    _docs: https://werkzeug.palletsprojects.com/datastructures/#werkzeug.datastructures.FileStorage
+
+    Use `form_and_files` location if you want to put both files
+    and other normal fields in one schema.
+
+    ```python
+    import os
+
+    from werkzeug.utils import secure_filename
+    from apiflask.fields import String, File
+
+
+    class ProfileInSchema(Schema):
+        name = String()
+        avatar = File()
+
+    @app.post('/profiles')
+    @app.input(ProfileInSchema, location='form_and_files')
+    def create_profile(data):
+        avatar_file = data['avatar']
+        name = data['name']
+
+        # use `secure_filename` to clean the filename, notice it will only keep ascii characters
+        avatar_filename = secure_filename(avatar_file.filename)
+        avatar_file.save(os.path.join(the_path_to_uploads, avatar_filename))
+
+        profile = Profile(name=name, avatar_filename=avatar_filename)
+        # ...
+        return {'message': 'profile created.'}
+    ```
+
+    In the current implementation, `files` location data will also include
+    the form data (equals to `form_and_files`).
+
+    *Version Added: 1.0*
+
+    This field accepts the same keyword arguments that `Field` receives.
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'type' not in self.metadata:
-            self.metadata['type'] = 'file'
+        self.metadata['type'] = 'string'
+        self.metadata['format'] = 'binary'
+
+    default_error_messages: t.Dict[str, str] = {
+        'invalid': 'Not a valid file.'
+    }
+
+    def _deserialize(self, value, attr, data, **kwargs) -> t.Any:
+        from werkzeug.datastructures import FileStorage
+        if not isinstance(value, FileStorage):
+            raise self.make_error('invalid')
+        return value
