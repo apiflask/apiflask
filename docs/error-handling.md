@@ -3,9 +3,13 @@
 The error handling in APIFlask is based on the following basic concepts:
 
 - All the automatic errors (404, 405, 500) will be in JSON format by default.
-- Use `abort`, `HTTPError` to generate an error response.
+- Errors are built on top of the [`HTTPError`](/api/exceptions/#apiflask.exceptions.HTTPError)
+  base exception class.
+- Use `APIFlask.abort()` function or raise `HTTPError` classes to generate an error response.
 - Use `app.error_processor` (`app` is an instance of `apiflask.APIFlask`) to register a
   custom error response processor.
+- Use `auth.error_processor` (`app` is an instance of `apiflask.HTTPBasicAuth` or
+  `apiflask.HTTPTokenAuth`) to register a custom auth error response processor.
 - Subclass `HTTPError` to create custom error classes for your errors.
 
 !!! tip
@@ -44,7 +48,7 @@ to customize the error response body. See more details
 There are two ways to abort the request handling process and return an error response
 in the view function:
 
-- Call the `abort` function
+1. Call the `abort` function
 
 Just like what you do in a normal Flask view function, but this `abort` function is
 provided by APIFlask:
@@ -61,7 +65,7 @@ def hello():
 
 It will raise an `HTTPError` behind the scene, so it will take the same arguments (see below).
 
-- Raise the `HTTPError` class
+2. Raise the `HTTPError` class
 
 Raise `HTTPError` will do the same thing:
 
@@ -84,15 +88,8 @@ The call will generate an error response like this:
 }
 ```
 
-Here are all the parameters you can pass to `abort` and `HTTPError`:
-
-| Name | Type | Default Value | Description |
-| ---- | ---- | ------------- | ----------- |
-| `status_code` | int | - | The HTTP status code of the error response. |
-| `message` | string | - | The error message. Used as the `message` field in the response body. |
-| `detail` | dict | `{}` | The detailed information of the validation error. Used as the `detail` field in the response body. |
-| `headers` | dict | - | The headers of the error response. |
-| `extra_data` | dict | - | Additional fields to be added to the body of the error response body. |
+See [`HTTPError`'s API docs](/api/exceptions/#apiflask.exceptions.HTTPError) for
+all the parameters you can pass to `abort` and `HTTPError`.
 
 The `extra_data` is useful when you want to add more fields to the response body, for example:
 
@@ -207,13 +204,10 @@ The decorated callback function will be called in the following situations:
 - An exception triggered with [`HTTPError`][apiflask.exceptions.HTTPError]
 - An exception triggered with [`abort`][apiflask.exceptions.abort].
 
-If you have set the `json_errors` argument to `True` when creating the `app`
-instance, this callback function will also be used for normal HTTP errors,
-for example, 404 and 500 errors, etc. You can still register a specific error
-handler for a specific error code or exception with the
-`app.errorhandler(code_or_exection)` decorator. In that case, the return
-value of the error handler will be used as the response when the corresponding
-error or exception happens.
+You can still register a specific error handler for a specific error code or
+exception with the `app.errorhandler(code_or_exection)` decorator. In that case,
+the return value of the error handler will be used as the response when the
+corresponding error or exception happens.
 
 The callback function must accept an error object as an argument and return a valid
 response:
@@ -262,6 +256,7 @@ so you can get error information via its attributes:
     The value of `location` can be `json` (i.e., request body) or `query`
     (i.e., query string) depending on the place where the validation error
     happened.
+
 - headers: The value will be `{}` unless you pass it in `HTTPError` or `abort`.
 - extra_data: Additional error information passed with `HTTPError` or `abort`.
 
