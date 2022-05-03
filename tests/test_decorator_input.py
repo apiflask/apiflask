@@ -185,6 +185,13 @@ def test_input_with_form_and_files_location(app, client):
     ['files', 'form'],
     ['files', 'json'],
     ['form', 'json'],
+    ['form_and_files', 'json'],
+    ['form_and_files', 'form'],
+    ['form_and_files', 'files'],
+    ['json_or_form', 'json'],
+    ['json_or_form', 'files'],
+    ['json_or_form', 'form'],
+    ['json_or_form', 'form_and_files'],
 ])
 def test_multiple_input_body_location(app, locations):
     with pytest.raises(RuntimeError):

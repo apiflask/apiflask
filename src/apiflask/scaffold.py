@@ -23,6 +23,9 @@ from .types import RequestType
 from .types import ResponseReturnValueType
 from .types import SchemaType
 
+BODY_LOCATIONS = ['json', 'files', 'form', 'form_and_files', 'json_or_form']
+SUPPORTED_LOCATIONS = BODY_LOCATIONS + ['query', 'headers', 'cookies', 'querystring']
+
 
 class FlaskParser(BaseFlaskParser):
     """Overwrite the default `webargs.FlaskParser.handle_error`.
@@ -254,7 +257,7 @@ class APIScaffold:
         *Version changed: 1.0*
 
         - Ensure only one input body location was used.
-        - Add `form_and_files` location.
+        - Add `form_and_files` and `json_or_form` (from webargs) location.
         - Rewrite `files` to act as `form_and_files`.
         - Use correct request content type for `form` and `files`.
 
@@ -272,21 +275,14 @@ class APIScaffold:
             schema = schema()
 
         def decorator(f):
-            if location in ['json', 'files', 'form'] and hasattr(f, '_spec') and 'body' in f._spec:
+            is_body_location = location in BODY_LOCATIONS
+            if is_body_location and hasattr(f, '_spec') and 'body' in f._spec:
                 raise RuntimeError(
                     'When using the app.input() decorator, you can only declare one request '
-                    'body location (one of "json", "form", "files", or "form_and_files").'
+                    'body location (one of "json", "form", "files", "form_and_files", '
+                    'and "json_or_form").'
                 )
-            if location not in [
-                'json',
-                'query',
-                'headers',
-                'cookies',
-                'files',
-                'form',
-                'querystring',
-                'form_and_files'
-            ]:
+            if location not in SUPPORTED_LOCATIONS:
                 raise ValueError(
                     'Unknown input location. The supported locations are: "json", "files",'
                     ' "form", "cookies", "headers", "query" (same as "querystring"), and '
