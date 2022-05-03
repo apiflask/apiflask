@@ -139,6 +139,20 @@ def test_error_callback(app, client):
     assert rv.json['message'] == 'something was wrong'
 
 
+def test_apply_custom_error_callback_for_generic_errors():
+    app = APIFlask(__name__, json_errors=False)
+    client = app.test_client()
+
+    @app.error_processor
+    def custom_error_handler(e):
+        return {'message': 'custom handler'}, e.status_code
+
+    rv = client.get('/not-exist')
+    assert rv.status_code == 404
+    assert 'message' in rv.json
+    assert rv.json['message'] == 'custom handler'
+
+
 def test_skip_raw_blueprint(app, client):
     raw_bp = Blueprint('raw', __name__)
     api_bp = APIBlueprint('api', __name__, tag='test')

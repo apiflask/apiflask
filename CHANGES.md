@@ -24,6 +24,8 @@ Released: --
     be included in the returned data.
 - Allow to use `json_or_form` location and fields (`DelimitedList` and `DelimitedTuple`)
   from webargs ([issue #254][issue_254]).
+- When creating a custom error processor, call it for generic HTTP errors even if the
+  `json_errors` is set to `False` when creating the app instance ([issue #171][issue_171]).
 
 [issue_211]: https://github.com/greyli/apiflask/issues/211
 [issue_231]: https://github.com/greyli/apiflask/issues/231
@@ -31,6 +33,7 @@ Released: --
 [issue_237]: https://github.com/greyli/apiflask/issues/237
 [issue_123]: https://github.com/greyli/apiflask/issues/123
 [issue_254]: https://github.com/greyli/apiflask/issues/254
+[issue_171]: https://github.com/greyli/apiflask/issues/171
 
 
 ## Version 0.12.0
