@@ -147,7 +147,7 @@ def hello(query, data):
     pass
 ```
 
-However, we recommend to create a schema class whenever possible to make the
+However, we recommend creating a schema class whenever possible to make the
 code easy to read and reuse.
 
 
