@@ -48,7 +48,7 @@ def hello(headers, query, data):
 ## Request body validating
 
 When you declared an input with `app.input` decorator, APIFlask (webargs) will get the data
-from specified location and validate it againest the schema definition.
+from specified location and validate it against the schema definition.
 
 If the parsing and validating success, the data will pass to the view function. When you
 declared multiple inputs, the order will be from top to bottom:
@@ -80,7 +80,7 @@ def get_article(category, article_id, query, data):
     Notice the argument name for URL variables (`category, article_id`) must match the variable name.
 
 Otherwise, a 400 error response will be returned automatically. Like any other error response,
-this error response will contains `message` and `detail` fields:
+this error response will contain `message` and `detail` fields:
 
 1. `message`
 
@@ -181,11 +181,11 @@ def upload_image(data):
 
 !!! tips
 
-    Here we use `secure_filename` to clean the filename, notice it will only keep ascii characters.
+    Here we use `secure_filename` to clean the filename, notice it will only keep ASCII characters.
     You may want to create a random filename for the newly uploaded file, this
-    [SO answer](https://stackoverflow.com/a/44992275/5511849) maybe helpful.
+    [SO answer](https://stackoverflow.com/a/44992275/5511849) may be helpful.
 
-The file object is a instance of `werkzeug.datastructures.FileStorage`, see more details
+The file object is an instance of `werkzeug.datastructures.FileStorage`, see more details
 [in Werkzeug's docs][_docs].
 
 _docs: https://werkzeug.palletsprojects.com/datastructures/#werkzeug.datastructures.FileStorage
@@ -225,7 +225,7 @@ the form data (equals to `form_and_files`).
 
     Validators for the file field will be available in the version 1.1
     ([#253](https://github.com/greyli/apiflask/issues/253)). For now,
-    you can manual validate the file in the view funtion or in the schema:
+    you can manually validate the file in the view function or the schema:
 
     ```python
     class ImageSchema(Schema):
