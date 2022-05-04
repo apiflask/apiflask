@@ -447,9 +447,9 @@ The old standalone decorators were deprecated since 0.12, and will be removed in
 ## Use `@app.input` to validate and deserialize request data
 
 To validate and deserialize a request body or request query parameters, we need to
-create a resource schema class first. Think of it as a way to describe the valid
+create a data schema class first. Think of it as a way to describe the valid
 incoming data. If you already familiar with marshmallow, then you already know
-how to write a resource schema.
+how to write a data schema.
 
 Here is a simple input schema for a Pet input resource:
 
@@ -529,6 +529,9 @@ following format:
     "category": "the category of the pet: one of dog and cat"
 }
 ```
+!!! notes
+
+    Read the *[Data Schema](/schema)* chapter for the advanced topics on data schema.
 
 Now let's add it to the view function which used to create a new pet:
 
