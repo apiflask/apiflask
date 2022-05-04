@@ -9,14 +9,14 @@ Basic concepts on data schema:
 - We recommend separating input and output schema. Since the output data is not
   validated, you don't need to define validators on output fields.
 - `apiflask.fields` includes all the fields provided by marshmallow, webargs, and
-  flask-marshmallow (while some aliaes were removed).
+  flask-marshmallow (while some aliases were removed).
 - `apiflask.validators` includes all the validators in `marshmallow.validate`.
 - For other functions/classes, just import them from marshmallow.
 - Read [marshmallow's documentation](https://marshmallow.readthedocs.io/) when you have free time.
 
 
 Read [this section](usage/#use-appinput-to-validate-and-deserialize-request-data) and following
-section first in the Basic Usage chapter for the basics on writing input and output schema.
+section first in the Basic Usage chapter for the basics of writing input and output schema.
 
 
 ## Deserialization (load) and serialization (dump)
@@ -24,12 +24,12 @@ section first in the Basic Usage chapter for the basics on writing input and out
 In APIFlask (marshmallow), the process of parsing and validating the input request data
 is called deserialization (we **load** the data from the request). And the process of
 formatting the output response data is called serialization (we **dump** the data to
-response).
+the response).
 
 Notice we use the "load" and "dump" to represent these two processes. When creating
-the schema, we set default value for the fields in the input schema with the `load_default`
+the schema, we set the default value for the fields in the input schema with the `load_default`
 parameter, and we use the `dump_default` parameter to set the default value for fields
-in the ouput schema.
+in the output schema.
 
 There are four decorators to register callback methods in the load/dump processes:
 
@@ -40,8 +40,8 @@ There are four decorators to register callback methods in the load/dump processe
 
 And there are two decorators to register a validation method:
 
-- `validates(field_name)`: to regsiter a method to validate a specified field
-- `validates_schema`: to regsiter a method to validate the whole schema
+- `validates(field_name)`: to register a method to validate a specified field
+- `validates_schema`: to register a method to validate the whole schema
 
 !!! tips
 
@@ -52,7 +52,7 @@ And there are two decorators to register a validation method:
 Import these decorators directly from marshmallow:
 
 ```python
-from marshmallow import before_load, after_dump, validates
+from marshmallow import pre_load, post_dump, validates
 ```
 
 See [this chapter](https://marshmallow.readthedocs.io/en/stable/extending.html) and the
@@ -105,7 +105,7 @@ class FooBarSchema(Schema):
 
 ### marshmallow fields
 
-API documentaion: <https://marshmallow.readthedocs.io/en/stable/marshmallow.fields.html>
+API documentation: <https://marshmallow.readthedocs.io/en/stable/marshmallow.fields.html>
 
 - `AwareDateTime`
 - `Boolean`
@@ -163,7 +163,7 @@ API documentation: <https://apiflask.com/api/fields/#apiflask.fields.File>
 
 !!! tips
 
-    If the existing field doesn't fit your needs, you can also create
+    If the existing fields don't fit your needs, you can also create
     [custom fields](https://marshmallow.readthedocs.io/en/stable/custom_fields.html).
 
 
@@ -187,7 +187,7 @@ APIFlask's `aipflask.validators` contains all the validator class provided by ma
 See the [API documentation](https://marshmallow.readthedocs.io/en/stable/marshmallow.validate.html)
 for the detailed usage.
 
-When specify validators for a field, you can pass single validator to the validate parameter:
+When specifying validators for a field, you can pass a single validator to the `validate` parameter:
 
 ```python
 from apiflask import Schema
@@ -199,7 +199,7 @@ class PetInSchema(Schema):
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 ```
 
-Or pass a list:
+Or pass a list of validators:
 
 ```python
 from apiflask import Schema
@@ -213,7 +213,7 @@ class PetInSchema(Schema):
 
 !!! tips
 
-    If the existing validators doesn't fit your needs, you can also create
+    If the existing validators don't fit your needs, you can also create
     [custom validators](https://marshmallow.readthedocs.io/en/stable/quickstart.html#validation).
 
 
