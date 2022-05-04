@@ -1,7 +1,7 @@
 # Authentication
 
 Read [this section](usage/#use-appauth_required-to-protect-your-views)
-in the Basic Usage chapter first for the basics on the authentication support.
+in the Basic Usage chapter first for the basics on authentication support.
 
 Basic concepts on the authentication support:
 
@@ -21,7 +21,7 @@ Basic concepts on the authentication support:
 
 When using the `HTTPBasicAuth`, `HTTPTokenAuth`, and `app.auth_required` to implement
 the authentication, APIFlask can generate the OpenAPI security spec automatically. When
-you use the external authentication library, APIFlask still offer a way to set the
+you use the external authentication library, APIFlask still offers the way to set the
 OpenAPI spec.
 
 You can use the `SECURITY_SCHEMES` config or the `app.security_schemes` attribute to
