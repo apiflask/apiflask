@@ -16,7 +16,7 @@ Go through the following chapters to learn how to use APIFlask:
 - **[Basic Usage](/usage)**: Get started with APIFlask.
 - **Schema, Fields, and Validators**: Introduce how to write an input/output schema.
 - **[Request Handling](/request)**: The detailed introduction of the `@app.input` decorator.
-- **Response Formatting**:  The detailed introduction of the `@app.output` decorator.
+- **[Response Formatting](/response)**:  The detailed introduction of the `@app.output` decorator.
 - **[OpenAPI Generating](/openapi)**: Introduce how the OpenAPI generation works and how to customize
 it with `@app.doc` decorator and configuration variables.
 - **Authentication**: Introduce how to implement HTTP Basic and Token-based authentication.

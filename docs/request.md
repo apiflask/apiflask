@@ -9,7 +9,7 @@ Basic concepts on request handling:
 - If the parsing and validating success, the data will pass to the view function.
   Otherwise, a 400 error response will be returned automatically.
 
-Read *[this section](usage/#use-appinput-to-validate-and-deserialize-request-data)*
+Read [this section](usage/#use-appinput-to-validate-and-deserialize-request-data)
 in the Basic Usage chapter first for the basics on request handling.
 
 
@@ -146,6 +146,9 @@ from apiflask.fields import Integer
 def hello(query, data):
     pass
 ```
+
+However, we recommend to create a schema class whenever possible to make the
+code easy to read and reuse.
 
 
 ## File uploading
