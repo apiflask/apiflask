@@ -650,7 +650,7 @@ class PetOutSchema(Schema):
 def get_pet(pet_id):
     return {
         'name': 'Coco',
-        'category: 'dog'
+        'category': 'dog'
     }
 ```
 
@@ -661,7 +661,7 @@ status code with the `status_code` argument:
 @app.post('/pets')
 @app.input(PetInSchema)
 @app.output(PetOutSchema, status_code=201)
-def create_pet(data)
+def create_pet(data):
     data['id'] = 2
     return data
 ```
@@ -800,7 +800,7 @@ you can pass a `status_code` argument in the `@app.output` decorator:
 @app.post('/pets')
 @app.input(PetInSchema)
 @app.output(PetOutSchema, 201)
-def create_pet(data)
+def create_pet(data):
     # ...
     return pet
 ```
@@ -812,7 +812,7 @@ You don't need to return the same status code in the end of the view function
 @app.post('/pets')
 @app.input(PetInSchema)
 @app.output(PetOutSchema, 201)
-def create_pet(data)
+def create_pet(data):
     # ...
     # equals to:
     # return pet, 201
@@ -826,7 +826,7 @@ of the return tuple:
 @app.post('/pets')
 @app.input(PetInSchema)
 @app.output(PetOutSchema, 201)
-def create_pet(data)
+def create_pet(data):
     # ...
     # equals to:
     # return pet, 201, {'FOO': 'bar'}
