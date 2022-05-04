@@ -591,6 +591,7 @@ argument for `@app.input()` decorator, the value can be:
 - Request JSON body: `'json'` (default)
 - Upload files: `'files'`
 - Form data: `'form'`
+- Form data and files: `'form_and_files'`
 - Cookies: `'cookies'`
 - HTTP headers: `'headers'`
 - Query string: `'query'` (same as `'querystring'`)
@@ -599,6 +600,9 @@ argument for `@app.input()` decorator, the value can be:
 
     Be sure to put the `@app.input` decorator under the routes decorators
     (i.e., `app.route`, `app.get`, `app.post`, etc.).
+
+
+Read the *[Request Handling](/request)* chapter for the advanced topics on request handling.
 
 
 ## Use `@app.output` to format response data
