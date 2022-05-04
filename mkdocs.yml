@@ -39,9 +39,9 @@ nav:
   - Documentation Index: docs.md
   - Migrating from Flask: migrating.md
   - Basic Usage: usage.md
-  - Schema, Fields, and Validators: schema.md
   - Request Handling: request.md
   - Response Formatting: response.md
+  - Data Schema: schema.md
   - OpenAPI Generating: openapi.md
   - Swagger UI and Redoc: api-docs.md
   - Configuration: configuration.md
