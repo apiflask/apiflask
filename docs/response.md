@@ -6,8 +6,8 @@ Basic concepts on response formatting:
   the response formatting.
 - The response data returned by the view function will only be formatting against your
   schema, not validating.
-- You can only declare one output (use one `app.output` decorator) for JSON response body.
-- The error respsonses of your view can be declared with `app.doc(response=...)`.
+- You can only declare one output (use one `app.output` decorator) for the JSON response body.
+- The error responses of your view can be declared with `app.doc(response=...)`.
 
 Read the following sections in the Basic Usage chapter first for the basics on response formatting:
 
@@ -43,7 +43,7 @@ class PetQuerySchema(Schema):
     per_page = Integer(load_default=20, validate=Range(max=30))
 ```
 
-Then we create a pet output scheam, and a pets schema that contains
+Then we create a pet output schema, and a pets schema that contains
 a list of nested `PetOutSchema` schema, and a nested `PaginationSchema`
 schema.
 
@@ -142,5 +142,5 @@ def get_answer():
     return {'answer': 'Nothing'}
 ```
 
-However, we recommend to create a schema class whenever possible to make the
+However, we recommend creating a schema class whenever possible to make the
 code easy to read and reuse.
