@@ -76,6 +76,7 @@ class EmptySchema(Schema):
 
 
 class PaginationSchema(Schema):
+    """A schema for common pagination information."""
     page = Integer()
     per_page = Integer()
     pages = Integer()
