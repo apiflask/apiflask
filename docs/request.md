@@ -1,5 +1,8 @@
 # Request Handling
 
+Read [this section](usage/#use-appinput-to-validate-and-deserialize-request-data)
+in the Basic Usage chapter first for the basics on request handling.
+
 Basic concepts on request handling:
 
 - APIFlask uses [webargs](https://github.com/marshmallow-code/webargs) to handle request
@@ -8,9 +11,6 @@ Basic concepts on request handling:
   an input source, and use the `location` to declare the input location.
 - If the parsing and validating success, the data will pass to the view function.
   Otherwise, a 400 error response will be returned automatically.
-
-Read [this section](usage/#use-appinput-to-validate-and-deserialize-request-data)
-in the Basic Usage chapter first for the basics on request handling.
 
 
 ## Request locations

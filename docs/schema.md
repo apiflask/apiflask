@@ -1,5 +1,8 @@
 # Data Schema
 
+Read [this section](usage/#use-appinput-to-validate-and-deserialize-request-data) and following
+section first in the Basic Usage chapter for the basics of writing input and output schema.
+
 Basic concepts on data schema:
 
 - APIFlask schema = [marshmallow](https://github.com/marshmallow-code/marshmallow) schema.
@@ -14,9 +17,6 @@ Basic concepts on data schema:
 - For other functions/classes, just import them from marshmallow.
 - Read [marshmallow's documentation](https://marshmallow.readthedocs.io/) when you have free time.
 
-
-Read [this section](usage/#use-appinput-to-validate-and-deserialize-request-data) and following
-section first in the Basic Usage chapter for the basics of writing input and output schema.
 
 
 ## Deserialization (load) and serialization (dump)

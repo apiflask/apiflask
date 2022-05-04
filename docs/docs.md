@@ -15,7 +15,7 @@ Go through the following chapters to learn how to use APIFlask:
 - **[Data Schema](/schema)**: Introduce how to write an input/output data schema.
 - **[OpenAPI Generating](/openapi)**: Introduce how the OpenAPI generation works and how to customize
 it with `@app.doc` decorator and configuration variables.
-- **Authentication**: Introduce how to implement HTTP Basic and Token-based authentication.
+- **[Authentication](/authentication)**: Introduce how to implement authentication support for your application.
 - **[Swagger UI and Redoc](/api-docs)**: Introduce the usage and configuration of the API
 documentation tools.
 - **[Configuration](/configuration)**: A list of all the built-in configuration variables

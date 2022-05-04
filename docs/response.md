@@ -1,5 +1,10 @@
 # Response Formatting
 
+Read the following sections in the Basic Usage chapter first for the basics on response formatting:
+
+- [Use `@app.output` to format response data](/usage/#use-appoutput-to-format-response-data)
+- [The return value of the view function](/usage/#the-return-value-of-the-view-function)
+
 Basic concepts on response formatting:
 
 - APIFlask uses [marshmallow](https://github.com/marshmallow-code/marshmallow) to handle
@@ -8,11 +13,6 @@ Basic concepts on response formatting:
   schema, not validating.
 - You can only declare one output (use one `app.output` decorator) for the JSON response body.
 - The error responses of your view can be declared with `app.doc(response=...)`.
-
-Read the following sections in the Basic Usage chapter first for the basics on response formatting:
-
-- [Use `@app.output` to format response data](/usage/#use-appoutput-to-format-response-data)
-- [The return value of the view function](/usage/#the-return-value-of-the-view-function)
 
 
 ## Pagination support

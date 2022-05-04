@@ -10,6 +10,19 @@ documentation) solution for creating web APIs with Flask. Here is a summary of t
 differences between APIFlask and similar projects.
 
 
+## APIFlask vs FastAPI
+
+- For the web part, FastAPI builds on top of Starlette, while APIFlask builts on top of
+Flask.
+- For the data part (serialization/deserialization, OpenAPI support), FastAPI relies
+on Pydantic, while APIFlask uses marshmallow-code projects (marshmallow, webargs, apispec).
+- APIFlask builds on top of Flask, so it's compatible with Flask extensions.
+- FastAPI support async. APIFlask will have the basic async support with Flask 2.0.
+- APIFlask provides more decorators to help organize things better.
+- FastAPI injects the input data as an object, while APIFlask passes it as a dict.
+- APIFlask has built-in class-based views support based on Flask's `MethodView`.
+
+
 ## APIFlask vs APIFairy/flask-smorest
 
 
@@ -123,26 +136,3 @@ def create_pet():
 - Support to customize the API documentation config and CDN URLs.
 - Return JSON response for all HTTP errors and Auth errors as default.
 - Class-based view support.
-
-
-## APIFlask vs FastAPI
-
-- FastAPI is nearly three years old, while APIFlask is only three months old. The former
-is production-ready. The latter is still in the early stage.
-- For the web part, FastAPI builds on top of Starlette, while APIFlask builts on top of
-Flask.
-- For the data part (serialization/deserialization, OpenAPI support), FastAPI relies
-on Pydantic, while APIFlask uses marshmallow-code projects (marshmallow, webargs, apispec).
-- APIFlask builds on top of Flask, so it's compatible with Flask extensions.
-- FastAPI support async. APIFlask will have the basic async support with Flask 2.0.
-- APIFlask provides more decorators to help organize things better.
-- FastAPI injects the input data as an object, while APIFlask passes it as a dict.
-- APIFlask has built-in class-based views support based on Flask's `MethodView`.
-
-
-## APIFlask vs Flask-RESTful
-
-Flask-RESTful's core components were deprecated, see
-[this issue][_883]{target=_blank} for more details.
-
-[_883]: https://github.com/flask-restful/flask-restful/issues/883
