@@ -25,11 +25,11 @@ def get_reason_phrase(status_code: int, default: str = 'Unknown') -> str:
 
 
 def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
-    """A helper function to generate pagination schema.
+    """A helper function to make pagination data.
 
     This function is designed based on Flask-SQLAlchemy's `Pagination` class.
     If you are using a different or custom pagination class, make sure the
-    passed  pagination object has the following attributes:
+    passed pagination object has the following attributes:
 
     - page
     - per_page

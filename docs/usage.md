@@ -716,6 +716,9 @@ def delete_pet(pet_id):
     (i.e., `app.route`, `app.get`, `app.post`, etc.).
 
 
+Read the *[Response Formatting](/response)* chapter for the advanced topics on request formatting.
+
+
 ## The return value of the view function
 
 When you are using a `@app.output(schema)` decorator, you should return a dict or object

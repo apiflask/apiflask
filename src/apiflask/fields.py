@@ -65,7 +65,7 @@ class File(Field):
 
         return {'message': f'file {filename} saved.'}
     ```
-    The file object is a instance of `werkzeug.datastructures.FileStorage`, see more details
+    The file object is an instance of `werkzeug.datastructures.FileStorage`, see more details
     [in the docs][_docs].
 
     _docs: https://werkzeug.palletsprojects.com/datastructures/#werkzeug.datastructures.FileStorage

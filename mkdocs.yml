@@ -40,6 +40,7 @@ nav:
   - Migrating from Flask: migrating.md
   - Basic Usage: usage.md
   - Request Handling: request.md
+  - Response Formatting: response.md
   - OpenAPI Generating: openapi.md
   - Swagger UI and Redoc: api-docs.md
   - Configuration: configuration.md
@@ -51,6 +52,8 @@ nav:
     - Exceptions: api/exceptions.md
     - OpenAPI: api/openapi.md
     - Schemas: api/schemas.md
+    - Fields: api/fields.md
+    - Validators: api/validators.md
     - Route: api/route.md
     - Security: api/security.md
     - Helpers: api/helpers.md
@@ -61,7 +64,6 @@ nav:
   - Contributing Guide: contributing.md
   - WIP:
     - Schema, Fields, and Validators: schema.md
-    - Response Formatting: response.md
     - Security: security.md
     - Tutorial: tutorial/index.md
 plugins:
