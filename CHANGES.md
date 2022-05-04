@@ -1,8 +1,15 @@
+## Version 1.1.0
+
+- [1.1.0 milestone](https://github.com/greyli/apiflask/milestone/9)
+- [1.1.0 kanban](https://github.com/greyli/apiflask/projects/2)
+
+Released: -
+
+
 ## Version 1.0.0
 
-[1.0.0 milestone](https://github.com/greyli/apiflask/milestone/3)
-
-Released: --
+Released: 2022/5/4
+Codename: Wujiaochang
 
 - Remove the deprecated standalone decorators: `input`, `output`, `doc`, and `auth_required`.
   Use app/blueprint decorators instead (e.g. `input()` -> `app.input()`/`bp.input()`).
