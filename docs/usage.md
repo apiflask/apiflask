@@ -908,7 +908,7 @@ auth = HTTPBasicAuth()  # create the auth object
 @auth.verify_password
 def verify_password(username, password):
     # get the user from the database, check the password
-    # then return the user if password matches
+    # then return the user if the password matches
     # ...
 
 @app.route('/')
@@ -938,7 +938,7 @@ auth = HTTPTokenAuth()  # create the auth object
 @auth.verify_token  # register a callback to verify the token
 def verify_token(token):
     # verify the token and get the user id
-    # then query and return the corresponding user from database
+    # then query and return the corresponding user from the database
     # ...
 
 @app.get('/')
@@ -948,7 +948,7 @@ def hello():
     return f'Hello, {auth.current_user}'!
 ```
 
-3. API Keys (header)
+3. API Keys (in header)
 
 Similar to the Bearer type, but set the `scheme` to `ApiKey` when creating the
 auth object:
