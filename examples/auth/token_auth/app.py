@@ -42,7 +42,7 @@ def verify_token(token: str) -> t.Union[User, None]:
             current_app.config['SECRET_KEY'],
         )
         id = data['id']
-    except:
+    except BaseException:
         return None
     user = get_user_by_id(id)
     g.current_user = user
