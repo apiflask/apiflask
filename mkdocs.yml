@@ -41,6 +41,7 @@ nav:
   - Basic Usage: usage.md
   - Request Handling: request.md
   - Response Formatting: response.md
+  - Data Schema: schema.md
   - OpenAPI Generating: openapi.md
   - Swagger UI and Redoc: api-docs.md
   - Configuration: configuration.md
@@ -63,7 +64,6 @@ nav:
   - Changelog: changelog.md
   - Contributing Guide: contributing.md
   - WIP:
-    - Schema, Fields, and Validators: schema.md
     - Security: security.md
     - Tutorial: tutorial/index.md
 plugins:
