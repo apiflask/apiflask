@@ -42,6 +42,7 @@ nav:
   - Request Handling: request.md
   - Response Formatting: response.md
   - Data Schema: schema.md
+  - Authentication: authentication.md
   - OpenAPI Generating: openapi.md
   - Swagger UI and Redoc: api-docs.md
   - Configuration: configuration.md
@@ -63,9 +64,6 @@ nav:
   - Authors: authors.md
   - Changelog: changelog.md
   - Contributing Guide: contributing.md
-  - WIP:
-    - Security: security.md
-    - Tutorial: tutorial/index.md
 plugins:
   - search
   - mkdocstrings:
