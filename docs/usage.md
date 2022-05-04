@@ -887,7 +887,7 @@ about OpenAPI genenrating and the usage of the `doc` decorator.
 Based on [Flask-HTTPAuth](https://github.com/miguelgrinberg/Flask-HTTPAuth), APIFlask
 provides three types of authentication:
 
-1. HTTP Basic
+### HTTP Basic
 
 To implement an HTTP Basic authentication, you will need to:
 
@@ -917,7 +917,7 @@ def hello():
     return f'Hello, {auth.current_user}!'
 ```
 
-2. HTTP Bearer
+### HTTP Bearer
 
 To implement an HTTP Bearer authentication, you will need to:
 
@@ -948,7 +948,7 @@ def hello():
     return f'Hello, {auth.current_user}'!
 ```
 
-3. API Keys (in header)
+### API Keys (in header)
 
 Similar to the Bearer type, but set the `scheme` to `ApiKey` when creating the
 auth object:

@@ -61,7 +61,7 @@ def hello(query, data):
     pass
 ```
 
-!!! tips:
+!!! tips
 
     The argument name (`query, data`) in the view function is defined by you, you can use anything you like.
 
@@ -75,19 +75,19 @@ def get_article(category, article_id, query, data):
     pass
 ```
 
-!!! tips:
+!!! tips
 
     Notice the argument name for URL variables (`category, article_id`) must match the variable name.
 
 Otherwise, a 400 error response will be returned automatically. Like any other error response,
 this error response will contain `message` and `detail` fields:
 
-1. `message`
+- `message`
 
 The value will be `Validation error`, you can change this via the config
 `VALIDATION_ERROR_DESCRIPTION`.
 
-2. `detail`
+- `detail`
 
 The detail field contains the validation information in the following format:
 
@@ -105,7 +105,7 @@ The detail field contains the validation information in the following format:
 
 The value of `<location>` is where the validation error happened.
 
-3. status code
+- status code
 
 The default status code of validation error is 404, you can change this via the
 config `AUTH_ERROR_STATUS_CODE`.
@@ -182,7 +182,7 @@ def upload_image(data):
     return {'message': f'file {filename} saved.'}
 ```
 
-!!! tips
+!!! tip
 
     Here we use `secure_filename` to clean the filename, notice it will only keep ASCII characters.
     You may want to create a random filename for the newly uploaded file, this
@@ -191,7 +191,7 @@ def upload_image(data):
 The file object is an instance of `werkzeug.datastructures.FileStorage`, see more details
 [in Werkzeug's docs][_docs].
 
-_docs: https://werkzeug.palletsprojects.com/datastructures/#werkzeug.datastructures.FileStorage
+[_docs]: https://werkzeug.palletsprojects.com/datastructures/#werkzeug.datastructures.FileStorage
 
 Use `form_and_files` location if you want to put both files
 and other normal fields in one schema:

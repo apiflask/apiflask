@@ -48,7 +48,7 @@ to customize the error response body. See more details
 There are two ways to abort the request handling process and return an error response
 in the view function:
 
-1. Call the `abort` function
+- Call the `abort` function
 
 Just like what you do in a normal Flask view function, but this `abort` function is
 provided by APIFlask:
@@ -65,7 +65,7 @@ def hello():
 
 It will raise an `HTTPError` behind the scene, so it will take the same arguments (see below).
 
-2. Raise the `HTTPError` class
+- Raise the `HTTPError` class
 
 Raise `HTTPError` will do the same thing:
 

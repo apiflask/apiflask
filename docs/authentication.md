@@ -19,6 +19,10 @@ Basic concepts on the authentication support:
 
 ## Use external authentication library
 
+!!! warning "Version >= 1.0.0"
+
+    This feature was added in the [version 1.0.0](/changelog/#version-100).
+
 When using the `HTTPBasicAuth`, `HTTPTokenAuth`, and `app.auth_required` to implement
 the authentication, APIFlask can generate the OpenAPI security spec automatically. When
 you use the external authentication library, APIFlask still offers the way to set the
