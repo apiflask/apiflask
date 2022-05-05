@@ -1,5 +1,5 @@
 import typing as t
-from flask import current_app, g
+from flask import current_app
 from apiflask import APIFlask, HTTPTokenAuth, abort
 from authlib.jose import jwt, JoseError
 
