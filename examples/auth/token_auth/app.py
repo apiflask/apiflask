@@ -1,6 +1,7 @@
 import typing as t
 from flask import current_app
-from apiflask import APIFlask, HTTPTokenAuth, abort
+from apiflask import APIFlask, HTTPTokenAuth, Schema, abort
+from apiflask.fields import String
 from authlib.jose import jwt, JoseError
 
 app = APIFlask(__name__)
@@ -50,7 +51,12 @@ def verify_token(token: str) -> t.Union[User, None]:
     return user
 
 
+class TokenSchema(Schema):
+    token = String()
+
+
 @app.post('/token/<int:id>')
+@app.output(TokenSchema)
 def get_token(id: int):
     if get_user_by_id(id) is None:
         abort(404)
