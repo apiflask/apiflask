@@ -447,9 +447,9 @@ The old standalone decorators were deprecated since 0.12, and will be removed in
 ## Use `@app.input` to validate and deserialize request data
 
 To validate and deserialize a request body or request query parameters, we need to
-create a resource schema class first. Think of it as a way to describe the valid
+create a data schema class first. Think of it as a way to describe the valid
 incoming data. If you already familiar with marshmallow, then you already know
-how to write a resource schema.
+how to write a data schema.
 
 Here is a simple input schema for a Pet input resource:
 
@@ -529,6 +529,9 @@ following format:
     "category": "the category of the pet: one of dog and cat"
 }
 ```
+!!! notes
+
+    Read the *[Data Schema](/schema)* chapter for the advanced topics on data schema.
 
 Now let's add it to the view function which used to create a new pet:
 
@@ -881,23 +884,98 @@ about OpenAPI genenrating and the usage of the `doc` decorator.
 
 ## Use `@app.auth_required` to protect your views
 
-You can use `@app.auth_required` to protect a view with provided authentication settings:
+Based on [Flask-HTTPAuth](https://github.com/miguelgrinberg/Flask-HTTPAuth), APIFlask
+provides three types of authentication:
 
-```python hl_lines="1 4 8"
-from apiflask import APIFlask, HTTPTokenAuth, auth_required
+### HTTP Basic
+
+To implement an HTTP Basic authentication, you will need to:
+
+- Create an `auth` object with `HTTPBasicAuth`
+- Register a callback function with `@auth.verify_password`, the function
+  should accept `username` and `password`, return the corresponding user object
+  or `None`.
+- Protect the view function with `@app.auth_required(auth)`.
+- Access the current user object in your view function with `auth.current_user`.
+
+```python
+from apiflask import APIFlask, HTTPBasicAuth
 
 app = APIFlask(__name__)
-auth = HTTPTokenAuth()
+auth = HTTPBasicAuth()  # create the auth object
 
 
-@app.get('/')
+@auth.verify_password
+def verify_password(username, password):
+    # get the user from the database, check the password
+    # then return the user if the password matches
+    # ...
+
+@app.route('/')
 @app.auth_required(auth)
 def hello():
-    return 'Hello'!
+    return f'Hello, {auth.current_user}!'
 ```
 
-See [Flask-HTTPAuth's documentation][_flask-httpauth]{target=_blank} for more
-details (The chapter of authentication support will be added soon).
+### HTTP Bearer
+
+To implement an HTTP Bearer authentication, you will need to:
+
+- Create an `auth` object with `HTTPTokenAuth`
+- Register a callback function with `@auth.verify_password`, the function
+  should accept `token`, return the corresponding user object or `None`.
+- Protect the view function with `@app.auth_required(auth)`.
+- Access the current user object in your view function with `auth.current_user`.
+
+```python
+from apiflask import APIFlask, HTTPTokenAuth
+
+app = APIFlask(__name__)
+auth = HTTPTokenAuth()  # create the auth object
+# or HTTPTokenAuth(scheme='Bearer')
+
+
+@auth.verify_token  # register a callback to verify the token
+def verify_token(token):
+    # verify the token and get the user id
+    # then query and return the corresponding user from the database
+    # ...
+
+@app.get('/')
+@app.auth_required(auth)  # protect the view
+def hello():
+    # access the current user with auth.current_user
+    return f'Hello, {auth.current_user}'!
+```
+
+### API Keys (in header)
+
+Similar to the Bearer type, but set the `scheme` to `ApiKey` when creating the
+auth object:
+
+```python
+from apiflask import HTTPTokenAuth
+
+HTTPTokenAuth(scheme='ApiKey')
+```
+
+or with a custom header:
+
+```python
+from apiflask import HTTPTokenAuth
+
+HTTPTokenAuth(scheme='ApiKey', header='X-API-Key')
+
+# ...
+```
+
+You can set the OpenAPI security description with the `description` parameter
+in `HTTPBasicAuth` and `HTTPTokenAuth`.
+
+See [Flask-HTTPAuth's documentation][_flask-httpauth]{target=_blank} to learn
+the details. However, remember to
+import `HTTPBasicAuth` and `HTTPTokenAuth` from APIFlask and use `@app.auth_required`
+instead of `@auth.login_required` for your view functions.
 
 !!! warning
 
@@ -905,6 +983,8 @@ details (The chapter of authentication support will be added soon).
     (i.e., `app.route`, `app.get`, `app.post`, etc.).
 
 [_flask-httpauth]: https://flask-httpauth.readthedocs.io/
+
+Read the *[Authentication](/authentication)* chapter for the advanced topics on authentication.
 
 
 ## Use class-based views

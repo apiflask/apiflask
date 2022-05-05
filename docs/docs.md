@@ -2,10 +2,6 @@
 
 Welcome to APIFlask's documentation!
 
-Documentation progress:
-
-[=60%]
-
 
 ## Contents
 
@@ -14,12 +10,12 @@ Go through the following chapters to learn how to use APIFlask:
 - **[Introduction](/)**: A general introduction for APIFlask.
 - **[Migrating from Flask](/migrating)**: Migrating guide and notes.
 - **[Basic Usage](/usage)**: Get started with APIFlask.
-- **Schema, Fields, and Validators**: Introduce how to write an input/output schema.
 - **[Request Handling](/request)**: The detailed introduction of the `@app.input` decorator.
 - **[Response Formatting](/response)**:  The detailed introduction of the `@app.output` decorator.
+- **[Data Schema](/schema)**: Introduce how to write an input/output data schema.
 - **[OpenAPI Generating](/openapi)**: Introduce how the OpenAPI generation works and how to customize
 it with `@app.doc` decorator and configuration variables.
-- **Authentication**: Introduce how to implement HTTP Basic and Token-based authentication.
+- **[Authentication](/authentication)**: Introduce how to implement authentication support for your application.
 - **[Swagger UI and Redoc](/api-docs)**: Introduce the usage and configuration of the API
 documentation tools.
 - **[Configuration](/configuration)**: A list of all the built-in configuration variables
