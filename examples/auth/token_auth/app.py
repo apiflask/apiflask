@@ -24,9 +24,9 @@ class User:
 
 
 users = [
-    User(1, "lorem"),
-    User(2, "ipsum"),
-    User(3, "test"),
+    User(1, 'lorem'),
+    User(2, 'ipsum'),
+    User(3, 'test'),
 ]
 
 
@@ -38,7 +38,7 @@ def get_user_by_id(id: int) -> t.Union[User, None]:
 def verify_token(token: str) -> t.Union[User, None]:
     try:
         data = jwt.decode(
-            token.encode("ascii"),
+            token.encode('ascii'),
             current_app.config['SECRET_KEY'],
         )
         id = data['id']
@@ -49,7 +49,7 @@ def verify_token(token: str) -> t.Union[User, None]:
     return user
 
 
-@app.post("/token/<int:id>")
+@app.post('/token/<int:id>')
 def get_token(id: int):
     if get_user_by_id(id) is None:
         abort(404)
@@ -58,8 +58,8 @@ def get_token(id: int):
     }
 
 
-@app.get("/name/<int:id>")
-@auth.login_required
+@app.get('/name/<int:id>')
+@app.auth_required(auth)
 def get_secret():
     if isinstance(g.current_user, User):
         return g.current_user.secret
