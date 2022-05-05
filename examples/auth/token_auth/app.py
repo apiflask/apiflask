@@ -1,7 +1,7 @@
 import typing as t
 from flask import current_app, g
 from apiflask import APIFlask, HTTPTokenAuth, abort
-from authlib.jose import jwt
+from authlib.jose import jwt, JoseError
 
 app = APIFlask(__name__)
 auth = HTTPTokenAuth()
@@ -42,10 +42,11 @@ def verify_token(token: str) -> t.Union[User, None]:
             current_app.config['SECRET_KEY'],
         )
         id = data['id']
-    except BaseException:
+        user = get_user_by_id[id]
+    except JoseError:
         return None
-    user = get_user_by_id(id)
-    g.current_user = user
+    except IndexError:
+        return None
     return user
 
 
@@ -61,6 +62,4 @@ def get_token(id: int):
 @app.get('/name/<int:id>')
 @app.auth_required(auth)
 def get_secret():
-    if isinstance(g.current_user, User):
-        return g.current_user.secret
-    abort(401)
+    return auth.current_user.secret
