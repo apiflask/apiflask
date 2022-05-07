@@ -1,6 +1,6 @@
 # Request Handling
 
-Read [this section](usage/#use-appinput-to-validate-and-deserialize-request-data)
+Read [this section](/usage/#use-appinput-to-validate-and-deserialize-request-data)
 in the Basic Usage chapter first for the basics on request handling.
 
 Basic concepts on request handling:

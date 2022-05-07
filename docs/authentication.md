@@ -1,6 +1,6 @@
 # Authentication
 
-Read [this section](usage/#use-appauth_required-to-protect-your-views)
+Read [this section](/usage/#use-appauth_required-to-protect-your-views)
 in the Basic Usage chapter first for the basics on authentication support.
 
 Basic concepts on the authentication support:

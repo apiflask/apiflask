@@ -1,6 +1,6 @@
 # Data Schema
 
-Read [this section](usage/#use-appinput-to-validate-and-deserialize-request-data) and following
+Read [this section](/usage/#use-appinput-to-validate-and-deserialize-request-data) and following
 section first in the Basic Usage chapter for the basics of writing input and output schema.
 
 Basic concepts on data schema:
