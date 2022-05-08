@@ -6,8 +6,6 @@
 #
 asgiref==3.5.1
     # via -r requirements/tests.in
-astunparse==1.6.3
-    # via pytkdocs
 attrs==21.4.0
     # via
     #   jsonschema
@@ -33,15 +31,12 @@ flask-sqlalchemy==2.5.1
     # via -r requirements/examples.in
 ghp-import==2.0.2
     # via mkdocs
+greenlet==1.1.2
+    # via sqlalchemy
 identify==2.5.0
     # via pre-commit
 importlib-metadata==4.11.3
-    # via
-    #   flask
-    #   markdown
-    #   mkdocs
-importlib-resources==5.7.1
-    # via jsonschema
+    # via mkdocs
 iniconfig==1.1.1
     # via pytest
 itsdangerous==2.1.2
@@ -111,7 +106,7 @@ pluggy==1.0.0
     # via
     #   pytest
     #   tox
-pre-commit==2.18.1
+pre-commit==2.19.0
     # via -r requirements/dev.in
 py==1.11.0
     # via
@@ -147,7 +142,6 @@ pyyaml-env-tag==0.1
     # via mkdocs
 six==1.16.0
     # via
-    #   astunparse
     #   python-dateutil
     #   tox
     #   virtualenv
@@ -176,13 +170,9 @@ watchdog==2.1.7
 werkzeug==2.1.2
     # via flask
 wheel==0.37.1
-    # via
-    #   astunparse
-    #   pip-tools
+    # via pip-tools
 zipp==3.8.0
-    # via
-    #   importlib-metadata
-    #   importlib-resources
+    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
