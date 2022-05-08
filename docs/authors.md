@@ -16,4 +16,4 @@ See all the contributors on the
 
 [_greyli]: https://github.com/greyli
 [_lafrech]: https://github.com/lafrech
-[_contributors]: https://github.com/greyli/apiflask/graphs/contributors
+[_contributors]: https://github.com/apiflask/apiflask/graphs/contributors

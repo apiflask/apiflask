@@ -104,7 +104,7 @@ passed pagination object has the following attributes:
 You can also write a custom builder function and pagination schema
 to build your custom pagination data.
 
-See the [full example](https://github.com/greyli/apiflask/blob/main/examples/pagination/app.py)
+See the [full example](https://github.com/apiflask/apiflask/blob/main/examples/pagination/app.py)
 for more details.
 
 

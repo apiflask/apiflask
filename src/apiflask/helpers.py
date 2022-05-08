@@ -74,7 +74,7 @@ def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
         }
     ```
 
-    See <https://github.com/greyli/apiflask/blob/main/examples/pagination/app.py>
+    See <https://github.com/apiflask/apiflask/blob/main/examples/pagination/app.py>
     for the complete example.
 
     Arguments:

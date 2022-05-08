@@ -1,7 +1,7 @@
 ## Version 1.1.0
 
-- [1.1.0 milestone](https://github.com/greyli/apiflask/milestone/9)
-- [1.1.0 kanban](https://github.com/greyli/apiflask/projects/2)
+- [1.1.0 milestone](https://github.com/apiflask/apiflask/milestone/9)
+- [1.1.0 kanban](https://github.com/apiflask/apiflask/projects/2)
 
 Released: -
 
@@ -34,13 +34,13 @@ Codename: Wujiaochang
 - When creating a custom error processor, call it for generic HTTP errors even if the
   `json_errors` is set to `False` when creating the app instance ([issue #171][issue_171]).
 
-[issue_211]: https://github.com/greyli/apiflask/issues/211
-[issue_231]: https://github.com/greyli/apiflask/issues/231
-[pull_232]: https://github.com/greyli/apiflask/pull/232
-[issue_237]: https://github.com/greyli/apiflask/issues/237
-[issue_123]: https://github.com/greyli/apiflask/issues/123
-[issue_254]: https://github.com/greyli/apiflask/issues/254
-[issue_171]: https://github.com/greyli/apiflask/issues/171
+[issue_211]: https://github.com/apiflask/apiflask/issues/211
+[issue_231]: https://github.com/apiflask/apiflask/issues/231
+[pull_232]: https://github.com/apiflask/apiflask/pull/232
+[issue_237]: https://github.com/apiflask/apiflask/issues/237
+[issue_123]: https://github.com/apiflask/apiflask/issues/123
+[issue_254]: https://github.com/apiflask/apiflask/issues/254
+[issue_171]: https://github.com/apiflask/apiflask/issues/171
 
 
 ## Version 0.12.0
@@ -50,7 +50,7 @@ Released: 2022/3/2
 - Move standalone decorators (input, output, auth_required, doc) to APIFlask/APIBlueprint
   classes. The old decorators are deprecated and will be removed in 1.0. ([issue #187][issue_187]).
 
-[issue_187]: https://github.com/greyli/apiflask/issues/187
+[issue_187]: https://github.com/apiflask/apiflask/issues/187
 
 
 ## Version 0.11.0
@@ -60,7 +60,7 @@ Released: 2021/12/6
 - Support creating custom error classes based on `HTTPError`. The position argument `status_code` of
   `HTTPError` is changed to a keyword argument, defaults to `500` ([issue #172][issue_172]).
 
-[issue_172]: https://github.com/greyli/apiflask/issues/172
+[issue_172]: https://github.com/apiflask/apiflask/issues/172
 
 
 ## Version 0.10.1
@@ -69,7 +69,7 @@ Released: 2021/11/26
 
 - Fix missing headers for JSON error responses when catching Werkzeug exceptions ([issue #173][issue_173]).
 
-[issue_173]: https://github.com/greyli/apiflask/issues/173
+[issue_173]: https://github.com/apiflask/apiflask/issues/173
 
 
 ## Version 0.10.0
@@ -86,12 +86,12 @@ Released: 2021/9/19
   can be enabled with config `AUTO_OPERATION_ID`, defaults to `False` ([pull #131][pull_131]).
 - Support setting response links via `@output(links=...)` ([issue #138][issue_138]).
 
-[issue_110]: https://github.com/greyli/apiflask/issues/110
-[issue_62]: https://github.com/greyli/apiflask/issues/62
-[issue_124]: https://github.com/greyli/apiflask/issues/124
-[issue_125]: https://github.com/greyli/apiflask/issues/125
-[pull_131]: https://github.com/greyli/apiflask/pull/131
-[issue_138]: https://github.com/greyli/apiflask/issues/138
+[issue_110]: https://github.com/apiflask/apiflask/issues/110
+[issue_62]: https://github.com/apiflask/apiflask/issues/62
+[issue_124]: https://github.com/apiflask/apiflask/issues/124
+[issue_125]: https://github.com/apiflask/apiflask/issues/125
+[pull_131]: https://github.com/apiflask/apiflask/pull/131
+[issue_138]: https://github.com/apiflask/apiflask/issues/138
 
 
 ## Version 0.9.0
@@ -112,10 +112,10 @@ Released: 2021/8/10
       to register a custom error processor for auth errors.
 - Support to config Redoc via the configuration variable `REDOC_CONFIG` ([issue #121][issue_121]).
 
-[issue_65]: https://github.com/greyli/apiflask/issues/65
-[issue_105]: https://github.com/greyli/apiflask/issues/105
-[issue_107]: https://github.com/greyli/apiflask/issues/107
-[issue_121]: https://github.com/greyli/apiflask/issues/121
+[issue_65]: https://github.com/apiflask/apiflask/issues/65
+[issue_105]: https://github.com/apiflask/apiflask/issues/105
+[issue_107]: https://github.com/apiflask/apiflask/issues/107
+[issue_121]: https://github.com/apiflask/apiflask/issues/121
 
 
 ## Version 0.8.0
@@ -136,10 +136,10 @@ Released: 2021/7/7
     - `AUTO_PATH_SUMMARY` -> `AUTO_OPERATION_SUMMARY`
     - `AUTO_PATH_DESCRIPTION` -> `AUTO_OPERATION_DESCRIPTION`
 
-[issue_78]: https://github.com/greyli/apiflask/issues/78
-[issue_79]: https://github.com/greyli/apiflask/issues/79
-[issue_98]: https://github.com/greyli/apiflask/issues/98
-[issue_99]: https://github.com/greyli/apiflask/issues/99
+[issue_78]: https://github.com/apiflask/apiflask/issues/78
+[issue_79]: https://github.com/apiflask/apiflask/issues/79
+[issue_98]: https://github.com/apiflask/apiflask/issues/98
+[issue_99]: https://github.com/apiflask/apiflask/issues/99
 
 
 ## Version 0.7.0
@@ -168,13 +168,13 @@ Released: 2021/6/24
 - Move the source to the "src" directory.
 - Enable pre-commit.
 
-[pull_57]: https://github.com/greyli/apiflask/pull/57
-[pull_58]: https://github.com/greyli/apiflask/pull/58
-[pull_64]: https://github.com/greyli/apiflask/pull/64
-[issue_61]: https://github.com/greyli/apiflask/issues/61
-[issue_62]: https://github.com/greyli/apiflask/issues/62
-[issue_67]: https://github.com/greyli/apiflask/issues/67
-[issue_68]: https://github.com/greyli/apiflask/issues/68
+[pull_57]: https://github.com/apiflask/apiflask/pull/57
+[pull_58]: https://github.com/apiflask/apiflask/pull/58
+[pull_64]: https://github.com/apiflask/apiflask/pull/64
+[issue_61]: https://github.com/apiflask/apiflask/issues/61
+[issue_62]: https://github.com/apiflask/apiflask/issues/62
+[issue_67]: https://github.com/apiflask/apiflask/issues/67
+[issue_68]: https://github.com/apiflask/apiflask/issues/68
 
 
 ## Version 0.6.3
@@ -183,7 +183,7 @@ Released: 2021/5/17
 
 - Improve static request dispatch ([pull #54][pull_54]).
 
-[pull_54]: https://github.com/greyli/apiflask/pull/54
+[pull_54]: https://github.com/apiflask/apiflask/pull/54
 
 
 ## Version 0.6.2
@@ -192,7 +192,7 @@ Released: 2021/5/16
 
 - Fix static request dispatch for Flask 2.0 ([issue #52][issue_52]).
 
-[issue_52]: https://github.com/greyli/apiflask/issues/52
+[issue_52]: https://github.com/apiflask/apiflask/issues/52
 
 
 ## Version 0.6.1
@@ -206,9 +206,9 @@ Released: 2021/5/15
 ([pull #49][pull_49]).
 - Fix async for `dispatch_request` for Flask 2.0 ([pull #50][pull_50]).
 
-[pull_48]: https://github.com/greyli/apiflask/pull/48
-[pull_49]: https://github.com/greyli/apiflask/pull/49
-[pull_50]: https://github.com/greyli/apiflask/pull/50
+[pull_48]: https://github.com/apiflask/apiflask/pull/48
+[pull_49]: https://github.com/apiflask/apiflask/pull/49
+[pull_50]: https://github.com/apiflask/apiflask/pull/50
 
 
 ## Version 0.6.0
@@ -222,11 +222,11 @@ Released: 2021/5/11
 - Rename `utils` module to `helpers` ([pull #44][pull_44]).
 - Add `default` parameter for `get_reason_phrase` ([pull #45][pull_45]).
 
-[pull_41]: https://github.com/greyli/apiflask/pull/41
-[pull_42]: https://github.com/greyli/apiflask/pull/42
-[pull_43]: https://github.com/greyli/apiflask/pull/43
-[pull_44]: https://github.com/greyli/apiflask/pull/44
-[pull_45]: https://github.com/greyli/apiflask/pull/45
+[pull_41]: https://github.com/apiflask/apiflask/pull/41
+[pull_42]: https://github.com/apiflask/apiflask/pull/42
+[pull_43]: https://github.com/apiflask/apiflask/pull/43
+[pull_44]: https://github.com/apiflask/apiflask/pull/44
+[pull_45]: https://github.com/apiflask/apiflask/pull/45
 
 
 ## Version 0.5.2
@@ -238,8 +238,8 @@ Released: 2021/4/29
   ([pull #38][pull_38]).
 - Skip Flask's `Blueprint` object when generating the OpenAPI spec ([pull #37][pull_37]).
 
-[pull_38]: https://github.com/greyli/apiflask/pull/38
-[pull_37]: https://github.com/greyli/apiflask/pull/37
+[pull_38]: https://github.com/apiflask/apiflask/pull/38
+[pull_37]: https://github.com/apiflask/apiflask/pull/37
 
 
 ## Version 0.5.1
@@ -250,7 +250,7 @@ Released: 2021/4/28
   ([pull #36][pull_36]).
 - Allow passing the `methods` argument for the `route` decorator on view classes.
 
-[pull_36]: https://github.com/greyli/apiflask/pull/36
+[pull_36]: https://github.com/apiflask/apiflask/pull/36
 
 
 ## Version 0.5.0
@@ -268,9 +268,9 @@ Released: 2021/4/27
 - Support to use the `auth_required` decorator on app-wide `before_request` functions
 ([pull #34][pull_34]).
 
-[pull_30]: https://github.com/greyli/apiflask/pull/30
-[pull_32]: https://github.com/greyli/apiflask/pull/32
-[pull_34]: https://github.com/greyli/apiflask/pull/34
+[pull_30]: https://github.com/apiflask/apiflask/pull/30
+[pull_32]: https://github.com/apiflask/apiflask/pull/32
+[pull_34]: https://github.com/apiflask/apiflask/pull/34
 
 
 ## Version 0.4.0
@@ -297,13 +297,13 @@ Released: 2021/4/20
   ([pull #27][pull_27]).
 - Rename `abort_json()` to `abort()` ([pull #29][pull_29]).
 
-[pull_3]: https://github.com/greyli/apiflask/pull/3
-[pull_12]: https://github.com/greyli/apiflask/pull/12
-[pull_7]: https://github.com/greyli/apiflask/pull/7
-[pull_23]: https://github.com/greyli/apiflask/pull/23
-[pull_26]: https://github.com/greyli/apiflask/pull/26
-[pull_27]: https://github.com/greyli/apiflask/pull/27
-[pull_29]: https://github.com/greyli/apiflask/pull/29
+[pull_3]: https://github.com/apiflask/apiflask/pull/3
+[pull_12]: https://github.com/apiflask/apiflask/pull/12
+[pull_7]: https://github.com/apiflask/apiflask/pull/7
+[pull_23]: https://github.com/apiflask/apiflask/pull/23
+[pull_26]: https://github.com/apiflask/apiflask/pull/26
+[pull_27]: https://github.com/apiflask/apiflask/pull/27
+[pull_29]: https://github.com/apiflask/apiflask/pull/29
 
 
 ## Version 0.3.0
@@ -311,8 +311,8 @@ Released: 2021/4/20
 Released: 2021/3/31
 
 - First public version.
-- Add type annotations and enable type check in tox ([commit](https://github.com/greyli/apiflask/commit/5cbf27ecbb4318a9fd177307a52146aa993f86c8)).
-- Refactor the APIs ([commit](https://github.com/greyli/apiflask/commit/d149c0c0ee90a7120e6ede1c3e09715c944bb704)):
+- Add type annotations and enable type check in tox ([commit](https://github.com/apiflask/apiflask/commit/5cbf27ecbb4318a9fd177307a52146aa993f86c8)).
+- Refactor the APIs ([commit](https://github.com/apiflask/apiflask/commit/d149c0c0ee90a7120e6ede1c3e09715c944bb704)):
     - Change base class `scaffold.Scaffold` to class decorator `utils.route_shortcuts`.
     - Merge the `_OpenAPIMixin` class into `APIFlask` class.
     - Turn `security._AuthErrorMixin` into `handle_auth_error` function.
@@ -323,11 +323,11 @@ Released: 2021/3/31
     - Update the default value of config `AUTH_ERROR_DESCRIPTION`.
     - Add `validators` module.
     - Change `@doc(tags)` to `@doc(tag)`.
-- Support to pass a dict schema in `@output` decorator ([commit](https://github.com/greyli/apiflask/commit/e82fd168faf5f04871e549ebe22c63e66270bd1b)).
-- Support to pass a dict schema in `@input` decorator ([commit](https://github.com/greyli/apiflask/commit/f9c2c441363ddf4720800e0d3fc3d0e9cc28fe81)).
-- Check if the status code is valid for `abort_json` and `HTTPError` ([commit](https://github.com/greyli/apiflask/commit/20077dea0e82f123a3d2fc50c2ec529346215789)).
-- Add basic docstrings to generate the API reference documentation ([commit](https://github.com/greyli/apiflask/commit/6d65a25ab4de9d623e22575d4d5476abdc50cbc0)).
-- Support to set custom example for request/response body ([commit](https://github.com/greyli/apiflask/commit/638fa9c5680944d6454a4dbafe8abb152525d91c)).
+- Support to pass a dict schema in `@output` decorator ([commit](https://github.com/apiflask/apiflask/commit/e82fd168faf5f04871e549ebe22c63e66270bd1b)).
+- Support to pass a dict schema in `@input` decorator ([commit](https://github.com/apiflask/apiflask/commit/f9c2c441363ddf4720800e0d3fc3d0e9cc28fe81)).
+- Check if the status code is valid for `abort_json` and `HTTPError` ([commit](https://github.com/apiflask/apiflask/commit/20077dea0e82f123a3d2fc50c2ec529346215789)).
+- Add basic docstrings to generate the API reference documentation ([commit](https://github.com/apiflask/apiflask/commit/6d65a25ab4de9d623e22575d4d5476abdc50cbc0)).
+- Support to set custom example for request/response body ([commit](https://github.com/apiflask/apiflask/commit/638fa9c5680944d6454a4dbafe8abb152525d91c)).
 
 
 ## Version 0.2.0
@@ -384,29 +384,29 @@ Released: 2021-3-27
     - `SWAGGER_UI_LAYOUT`
     - `SWAGGER_UI_CONFIG`
     - `SWAGGER_UI_OAUTH_CONFIG`
-- Support to hide blueprint from API docs with config `DOCS_HIDE_BLUEPRINTS` ([commit](https://github.com/greyli/apiflask/commit/3b2cc0097defaabf0b916e00930dda1da8226430))
-- Support to deprecate and hide an endpoint with `doc(hide=True, deprecated=True)`([commit](https://github.com/greyli/apiflask/commit/82d181a7080bd4088ee8db929e81431a723cda93))
-- Support to customize the API docs with various configuration variables. ([commit](https://github.com/greyli/apiflask/commit/294379428f5032c6c8228841a836a37860012c0f))
-- Support to set all fields of OpenAPI object and Info object ([commit](https://github.com/greyli/apiflask/commit/a7990e28e73bdd5b86c1471aa97861025e14295f))
-- Support YAML format spec ([commit](https://github.com/greyli/apiflask/commit/ce6975bb465e01b0e48b2b8adce0f99a8db56e01))
-- Automatically register a validation error response for endpoints which use `@input`. ([commit](https://github.com/greyli/apiflask/commit/c3d7c3b585ca5d7f9f6d84f16137dd257bfe0518))
-- Automatically register a authorization error response for endpoints which use `@auth_required`. ([commit](https://github.com/greyli/apiflask/commit/c8992a8e420522a3e66563e455aa628f0f20a09c))
-- Automatically add response schema for responses added with `@doc(responses=...)`. ([commit](https://github.com/greyli/apiflask/commit/1b7dce5f722d038be5dc726d52a0eefd0365eeeb))
-- Pass view arguments to view function as positional arguments ([commit](https://github.com/greyli/apiflask/commit/15c66f3ba97310ed10c851721177e6c504a87317))
-- Require Python 3.7 to use ordered dict ([commit](https://github.com/greyli/apiflask/commit/557a7e649b64aef8f4b8596a4af175524d108ff4))
-- Add shortcuts for `app.route`: `app.get()`, `app.post()`, etc. ([commit](https://github.com/greyli/apiflask/commit/48bc1246628e53573c811def4a909be0faa9dcfb))
-- Not an extension any more ([commit](https://github.com/greyli/apiflask/commit/ecaec37544524deb8b2ce445d4a3cbf990ff95cb))
+- Support to hide blueprint from API docs with config `DOCS_HIDE_BLUEPRINTS` ([commit](https://github.com/apiflask/apiflask/commit/3b2cc0097defaabf0b916e00930dda1da8226430))
+- Support to deprecate and hide an endpoint with `doc(hide=True, deprecated=True)`([commit](https://github.com/apiflask/apiflask/commit/82d181a7080bd4088ee8db929e81431a723cda93))
+- Support to customize the API docs with various configuration variables. ([commit](https://github.com/apiflask/apiflask/commit/294379428f5032c6c8228841a836a37860012c0f))
+- Support to set all fields of OpenAPI object and Info object ([commit](https://github.com/apiflask/apiflask/commit/a7990e28e73bdd5b86c1471aa97861025e14295f))
+- Support YAML format spec ([commit](https://github.com/apiflask/apiflask/commit/ce6975bb465e01b0e48b2b8adce0f99a8db56e01))
+- Automatically register a validation error response for endpoints which use `@input`. ([commit](https://github.com/apiflask/apiflask/commit/c3d7c3b585ca5d7f9f6d84f16137dd257bfe0518))
+- Automatically register a authorization error response for endpoints which use `@auth_required`. ([commit](https://github.com/apiflask/apiflask/commit/c8992a8e420522a3e66563e455aa628f0f20a09c))
+- Automatically add response schema for responses added with `@doc(responses=...)`. ([commit](https://github.com/apiflask/apiflask/commit/1b7dce5f722d038be5dc726d52a0eefd0365eeeb))
+- Pass view arguments to view function as positional arguments ([commit](https://github.com/apiflask/apiflask/commit/15c66f3ba97310ed10c851721177e6c504a87317))
+- Require Python 3.7 to use ordered dict ([commit](https://github.com/apiflask/apiflask/commit/557a7e649b64aef8f4b8596a4af175524d108ff4))
+- Add shortcuts for `app.route`: `app.get()`, `app.post()`, etc. ([commit](https://github.com/apiflask/apiflask/commit/48bc1246628e53573c811def4a909be0faa9dcfb))
+- Not an extension any more ([commit](https://github.com/apiflask/apiflask/commit/ecaec37544524deb8b2ce445d4a3cbf990ff95cb))
 
 
 ## Version 0.1.0
 
 Released: 2021-1-27
 
-- Add view functions without response schema into spec ([commit](https://github.com/greyli/apiflask/commit/aabf427590227001e0e443d8d6a3bf5f56dc5964))
-- Set default response descriptions ([commit](https://github.com/greyli/apiflask/commit/b9edf9e8f5731a8f45b359f6a101b4d39ba3f2f5))
-- Stop relying on Flask-Marshmallow ([commit](https://github.com/greyli/apiflask/commit/cce7a0b8b97f345e087973b127c6d25c884dbc8f))
-- Change default spec path to `openapi.json` ([commit](https://github.com/greyli/apiflask/commit/09d0d278a1fc27fa5868ef5848f3931bd8f76ef4))
-- Add support for enabling Swagger UI and Redoc at the same time ([commit](https://github.com/greyli/apiflask/commit/d5176418b8c22e523d8b82e1f9af8f2403fa70bb))
-- Change default spec title and version ([commit](https://github.com/greyli/apiflask/commit/0953c310327539f96bcdfad142772c7800285d56))
-- Support auto generating summary from function name ([commit](https://github.com/greyli/apiflask/commit/d3d7cc2f63f3cf26466e42d68a03b4d96bf2fd97))
+- Add view functions without response schema into spec ([commit](https://github.com/apiflask/apiflask/commit/aabf427590227001e0e443d8d6a3bf5f56dc5964))
+- Set default response descriptions ([commit](https://github.com/apiflask/apiflask/commit/b9edf9e8f5731a8f45b359f6a101b4d39ba3f2f5))
+- Stop relying on Flask-Marshmallow ([commit](https://github.com/apiflask/apiflask/commit/cce7a0b8b97f345e087973b127c6d25c884dbc8f))
+- Change default spec path to `openapi.json` ([commit](https://github.com/apiflask/apiflask/commit/09d0d278a1fc27fa5868ef5848f3931bd8f76ef4))
+- Add support for enabling Swagger UI and Redoc at the same time ([commit](https://github.com/apiflask/apiflask/commit/d5176418b8c22e523d8b82e1f9af8f2403fa70bb))
+- Change default spec title and version ([commit](https://github.com/apiflask/apiflask/commit/0953c310327539f96bcdfad142772c7800285d56))
+- Support auto generating summary from function name ([commit](https://github.com/apiflask/apiflask/commit/d3d7cc2f63f3cf26466e42d68a03b4d96bf2fd97))
 - Start as a fork of [APIFairy 0.6.2](https://github.com/miguelgrinberg/APIFairy/releases/tag/v0.6.2) at 2021-01-13.

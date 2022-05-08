@@ -227,7 +227,7 @@ the form data (equals to `form_and_files`).
 !!! notes
 
     Validators for the file field will be available in the version 1.1
-    ([#253](https://github.com/greyli/apiflask/issues/253)). For now,
+    ([#253](https://github.com/apiflask/apiflask/issues/253)). For now,
     you can manually validate the file in the view function or the schema:
 
     ```python

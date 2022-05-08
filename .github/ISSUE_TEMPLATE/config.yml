@@ -7,7 +7,7 @@ contact_links:
     url: https://stackoverflow.com/questions/tagged/apiflask?tab=Frequent
     about: Search for or ask questions about your code on Stack Overflow.
   - name: Questions, discussions, and ideas (English)
-    url: https://github.com/greyli/apiflask/discussions
+    url: https://github.com/apiflask/apiflask/discussions
     about: Discuss questions, ideas about your code or APIFlask itself on our GitHub Discussion.
   - name: 问题 & 讨论（中文）
     url: https://discuss.helloflask.com/

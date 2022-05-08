@@ -27,7 +27,7 @@ was an exception.
 issue is already fixed in the latest releases or the latest code in
 the repository.
 
-[_gh_discuss]: https://github.com/greyli/apiflask/discussions
+[_gh_discuss]: https://github.com/apiflask/apiflask/discussions
 [_so]: https://stackoverflow.com/questions/tagged/apiflask?tab=Frequent
 
 
@@ -49,7 +49,7 @@ was an exception.
 issue is already fixed in the latest releases or the latest code in
 the repository.
 
-[_gh_issue]: https://github.com/greyli/apiflask/issues
+[_gh_issue]: https://github.com/apiflask/apiflask/issues
 [_mcve]: https://stackoverflow.com/help/minimal-reproducible-example
 
 
@@ -89,7 +89,7 @@ $ git config --global user.email 'your email'
 ```
 $ git clone https://github.com/{username}/apiflask
 $ cd apiflask
-$ git remote add upstream https://github.com/greyli/apiflask
+$ git remote add upstream https://github.com/apiflask/apiflask
 ```
 
 - Create a virtual environment and install requirements:
@@ -116,7 +116,7 @@ For Windows:
 > pre-commit install
 ```
 
-[_fork]: https://github.com/greyli/apiflask/fork
+[_fork]: https://github.com/apiflask/apiflask/fork
 
 
 ### Start coding

@@ -8,13 +8,13 @@
 - Base response example: [/examples/base_response/app.py][_base_response]
 - Token auth example: [/examples/auth/token_auth/app.py][_token_auth]
 
-[_basic]: https://github.com/greyli/apiflask/tree/main/examples/basic/app.py
-[_cbv]: https://github.com/greyli/apiflask/tree/main/examples/cbv/app.py
-[_orm]: https://github.com/greyli/apiflask/tree/main/examples/orm/app.py
-[_pagination]: https://github.com/greyli/apiflask/tree/main/examples/pagination/app.py
-[_openapi]: https://github.com/greyli/apiflask/tree/main/examples/openapi/app.py
-[_base_response]: https://github.com/greyli/apiflask/tree/main/examples/base_response/app.py
-[_token_auth]: https://github.com/greyli/apiflask/tree/main/examples/auth/token_auth/app.py
+[_basic]: https://github.com/apiflask/apiflask/tree/main/examples/basic/app.py
+[_cbv]: https://github.com/apiflask/apiflask/tree/main/examples/cbv/app.py
+[_orm]: https://github.com/apiflask/apiflask/tree/main/examples/orm/app.py
+[_pagination]: https://github.com/apiflask/apiflask/tree/main/examples/pagination/app.py
+[_openapi]: https://github.com/apiflask/apiflask/tree/main/examples/openapi/app.py
+[_base_response]: https://github.com/apiflask/apiflask/tree/main/examples/base_response/app.py
+[_token_auth]: https://github.com/apiflask/apiflask/tree/main/examples/auth/token_auth/app.py
 
 If you have built an application with APIFlask, feel free to submit a pull request to add the source link here.
 
@@ -31,7 +31,7 @@ Follow the commands in the *Installation* section to run these examples on your 
 For macOS and Linux:
 
 ```bash
-$ git clone https://github.com/greyli/apiflask
+$ git clone https://github.com/apiflask/apiflask
 $ cd apiflask/examples
 $ python3 -m venv venv
 $ source venv/bin/activate
@@ -41,7 +41,7 @@ $ pip3 install -r requirements.txt
 For Windows:
 
 ```text
-> git clone https://github.com/greyli/apiflask
+> git clone https://github.com/apiflask/apiflask
 > cd apiflask\examples
 > python -m venv venv
 > venv\Scripts\activate

@@ -3,7 +3,7 @@
 
 # APIFlask
 
-[![Build status](https://github.com/greyli/apiflask/workflows/build/badge.svg)](https://github.com/greyli/apiflask/actions) [![codecov](https://codecov.io/gh/greyli/apiflask/branch/main/graph/badge.svg?token=2CFPCZ1DMY)](https://codecov.io/gh/greyli/apiflask)
+[![Build status](https://github.com/apiflask/apiflask/workflows/build/badge.svg)](https://github.com/apiflask/apiflask/actions) [![codecov](https://codecov.io/gh/apiflask/apiflask/branch/main/graph/badge.svg?token=2CFPCZ1DMY)](https://codecov.io/gh/apiflask/apiflask)
 
 APIFlask is a lightweight Python web API framework based on [Flask](https://github.com/pallets/flask) and [marshmallow-code](https://github.com/marshmallow-code) projects. It's easy to use, highly customizable, ORM/ODM-agnostic, and 100% compatible with the Flask ecosystem.
 
@@ -45,9 +45,9 @@ For Windows:
 - Documentation: <https://apiflask.com/docs>
 - PyPI Releases: <https://pypi.python.org/pypi/APIFlask>
 - Change Log: <https://apiflask.com/changelog>
-- Source Code: <https://github.com/greyli/apiflask>
-- Issue Tracker: <https://github.com/greyli/apiflask/issues>
-- Discussion: <https://github.com/greyli/apiflask/discussions>
+- Source Code: <https://github.com/apiflask/apiflask>
+- Issue Tracker: <https://github.com/apiflask/apiflask/issues>
+- Discussion: <https://github.com/apiflask/apiflask/discussions>
 - Twitter: <https://twitter.com/apiflask>
 
 
@@ -215,7 +215,7 @@ The auto-generated OpenAPI spec file is available at <http://localhost:5000/open
 $ flask spec
 ```
 
-For some complete examples, see [/examples](https://github.com/greyli/apiflask/tree/main/examples).
+For some complete examples, see [/examples](https://github.com/apiflask/apiflask/tree/main/examples).
 
 
 ## Relationship with Flask

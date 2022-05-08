@@ -910,5 +910,5 @@ variable `SPEC_FORMAT` (defaults to `'json'`):
 - `'json'` -> dict
 - `'yaml'` -> string
 
-Check out [the example application](https://github.com/greyli/apiflask/tree/main/examples/openapi/app.py)
+Check out [the example application](https://github.com/apiflask/apiflask/tree/main/examples/openapi/app.py)
 for OpenAPI support, see [the examples page](/examples) for running the example application.

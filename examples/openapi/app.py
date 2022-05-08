@@ -24,7 +24,7 @@ $ flask run
 
 The source can be found at [examples/blueprint_tags/app.py][_blueprint_tags].
 
-[_blueprint_tags]: https://github.com/greyli/apiflask/tree/main/examples/blueprint_tags/app.py
+[_blueprint_tags]: https://github.com/apiflask/apiflask/tree/main/examples/blueprint_tags/app.py
 '''
 
 # openapi.info.contact

@@ -99,7 +99,7 @@ class FooBarSchema(Schema):
     - `URLFor`
     - `AbsoluteURLFor`
 
-    See [apiflask#63](https://github.com/greyli/apiflask/issues/63) and
+    See [apiflask#63](https://github.com/apiflask/apiflask/issues/63) and
     [marshmallow#1828](https://github.com/marshmallow-code/marshmallow/issues/1828)for more details.
 
 
@@ -347,5 +347,5 @@ def get_pet(pet_id):
     return make_resp('Success!', 200, pets[pet_id])
 ```
 
-Check out [the complete example application](https://github.com/greyli/apiflask/tree/main/examples/base_response/app.py)
+Check out [the complete example application](https://github.com/apiflask/apiflask/tree/main/examples/base_response/app.py)
 for more details, see [the examples page](/examples) for running the example application.
