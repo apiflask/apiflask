@@ -65,10 +65,8 @@ class File(Field):
 
         return {'message': f'file {filename} saved.'}
     ```
-    The file object is an instance of `werkzeug.datastructures.FileStorage`, see more details
-    [in the docs][_docs].
-
-    [_docs]: https://werkzeug.palletsprojects.com/datastructures/#werkzeug.datastructures.FileStorage  # noqa: B950, E501
+    The file object is an instance of `werkzeug.datastructures.FileStorage`, see more details in the
+    [docs](https://werkzeug.palletsprojects.com/datastructures/#werkzeug.datastructures.FileStorage).  # noqa: B950, E501
 
     Use `form_and_files` location if you want to put both files
     and other normal fields in one schema.

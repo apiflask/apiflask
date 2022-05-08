@@ -12,12 +12,12 @@ theme:
   icon:
     repo: fontawesome/brands/github
   language: en
-repo_url: https://github.com/greyli/apiflask
-repo_name: greyli/apiflask
+repo_url: https://github.com/apiflask/apiflask
+repo_name: apiflask/apiflask
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/greyli/apiflask
+      link: https://github.com/apiflask/apiflask
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/apiflask
 copyright: Copyright &copy; 2021 <a href="https://greyli.com/en" target="_blank" rel="noopener">Grey Li</a>
@@ -73,6 +73,10 @@ plugins:
           rendering:
             heading_level: 2
       watch:
-        - apiflask
+        - src/apiflask
+        - README.md
+        - examples/README.md
+        - CHANGES.md
+        - CONTRIBUTING.md
 extra_css:
   - _assets/extra.css
