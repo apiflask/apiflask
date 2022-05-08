@@ -6,6 +6,7 @@
 - Pagination example (with Flask-SQLAlchemy): [/examples/pagination/app.py][_pagination]
 - OpenAPI example: [/examples/openapi/app.py][_openapi]
 - Base response example: [/examples/base_response/app.py][_base_response]
+- Token auth example: [/examples/auth/token_auth/app.py][_token_auth]
 
 [_basic]: https://github.com/greyli/apiflask/tree/main/examples/basic/app.py
 [_cbv]: https://github.com/greyli/apiflask/tree/main/examples/cbv/app.py
@@ -13,8 +14,11 @@
 [_pagination]: https://github.com/greyli/apiflask/tree/main/examples/pagination/app.py
 [_openapi]: https://github.com/greyli/apiflask/tree/main/examples/openapi/app.py
 [_base_response]: https://github.com/greyli/apiflask/tree/main/examples/base_response/app.py
+[_token_auth]: https://github.com/greyli/apiflask/tree/main/examples/auth/token_auth/app.py
 
 If you have built an application with APIFlask, feel free to submit a pull request to add the source link here.
+
+[Flog](https://github.com/flog-team/flog-api-v4) (under active construction)
 
 Follow the commands in the *Installation* section to run these examples on your computer.
 
