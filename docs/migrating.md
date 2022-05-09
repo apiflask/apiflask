@@ -110,7 +110,7 @@ class Pet(MethodView):
 ```
 
 APIFlask supports to use the `route` decorator on a `MethodView`-based view class as a
-shortcut, but you can also use the `add_url_rule` method to regeister it for flexibility.
+shortcut, but you can also use the `add_url_rule` method to register it for flexibility.
 
 The `View`-based view class is not supported, you can still use it but currently
 APIFlask can't generate OpenAPI spec (and API documentation) for it.
