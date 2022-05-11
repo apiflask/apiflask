@@ -24,4 +24,4 @@ def verify_password(username: str, password: str) -> t.Union[str, None]:
 @app.route('/')
 @app.auth_required(auth)
 def index():
-    return f"Hello, {auth.current_user()}"
+    return f"Hello, {auth.current_user}"
