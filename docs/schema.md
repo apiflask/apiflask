@@ -208,7 +208,7 @@ from apiflask.validators import Length, OneOf
 
 
 class PetInSchema(Schema):
-    category = String(required=True, validate=[OneOf(['dog', 'cat'], Length(0, 10)]))
+    category = String(required=True, validate=[OneOf(['dog', 'cat']), Length(0, 10)])
 ```
 
 !!! tips
