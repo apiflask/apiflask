@@ -68,4 +68,4 @@ def get_token(id: int):
 @app.get('/name/<int:id>')
 @app.auth_required(auth)
 def get_secret():
-    return auth.current_user.secret
+    return auth.current_user().secret
