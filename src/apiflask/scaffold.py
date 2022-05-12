@@ -144,7 +144,7 @@ class APIScaffold:
         Examples:
 
         ```python
-        from apiflask import APIFlask, HTTPTokenAuth, auth_required
+        from apiflask import APIFlask, HTTPTokenAuth
 
         app = APIFlask(__name__)
         auth = HTTPTokenAuth()
@@ -217,7 +217,7 @@ class APIScaffold:
         Examples:
 
         ```python
-        from apiflask import APIFlask, input
+        from apiflask import APIFlask
 
         app = APIFlask(__name__)
 
@@ -340,7 +340,7 @@ class APIScaffold:
         Examples:
 
         ```python
-        from apiflask import APIFlask, output
+        from apiflask import APIFlask
 
         app = APIFlask(__name__)
 
@@ -497,7 +497,7 @@ class APIScaffold:
         Examples:
 
         ```python
-        from apiflask import APIFlask, doc
+        from apiflask import APIFlask
 
         app = APIFlask(__name__)
 
