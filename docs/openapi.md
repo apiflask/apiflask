@@ -26,7 +26,7 @@ info | - | See *[Meta information](#meta-information)*
 servers | - | Use the configuration variable [`SERVERS`](/configuration/#servers)
 paths | Generate based on the routes and decorators | Use `input`, `output`, `doc` decorators and docstring
 components | Generate from data schema | -
-security | Generate secuity info from the auth objects | Use the `auth_required` decorator
+security | Generate security info from the auth objects | Use the `auth_required` decorator
 tags | Generate from blueprint names | See *[Tags](#tags)*
 externalDocs | - | Use the configuration variable [`EXTERNAL_DOCS`](/configuration/#external_docs)
 
