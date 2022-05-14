@@ -159,7 +159,7 @@ def get_pet(pet_id):
     return {'message': 'Pet'}
 ```
 
-!!! tips "Use exception classes from Werkzeug"
+!!! tip "Use exception classes from Werkzeug"
 
     If you didn't set the `json_errors` to `False` when creating `app` instance,
     APIFlask will catch all the Werkzeug exceptions, including the one you raised

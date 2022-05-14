@@ -120,7 +120,7 @@ app = APIFlask(__name__, spec_path='/spec')
 
 Then the spec will be available at http://localhost:5000/spec.
 
-!!! tips
+!!! tip
 
     You can configure the MIME type of the spec response with the configuration
     variable `YAML_SPEC_MIMETYPE` and `JSON_SPEC_MIMETYPE`, see details in the
@@ -266,7 +266,7 @@ app.config['SYNC_LOCAL_SPEC'] = True
 app.config['LOCAL_SPEC_PATH'] = Path(app.root_path) / 'openapi.json'
 ```
 
-!!! tips
+!!! tip
 
     You can also use
     [`app.instance_path`](https://flask.palletsprojects.com/config/#instance-folders){target=_blank},
@@ -387,7 +387,7 @@ app.config['TAGS'] = [
 ]
 ```
 
-!!! tips
+!!! tip
 
     The `app.tags` attribute is equals to the configuration variable `TAGS`, so you
     can also use:
@@ -592,7 +592,7 @@ Normally, you only need to set the following fields manually with the `metadata`
 See details in
 *[OpenAPI XML object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#xmlObject)*.
 
-!!! tips
+!!! tip
 
     If the schema class' name ends with `Schema`, then it will be stripped in the spec.
 
@@ -836,7 +836,7 @@ from apiflask import APIFlask
 app = APIFlask(__name__, enable_openapi=False)
 ```
 
-!!! tips
+!!! tip
 
     If you only need to disable the API documentation, see
     *[Disable the API documentations globally](/api-docs/#disable-the-api-documentations-globally)*.
@@ -853,7 +853,7 @@ from apiflask import APIBlueprint
 bp = APIBlueprint(__name__, 'foo', enable_openapi=False)
 ```
 
-!!! tips
+!!! tip
 
     APIFlask will skip a blueprint if the blueprint is created by other Flask
     extensions.
