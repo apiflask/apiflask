@@ -503,7 +503,7 @@ To set the OpenAPI spec for schema fields, you can pass a dict with the `metadat
 
 ```python
 class PetInSchema(Schema):
-    name = String(metatdata={'description': 'The name of the pet.'})
+    name = String(metadata={'description': 'The name of the pet.'})
 ```
 
 You can pass the OpenAPI schema field name as the key in this metadata dict. Currently,
