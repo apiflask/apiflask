@@ -594,7 +594,7 @@ See details in
 
 !!! tips
 
-    If the schema class' name ends with `Schema`, then it will be striped in the spec.
+    If the schema class' name ends with `Schema`, then it will be stripped in the spec.
 
 
 ### Response and request example
