@@ -839,7 +839,7 @@ def create_pet(data):
     return pet, {'FOO': 'bar'}
 ```
 
-!!! tips
+!!! tip
 
     Be sure to always set the `status_code` argument in `@app.output` when you want
     to use a non-200 status code. If there is a mismatch, the `status_code`
@@ -1032,7 +1032,7 @@ class Pet(MethodView):
     # ...
 ```
 
-!!! tips
+!!! tip
 
     If the `endpoint` argument isn't provided, the class name will be used as
     endpoint. You don't need to pass a `methods` argument, since Flask will handle

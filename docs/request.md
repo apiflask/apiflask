@@ -61,7 +61,7 @@ def hello(query, data):
     pass
 ```
 
-!!! tips
+!!! tip
 
     The argument name (`query, data`) in the view function is defined by you, you can use anything you like.
 
@@ -75,7 +75,7 @@ def get_article(category, article_id, query, data):
     pass
 ```
 
-!!! tips
+!!! tip
 
     Notice the argument name for URL variables (`category, article_id`) must match the variable name.
 

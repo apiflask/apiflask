@@ -43,7 +43,7 @@ And there are two decorators to register a validation method:
 - `validates(field_name)`: to register a method to validate a specified field
 - `validates_schema`: to register a method to validate the whole schema
 
-!!! tips
+!!! tip
 
     When using the `validates_schema`, notice the `skip_on_field_errors` is set to `True` as default:
     > If skip_on_field_errors=True, this validation method will be skipped whenever validation errors
@@ -161,7 +161,7 @@ API documentation: <https://apiflask.com/api/fields/#apiflask.fields.File>
 
 - `File`
 
-!!! tips
+!!! tip
 
     If the existing fields don't fit your needs, you can also create
     [custom fields](https://marshmallow.readthedocs.io/en/stable/custom_fields.html).
@@ -211,7 +211,7 @@ class PetInSchema(Schema):
     category = String(required=True, validate=[OneOf(['dog', 'cat']), Length(0, 10)])
 ```
 
-!!! tips
+!!! tip
 
     If the existing validators don't fit your needs, you can also create
     [custom validators](https://marshmallow.readthedocs.io/en/stable/quickstart.html#validation).
