@@ -78,6 +78,17 @@ def _annotate(f: t.Any, **kwargs: t.Any) -> None:
         f._spec[key] = value
 
 
+def _ensure_sync(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if hasattr(current_app, 'ensure_sync'):  # pragma: no cover
+            rv = current_app.ensure_sync(f)(*args, **kwargs)
+        else:  # pragma: no cover
+            rv = f(*args, **kwargs)  # for Flask < 2.0
+        return rv  # type: ignore
+    return wrapper
+
+
 def _generate_schema_from_mapping(
     schema: DictSchemaType,
     schema_name: t.Optional[str]
@@ -275,6 +286,7 @@ class APIScaffold:
             schema = schema()
 
         def decorator(f):
+            f = _ensure_sync(f)
             is_body_location = location in BODY_LOCATIONS
             if is_body_location and hasattr(f, '_spec') and 'body' in f._spec:
                 raise RuntimeError(
@@ -425,6 +437,8 @@ class APIScaffold:
             status_code = 204
 
         def decorator(f):
+            f = _ensure_sync(f)
+
             _annotate(f, response={
                 'schema': schema,
                 'status_code': status_code,
@@ -458,10 +472,7 @@ class APIScaffold:
 
             @wraps(f)
             def _response(*args: t.Any, **kwargs: t.Any) -> ResponseReturnValueType:
-                if hasattr(current_app, 'ensure_sync'):  # pragma: no cover
-                    rv = current_app.ensure_sync(f)(*args, **kwargs)
-                else:  # pragma: no cover
-                    rv = f(*args, **kwargs)  # for Flask < 2.0
+                rv = f(*args, **kwargs)
                 if isinstance(rv, Response):
                     return rv
                 if not isinstance(rv, tuple):
@@ -577,6 +588,7 @@ class APIScaffold:
             _tags = tags
 
         def decorator(f):
+            f = _ensure_sync(f)
             _annotate(
                 f,
                 summary=summary,

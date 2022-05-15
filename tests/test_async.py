@@ -66,3 +66,47 @@ def test_async_spec_processor(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['info']['title'] == 'Updated Title'
+
+
+def test_async_doc_decorator_only(app, client):
+    skip_flask1(app)
+
+    @app.get('/')
+    @app.doc(summary='Test Root Endpoint')
+    async def index():
+        return {"echo": 1234}
+
+    query_id = 1234
+    rv = client.get(f'/?id={query_id}')
+    assert rv.status_code == 200
+    assert rv.json['echo'] == query_id
+
+
+def test_async_input_decorator_only(app, client):
+    skip_flask1(app)
+
+    @app.post('/')
+    @app.input(FooSchema)
+    async def index(data):
+        return data
+
+    payload = {'id': 1, 'name': 'foo'}
+    rv = client.post("/", json=payload)
+    assert rv.status_code == 200
+    assert rv.json == payload
+
+
+def test_async_doc_input_and_output_decorator(app, client):
+    skip_flask1(app)
+
+    @app.post('/')
+    @app.doc(summary="Test Root Endpoint")
+    @app.input(FooSchema)
+    @app.output(FooSchema)
+    async def index(data):
+        return data
+
+    payload = {'id': 1, 'name': 'foo'}
+    rv = client.post("/", json=payload)
+    assert rv.status_code == 200
+    assert rv.json == payload
