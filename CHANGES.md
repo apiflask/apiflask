@@ -6,10 +6,19 @@
 Released: -
 
 
+## Version 1.0.1
+
+Released: 2022/5/17
+
+- Fix the async support for `app.auth_required`, `app.input`, and `app.doc` decorators
+  ([issue #288][issue_288]). Thanks [@jiashuChen](https://github.com/jiashuChen)!
+
+[issue_288]: https://github.com/apiflask/apiflask/issues/288
+
+
 ## Version 1.0.0
 
-Released: 2022/5/4
-Codename: Wujiaochang
+Released: 2022/5/4<br>Codename: Wujiaochang
 
 - Remove the deprecated standalone decorators: `input`, `output`, `doc`, and `auth_required`.
   Use app/blueprint decorators instead (e.g. `input()` -> `app.input()`/`bp.input()`).
