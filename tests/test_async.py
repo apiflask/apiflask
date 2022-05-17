@@ -2,6 +2,7 @@ import pytest
 from openapi_spec_validator import validate_spec
 
 from .schemas import FooSchema
+from apiflask import HTTPTokenAuth
 
 
 def skip_flask1(app):
@@ -19,27 +20,6 @@ def test_async_view(app, client):
     rv = client.get('/')
     assert rv.status_code == 200
     assert rv.json['message'] == 'hello'
-
-
-def test_output_on_async_view(app, client):
-    skip_flask1(app)
-
-    @app.get('/foo')
-    @app.output(FooSchema)
-    async def foo():
-        return {'id': 1, 'name': 'foo'}
-
-    rv = client.get('/foo')
-    assert rv.status_code == 200
-    assert rv.json['id'] == 1
-    assert rv.json['name'] == 'foo'
-
-    rv = client.get('/openapi.json')
-    assert rv.status_code == 200
-    validate_spec(rv.json)
-    assert rv.json['paths']['/foo']['get']['responses']['200']
-    assert rv.json['paths']['/foo']['get']['responses']['200'][
-        'content']['application/json']['schema']['$ref'] == '#/components/schemas/Foo'
 
 
 def test_async_error_processor(app, client):
@@ -68,21 +48,33 @@ def test_async_spec_processor(app, client):
     assert rv.json['info']['title'] == 'Updated Title'
 
 
-def test_async_doc_decorator_only(app, client):
+def test_auth_required_on_async_view(app, client):
+    skip_flask1(app)
+    auth = HTTPTokenAuth()
+
+    @app.get('/')
+    @app.auth_required(auth)
+    async def index():
+        pass
+
+    rv = client.get('/')
+    assert rv.status_code == 401
+
+
+def test_doc_on_async_view(app, client):
     skip_flask1(app)
 
     @app.get('/')
     @app.doc(summary='Test Root Endpoint')
     async def index():
-        return {"echo": 1234}
+        return {'echo': 1234}
 
-    query_id = 1234
-    rv = client.get(f'/?id={query_id}')
+    rv = client.get('/')
     assert rv.status_code == 200
-    assert rv.json['echo'] == query_id
+    assert rv.json['echo'] == 1234
 
 
-def test_async_input_decorator_only(app, client):
+def test_input_on_async_view(app, client):
     skip_flask1(app)
 
     @app.post('/')
@@ -90,23 +82,44 @@ def test_async_input_decorator_only(app, client):
     async def index(data):
         return data
 
-    payload = {'id': 1, 'name': 'foo'}
-    rv = client.post("/", json=payload)
+    data = {'id': 1, 'name': 'foo'}
+    rv = client.post('/', json=data)
     assert rv.status_code == 200
-    assert rv.json == payload
+    assert rv.json == data
+
+
+def test_output_on_async_view(app, client):
+    skip_flask1(app)
+
+    @app.get('/foo')
+    @app.output(FooSchema)
+    async def foo():
+        return {'id': 1, 'name': 'foo'}
+
+    rv = client.get('/foo')
+    assert rv.status_code == 200
+    assert rv.json['id'] == 1
+    assert rv.json['name'] == 'foo'
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/foo']['get']['responses']['200']
+    assert rv.json['paths']['/foo']['get']['responses']['200'][
+        'content']['application/json']['schema']['$ref'] == '#/components/schemas/Foo'
 
 
 def test_async_doc_input_and_output_decorator(app, client):
     skip_flask1(app)
 
     @app.post('/')
-    @app.doc(summary="Test Root Endpoint")
+    @app.doc(summary='Test Root Endpoint')
     @app.input(FooSchema)
     @app.output(FooSchema)
     async def index(data):
         return data
 
     payload = {'id': 1, 'name': 'foo'}
-    rv = client.post("/", json=payload)
+    rv = client.post('/', json=payload)
     assert rv.status_code == 200
     assert rv.json == payload
