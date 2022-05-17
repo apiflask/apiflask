@@ -3,6 +3,7 @@ import warnings
 from collections.abc import Mapping as ABCMapping
 from functools import wraps
 
+import flask
 from flask import current_app
 from flask import jsonify
 from flask import Response
@@ -79,13 +80,14 @@ def _annotate(f: t.Any, **kwargs: t.Any) -> None:
 
 
 def _ensure_sync(f):
+    if flask.__version__ < '2.' or hasattr(f, '_sync_ensured'):
+        return f
+
     @wraps(f)
     def wrapper(*args, **kwargs):
-        if hasattr(current_app, 'ensure_sync'):  # pragma: no cover
-            rv = current_app.ensure_sync(f)(*args, **kwargs)
-        else:  # pragma: no cover
-            rv = f(*args, **kwargs)  # for Flask < 2.0
-        return rv  # type: ignore
+        return current_app.ensure_sync(f)(*args, **kwargs)
+
+    wrapper._sync_ensured = True
     return wrapper
 
 
@@ -203,6 +205,7 @@ class APIScaffold:
             _roles = roles
 
         def decorator(f):
+            f = _ensure_sync(f)
             _annotate(f, auth=auth, roles=_roles or [])
             return auth.login_required(role=_roles, optional=optional)(f)
         return decorator
@@ -438,7 +441,6 @@ class APIScaffold:
 
         def decorator(f):
             f = _ensure_sync(f)
-
             _annotate(f, response={
                 'schema': schema,
                 'status_code': status_code,
