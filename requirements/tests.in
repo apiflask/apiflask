@@ -1,4 +1,4 @@
-pytest
+pytest<7
 pytest-cov
 openapi-spec-validator
 asgiref

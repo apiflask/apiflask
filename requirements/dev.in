@@ -2,6 +2,6 @@
 -r tests.in
 -r typing.in
 -r examples.in
-pip-tools
+pip-compile-multi
 tox
 pre-commit
