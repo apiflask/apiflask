@@ -403,8 +403,8 @@ class APIFlask(APIScaffold, Flask):
         # if we provide automatic options for this URL and the
         # request came with the OPTIONS method, reply automatically
         if (  # pragma: no cover
-            getattr(rule, "provide_automatic_options", False)
-            and req.method == "OPTIONS"
+            getattr(rule, 'provide_automatic_options', False)
+            and req.method == 'OPTIONS'
         ):
             return self.make_default_options_response()  # pragma: no cover
         # otherwise dispatch to the handler for that endpoint

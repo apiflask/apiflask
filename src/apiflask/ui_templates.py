@@ -1,4 +1,4 @@
-redoc_template = '''
+redoc_template = """
 <!DOCTYPE html>
 <html>
 
@@ -33,9 +33,9 @@ redoc_template = '''
 </body>
 
 </html>
-'''
+"""
 
-swagger_ui_template = '''
+swagger_ui_template = """
 <!DOCTYPE html>
 <html lang="en">
 
@@ -107,9 +107,9 @@ swagger_ui_template = '''
 </body>
 
 </html>
-'''
+"""
 
-swagger_ui_oauth2_redirect_template = '''
+swagger_ui_oauth2_redirect_template = """
 <!doctype html>
 <html lang="en-US">
 
@@ -188,4 +188,4 @@ swagger_ui_oauth2_redirect_template = '''
 </body>
 
 </html>
-'''
+"""

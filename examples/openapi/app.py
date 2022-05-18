@@ -9,7 +9,7 @@ app = APIFlask(__name__, title='Pet API', version='1.0')
 # app.description = '...'
 
 # openapi.info.description
-app.config['DESCRIPTION'] = '''
+app.config['DESCRIPTION'] = """
 The description for this API. It can be very long and **Markdown** is supported.
 
 In this example, the tags is manually set. However, in a real world application, it will be
@@ -25,7 +25,7 @@ $ flask run
 The source can be found at [examples/blueprint_tags/app.py][_blueprint_tags].
 
 [_blueprint_tags]: https://github.com/apiflask/apiflask/tree/main/examples/blueprint_tags/app.py
-'''
+"""
 
 # openapi.info.contact
 app.config['CONTACT'] = {
