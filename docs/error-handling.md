@@ -8,7 +8,7 @@ The error handling in APIFlask is based on the following basic concepts:
 - Use `APIFlask.abort()` function or raise `HTTPError` classes to generate an error response.
 - Use `app.error_processor` (`app` is an instance of `apiflask.APIFlask`) to register a
   custom error response processor.
-- Use `auth.error_processor` (`app` is an instance of `apiflask.HTTPBasicAuth` or
+- Use `auth.error_processor` (`auth` is an instance of `apiflask.HTTPBasicAuth` or
   `apiflask.HTTPTokenAuth`) to register a custom auth error response processor.
 - Subclass `HTTPError` to create custom error classes for your errors.
 
