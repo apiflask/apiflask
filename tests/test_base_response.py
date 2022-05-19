@@ -21,33 +21,33 @@ class BadBaseResponseSchema(Schema):
 
 
 base_response_schema_dict = {
-    "properties": {
-        "data": {
-            "type": "object"
+    'properties': {
+        'data': {
+            'type': 'object'
         },
-        "message": {
-            "type": "string"
+        'message': {
+            'type': 'string'
         },
-        "status_code": {
-            "type": "integer"
+        'status_code': {
+            'type': 'integer'
         }
     },
-    "type": "object"
+    'type': 'object'
 }
 
 bad_base_response_schema_dict = {
-    "properties": {
-        "some_data": {
-            "type": "object"
+    'properties': {
+        'some_data': {
+            'type': 'object'
         },
-        "message": {
-            "type": "string"
+        'message': {
+            'type': 'string'
         },
-        "status_code": {
-            "type": "integer"
+        'status_code': {
+            'type': 'integer'
         }
     },
-    "type": "object"
+    'type': 'object'
 }
 
 

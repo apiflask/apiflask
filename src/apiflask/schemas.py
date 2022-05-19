@@ -7,15 +7,15 @@ from marshmallow.fields import URL
 
 # schema for the detail object of validation error response
 validation_error_detail_schema: t.Dict[str, t.Any] = {
-    "type": "object",
-    "properties": {
-        "<location>": {
-            "type": "object",
-            "properties": {
-                "<field_name>": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
+    'type': 'object',
+    'properties': {
+        '<location>': {
+            'type': 'object',
+            'properties': {
+                '<field_name>': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'string'
                     }
                 }
             }
@@ -26,27 +26,27 @@ validation_error_detail_schema: t.Dict[str, t.Any] = {
 
 # schema for validation error response
 validation_error_schema: t.Dict[str, t.Any] = {
-    "properties": {
-        "detail": validation_error_detail_schema,
-        "message": {
-            "type": "string"
+    'properties': {
+        'detail': validation_error_detail_schema,
+        'message': {
+            'type': 'string'
         },
     },
-    "type": "object"
+    'type': 'object'
 }
 
 
 # schema for generic error response
 http_error_schema: t.Dict[str, t.Any] = {
-    "properties": {
-        "detail": {
-            "type": "object"
+    'properties': {
+        'detail': {
+            'type': 'object'
         },
-        "message": {
-            "type": "string"
+        'message': {
+            'type': 'string'
         },
     },
-    "type": "object"
+    'type': 'object'
 }
 
 

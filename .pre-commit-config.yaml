@@ -23,6 +23,9 @@ repos:
         additional_dependencies:
           - flake8-bugbear
           - flake8-implicit-str-concat
+          - flake8-quotes
+        args:
+          - --config=./setup.cfg
   - repo: https://github.com/peterdemin/pip-compile-multi
     rev: v2.4.5
     hooks:
