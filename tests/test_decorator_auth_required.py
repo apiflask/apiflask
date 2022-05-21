@@ -75,7 +75,7 @@ def test_auth_required(app, client):
     validate_spec(rv.json)
     assert 'BasicAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BasicAuth'] == {
-        'scheme': 'Basic',
+        'scheme': 'basic',
         'type': 'http'
     }
 
@@ -152,7 +152,7 @@ def test_auth_required_with_methodview(app, client):
     validate_spec(rv.json)
     assert 'BasicAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BasicAuth'] == {
-        'scheme': 'Basic',
+        'scheme': 'basic',
         'type': 'http'
     }
 
@@ -213,7 +213,7 @@ def test_auth_required_at_blueprint_before_request(app, client):
 
     assert 'BearerAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BearerAuth'] == {
-        'scheme': 'Bearer',
+        'scheme': 'bearer',
         'type': 'http'
     }
 

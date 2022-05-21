@@ -89,7 +89,7 @@ def get_security_scheme(auth: HTTPAuthType) -> t.Dict[str, t.Any]:
         if auth.scheme == 'Bearer' and auth.header is None:
             security_scheme = {
                 'type': 'http',
-                'scheme': 'Bearer',
+                'scheme': 'bearer',
             }
         else:
             security_scheme = {
@@ -100,7 +100,7 @@ def get_security_scheme(auth: HTTPAuthType) -> t.Dict[str, t.Any]:
     else:
         security_scheme = {
             'type': 'http',
-            'scheme': 'Basic',
+            'scheme': 'basic',
         }
     return security_scheme
 
