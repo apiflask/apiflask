@@ -30,7 +30,7 @@ It's how you create the Flask application:
 ```python
 from flask import Blueprint
 
-bp = Blueprint(__name__, 'foo')
+bp = Blueprint('foo', __name__)
 ```
 
 Now change to APIFlask:
@@ -38,7 +38,7 @@ Now change to APIFlask:
 ```python
 from apiflask import APIBlueprint
 
-bp = APIBlueprint(__name__, 'foo')
+bp = APIBlueprint('foo', __name__)
 ```
 
 !!! tip

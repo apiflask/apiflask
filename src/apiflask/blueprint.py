@@ -16,7 +16,7 @@ class APIBlueprint(APIScaffold, Blueprint):
     ```python
     from apiflask import APIBlueprint
 
-    bp = APIBlueprint(__name__, 'foo')
+    bp = APIBlueprint('foo', __name__)
     ```
 
     *Version changed: 0.5.0*
@@ -55,11 +55,11 @@ class APIBlueprint(APIScaffold, Blueprint):
                 Example:
 
                 ```python
-                bp = APIBlueprint(__name__, 'foo', tag='Foo')
+                bp = APIBlueprint('foo', __name__, tag='Foo')
                 ```
 
                 ```python
-                bp = APIBlueprint(__name__, 'foo', tag={'name': 'Foo'})
+                bp = APIBlueprint('foo', __name__, tag={'name': 'Foo'})
                 ```
             enable_openapi: If `False`, will disable OpenAPI support for the
                 current blueprint.

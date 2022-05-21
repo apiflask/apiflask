@@ -23,6 +23,8 @@ class PetOutSchema(Schema):
     category = String()
 
 
+# "app.route" is just a shortcut,
+# you can also use "app.add_url_rule" directly
 @app.route('/')
 class Hello(MethodView):
 

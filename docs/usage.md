@@ -1217,7 +1217,7 @@ In the end, let's unpack the whole `apiflask` package to check out what it shipp
 - `app.route()`: A decorator used to register a route. It accepts a `methods`
 parameter to specify a list of accepted methods, default to *GET* only. It can also
 be used on the `MethodView`-based view class.
-- `$ flask run`: A command to output the spec to stdout or a file.
+- `$ flask spec`: A command to output the spec to stdout or a file.
 
 You can learn the details of these APIs in the [API reference](/api/app), or you can
 continue to read the following chapters.

@@ -361,13 +361,13 @@ the tag, you can use the `APIBlueprint(tag=...)` parameter to pass a new name:
 ```python
 from apiflask import APIBlueprint
 
-bp = APIBlueprint(__name__, 'foo', tag='New Name')
+bp = APIBlueprint('foo', __name__, tag='New Name')
 ```
 
 This parameter also accepts a dict:
 
 ```python
-bp = APIBlueprint(__name__, 'foo', tag={'name': 'New Name', 'description': 'blah...'})
+bp = APIBlueprint('foo', __name__, tag={'name': 'New Name', 'description': 'blah...'})
 ```
 
 If you don't like this blueprint-based tagging system, surely you can do it manually.
@@ -850,7 +850,7 @@ set `enable_openapi` parameter to `False` when creating the `APIBlueprint` insta
 ```python
 from apiflask import APIBlueprint
 
-bp = APIBlueprint(__name__, 'foo', enable_openapi=False)
+bp = APIBlueprint('foo', __name__, enable_openapi=False)
 ```
 
 !!! tip

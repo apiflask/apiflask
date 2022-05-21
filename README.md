@@ -139,7 +139,8 @@ class PetOutSchema(Schema):
     category = String()
 
 
-# use the "route" decorator to decorate the view class
+# "app.route" is just a shortcut,
+# you can also use "app.add_url_rule" directly
 @app.route('/')
 class Hello(MethodView):
 
@@ -225,7 +226,6 @@ APIFlask is a thin wrapper on top of Flask. You only need to remember four diffe
 - When creating an application instance, use `APIFlask` instead of `Flask`.
 - When creating a blueprint instance, use `APIBlueprint` instead of `Blueprint`.
 - The `abort()` function from APIFlask (`apiflask.abort`) returns JSON error response.
-- The view class should be registered with the `route` decorator.
 
 For a minimal Flask application:
 
