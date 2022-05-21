@@ -6,6 +6,14 @@
 Released: -
 
 
+## Version 1.0.2
+
+- Combine custom security schemes (app.security_schemes) with existing values
+  ([issue #293][issue_293]).
+
+[issue_293]: https://github.com/apiflask/apiflask/issues/293
+
+
 ## Version 1.0.1
 
 Released: 2022/5/17
