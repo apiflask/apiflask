@@ -19,7 +19,7 @@ def test_httpbasicauth_security_scheme(app, client):
     assert 'BasicAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BasicAuth'] == {
         'type': 'http',
-        'scheme': 'Basic'
+        'scheme': 'basic'
     }
 
 
@@ -36,7 +36,7 @@ def test_httptokenauth_security_scheme(app, client):
     validate_spec(rv.json)
     assert 'BearerAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BearerAuth'] == {
-        'scheme': 'Bearer',
+        'scheme': 'bearer',
         'type': 'http'
     }
 
@@ -122,11 +122,11 @@ def test_security_schemes_description(app, client):
     assert 'BearerAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BasicAuth'] == {
         'type': 'http',
-        'scheme': 'Basic',
+        'scheme': 'basic',
         'description': 'some description for basic auth'
     }
     assert rv.json['components']['securitySchemes']['BearerAuth'] == {
         'type': 'http',
-        'scheme': 'Bearer',
+        'scheme': 'bearer',
         'description': 'some description for bearer auth'
     }
