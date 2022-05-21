@@ -37,8 +37,8 @@ Released: 2022/5/4<br>Codename: Wujiaochang
 - Remove the deprecated standalone decorators: `input`, `output`, `doc`, and `auth_required`.
   Use app/blueprint decorators instead (e.g. `input()` -> `app.input()`/`bp.input()`).
 - Deprecate the following parameters ([issue #237][issue_237]):
-  - `role` in `app.auth_required()`/`bp.auth_required()`, use `roles` and always pass a list.
-  - `tag` in `app.doc()`/`bp.doc()`, use `tags` and always pass a list.
+    - `role` in `app.auth_required()`/`bp.auth_required()`, use `roles` and always pass a list.
+    - `tag` in `app.doc()`/`bp.doc()`, use `tags` and always pass a list.
 - Add a base class (`apiflask.scaffold.APIScaffold`) for common logic of `APIFlask` and
   `APIBlueprint`, move route decorators and API-related decorators to this base class
   to improve the IDE auto-completion ([issue #231][issue_231]).
@@ -47,11 +47,11 @@ Released: 2022/5/4<br>Codename: Wujiaochang
 - Improve the way to detect blueprint from view endpoint to support the endpoints that
   contain dots ([issue #211][issue_211]).
 - Support file uploading ([issue #123][issue_123]):
-  - Fix the content type of `form` and `files` input locations.
-  - Raise error if the user uses multiple body input locations ("files", "form", "json").
-  - Add `Form` field and `form_and_files` location for better form upload support.
-  - Rewrite the `files` to act like `form_and_files`, so that failed parsed file will
-    be included in the returned data.
+    - Fix the content type of `form` and `files` input locations.
+    - Raise error if the user uses multiple body input locations ("files", "form", "json").
+    - Add `Form` field and `form_and_files` location for better form upload support.
+    - Rewrite the `files` to act like `form_and_files`, so that failed parsed file will
+      be included in the returned data.
 - Allow to use `json_or_form` location and fields (`DelimitedList` and `DelimitedTuple`)
   from webargs ([issue #254][issue_254]).
 - When creating a custom error processor, call it for generic HTTP errors even if the
