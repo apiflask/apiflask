@@ -828,13 +828,13 @@ class APIFlask(APIScaffold, Flask):
                 'string', 'url'
             )
 
+        auth_names, auth_schemes = self._collect_security_info()
+        security, security_schemes = get_security_and_security_schemes(
+            auth_names, auth_schemes
+        )
+
         if self.config['SECURITY_SCHEMES'] is not None:
-            security_schemes = self.config['SECURITY_SCHEMES']
-        else:
-            auth_names, auth_schemes = self._collect_security_info()
-            security, security_schemes = get_security_and_security_schemes(
-                auth_names, auth_schemes
-            )
+            security_schemes.update(self.config['SECURITY_SCHEMES'])
 
         for name, scheme in security_schemes.items():
             spec.components.security_scheme(name, scheme)

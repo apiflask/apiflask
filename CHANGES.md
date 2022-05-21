@@ -8,11 +8,12 @@ Released: -
 
 ## Version 1.0.2
 
-Released: -
-
+- Combine custom security schemes (app.security_schemes) with existing values
+  ([issue #293][issue_293]).
 - Add the missing `path` (`view_args`) to the valid request `location` list
   ([issue #301][issue_301])
 
+[issue_293]: https://github.com/apiflask/apiflask/issues/293
 [issue_301]: https://github.com/apiflask/apiflask/issues/301
 
 

@@ -1,3 +1,5 @@
+from openapi_spec_validator import validate_spec
+
 from apiflask import APIFlask
 from apiflask.security import HTTPBasicAuth
 from apiflask.security import HTTPTokenAuth
@@ -19,7 +21,7 @@ def test_default_auth_error_handler(app, client):
     assert 'WWW-Authenticate' in rv.headers
 
 
-def test_bypasss_default_auth_error_handler():
+def test_bypass_default_auth_error_handler():
     app = APIFlask(__name__, json_errors=False)
     auth = HTTPTokenAuth()
 
@@ -94,3 +96,49 @@ def test_current_user_as_property(app, client):
     rv = client.get('/foo', headers={'Authorization': 'Basic Zm9vOmJhcg=='})
     assert rv.status_code == 200
     assert rv.json == {'user': 'foo'}
+
+
+def test_combine_security_schemes(app, client):
+    auth = HTTPTokenAuth()
+
+    app.config['SECURITY_SCHEMES'] = {
+        'BasicAuth': {
+            'type': 'http',
+            'scheme': 'basic',
+        },
+    }
+
+    @app.route('/')
+    @app.auth_required(auth)
+    def hello():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['components']['securitySchemes']['BearerAuth'] == \
+        {'type': 'http', 'scheme': 'Bearer'}
+    assert rv.json['components']['securitySchemes']['BasicAuth'] == \
+        app.config['SECURITY_SCHEMES']['BasicAuth']
+
+
+def test_doc_security_overwrite(app, client):
+    auth = HTTPTokenAuth()
+
+    app.config['SECURITY_SCHEMES'] = {
+        'BasicAuth': {
+            'type': 'http',
+            'scheme': 'basic',
+        },
+    }
+
+    @app.route('/')
+    @app.auth_required(auth)
+    @app.doc(security='BasicAuth')
+    def hello():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['paths']['/']['get']['security'] == [{'BasicAuth': []}]
