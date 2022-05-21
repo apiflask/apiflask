@@ -598,6 +598,7 @@ argument for `@app.input()` decorator, the value can be:
 - Cookies: `'cookies'`
 - HTTP headers: `'headers'`
 - Query string: `'query'` (same as `'querystring'`)
+- Path variable (URL variable): `'path'` (same as `'view_args'`)
 
 !!! warning
 
