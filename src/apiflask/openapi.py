@@ -66,7 +66,7 @@ def get_auth_name(
     if isinstance(auth, HTTPBasicAuth):
         name = 'BasicAuth'
     elif isinstance(auth, HTTPTokenAuth):
-        if auth.scheme == 'Bearer' and auth.header is None:
+        if auth.scheme.lower() == 'bearer' and auth.header is None:
             name = 'BearerAuth'
         else:
             name = 'ApiKeyAuth'
@@ -86,7 +86,7 @@ def get_security_scheme(auth: HTTPAuthType) -> t.Dict[str, t.Any]:
     """Get security scheme from auth object."""
     security_scheme: t.Dict[str, t.Any]
     if isinstance(auth, HTTPTokenAuth):
-        if auth.scheme == 'Bearer' and auth.header is None:
+        if auth.scheme.lower() == 'bearer' and auth.header is None:
             security_scheme = {
                 'type': 'http',
                 'scheme': 'bearer',

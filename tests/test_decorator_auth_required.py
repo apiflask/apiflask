@@ -222,3 +222,20 @@ def test_auth_required_at_blueprint_before_request(app, client):
     assert 'BearerAuth' in rv.json['paths']['/baz']['get']['security'][0]
     assert 'BearerAuth' in rv.json['paths']['/baz']['post']['security'][0]
     assert 'security' not in rv.json['paths']['/eggs']['get']
+
+
+def test_lowercase_token_scheme_value(app, client):
+
+    auth = HTTPTokenAuth(scheme='bearer')
+
+    @app.route('/')
+    @app.auth_required(auth)
+    def index():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+
+    assert 'BearerAuth' in rv.json['components']['securitySchemes']
+    assert 'BearerAuth' in rv.json['paths']['/']['get']['security'][0]
