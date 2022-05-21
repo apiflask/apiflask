@@ -221,7 +221,7 @@ For some complete examples, see [/examples](https://github.com/apiflask/apiflask
 
 ## Relationship with Flask
 
-APIFlask is a thin wrapper on top of Flask. You only need to remember four differences (see *[Migrating from Flask](https://apiflask.com/migrating)* for more details):
+APIFlask is a thin wrapper on top of Flask. You only need to remember the following differences (see *[Migrating from Flask](https://apiflask.com/migrating)* for more details):
 
 - When creating an application instance, use `APIFlask` instead of `Flask`.
 - When creating a blueprint instance, use `APIBlueprint` instead of `Blueprint`.
