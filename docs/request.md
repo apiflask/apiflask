@@ -20,6 +20,7 @@ The following location are supported:
 - `json` (default)
 - `form`
 - `query` (same with `querystring`)
+- `path` (same with `view_args`)
 - `cookies`
 - `headers`
 - `files`

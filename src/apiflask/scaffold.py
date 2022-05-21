@@ -25,7 +25,9 @@ from .types import ResponseReturnValueType
 from .types import SchemaType
 
 BODY_LOCATIONS = ['json', 'files', 'form', 'form_and_files', 'json_or_form']
-SUPPORTED_LOCATIONS = BODY_LOCATIONS + ['query', 'headers', 'cookies', 'querystring']
+SUPPORTED_LOCATIONS = BODY_LOCATIONS + [
+    'query', 'headers', 'cookies', 'querystring', 'path', 'view_args'
+]
 
 
 class FlaskParser(BaseFlaskParser):
@@ -300,8 +302,8 @@ class APIScaffold:
             if location not in SUPPORTED_LOCATIONS:
                 raise ValueError(
                     'Unknown input location. The supported locations are: "json", "files",'
-                    ' "form", "cookies", "headers", "query" (same as "querystring"), and '
-                    f'"form_and_files". Got "{location}" instead.'
+                    ' "form", "cookies", "headers", "query" (same as "querystring"), "path"'
+                    f' (same as "view_args") and "form_and_files". Got "{location}" instead.'
                 )
             if location == 'json':
                 _annotate(f, body=schema, body_example=example, body_examples=examples)
