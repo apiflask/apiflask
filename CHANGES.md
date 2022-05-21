@@ -6,6 +6,16 @@
 Released: -
 
 
+## Version 1.0.2
+
+Released: -
+
+- Add the missing `path` (`view_args`) to the valid request `location` list
+  ([issue #301][issue_301])
+
+[issue_301]: https://github.com/apiflask/apiflask/issues/301
+
+
 ## Version 1.0.1
 
 Released: 2022/5/17
