@@ -117,7 +117,7 @@ def test_combine_security_schemes(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['components']['securitySchemes']['BearerAuth'] == \
-        {'type': 'http', 'scheme': 'Bearer'}
+        {'type': 'http', 'scheme': 'bearer'}
     assert rv.json['components']['securitySchemes']['BasicAuth'] == \
         app.config['SECURITY_SCHEMES']['BasicAuth']
 

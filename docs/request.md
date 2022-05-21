@@ -20,7 +20,7 @@ The following location are supported:
 - `json` (default)
 - `form`
 - `query` (same with `querystring`)
-- `path` (same with `view_args`)
+- `path` (same with `view_args`, added in APIFlask 1.0.2)
 - `cookies`
 - `headers`
 - `files`

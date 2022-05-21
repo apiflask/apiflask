@@ -57,8 +57,8 @@ def create_pet(data):
     return pets[pet_id]
 ```
 
-When using the built-in auth support and external auth library at the same time, the security schemes
-will be combined.
+With [APIFlask 1.0.2](/changelog/#version-102), when using the built-in auth support and external auth
+library at the same time, the security schemes will be combined.
 
 `app.auth_required` will generate the operation security automatically, if you use the `@doc(security=...)`
 with a view that already used `app.auth_required`, then the value passed in `@doc(security=...)` will be used.
