@@ -894,7 +894,7 @@ The absolute or relative URL of the Redoc standalone JavaScript file.
 - Examples:
 
 ```python
-app.config['REDOC_STANDALONE_JS'] = 'https://cdn.example.com/filename.js'
+app.config['REDOC_STANDALONE_JS'] = 'https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js'
 ```
 
 
@@ -907,7 +907,7 @@ The absolute or relative URL of the Swagger UI CSS file.
 - Examples:
 
 ```python
-app.config['SWAGGER_UI_CSS'] = 'https://cdn.example.com/filename.js'
+app.config['SWAGGER_UI_CSS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui.min.css'
 ```
 
 
@@ -920,7 +920,7 @@ The absolute or relative URL of the Swagger UI bundle JavaScript file.
 - Examples:
 
 ```python
-app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdn.example.com/filename.js'
+app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui-bundle.min.js'
 ```
 
 
@@ -933,7 +933,7 @@ The absolute or relative URL of the Swagger UI standalone preset JavaScript file
 - Examples:
 
 ```python
-app.config['SWAGGER_UI_STANDALONE_PRESET_JS'] = 'https://cdn.example.com/filename.js'
+app.config['SWAGGER_UI_STANDALONE_PRESET_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui-standalone-preset.min.js'
 ```
 
 

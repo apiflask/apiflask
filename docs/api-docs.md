@@ -104,6 +104,15 @@ the URL from your preferred CDN server to the corresponding configuration variab
 - `SWAGGER_UI_BUNDLE_JS`
 - `SWAGGER_UI_STANDALONE_PRESET_JS`
 
+Here is an example:
+
+```py
+app.config['SWAGGER_UI_CSS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui.min.css'
+app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui-bundle.min.js'
+app.config['SWAGGER_UI_STANDALONE_PRESET_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui-standalone-preset.min.js'
+app.config['REDOC_STANDALONE_JS'] = 'https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js'
+```
+
 See *[Configuration](/configuration/#swagger-ui-and-redoc)* for the
 introduction and examples of these configuration variables.
 
@@ -134,7 +143,7 @@ into a subfolder called `js`, then the URL will be `/static/js/redoc.standalone.
     app.config['REDOC_STANDALONE_JS'] = '/static/js/redoc.standalone.js'
     ```
 
-[_redoc_cdn]: https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js
+[_redoc_cdn]: https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js
 
 !!! tip
     The `static` part of the URL matches the `static_url_path` argument you passed
