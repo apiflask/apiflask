@@ -189,3 +189,91 @@ swagger_ui_oauth2_redirect_template = """
 
 </html>
 """
+
+elements_template = """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>{{ title }} {{ version }} - Elements</title>
+  <link rel="icon" type="image/png"
+    href="{{ config.DOCS_FAVICON }}">
+  <script src="{{ config.ELEMENTS_JS }}"></script>
+  <link rel="stylesheet" href="{{ config.ELEMENTS_CSS }}">
+</head>
+<body>
+
+  <elements-api
+    apiDescriptionUrl="{{ url_for('openapi.spec') }}"
+    layout="{{ config.ELEMENTS_LAYOUT }}"
+    {% if config.ELEMENTS_CONFIG %}
+      {% for key, value in config.ELEMENTS_CONFIG.items() %}
+        {{ key }}={{ value | tojson }}
+      {% endfor %}
+    {% endif %}
+  />
+
+</body>
+</html>
+"""
+
+rapidoc_template = """
+<!doctype html> <!-- Important: must specify -->
+<html>
+<head>
+  <meta charset="utf-8"> <!-- Important: rapi-doc uses utf8 characters -->
+  <title>{{ title }} {{ version }} - RapiDoc</title>
+  <link rel="icon" type="image/png"
+    href="{{ config.DOCS_FAVICON }}">
+  <script type="module" src="{{ config.RAPIDOC_JS }}"></script>
+</head>
+<body>
+  <rapi-doc
+    spec-url="{{ url_for('openapi.spec') }}"
+    theme="{{ config.RAPIDOC_THEME }}"
+    {% if config.RAPIDOC_CONFIG and 'show-header' in config.RAPIDOC_CONFIG %}
+      {% set show_header = config.RAPIDOC_CONFIG['show-header'] %}
+    {% else %}
+      {% set show_header = False %}
+    {% endif %}
+    show-header="{{ show_header | tojson }}"
+    {% if config.RAPIDOC_CONFIG %}
+      {% for key, value in config.RAPIDOC_CONFIG.items() %}
+        {{ key }}={{ value | tojson }}
+      {% endfor %}
+    {% endif %}
+  > </rapi-doc>
+</body>
+</html>
+"""
+
+rapipdf_template = """
+<!doctype html>
+<html>
+<head>
+  <title>{{ title }} {{ version }} - RapiPDF</title>
+  <link rel="icon" type="image/png"
+    href="{{ config.DOCS_FAVICON }}">
+  <script src="{{ config.RAPIPDF_JS }}"></script>
+</head>
+<body>
+  <rapi-pdf
+    spec-url = "{{ url_for('openapi.spec') }}"
+    {% if config.RAPIPDF_CONFIG %}
+      {% for key, value in config.RAPIPDF_CONFIG.items() %}
+        {{ key }}={{ value | tojson }}
+      {% endfor %}
+    {% endif %}
+  > </rapi-pdf>
+</body>
+  </html>
+"""
+
+ui_templates = {
+    'swagger-ui': swagger_ui_template,
+    'redoc': redoc_template,
+    'elements': elements_template,
+    'rapidoc': rapidoc_template,
+    'rapipdf': rapipdf_template,
+}
