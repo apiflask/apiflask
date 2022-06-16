@@ -16,8 +16,7 @@ Basic concepts on data schema:
 - `apiflask.validators` includes all the validators in `marshmallow.validate`.
 - For other functions/classes, just import them from marshmallow.
 - Read [marshmallow's documentation](https://marshmallow.readthedocs.io/) when you have free time.
-- And Read [mashmallow-dataclass](https://lovasoa.github.io/marshmallow_dataclass/html/marshmallow_dataclass.html) and [dataclasses](https://docs.python.org/3/library/dataclasses.html) data class.
- if you want to use dataclass.
+
 
 ## Deserialization (load) and serialization (dump)
 
@@ -347,46 +346,57 @@ def get_pet(pet_id):
     return make_resp('Success!', 200, pets[pet_id])
 ```
 
-## Dataclass
+## Use dataclasses as data schema
 
-If your like to use dataclass, you need to install the [marshmalow-dataclass](https://github.com/lovasoa/marshmallow_dataclass) package. marshmallow_dataclass is a wrapper of marshmallow that allows you to use dataclass.
+With [marshmalow-dataclass](https://github.com/lovasoa/marshmallow_dataclass), you can define
+dataclasses and then convert the dataclasses into marshmallow schemas.
 
 ```bash
-pip install marshmallow-dataclass
+$ pip install marshmallow-dataclass
 ```
 
-!!! warning
-    when your use dataclass, you must pass `YourDataclass.Schema` to the `input` or `output` decorator.
-
-a simple example of dataclass:
+You can use the `dataclass` decorator from marshmallow-dataclass to create the data class, then call the
+`.Schema` attribute to get the corresponding marshmallow schema:
 
 ```python
+from dataclasses import field
+
 from apiflask import APIFlask
+from apiflask.validators import Length, OneOf
 from marshmallow_dataclass import dataclass
 
 
 app = APIFlask(__name__)
 
+
 @dataclass
-class Pet:
+class PetIn:
+    name: str = field(metadata={'required': True, 'validate': Length(min=1, max=10)})
+    category: str = field(
+        metadata={'required': True, 'validate': OneOf(['cat', 'dog'])}
+    )
+
+
+@dataclass
+class PetOut:
     id: int
     name: str
     category: str
 
-pets = [
-    {'id': 0, 'name': 'Kitty', 'category': 'cat'},
-    {'id': 1, 'name': 'Coco', 'category': 'dog'},
-    {'id': 2, 'name': 'Flash', 'category': 'cat'}
-]
 
-
-@app.get('/pets/<int:pet_id>')
-@app.output(Pet.Schema())
-def get_pet(pet_id):
-    if pet_id > len(pets) - 1 or pets[pet_id].get('deleted'):
-        abort(404)
-    return pets[pet_id]
+@app.post('/pets')
+@app.input(PetIn.Schema)
+@app.output(PetOut.Schema, status_code=201)
+def create_pet(pet: PetIn):
+    return {
+        'id': 0,
+        'name': pet.name,
+        'category': pet.category
+    }
 ```
 
-Check out [the complete example application](https://github.com/apiflask/apiflask/tree/main/examples/base_response/app.py)
+Check out [the complete example application](https://github.com/apiflask/apiflask/tree/main/examples/dataclasses/app.py)
 for more details, see [the examples page](/examples) for running the example application.
+
+Read [mashmallow-dataclass's documentation](https://lovasoa.github.io/marshmallow_dataclass/html/marshmallow_dataclass.html)
+and [dataclasses](https://docs.python.org/3/library/dataclasses.html) for more information.
