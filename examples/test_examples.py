@@ -11,6 +11,7 @@ full_examples = [
     'openapi',
     'blueprint_tags',
     'base_response',
+    'dataclass',
 ]
 
 examples = full_examples + [

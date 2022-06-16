@@ -346,10 +346,14 @@ def get_pet(pet_id):
     return make_resp('Success!', 200, pets[pet_id])
 ```
 
-## Use dataclasses as data schema
+Check out [the complete example application](https://github.com/apiflask/apiflask/tree/main/examples/base_response/app.py)
+for more details, see [the examples page](/examples) for running the example application.
+
+
+## Use dataclass as data schema
 
 With [marshmalow-dataclass](https://github.com/lovasoa/marshmallow_dataclass), you can define
-dataclasses and then convert the dataclasses into marshmallow schemas.
+dataclasses and then convert them into marshmallow schemas.
 
 ```bash
 $ pip install marshmallow-dataclass
@@ -371,7 +375,9 @@ app = APIFlask(__name__)
 
 @dataclass
 class PetIn:
-    name: str = field(metadata={'required': True, 'validate': Length(min=1, max=10)})
+    name: str = field(
+        metadata={'required': True, 'validate': Length(min=1, max=10)}
+    )
     category: str = field(
         metadata={'required': True, 'validate': OneOf(['cat', 'dog'])}
     )
@@ -395,7 +401,7 @@ def create_pet(pet: PetIn):
     }
 ```
 
-Check out [the complete example application](https://github.com/apiflask/apiflask/tree/main/examples/dataclasses/app.py)
+Check out [the complete example application](https://github.com/apiflask/apiflask/tree/main/examples/dataclass/app.py)
 for more details, see [the examples page](/examples) for running the example application.
 
 Read [mashmallow-dataclass's documentation](https://lovasoa.github.io/marshmallow_dataclass/html/marshmallow_dataclass.html)

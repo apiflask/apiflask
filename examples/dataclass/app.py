@@ -1,7 +1,6 @@
 from dataclasses import field
 
 from marshmallow_dataclass import dataclass
-
 from apiflask import APIFlask, abort
 from apiflask.validators import Length, OneOf
 
@@ -9,15 +8,17 @@ app = APIFlask(__name__)
 
 
 @dataclass
-class PetInDataclass:
-    name: str = field(metadata={'required': True, 'validate': Length(min=1, max=10)})
+class PetIn:
+    name: str = field(
+        metadata={'required': True, 'validate': Length(min=1, max=10)}
+    )
     category: str = field(
         metadata={'required': True, 'validate': OneOf(['cat', 'dog'])}
     )
 
 
 @dataclass
-class PetOutDataclass:
+class PetOut:
     id: int
     name: str
     category: str
@@ -36,40 +37,42 @@ def say_hello():
 
 
 @app.get('/pets/<int:pet_id>')
-@app.output(PetOutDataclass.Schema())
+@app.output(PetOut.Schema)
 def get_pet(pet_id):
-    if pet_id > len(pets) - 1 or hasattr(pets[pet_id], 'deleted'):
+    if pet_id > len(pets) - 1 or pets[pet_id].get('deleted'):
         abort(404)
     return pets[pet_id]
 
 
 @app.get('/pets')
-@app.output(PetOutDataclass.Schema(many=True))
+@app.output(PetOut.Schema(many=True))
 def get_pets():
     return pets
 
 
 @app.post('/pets')
-@app.input(PetInDataclass.Schema())
-@app.output(PetOutDataclass.Schema(), 201)
-def create_pet(data):
+@app.input(PetIn.Schema)
+@app.output(PetOut.Schema, 201)
+def create_pet(pet: PetIn):
     pet_id = len(pets)
-    pets[pet_id].name = data.name
-    pets[pet_id].category = data.category
-
+    pets.append({
+        'id': pet_id,
+        'name': pet.name,
+        'category': pet.category
+    })
     return pets[pet_id]
 
 
+# partial=True is not supported in marshmallow-dataclass currently
+# https://github.com/lovasoa/marshmallow_dataclass/issues/169
 @app.patch('/pets/<int:pet_id>')
-@app.input(PetInDataclass.Schema(partial=True))
-@app.output(PetOutDataclass.Schema())
-def update_pet(pet_id, data):
+@app.input(PetIn.Schema)
+@app.output(PetOut.Schema)
+def update_pet(pet_id, pet: PetIn):
     if pet_id > len(pets) - 1:
         abort(404)
-    if pet_id > len(pets) - 1:
-        abort(404)
-    for attr, value in data.items():
-        pets[pet_id][attr] = value
+    pets[pet_id]['name'] = pet.name
+    pets[pet_id]['category'] = pet.category
     return pets[pet_id]
 
 
@@ -78,6 +81,6 @@ def update_pet(pet_id, data):
 def delete_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)
-    pets[pet_id].name = 'ghost'
-    pets[pet_id].deleted = True
+    pets[pet_id]['deleted'] = True
+    pets[pet_id]['name'] = 'Ghost'
     return ''
