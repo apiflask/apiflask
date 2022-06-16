@@ -18,7 +18,6 @@ Basic concepts on data schema:
 - Read [marshmallow's documentation](https://marshmallow.readthedocs.io/) when you have free time.
 
 
-
 ## Deserialization (load) and serialization (dump)
 
 In APIFlask (marshmallow), the process of parsing and validating the input request data
@@ -347,5 +346,57 @@ def get_pet(pet_id):
     return make_resp('Success!', 200, pets[pet_id])
 ```
 
-Check out [the complete example application](https://github.com/apiflask/apiflask/tree/main/examples/base_response/app.py)
+## Use dataclasses as data schema
+
+With [marshmalow-dataclass](https://github.com/lovasoa/marshmallow_dataclass), you can define
+dataclasses and then convert the dataclasses into marshmallow schemas.
+
+```bash
+$ pip install marshmallow-dataclass
+```
+
+You can use the `dataclass` decorator from marshmallow-dataclass to create the data class, then call the
+`.Schema` attribute to get the corresponding marshmallow schema:
+
+```python
+from dataclasses import field
+
+from apiflask import APIFlask
+from apiflask.validators import Length, OneOf
+from marshmallow_dataclass import dataclass
+
+
+app = APIFlask(__name__)
+
+
+@dataclass
+class PetIn:
+    name: str = field(metadata={'required': True, 'validate': Length(min=1, max=10)})
+    category: str = field(
+        metadata={'required': True, 'validate': OneOf(['cat', 'dog'])}
+    )
+
+
+@dataclass
+class PetOut:
+    id: int
+    name: str
+    category: str
+
+
+@app.post('/pets')
+@app.input(PetIn.Schema)
+@app.output(PetOut.Schema, status_code=201)
+def create_pet(pet: PetIn):
+    return {
+        'id': 0,
+        'name': pet.name,
+        'category': pet.category
+    }
+```
+
+Check out [the complete example application](https://github.com/apiflask/apiflask/tree/main/examples/dataclasses/app.py)
 for more details, see [the examples page](/examples) for running the example application.
+
+Read [mashmallow-dataclass's documentation](https://lovasoa.github.io/marshmallow_dataclass/html/marshmallow_dataclass.html)
+and [dataclasses](https://docs.python.org/3/library/dataclasses.html) for more information.

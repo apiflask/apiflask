@@ -8,6 +8,7 @@
 - Base response example: [/examples/base_response/app.py][_base_response]
 - Token auth example: [/examples/auth/token_auth/app.py][_token_auth]
 - Basic auth example: [/examples/auth/basic_auth/app.py][_basic_auth]
+- Dataclass example: [/examples/dataclass/app.py][_dataclass]
 
 [_basic]: https://github.com/apiflask/apiflask/tree/main/examples/basic/app.py
 [_cbv]: https://github.com/apiflask/apiflask/tree/main/examples/cbv/app.py
@@ -17,6 +18,7 @@
 [_base_response]: https://github.com/apiflask/apiflask/tree/main/examples/base_response/app.py
 [_token_auth]: https://github.com/apiflask/apiflask/tree/main/examples/auth/token_auth/app.py
 [_basic_auth]: https://github.com/apiflask/apiflask/tree/main/examples/auth/basic_auth/app.py
+[_dataclass]: https://github.com/apiflask/apiflask/tree/main/examples/dataclass/app.py
 
 If you have built an application with APIFlask, feel free to submit a pull request to add the source link here.
 
