@@ -1,2 +1,2 @@
 mkdocs-material
-mkdocstrings
+mkdocstrings[python-legacy]

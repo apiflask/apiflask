@@ -10,7 +10,7 @@ if t.TYPE_CHECKING:  # pragma: no cover
     from flask.wrappers import Response  # noqa: F401
     from flask.views import View  # noqa: F401
     from werkzeug.datastructures import Headers  # noqa: F401
-    from wsgiref.types import WSGIApplication  # noqa: F401
+    from _typeshed.wsgi import WSGIApplication  # noqa: F401
     from .fields import Field  # noqa: F401
     from .schemas import Schema  # noqa: F401
     from .security import HTTPBasicAuth  # noqa: F401
