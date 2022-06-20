@@ -13,11 +13,11 @@ cfgv==3.3.1
     # via pre-commit
 distlib==0.3.4
     # via virtualenv
-filelock==3.7.0
+filelock==3.7.1
     # via
     #   tox
     #   virtualenv
-identify==2.5.0
+identify==2.5.1
     # via pre-commit
 nodeenv==1.6.0
     # via pre-commit
@@ -25,7 +25,7 @@ pep517==0.12.0
     # via pip-tools
 pip-compile-multi==2.4.5
     # via -r requirements/dev.in
-pip-tools==6.6.1
+pip-tools==6.6.2
     # via pip-compile-multi
 platformdirs==2.5.2
     # via virtualenv
@@ -39,8 +39,6 @@ virtualenv==20.14.1
     # via
     #   pre-commit
     #   tox
-wheel==0.37.1
-    # via pip-tools
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
