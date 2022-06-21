@@ -41,3 +41,48 @@ if (window.location.hostname != "localhost") {
 }
 </script>
 {% endblock %}
+
+
+{% block scripts %}
+{{ super() }}
+<template>
+  <div class="md-header__option"></form>
+    <div class="md-select">
+      <button
+        class="md-header__button md-icon"
+        aria-label="Versions"
+      >
+        {% include ".icons/material/history.svg" %}
+      </button>
+      <div class="md-select__inner">
+        <ul class="md-select__list">
+          <li class="md-select__item">
+            <a
+              href="https://apiflask.com"
+              hreflang="Latest"
+              class="md-select__link"
+            >
+              Latest
+            </a>
+          </li>
+          <li class="md-select__item">
+            <a
+              href="https://v1.apiflask.com"
+              hreflang="Version 1"
+              class="md-select__link"
+            >
+              V1 (stable)
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+var template = document.getElementsByTagName("template")[0];
+var title = document.querySelector(".md-header__title");
+title.after(template.content.cloneNode(true));
+</script>
+{% endblock %}
