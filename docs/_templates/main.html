@@ -6,6 +6,21 @@ Do you use APIFlask in your side projects or in your company?
 Welcome to follow <a href="https://twitter.com/apiflask" target="_blank">@apiflask</a> on Twitter for updates.
 {% endblock %}
 
+{% block header %}
+{{ super() }}
+<div data-md-component="outdated">
+  <aside class="md-banner md-banner--warning">
+    <div class="md-banner__inner md-grid md-typeset">
+      You're viewing the docs for the latest 1.x release.
+      <a href="https://apiflask.com/docs/#versions">
+        <strong>Click here to check the version list.</strong>
+      </a>
+    </div>
+    {% include "partials/javascripts/outdated.html" %}
+  </aside>
+</div>
+{% endblock %}
+
 {% block extrahead %}
 {% set title = config.site_name %}
 {% if page and page.title and not page.is_homepage %}
