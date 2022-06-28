@@ -259,7 +259,7 @@ rapipdf_template = """
 </head>
 <body>
   <rapi-pdf
-    spec-url = "{{ url_for('openapi.spec') }}"
+    spec-url="{{ url_for('openapi.spec') }}"
     {% if config.RAPIPDF_CONFIG %}
       {% for key, value in config.RAPIPDF_CONFIG.items() %}
         {{ key }}={{ value | tojson }}
