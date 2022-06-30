@@ -5,6 +5,23 @@
 
 Released: -
 
+- Add new docs UI support: RapiDoc, RapiPDF, and Elements ([pr #308][pr_308]).
+- Add a `docs_ui` parameter to APIFlask to set the API docs UI (can be
+  `swagger-ui` (default), `redoc`, `rapidoc`, and `rapipdf`).
+- Deprecate the separate docs path `/redoc` and the `redoc_path` parameter.
+- Add the following configuration variables for new docs supprt:
+    - `ELEMENTS_JS`
+    - `ELEMENTS_CSS`
+    - `ELEMENTS_LAYOUT`
+    - `ELEMENTS_CONFIG`
+    - `RAPIDOC_JS`
+    - `RAPIDOC_THEME`
+    - `RAPIDOC_CONFIG`
+    - `RAPIPDF_JS`
+    - `RAPIPDF_CONFIG`
+
+[pr_308]: https://github.com/apiflask/apiflask/pull/308
+
 
 ## Version 1.0.2
 

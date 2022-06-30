@@ -83,7 +83,7 @@ $ flask run
 
 ## Try it out
 
-When the application is running, now you can visit the interactive API documentation at <http://localhost:5000/docs> or <http://localhost:5000/redoc> . Inside the detail tab of each endpoint, you can click the "Try it out" button to test the APIs:
+When the application is running, now you can visit the interactive API documentation at <http://localhost:5000/docs>. Inside the detail tab of each endpoint, you can click the "Try it out" button to test the APIs:
 
 ![](https://apiflask.com/_assets/try-it-out.png)
 

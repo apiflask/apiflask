@@ -550,7 +550,7 @@ class APIFlask(APIScaffold, Flask):
 
         *Version changed: 1.1.0*
 
-        - Deprecate the Redoc view at /redoc path.
+        - Deprecate the redoc view at /redoc path.
 
         *Version changed: 0.7.0*
 
