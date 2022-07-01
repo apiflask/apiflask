@@ -256,3 +256,20 @@ def test_schema_name_resolver(app, client, resolver):
     else:
         assert 'Foo' in spec['components']['schemas']
         assert 'BarUpdate' in spec['components']['schemas']
+
+
+@pytest.mark.parametrize(
+    'ui_name',
+    ['swagger-ui', 'redoc', 'elements', 'rapidoc', 'rapipdf']
+)
+def test_docs_ui(ui_name):
+    app = APIFlask(__name__, docs_ui=ui_name)
+    client = app.test_client()
+
+    rv = client.get('/docs')
+    assert rv.status_code == 200
+
+
+def test_bad_docs_ui():
+    with pytest.raises(ValueError):
+        APIFlask(__name__, docs_ui='bad')

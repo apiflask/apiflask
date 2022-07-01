@@ -1,38 +1,132 @@
-# Swagger UI and Redoc
+# API documentations
+
+APIFlask provides support to the following API documentation UIs:
+
+- [Swagger UI](https://github.com/swagger-api/swagger-ui)
+- [Redoc](https://github.com/Redocly/redoc)
+- [Elements](https://github.com/stoplightio/elements)
+- [RapiDoc](https://github.com/rapi-doc/RapiDoc)
+- [RapiPDF](https://github.com/mrin9/RapiPdf)
 
 
-## Change the path to Swagger UI and Redoc
+## Change the documentation UI library
 
-The default path of Swagger UI is `/docs`, so it will be available at
+The docs UI is controlled via the `docs_ui` parameter when creating the APIFlask
+instance:
+
+```python
+from apiflask import APIFlask
+
+app = APIFlask(__name__, docs_ui='redoc')
+```
+
+The following values can be used:
+
+- `swagger-ui` (default value)
+- `redoc`
+- `elements`
+- `rapidoc`
+- `rapipdf`
+
+
+## Change the path to API documentation
+
+The default path of API documentation is `/docs`, so it will be available at
 <http://localhost:5000/docs> when running on local with the default port. You can
 change the path via the `docs_path` parameter when creating the `APIFlask` instance:
 
 ```python
 from apiflask import APIFlask
 
-app = APIFlask(__name__, docs_path='/swagger-ui')
+app = APIFlask(__name__, docs_path='/api-docs')
 ```
 
-Similarly, the default path of Redoc is `/redoc`, and you can change it via the
-`redoc_path` parameter:
-
-```python
-from apiflask import APIFlask
-
-app = APIFlask(__name__, redoc_path='/api-doc')
-```
-
-The `docs_path` and `redoc_path` accepts a URL path starts with a slash, so you can
+The `docs_path` accepts a URL path starts with a slash, so you can
 set a prefix like this:
 
 ```python
 from apiflask import APIFlask
 
-app = APIFlask(__name__, docs_path='/docs/swagger-ui', redoc_path='/docs/redoc')
+app = APIFlask(__name__, docs_path='/openapi/docs')
 ```
 
-Now the local URL of the docs will be <http://localhost:5000/docs/swagger-ui> and
-<http://localhost:5000/docs/redoc>.
+Now the local URL of the docs will be <http://localhost:5000/openapi/docs>.
+
+You can also set `openapi_blueprint_url_prefix` to add a prefix to all OpenAPI-related paths.
+
+```python
+from apiflask import APIFlask
+
+app = APIFlask(__name__, openapi_blueprint_url_prefix='/openapi')
+```
+
+Now the paths to docs and spec will be <http://localhost:5000/openapi/docs>
+and <http://localhost:5000/openapi/openapi.json>.
+
+
+## Add custom API documentations
+
+You can easily add support to other API docs or serve the supported docs UI by yourself.
+
+Just create a view to render the docs template, take Redoc as an example:
+
+```python
+from apiflask import APIFlask
+from flask import render_template
+
+app = APIFlask(__name__)
+
+
+@app.route('/redoc')
+def my_redoc():
+    return render_template('/redoc.html')
+```
+
+Here is the template `redoc.html`:
+
+```html hl_lines="17"
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Redoc</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <redoc spec-url="{{ url_for('openapi.spec') }}"></redoc>
+    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"> </script>
+  </body>
+</html>
+```
+
+In the template, we use `{{ url_for('openapi.spec') }}` to get the URL to the OpenAPI spec file.
+
+Now visit <http://localhost:5000/redoc>, you will see your custom Redoc API docs.
+
+In this way, you can serve multiple API docs at the same time, or add auth protect
+to the docs view. If you want to use the built-in configuration variable for API docs or
+just want to write less code, you can import the API docs template directly from APIFlask:
+
+```python hl_lines="2 10"
+from apiflask import APIFlask
+from apiflask.ui_templates import redoc_template
+from flask import render_template_string
+
+app = APIFlask(__name__)
+
+
+@app.route('/redoc')
+def my_redoc():
+    return render_template_string(redoc_template, title='My API', version='1.0')
+```
 
 
 ## Disable the API documentations globally
@@ -43,23 +137,6 @@ You can set the `docs_path` parameter to `None` to disable Swagger UI documentat
 from apiflask import APIFlask
 
 app = APIFlask(__name__, docs_path=None)
-```
-
-Similarly, you can set the `redoc_path` parameter to `None` to disable Redoc
-documentation:
-
-```python
-from apiflask import APIFlask
-
-app = APIFlask(__name__, redoc_path=None)
-```
-
-Or disable both:
-
-```python
-from apiflask import APIFlask
-
-app = APIFlask(__name__, docs_path=None, redoc_path=None)
 ```
 
 !!! tip
@@ -90,7 +167,7 @@ The following configuration variables can be used to config Swagger UI/Redoc:
 - `SWAGGER_UI_CONFIG`
 - `SWAGGER_UI_OAUTH_CONFIG`
 
-See *[Configuration](/configuration/#swagger-ui-and-redoc)* for the
+See *[Configuration](/configuration/#api-documentation)* for the
 introduction and examples of these configuration variables.
 
 
@@ -103,17 +180,30 @@ the URL from your preferred CDN server to the corresponding configuration variab
 - `SWAGGER_UI_CSS`
 - `SWAGGER_UI_BUNDLE_JS`
 - `SWAGGER_UI_STANDALONE_PRESET_JS`
+- `RAPIDOC_JS`
+- `ELEMENTS_JS`
+- `ELEMENTS_CSS`
+- `RAPIPDF_JS`
 
 Here is an example:
 
 ```py
+# Swagger UI
 app.config['SWAGGER_UI_CSS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui.min.css'
 app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui-bundle.min.js'
 app.config['SWAGGER_UI_STANDALONE_PRESET_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui-standalone-preset.min.js'
+# Redoc
 app.config['REDOC_STANDALONE_JS'] = 'https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js'
+# Elements
+app.config['ELEMENTS_JS'] = 'https://cdn.jsdelivr.net/npm/@stoplight/elements-dev-portal@1.7.4/web-components.min.js'
+app.config['ELEMENTS_CSS'] = 'https://cdn.jsdelivr.net/npm/@stoplight/elements-dev-portal@1.7.4/styles.min.css'
+# RapiDoc
+app.config['RAPIDOC_JS'] = 'https://cdn.jsdelivr.net/npm/rapidoc@9.3.2/dist/rapidoc-min.min.js'
+# RapiPDF
+app.config['RAPIPDF_JS'] = 'https://cdn.jsdelivr.net/npm/rapipdf@2.2.1/src/rapipdf.min.js'
 ```
 
-See *[Configuration](/configuration/#swagger-ui-and-redoc)* for the
+See *[Configuration](/configuration/#api-documentations)* for the
 introduction and examples of these configuration variables.
 
 
@@ -126,6 +216,10 @@ the URL of local static files to the corresponding configuration variables:
 - `SWAGGER_UI_CSS`
 - `SWAGGER_UI_BUNDLE_JS`
 - `SWAGGER_UI_STANDALONE_PRESET_JS`
+- `RAPIDOC_JS`
+- `ELEMENTS_JS`
+- `ELEMENTS_CSS`
+- `RAPIPDF_JS`
 
 For local resources, you can pass a relative URL. For example, if you want to host
 the Redoc standalone JavaScript file from a local file, follow the following steps:
