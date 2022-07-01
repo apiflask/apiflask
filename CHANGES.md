@@ -19,8 +19,11 @@ Released: -
     - `RAPIDOC_CONFIG`
     - `RAPIPDF_JS`
     - `RAPIPDF_CONFIG`
+- Fix CLI entry point setup to prevent overwriting `flask`
+  ([issue #312][issue_312])
 
 [pr_308]: https://github.com/apiflask/apiflask/pull/308
+[issue_312]: https://github.com/apiflask/apiflask/issues/312
 
 
 ## Version 1.0.2
