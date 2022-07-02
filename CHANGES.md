@@ -5,6 +5,7 @@
 
 Released: -
 
+- Allow the view function to return a list as JSON response ([issue #321][issue_321]).
 - Add new docs UI support: RapiDoc, RapiPDF, and Elements ([pr #308][pr_308]).
 - Add a `docs_ui` parameter to APIFlask to set the API docs UI (can be
   `swagger-ui` (default), `redoc`, `rapidoc`, and `rapipdf`).
@@ -24,6 +25,7 @@ Released: -
 
 [pr_308]: https://github.com/apiflask/apiflask/pull/308
 [issue_312]: https://github.com/apiflask/apiflask/issues/312
+[issue_321]: https://github.com/apiflask/apiflask/issues/321
 
 
 ## Version 1.0.2

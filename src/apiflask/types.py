@@ -21,7 +21,9 @@ if t.TYPE_CHECKING:  # pragma: no cover
 DecoratedType = t.TypeVar('DecoratedType', bound=t.Callable[..., t.Any])
 RequestType = t.TypeVar('RequestType')
 
-ResponseBodyType = t.Union[str, bytes, t.Dict[str, t.Any], t.Generator[str, None, None], 'Response']
+ResponseBodyType = t.Union[
+    str, bytes, list, t.Dict[str, t.Any], t.Generator[str, None, None], 'Response'
+]
 ResponseStatusType = t.Union[str, int]
 _HeaderName = str
 _HeaderValue = t.Union[str, t.List[str], t.Tuple[str, ...]]
