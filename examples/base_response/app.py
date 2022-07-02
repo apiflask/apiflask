@@ -6,9 +6,9 @@ app = APIFlask(__name__)
 
 
 class BaseResponseSchema(Schema):
-    message = String()
-    status_code = Integer()
     data = Field()  # the data key
+    message = String()
+    code = Integer()
 
 
 app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
@@ -34,16 +34,14 @@ class PetOutSchema(Schema):
     category = String()
 
 
-def make_resp(message, status_code, data):
-    # the return value should match the base response schema
-    # and the data key should match
-    return {'message': message, 'status_code': status_code, 'data': data}
-
-
 @app.get('/')
 def say_hello():
     data = {'message': 'Hello!'}
-    return make_resp('Success!', 200, data)
+    return {
+        'data': data,
+        'message': 'Success!',
+        'code': 200
+    }
 
 
 @app.get('/pets/<int:pet_id>')
@@ -51,13 +49,21 @@ def say_hello():
 def get_pet(pet_id):
     if pet_id > len(pets) - 1 or pets[pet_id].get('deleted'):
         abort(404)
-    return make_resp('Success!', 200, pets[pet_id])
+    return {
+        'data': pets[pet_id],
+        'message': 'Success!',
+        'code': 200,
+    }
 
 
 @app.get('/pets')
 @app.output(PetOutSchema(many=True))
 def get_pets():
-    return make_resp('Success!', 200, pets)
+    return {
+        'data': pets,
+        'message': 'Success!',
+        'code': 200,
+    }
 
 
 @app.post('/pets')
@@ -67,7 +73,11 @@ def create_pet(data):
     pet_id = len(pets)
     data['id'] = pet_id
     pets.append(data)
-    return make_resp('Pet created.', 201, pets[pet_id])
+    return {
+        'data': pets[pet_id],
+        'message': 'Pet created.',
+        'code': 201
+    }
 
 
 @app.patch('/pets/<int:pet_id>')
@@ -78,7 +88,11 @@ def update_pet(pet_id, data):
         abort(404)
     for attr, value in data.items():
         pets[pet_id][attr] = value
-    return make_resp('Pet updated.', 200, pets[pet_id])
+    return {
+        'data': pets[pet_id],
+        'message': 'Pet updated.',
+        'code': 200
+    }
 
 
 @app.delete('/pets/<int:pet_id>')
