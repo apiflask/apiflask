@@ -219,8 +219,32 @@ def bar():
 
 ### The return values of view function
 
+For a simple view function without `@app.output` decorator, you can return a dict or
+a list as JSON response. The returned dict and list will be converted to a JSON
+response automatically (by calling
+[`jsonify()`](https://flask.palletsprojects.com/api/#flask.json.jsonify) underly).
+
+!!! tip
+
+    Although list looks like tuple, only list return values will be serialized to JSON
+    response. Tuple has
+    [special meaning](https://flask.palletsprojects.com/quickstart/#about-responses).
+
+    Starting from Flask 2.2, the list return values are supported natively.
+
+```python
+@app.get('/foo')
+def foo():
+    return {'message': 'foo'}
+
+
+@app.get('/bar')
+def bar():
+    return ['foo', 'bar', 'baz']
+```
+
 When you added a `@app.output` decorator for your view function, APIFlask expects you to
-return an ORM/ODM model object or a dict that matches the schema you passed in the
+return an ORM/ODM model object or a dict/list that matches the schema you passed in the
 `@app.output` decorator. If you return a `Response` object, APIFlask will return it
 directly without any process.
 

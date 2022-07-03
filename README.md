@@ -79,7 +79,7 @@ class PetOutSchema(Schema):
 
 @app.get('/')
 def say_hello():
-    # returning a dict equals to use jsonify()
+    # returning a dict or list equals to use jsonify()
     return {'message': 'Hello!'}
 
 
