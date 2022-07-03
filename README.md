@@ -217,7 +217,7 @@ Now <http://localhost:5000/docs> will render the API documentation with Redoc:
 
 ![](https://apiflask.com/_assets/redoc.png)
 
-Supported UI libraries include:
+Supported `docs_ui` value (UI libraries) include:
 
 - `swagger-ui` (default value): [Swagger UI](https://github.com/swagger-api/swagger-ui)
 - `redoc`: [Redoc](https://github.com/Redocly/redoc)
