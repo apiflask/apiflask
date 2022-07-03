@@ -3,8 +3,9 @@
 - [1.1.0 milestone](https://github.com/apiflask/apiflask/milestone/9)
 - [1.1.0 kanban](https://github.com/apiflask/apiflask/projects/2)
 
-Released: -
+Released: 2022/7/3
 
+- Add a versioned docs for 1.x releases (https://v1.apiflask.com).
 - Allow the view function to return a list as JSON response ([issue #321][issue_321]).
 - Add new docs UI support: RapiDoc, RapiPDF, and Elements ([pr #308][pr_308]).
 - Add a `docs_ui` parameter to APIFlask to set the API docs UI (can be
