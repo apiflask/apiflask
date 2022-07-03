@@ -12,7 +12,7 @@ def skip_async_test(app):
 
 
 def test_async_view(app, client):
-    skip_async_test(app)
+#     skip_async_test(app)
 
     @app.get('/')
     async def index():
@@ -24,7 +24,7 @@ def test_async_view(app, client):
 
 
 def test_async_error_processor(app, client):
-    skip_async_test(app)
+#     skip_async_test(app)
 
     @app.error_processor
     async def custom_error_processor(e):
@@ -36,7 +36,7 @@ def test_async_error_processor(app, client):
 
 
 def test_async_spec_processor(app, client):
-    skip_async_test(app)
+#     skip_async_test(app)
 
     @app.spec_processor
     async def update_spec(spec):
@@ -50,7 +50,7 @@ def test_async_spec_processor(app, client):
 
 
 def test_auth_required_on_async_view(app, client):
-    skip_async_test(app)
+#     skip_async_test(app)
     auth = HTTPTokenAuth()
 
     @app.get('/')
@@ -63,7 +63,7 @@ def test_auth_required_on_async_view(app, client):
 
 
 def test_doc_on_async_view(app, client):
-    skip_async_test(app)
+#     skip_async_test(app)
 
     @app.get('/')
     @app.doc(summary='Test Root Endpoint')
@@ -76,7 +76,7 @@ def test_doc_on_async_view(app, client):
 
 
 def test_input_on_async_view(app, client):
-    skip_async_test(app)
+#     skip_async_test(app)
 
     @app.post('/')
     @app.input(FooSchema)
@@ -90,7 +90,7 @@ def test_input_on_async_view(app, client):
 
 
 def test_output_on_async_view(app, client):
-    skip_async_test(app)
+#     skip_async_test(app)
 
     @app.get('/foo')
     @app.output(FooSchema)
@@ -111,7 +111,7 @@ def test_output_on_async_view(app, client):
 
 
 def test_async_doc_input_and_output_decorator(app, client):
-    skip_async_test(app)
+#     skip_async_test(app)
 
     @app.post('/')
     @app.doc(summary='Test Root Endpoint')
