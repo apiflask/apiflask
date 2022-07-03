@@ -12,7 +12,6 @@ def skip_async_test(app):
 
 
 def test_async_view(app, client):
-    
     @app.get('/')
     async def index():
         return {'message': 'hello'}
@@ -23,7 +22,6 @@ def test_async_view(app, client):
 
 
 def test_async_error_processor(app, client):
-    
     @app.error_processor
     async def custom_error_processor(e):
         return {'foo': 'test'}, e.status_code, e.headers
@@ -34,7 +32,6 @@ def test_async_error_processor(app, client):
 
 
 def test_async_spec_processor(app, client):
-    
     @app.spec_processor
     async def update_spec(spec):
         spec['info']['title'] = 'Updated Title'
@@ -48,7 +45,6 @@ def test_async_spec_processor(app, client):
 
 def test_auth_required_on_async_view(app, client):
     auth = HTTPTokenAuth()
-
     @app.get('/')
     @app.auth_required(auth)
     async def index():
@@ -59,7 +55,6 @@ def test_auth_required_on_async_view(app, client):
 
 
 def test_doc_on_async_view(app, client):
-    
     @app.get('/')
     @app.doc(summary='Test Root Endpoint')
     async def index():
@@ -71,7 +66,6 @@ def test_doc_on_async_view(app, client):
 
 
 def test_input_on_async_view(app, client):
-    
     @app.post('/')
     @app.input(FooSchema)
     async def index(data):
@@ -84,7 +78,6 @@ def test_input_on_async_view(app, client):
 
 
 def test_output_on_async_view(app, client):
-    
     @app.get('/foo')
     @app.output(FooSchema)
     async def foo():
@@ -104,7 +97,6 @@ def test_output_on_async_view(app, client):
 
 
 def test_async_doc_input_and_output_decorator(app, client):
-    
     @app.post('/')
     @app.doc(summary='Test Root Endpoint')
     @app.input(FooSchema)
