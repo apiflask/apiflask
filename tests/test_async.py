@@ -104,7 +104,7 @@ def test_output_on_async_view(app, client):
 
 
 def test_async_doc_input_and_output_decorator(app, client):
-    
+
     @app.post('/')
     @app.doc(summary='Test Root Endpoint')
     @app.input(FooSchema)
