@@ -5,7 +5,7 @@ from flask import current_app
 from flask.cli import with_appcontext
 
 
-@click.command('spec')
+@click.command('spec', short_help='Show the OpenAPI spec.')
 @click.option(
     '--format',
     '-f',
@@ -26,11 +26,11 @@ from flask.cli import with_appcontext
 )
 @with_appcontext
 def spec_command(format, output, indent):
-    """The command (`flask spec`) to output the OpenAPI spec to stdout or a file.
+    """Output the OpenAPI spec to stdout or a file.
 
-    Execute `flask spec --help` to see the usage.
+    Check out the docs for the detailed usage:
 
-    *Version added: 0.7.0*
+    https://apiflask.com/openapi/#the-flask-spec-command
     """
     spec_format = format or current_app.config['SPEC_FORMAT']
     spec = current_app._get_spec(spec_format)

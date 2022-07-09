@@ -104,19 +104,16 @@ Read more about configuration management in
         category = String(required=True, validate=OneOf(CATEGORIES))  # use it
     ```
 
-
-## Built-in configuration variables
-
 Below are all the built-in configuration variables in APIFlask.
 
 
-### OpenAPI fields
+## OpenAPI fields
 
 All the configurations of OpenAPI-related fields will be used when generating the
 OpenAPI spec. They will also be rendered by the API documentation.
 
 
-#### `OPENAPI_VERSION`
+### OPENAPI_VERSION
 
 The version of OpenAPI Specification (`openapi.openapi`). This configuration can also
 be configured from the `app.openapi_version` attribute.
@@ -140,7 +137,7 @@ app.openapi_version = '3.0.2'
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
 
 
-#### `SERVERS`
+### SERVERS
 
 The server information of the API (`openapi.servers`), accepts multiple
 server dicts. This configuration can also be configured from the `app.servers`
@@ -171,7 +168,7 @@ app.servers = [
 ```
 
 
-#### `TAGS`
+### TAGS
 
 The tag list of the OpenAPI spec documentation (`openapi.tags`), accepts a
 list of dicts. You can also pass a simple list contains the tag name string.
@@ -222,7 +219,7 @@ app.tags = ['foo', 'bar', 'baz']
 ```
 
 
-#### `EXTERNAL_DOCS`
+### EXTERNAL_DOCS
 
 The external documentation information of the API (`openapi.externalDocs`).
 This configuration can also be configured from the `app.external_docs` attribute.
@@ -248,7 +245,7 @@ app.external_docs = {
 ```
 
 
-#### `INFO`
+### INFO
 
 The info field of the API (`openapi.info`). This configuration can also be configured
 from the `app.info` attribute. The info object (openapi.info), it accepts a dict contains
@@ -294,7 +291,7 @@ app.info = {
 ```
 
 
-#### `DESCRIPTION`
+### DESCRIPTION
 
 The description of the API (`openapi.info.description`). This configuration can also
 be configured from the `app.description` attribute.
@@ -314,7 +311,7 @@ app.description = 'Some description of my API.'
 ```
 
 
-#### `TERMS_OF_SERVICE`
+### TERMS_OF_SERVICE
 
 The terms of service URL of the API (`openapi.info.termsOfService`).
 This configuration can also be configured from the `app.terms_of_service` attribute.
@@ -334,7 +331,7 @@ app.terms_of_service = 'http://example.com/terms/'
 ```
 
 
-#### `CONTACT`
+### CONTACT
 
 The contact information of the API (`openapi.info.contact`).
 This configuration can also be configured from the `app.contact` attribute.
@@ -362,7 +359,7 @@ app.contact = {
 ```
 
 
-#### `LICENSE`
+### LICENSE
 
 The license of the API (`openapi.info.license`).
 This configuration can also be configured from the `app.license` attribute.
@@ -388,12 +385,12 @@ app.license = {
 ```
 
 
-### OpenAPI spec
+## OpenAPI spec
 
 Customize the generation of the OpenAPI spec.
 
 
-#### `SPEC_FORMAT`
+### SPEC_FORMAT
 
 The format of the OpenAPI spec, accepts `'json'`, `'yaml'` or `'yml'`. This config
 will be used in the following conditions:
@@ -418,7 +415,7 @@ app.config['SPEC_FORMAT'] = 'yaml'
     This configuration variable was added in the [version 0.7.0](/changelog/#version-070).
 
 
-#### `LOCAL_SPEC_PATH`
+### LOCAL_SPEC_PATH
 
 The path to the local OpenAPI spec file.
 
@@ -439,7 +436,7 @@ app.config['LOCAL_SPEC_PATH'] = 'openapi.json'
     This configuration variable was added in the [version 0.7.0](/changelog/#version-070).
 
 
-#### `LOCAL_SPEC_JSON_INDENT`
+### LOCAL_SPEC_JSON_INDENT
 
 The indentation of the local OpenAPI spec in JSON format.
 
@@ -456,7 +453,7 @@ app.config['LOCAL_SPEC_JSON_INDENT'] = 4
     This configuration variable was added in the [version 0.7.0](/changelog/#version-070).
 
 
-#### `SYNC_LOCAL_SPEC`
+### SYNC_LOCAL_SPEC
 
 If `True`, the local spec will be in sync automatically, see the example usage at
 [Keep the local spec in sync automatically](/openapi#keep-the-local-spec-in-sync-automatically).
@@ -474,7 +471,7 @@ app.config['SYNC_LOCAL_SPEC'] = True
     This configuration variable was added in the [version 0.7.0](/changelog/#version-070).
 
 
-#### `JSON_SPEC_MIMETYPE`
+### JSON_SPEC_MIMETYPE
 
 The MIME type string for JSON OpenAPI spec response.
 
@@ -491,7 +488,7 @@ app.config['JSON_SPEC_MIMETYPE'] = 'application/custom-json'
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
 
 
-#### `YAML_SPEC_MIMETYPE`
+### YAML_SPEC_MIMETYPE
 
 The MIME type string for YAML OpenAPI spec response.
 
@@ -508,14 +505,14 @@ app.config['YAML_SPEC_MIMETYPE'] = 'text/x-yaml'
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
 
 
-### Automation behavior control
+## Automation behavior control
 
 The following configuration variables are used to control the automation behavior
 of APIFlask. The default values of all these configuration variables are `True`,
 you can disable them if you needed.
 
 
-#### `AUTO_TAGS`
+### AUTO_TAGS
 
 Enable or disable auto tags (`openapi.tags`) generation from the name of the blueprint.
 
@@ -532,7 +529,7 @@ app.config['AUTO_TAGS'] = False
 ```
 
 
-#### `AUTO_OPERATION_SUMMARY`
+### AUTO_OPERATION_SUMMARY
 
 Enable or disable auto path summary from the name or docstring of the view function.
 
@@ -555,7 +552,7 @@ app.config['AUTO_OPERATION_SUMMARY'] = False
     since version 0.8.0.
 
 
-#### `AUTO_OPERATION_DESCRIPTION`
+### AUTO_OPERATION_DESCRIPTION
 
 Enable or disable auto path description from the docstring of the view function.
 
@@ -578,7 +575,7 @@ app.config['AUTO_OPERATION_DESCRIPTION'] = False
     since version 0.8.0.
 
 
-#### `AUTO_OPERATION_ID`
+### AUTO_OPERATION_ID
 
 !!! warning "Version >= 0.10.0"
 
@@ -596,7 +593,7 @@ app.config['AUTO_OPERATION_ID'] = True
 ```
 
 
-#### `AUTO_200_RESPONSE`
+### AUTO_200_RESPONSE
 
 If a view function doesn't decorate with either `@app.input`, `@app.output`, `@app.auth_required`
 or `@app.doc`, APIFlask will add a default 200 response for this view into OpenAPI spec.
@@ -616,7 +613,7 @@ app.config['AUTO_200_RESPONSE'] = False
 ```
 
 
-#### `AUTO_404_RESPONSE`
+### `AUTO_404_RESPONSE`
 
 If a view function's URL rule contains a variable. By default, APIFlask will add a
 404 response for this view into OpenAPI spec. Set this config to `False` to disable
@@ -640,7 +637,7 @@ app.config['AUTO_404_RESPONSE'] = False
     This configuration variable was added in the [version 0.8.0](/changelog/#version-080).
 
 
-#### `AUTO_VALIDATION_ERROR_RESPONSE`
+### AUTO_VALIDATION_ERROR_RESPONSE
 
 If a view function uses `@app.input` to validate input request data, APIFlask will add a
 validation error response into OpenAPI spec for this view. Set this config to `False`
@@ -655,7 +652,7 @@ app.config['AUTO_VALIDATION_ERROR_RESPONSE'] = False
 ```
 
 
-#### `AUTO_AUTH_ERROR_RESPONSE`
+### AUTO_AUTH_ERROR_RESPONSE
 
 If a view function uses `@app.auth_required` to restrict the access, APIFlask will add
 an authentication error response into OpenAPI spec for this view. Set this
@@ -670,14 +667,14 @@ app.config['AUTO_AUTH_ERROR_RESPONSE'] = False
 ```
 
 
-### Response customization
+## Response customization
 
 The following configuration variables are used to customize auto-responses.
 
 
-#### `SUCCESS_DESCRIPTION`
+### SUCCESS_DESCRIPTION
 
-The default description of the 2XX responses.
+The default OpenAPI description of the 2XX responses.
 
 - Type: `str`
 - Default value: `Successful response`
@@ -692,9 +689,9 @@ app.config['SUCCESS_DESCRIPTION'] = 'Success!'
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
 
 
-#### `NOT_FOUND_DESCRIPTION`
+### NOT_FOUND_DESCRIPTION
 
-The default description of the 404 response.
+The default OpenAPI description of the 404 response.
 
 - Type: `str`
 - Default value: `Not found`
@@ -709,7 +706,7 @@ app.config['NOT_FOUND_DESCRIPTION'] = 'Missing'
     This configuration variable was added in the [version 0.8.0](/changelog/#version-080).
 
 
-#### `VALIDATION_ERROR_STATUS_CODE`
+### VALIDATION_ERROR_STATUS_CODE
 
 The status code of validation error response.
 
@@ -722,9 +719,9 @@ app.config['VALIDATION_ERROR_STATUS_CODE'] = 422
 ```
 
 
-#### `VALIDATION_ERROR_DESCRIPTION`
+### VALIDATION_ERROR_DESCRIPTION
 
-The description of validation error response.
+The OpenAPI description of validation error response.
 
 - Type: `str`
 - Default value: `'Validation error'`
@@ -735,7 +732,7 @@ app.config['VALIDATION_ERROR_DESCRIPTION'] = 'Invalid JSON body'
 ```
 
 
-#### `VALIDATION_ERROR_SCHEMA`
+### VALIDATION_ERROR_SCHEMA
 
 The schema of validation error response, accepts a schema class or
 a dict of OpenAPI schema definition.
@@ -749,7 +746,7 @@ app.config['VALIDATION_ERROR_SCHEMA'] = CustomValidationErrorSchema
 ```
 
 
-#### `AUTH_ERROR_STATUS_CODE`
+### AUTH_ERROR_STATUS_CODE
 
 The status code of authentication error response.
 
@@ -762,9 +759,9 @@ app.config['AUTH_ERROR_STATUS_CODE'] = 403
 ```
 
 
-#### `AUTH_ERROR_DESCRIPTION`
+### AUTH_ERROR_DESCRIPTION
 
-The description of authentication error response.
+The OpenAPI description of authentication error response.
 
 - Type: `str`
 - Default value: `'Authentication error'`
@@ -775,7 +772,7 @@ app.config['AUTH_ERROR_DESCRIPTION'] = 'Auth error'
 ```
 
 
-#### `HTTP_ERROR_SCHEMA`
+### HTTP_ERROR_SCHEMA
 
 The schema of generic HTTP error response, accepts a schema class or
 a dict of OpenAPI schema definition.
@@ -789,7 +786,7 @@ app.config['HTTP_ERROR_SCHEMA'] = CustomHTTPErrorSchema
 ```
 
 
-#### `BASE_RESPONSE_SCHEMA`
+### BASE_RESPONSE_SCHEMA
 
 The schema of base response schema, accepts a schema class or a dict of
 OpenAPI schema definition.
@@ -817,7 +814,7 @@ app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
     This configuration variable was added in the [version 0.9.0](/changelog/#version-090).
 
 
-#### `BASE_RESPONSE_DATA_KEY`
+### BASE_RESPONSE_DATA_KEY
 
 The data key of the base response, it should match the data field name in the base
 response schema.
@@ -835,13 +832,12 @@ app.config['BASE_RESPONSE_DATA_KEY'] = 'data'
     This configuration variable was added in the [version 0.9.0](/changelog/#version-090).
 
 
-### Swagger UI and Redoc
+## API documentations
 
-The following configuration variables used to customize Swagger UI and
-Redoc documentation.
+The following configuration variables used to customize API documentations.
 
 
-#### `DOCS_FAVICON`
+### DOCS_FAVICON
 
 The absolute or relative URL of the favicon image file of API documentations.
 
@@ -854,7 +850,7 @@ app.config['DOCS_FAVICON'] = 'https://cdn.example.com/favicon.png'
 ```
 
 
-#### `REDOC_USE_GOOGLE_FONT`
+### REDOC_USE_GOOGLE_FONT
 
 Enable or disable Google font in Redoc documentation.
 
@@ -867,7 +863,7 @@ app.config['REDOC_USE_GOOGLE_FONT'] = False
 ```
 
 
-#### `REDOC_CONFIG`
+### REDOC_CONFIG
 
 The configuration options pass to Redoc. See the available options in the
 [Redoc documentation](https://github.com/Redocly/redoc#redoc-options-object).
@@ -885,7 +881,7 @@ app.config['REDOC_CONFIG'] = {'disableSearch': True, 'hideLoading': True}
     This configuration variable was added in the [version 0.9.0](/changelog/#version-090).
 
 
-#### `REDOC_STANDALONE_JS`
+### REDOC_STANDALONE_JS`
 
 The absolute or relative URL of the Redoc standalone JavaScript file.
 
@@ -898,7 +894,7 @@ app.config['REDOC_STANDALONE_JS'] = 'https://cdn.redoc.ly/redoc/latest/bundles/r
 ```
 
 
-#### `SWAGGER_UI_CSS`
+### SWAGGER_UI_CSS
 
 The absolute or relative URL of the Swagger UI CSS file.
 
@@ -911,7 +907,7 @@ app.config['SWAGGER_UI_CSS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-u
 ```
 
 
-#### `SWAGGER_UI_BUNDLE_JS`
+### SWAGGER_UI_BUNDLE_JS
 
 The absolute or relative URL of the Swagger UI bundle JavaScript file.
 
@@ -924,7 +920,7 @@ app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swa
 ```
 
 
-#### `SWAGGER_UI_STANDALONE_PRESET_JS`
+### SWAGGER_UI_STANDALONE_PRESET_JS
 
 The absolute or relative URL of the Swagger UI standalone preset JavaScript file.
 
@@ -937,7 +933,7 @@ app.config['SWAGGER_UI_STANDALONE_PRESET_JS'] = 'https://cdnjs.cloudflare.com/aj
 ```
 
 
-#### `SWAGGER_UI_LAYOUT`
+### SWAGGER_UI_LAYOUT
 
 The layout of Swagger UI, one of `'BaseLayout'` and `'StandaloneLayout'`.
 
@@ -950,15 +946,15 @@ app.config['SWAGGER_UI_LAYOUT'] = 'StandaloneLayout'
 ```
 
 
-#### `SWAGGER_UI_CONFIG`
+### SWAGGER_UI_CONFIG
 
-The config for Swagger UI, this config value will overwrite the existing config,
+The config for Swagger UI, these config values will overwrite the existing config,
 such as `SWAGGER_UI_LAYOUT`.
 
 !!! tip
 
     See *[Configuration][_swagger_conf]{target=_blank}* of the Swagger UI docs
-    for more details.
+    for available config options.
 
 [_swagger_conf]: https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
 
@@ -973,7 +969,7 @@ app.config['SWAGGER_UI_CONFIG'] = {
 ```
 
 
-#### `SWAGGER_UI_OAUTH_CONFIG`
+### SWAGGER_UI_OAUTH_CONFIG
 
 The config for Swagger UI OAuth:
 
@@ -984,7 +980,7 @@ ui.initOAuth(yourConfig)
 !!! tip
 
     See the *[OAuth 2.0 configuration][_swagger_oauth]{target=_blank}* in Swagger UI
-    docs for more details.
+    docs for available config options.
 
 [_swagger_oauth]: https://swagger.io/docs/open-source-tools/swagger-ui/usage/oauth2/
 
@@ -995,6 +991,155 @@ ui.initOAuth(yourConfig)
 ```python
 app.config['SWAGGER_UI_OAUTH_CONFIG'] = {
     'realm': 'foo'
+}
+```
+
+
+### ELEMENTS_CSS
+
+The absolute or relative URL of the Elements CSS file.
+
+- Type: `str`
+- Default value: `'https://unpkg.com/@stoplight/elements/styles.min.css'`
+- Examples:
+
+```python
+app.config['ELEMENTS_CSS'] = 'https://cdn.jsdelivr.net/npm/@stoplight/elements-dev-portal@1.7.4/styles.min.css'
+```
+
+
+### ELEMENTS_JS
+
+The absolute or relative URL of the Elements JavaScript file.
+
+- Type: `str`
+- Default value: `'https://unpkg.com/@stoplight/elements/web-components.min.js'`
+- Examples:
+
+```python
+app.config['ELEMENTS_JS'] = 'https://cdn.jsdelivr.net/npm/@stoplight/elements-dev-portal@1.7.4/web-components.min.js'
+```
+
+
+### ELEMENTS_LAYOUT
+
+The layout of Elements, one of `'sidebar'` and `'stacked'`.
+
+- Type: `str`
+- Default value: `'sidebar'`
+- Examples:
+
+```python
+app.config['ELEMENTS_LAYOUT'] = 'stacked'
+```
+
+
+### ELEMENTS_CONFIG
+
+The config for Elements, these config values will overwrite the existing config,
+such as `ELEMENTS_LAYOUT`.
+
+!!! tip
+
+    See *[Elements Configuration Options][_elements_conf]{target=_blank}*
+    for available config options.
+
+[_elements_conf]: https://github.com/stoplightio/elements/blob/main/docs/getting-started/elements/elements-options.md
+
+- Type: `dict`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['ELEMENTS_CONFIG'] = {
+    'hideTryIt': 'true',
+    'layout': 'stacked',
+}
+```
+
+
+### RAPIDOC_JS
+
+The absolute or relative URL of the RapiDoc JavaScript file.
+
+- Type: `str`
+- Default value: `'https://unpkg.com/rapidoc/dist/rapidoc-min.js'`
+- Examples:
+
+```python
+app.config['RAPIDOC_JS'] = 'https://cdn.jsdelivr.net/npm/rapidoc@9.3.2/dist/rapidoc-min.min.js'
+```
+
+
+### RAPIDOC_THEME
+
+The theme of RapiDoc, one of `'light'` and `'dark'`.
+
+- Type: `str`
+- Default value: `'light'`
+- Examples:
+
+```python
+app.config['RAPIDOC_THEME'] = 'dark'
+```
+
+
+### RAPIDOC_CONFIG
+
+The config for RapiDoc, these config values will overwrite the existing config,
+such as `RAPIDOC_THEME`.
+
+!!! tip
+
+    See *[RapiDoc API][_rapidoc_conf]{target=_blank}* of the RapiDoc docs
+    for available config options.
+
+[_rapidoc_conf]: https://rapidocweb.com/api.html
+
+- Type: `dict`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['RAPIDOC_CONFIG'] = {
+    'update-route': False,
+    'layout': 'row'
+}
+```
+
+
+### RAPIPDF_JS
+
+The absolute or relative URL of the RapiPDF JavaScript file.
+
+- Type: `str`
+- Default value: `'https://unpkg.com/rapipdf/dist/rapipdf-min.js'`
+- Examples:
+
+```python
+app.config['RAPIPDF_JS'] = 'https://cdn.jsdelivr.net/npm/rapipdf@2.2.1/src/rapipdf.min.js'
+```
+
+
+### RAPIPDF_CONFIG
+
+The config for RapiPDF.
+
+!!! tip
+
+    See *[RapiPDF API][_rapipdf_conf]{target=_blank}* of the RapiPDF docs
+    for available config options.
+
+[_rapipdf_conf]: https://mrin9.github.io/RapiPdf/api.html
+
+- Type: `dict`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['RAPIPDF_CONFIG'] = {
+    'include-example': True,
+    'button-label': 'Generate!'
 }
 ```
 

@@ -288,7 +288,7 @@ responses to the following format:
         "category": "cat"
     },
     "message": "some message",
-    "status_code": "custom code"
+    "code": "custom code"
 }
 ```
 
@@ -302,9 +302,9 @@ from apiflask.fields import String, Integer, Field
 app = APIFlask(__name__)
 
 class BaseResponseSchema(Schema):
-    message = String()
-    status_code = Integer()
     data = Field()  # the data key
+    message = String()
+    code = Integer()
 
 app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
 ```
@@ -322,28 +322,11 @@ Now you can return a dict matches the base response schema in your view function
 @app.get('/')
 def say_hello():
     data = {'name': 'Grey'}
-    return {'message': 'Success!', 'status_code': 200, 'data': data}
-```
-
-To make it more elegant, you can create a function to make response dict:
-
-```python
-def make_resp(message, status_code, data):
-    return {'message': message, 'status_code': status_code, 'data': data}
-
-
-@app.get('/')
-def say_hello():
-    data = {'message': 'Hello!'}
-    return make_resp('Success!', 200, data)
-
-
-@app.get('/pets/<int:pet_id>')
-@app.output(PetOutSchema)
-def get_pet(pet_id):
-    if pet_id > len(pets) - 1 or pets[pet_id].get('deleted'):
-        abort(404)
-    return make_resp('Success!', 200, pets[pet_id])
+    return {
+        'data': data,
+        'message': 'Success!',
+        'code': 200
+    }
 ```
 
 Check out [the complete example application](https://github.com/apiflask/apiflask/tree/main/examples/base_response/app.py)

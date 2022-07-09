@@ -1,5 +1,7 @@
 import pytest
 
+from apiflask import APIFlask
+
 
 def test_docs_favicon(app, client):
     app.config['DOCS_FAVICON'] = '/my-favicon.png'
@@ -86,3 +88,92 @@ def test_swagger_ui_oauth_config(app, client):
     assert b'ui.initOAuth(' in rv.data
     assert b'"clientId": "foo"' in rv.data
     assert b'"usePkceWithAuthorizationCodeGrant": true' in rv.data
+
+
+def test_elements_config():
+    app = APIFlask(__name__, docs_ui='elements')
+    app.config['ELEMENTS_CONFIG'] = {
+        'hideTryIt': False,
+        'router': 'memory'
+    }
+
+    rv = app.test_client().get('/docs')
+    assert rv.status_code == 200
+    assert b'hideTryIt=false' in rv.data
+    assert b'router="memory"' in rv.data
+
+
+def test_elements_layout():
+    app = APIFlask(__name__, docs_ui='elements')
+    app.config['ELEMENTS_LAYOUT'] = 'stacked'
+
+    rv = app.test_client().get('/docs')
+    assert rv.status_code == 200
+    assert b'layout="stacked"' in rv.data
+    assert b'layout="sidebar"' not in rv.data
+
+
+def test_elements_resources():
+    app = APIFlask(__name__, docs_ui='elements')
+    app.config['ELEMENTS_CSS'] = 'https://cdn.example.com/elements.css'
+    app.config['ELEMENTS_JS'] = 'https://cdn.example.com/elements.js'
+
+    rv = app.test_client().get('/docs')
+    assert rv.status_code == 200
+    assert b'href="https://cdn.example.com/elements.css"' in rv.data
+    assert b'src="https://cdn.example.com/elements.js"' in rv.data
+
+
+def test_rapidoc_config():
+    app = APIFlask(__name__, docs_ui='rapidoc')
+    app.config['RAPIDOC_CONFIG'] = {
+        'update-route': False,
+        'layout': 'row'
+    }
+
+    rv = app.test_client().get('/docs')
+    assert rv.status_code == 200
+    assert b'update-route=false' in rv.data
+    assert b'layout="row"' in rv.data
+
+
+def test_rapidoc_theme():
+    app = APIFlask(__name__, docs_ui='rapidoc')
+    app.config['RAPIDOC_THEME'] = 'dark'
+
+    rv = app.test_client().get('/docs')
+    assert rv.status_code == 200
+    assert b'theme="dark"' in rv.data
+    assert b'theme="light"' not in rv.data
+
+
+def test_rapidoc_resources():
+    app = APIFlask(__name__, docs_ui='rapidoc')
+    app.config['RAPIDOC_JS'] = 'https://cdn.example.com/rapidoc.js'
+
+    rv = app.test_client().get('/docs')
+    assert rv.status_code == 200
+    assert b'src="https://cdn.example.com/rapidoc.js"' in rv.data
+
+
+def test_rapipdf_config():
+    app = APIFlask(__name__, docs_ui='rapipdf')
+    app.config['RAPIPDF_CONFIG'] = {
+        'include-example': True,
+        'button-label': 'Generate!'
+    }
+
+    rv = app.test_client().get('/docs')
+    assert rv.status_code == 200
+    assert b'include-example=true' in rv.data
+    assert b'button-label="Generate!"' in rv.data
+
+
+def test_rapipdf_resources():
+    app = APIFlask(__name__, docs_ui='rapipdf')
+    client = app.test_client()
+    app.config['RAPIPDF_JS'] = 'https://cdn.example.com/rapipdf.js'
+
+    rv = client.get('/docs')
+    assert rv.status_code == 200
+    assert b'src="https://cdn.example.com/rapipdf.js"' in rv.data

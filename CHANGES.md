@@ -1,9 +1,37 @@
-## Version 1.1.0
+## Versions 1.2.0
 
-- [1.1.0 milestone](https://github.com/apiflask/apiflask/milestone/9)
-- [1.1.0 kanban](https://github.com/apiflask/apiflask/projects/2)
+- [1.2.0 milestone](https://github.com/apiflask/apiflask/milestone/12)
+- [1.2.0 kanban](https://github.com/apiflask/apiflask/projects/3)
 
 Released: -
+
+
+## Version 1.1.0
+
+Released: 2022/7/3
+
+- Add a versioned docs for 1.x releases (https://v1.apiflask.com).
+- Allow the view function to return a list as JSON response ([issue #321][issue_321]).
+- Add new docs UI support: RapiDoc, RapiPDF, and Elements ([pr #308][pr_308]).
+- Add a `docs_ui` parameter to APIFlask to set the API docs UI (can be
+  `swagger-ui` (default), `redoc`, `rapidoc`, and `rapipdf`).
+- Deprecate the separate docs path `/redoc` and the `redoc_path` parameter.
+- Add the following configuration variables for new docs supprt:
+    - `ELEMENTS_JS`
+    - `ELEMENTS_CSS`
+    - `ELEMENTS_LAYOUT`
+    - `ELEMENTS_CONFIG`
+    - `RAPIDOC_JS`
+    - `RAPIDOC_THEME`
+    - `RAPIDOC_CONFIG`
+    - `RAPIPDF_JS`
+    - `RAPIPDF_CONFIG`
+- Fix CLI entry point setup to prevent overwriting `flask`
+  ([issue #312][issue_312])
+
+[pr_308]: https://github.com/apiflask/apiflask/pull/308
+[issue_312]: https://github.com/apiflask/apiflask/issues/312
+[issue_321]: https://github.com/apiflask/apiflask/issues/321
 
 
 ## Version 1.0.2

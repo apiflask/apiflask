@@ -9,7 +9,7 @@ def test_openapi_blueprint(app):
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
     assert len(bp_endpoints) == 4
     assert 'openapi.spec' in bp_endpoints
-    assert 'openapi.swagger_ui' in bp_endpoints
+    assert 'openapi.docs' in bp_endpoints
     assert 'openapi.swagger_ui_oauth_redirect' in bp_endpoints
     assert 'openapi.redoc' in bp_endpoints
 
@@ -50,7 +50,7 @@ def test_docs_path(app):
     rules = list(app.url_map.iter_rules())
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
     assert len(bp_endpoints) == 2
-    assert 'openapi.swagger_ui' not in bp_endpoints
+    assert 'openapi.docs' not in bp_endpoints
     assert 'openapi.swagger_ui_oauth_redirect' not in bp_endpoints
 
 
@@ -76,7 +76,7 @@ def test_docs_oauth2_redirect_path(client):
     rules = list(app.url_map.iter_rules())
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
     assert len(bp_endpoints) == 3
-    assert 'openapi.swagger_ui' in bp_endpoints
+    assert 'openapi.docs' in bp_endpoints
     assert 'openapi.swagger_ui_oauth_redirect' not in bp_endpoints
     rv = app.test_client().get('/docs')
     assert rv.status_code == 200
@@ -107,15 +107,34 @@ def test_disable_openapi_with_enable_openapi_arg(app):
 
 
 def test_swagger_ui(client):
+    # default APIFlask(docs_ui) value is swagger-ui
     rv = client.get('/docs')
     assert rv.status_code == 200
-    assert b'swagger-ui-standalone-preset.js' in rv.data
+    assert b'Swagger UI' in rv.data
 
-
-def test_redoc(client):
-    rv = client.get('/redoc')
+    app = APIFlask(__name__, docs_ui='swagger-ui')
+    rv = app.test_client().get('/docs')
     assert rv.status_code == 200
-    assert b'redoc.standalone.js' in rv.data
+    assert b'Swagger UI' in rv.data
+
+
+@pytest.mark.parametrize(
+    'ui_name',
+    [
+        ('swagger-ui', b'Swagger UI'),
+        ('redoc', b'Redoc'),
+        ('elements', b'Elements'),
+        ('rapidoc', b'RapiDoc'),
+        ('rapipdf', b'RapiPDF'),
+    ]
+)
+def test_other_ui(ui_name):
+    app = APIFlask(__name__, docs_ui=ui_name[0])
+    client = app.test_client()
+
+    rv = client.get('/docs')
+    assert rv.status_code == 200
+    assert ui_name[1] in rv.data
 
 
 def test_openapi_blueprint_url_prefix(app):

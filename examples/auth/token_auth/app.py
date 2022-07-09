@@ -17,7 +17,7 @@ class User:
     def get_token(self):
         header = {'alg': 'HS256'}
         payload = {
-            id: self.id
+            'id': self.id
         }
         return jwt.encode(
             header, payload, current_app.config['SECRET_KEY']

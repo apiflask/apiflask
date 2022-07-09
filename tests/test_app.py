@@ -256,3 +256,42 @@ def test_schema_name_resolver(app, client, resolver):
     else:
         assert 'Foo' in spec['components']['schemas']
         assert 'BarUpdate' in spec['components']['schemas']
+
+
+@pytest.mark.parametrize(
+    'ui_name',
+    ['swagger-ui', 'redoc', 'elements', 'rapidoc', 'rapipdf']
+)
+def test_docs_ui(ui_name):
+    app = APIFlask(__name__, docs_ui=ui_name)
+    client = app.test_client()
+
+    rv = client.get('/docs')
+    assert rv.status_code == 200
+
+
+def test_bad_docs_ui():
+    with pytest.raises(ValueError):
+        APIFlask(__name__, docs_ui='bad')
+
+
+def test_return_list_as_json(app, client):
+    test_list = ['foo', 'bar', 'baz']
+
+    @app.get('/single')
+    def single_value():
+        return test_list
+
+    @app.get('/multi')
+    def multi_values():
+        return test_list, 201, {'X-Foo': 'bar'}
+
+    rv = client.get('/single')
+    assert rv.status_code == 200
+    assert rv.headers['Content-Type'] == 'application/json'
+    assert rv.json == test_list
+
+    rv = client.get('/multi')
+    assert rv.status_code == 201
+    assert rv.headers['Content-Type'] == 'application/json'
+    assert rv.json == test_list

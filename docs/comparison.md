@@ -53,6 +53,7 @@ extension is:
 - I have to rewrite the `Flask` class to ensure the natural order of the arguments
 injected into the view function.
 - I have to rewrite the `Flask` and the `Blueprint` class to add route shortcuts.
+- Possible to add more high-level features, such as support returning list as JSON response.
 
 See the following two sections for more details.
 

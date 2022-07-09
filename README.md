@@ -10,10 +10,10 @@ APIFlask is a lightweight Python web API framework based on [Flask](https://gith
 With APIFlask, you will have:
 
 - More sugars for view function (`@app.input()`, `@app.output()`, `@app.get()`, `@app.post()` and more)
-- Automatic request validation and deserialization (with [webargs](https://github.com/marshmallow-code/webargs))
-- Automatic response formatting and serialization (with [marshmallow](https://github.com/marshmallow-code/marshmallow))
-- Automatic [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) (OAS, formerly Swagger Specification) document generation (with [apispec](https://github.com/marshmallow-code/apispec))
-- Automatic interactive API documentation (with [Swagger UI](https://github.com/swagger-api/swagger-ui) and [Redoc](https://github.com/Redocly/redoc))
+- Automatic request validation and deserialization
+- Automatic response formatting and serialization
+- Automatic [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) (OAS, formerly Swagger Specification) document generation
+- Automatic interactive API documentation
 - API authentication support (with [Flask-HTTPAuth](https://github.com/miguelgrinberg/flask-httpauth))
 - Automatic JSON response for HTTP errors
 
@@ -79,7 +79,7 @@ class PetOutSchema(Schema):
 
 @app.get('/')
 def say_hello():
-    # returning a dict equals to use jsonify()
+    # returning a dict or list equals to use jsonify()
     return {'message': 'Hello!'}
 
 
@@ -206,9 +206,24 @@ Now visit the interactive API documentation (Swagger UI) at <http://localhost:50
 
 ![](https://apiflask.com/_assets/swagger-ui.png)
 
-Or you can visit the alternative API documentation (Redoc) at <http://localhost:5000/redoc>:
+Or you can change the API documentation UI when creating the APIFlask instance with the `docs_ui` parameter
+([APIFlask 1.1+](https://apiflask.com/changelog/#version-110)):
+
+```py
+app = APIFlask(__name__, docs_ui='redoc')
+```
+
+Now <http://localhost:5000/docs> will render the API documentation with Redoc:
 
 ![](https://apiflask.com/_assets/redoc.png)
+
+Supported `docs_ui` value (UI libraries) include:
+
+- `swagger-ui` (default value): [Swagger UI](https://github.com/swagger-api/swagger-ui)
+- `redoc`: [Redoc](https://github.com/Redocly/redoc)
+- `elements`: [Elements](https://github.com/stoplightio/elements)
+- `rapidoc`: [RapiDoc](https://github.com/rapi-doc/RapiDoc)
+- `rapipdf`: [RapiPDF](https://github.com/mrin9/RapiPdf)
 
 The auto-generated OpenAPI spec file is available at <http://localhost:5000/openapi.json>. You can also get the spec with [the `flask spec` command](https://apiflask.com/openapi/#the-flask-spec-command):
 

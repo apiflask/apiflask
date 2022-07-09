@@ -285,7 +285,7 @@ See *[Environment Variables From dotenv][_dotenv]{target=_blank}* for more detai
 ## Interactive API documentation
 
 Once you have created the app instance, the interactive API documentation will be
-available at <http://localhost:5000/docs> and <http://localhost:5000/redoc>. On
+available at <http://localhost:5000/docs>. On
 top of that, the OpenAPI spec file is available at <http://localhost:5000/openapi.json>.
 
 If you want to preview the spec or save the spec to a local file, use [the `flask spec`
@@ -293,6 +293,8 @@ command](/openapi/#the-flask-spec-command).
 
 You can refresh the documentation whenever you added a new route or added the input
 and output definition for the view function in the following sections.
+
+Read the *[API Documentations](/api-docs)* chapter for the advanced topics on API docs.
 
 
 ## Create a route with route decorators
