@@ -832,9 +832,9 @@ app.config['BASE_RESPONSE_DATA_KEY'] = 'data'
     This configuration variable was added in the [version 0.9.0](/changelog/#version-090).
 
 
-## API documentations
+## API documentation
 
-The following configuration variables used to customize API documentations.
+The following configuration variables used to customize API documentation.
 
 
 ### DOCS_FAVICON

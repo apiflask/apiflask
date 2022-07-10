@@ -22,7 +22,7 @@ Go through the following chapters to learn how to use APIFlask:
 - **[OpenAPI Generating](/openapi)**: Introduce how the OpenAPI generation works and how to customize
 it with `@app.doc` decorator and configuration variables.
 - **[Authentication](/authentication)**: Introduce how to implement authentication support for your application.
-- **[Swagger UI and Redoc](/api-docs)**: Introduce the usage and configuration of the API
+- **[API Documentation](/api-docs)**: Introduce the usage and configuration of the API
 documentation tools.
 - **[Configuration](/configuration)**: A list of all the built-in configuration variables
 - **[Examples](/examples)**: A collection of application examples.

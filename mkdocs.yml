@@ -21,6 +21,9 @@ extra:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/apiflask
   alternate:
+    - name: English
+      link: https://apiflask.com
+      lang: en
     - name: 简体中文
       link: https://zh.apiflask.com
       lang: zh

@@ -560,7 +560,7 @@ class APIFlask(APIScaffold, Flask):
         """Register a blueprint for OpenAPI support.
 
         The name of the blueprint is "openapi". This blueprint will hold the view
-        functions for spec file, Swagger UI and Redoc.
+        functions for spec file and API docs.
 
         *Version changed: 1.1.0*
 
