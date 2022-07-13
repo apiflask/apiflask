@@ -1011,38 +1011,37 @@ class APIFlask(APIScaffold, Flask):
                     operation['operationId'] = operation_id
 
                 # responses
-                if view_func._spec.get('response'):
-                    schema = view_func._spec.get('response')['schema']
-                    base_schema: OpenAPISchemaType = self.config['BASE_RESPONSE_SCHEMA']
-                    if base_schema is not None:
-                        base_schema_spec: dict
-                        if isinstance(base_schema, type):
-                            base_schema_spec = \
-                                ma_plugin.converter.schema2jsonschema(  # type: ignore
-                                    base_schema()
+                if view_func._spec.get('m_response'):
+                    for status_code, response in view_func._spec.get('m_response').items():
+                        schema = response['schema']
+                        base_schema: OpenAPISchemaType = self.config['BASE_RESPONSE_SCHEMA']
+                        if base_schema is not None:
+                            base_schema_spec: dict
+                            if isinstance(base_schema, type):
+                                base_schema_spec = \
+                                    ma_plugin.converter.schema2jsonschema(  # type: ignore
+                                        base_schema()
+                                    )
+                            elif isinstance(base_schema, dict):
+                                base_schema_spec = base_schema
+                            else:
+                                raise TypeError(_bad_schema_message)
+                            data_key: str = self.config['BASE_RESPONSE_DATA_KEY']
+                            if data_key not in base_schema_spec['properties']:
+                                raise RuntimeError(
+                                    f'The data key "{data_key}" is not found in'
+                                    ' the base response schema spec.'
                                 )
-                        elif isinstance(base_schema, dict):
-                            base_schema_spec = base_schema
-                        else:
-                            raise TypeError(_bad_schema_message)
-                        data_key: str = self.config['BASE_RESPONSE_DATA_KEY']
-                        if data_key not in base_schema_spec['properties']:
-                            raise RuntimeError(
-                                f'The data key "{data_key}" is not found in'
-                                ' the base response schema spec.'
-                            )
-                        base_schema_spec['properties'][data_key] = schema
-                        schema = base_schema_spec
-
-                    status_code: str = str(view_func._spec.get('response')['status_code'])
-                    description: str = view_func._spec.get('response')['description'] or \
-                        self.config['SUCCESS_DESCRIPTION']
-                    example = view_func._spec.get('response')['example']
-                    examples = view_func._spec.get('response')['examples']
-                    links = view_func._spec.get('response')['links']
-                    add_response(
-                        operation, status_code, schema, description, example, examples, links
-                    )
+                            base_schema_spec['properties'][data_key] = schema
+                            schema = base_schema_spec
+                        description: str = response['description'] or \
+                            self.config['SUCCESS_DESCRIPTION']
+                        example = response['example']
+                        examples = response['examples']
+                        links = response['links']
+                        add_response(
+                            operation, status_code, schema, description, example, examples, links
+                        )
                 else:
                     # add a default 200 response for views without using @app.output
                     # or @app.doc(responses={...})

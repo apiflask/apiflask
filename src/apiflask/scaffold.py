@@ -24,6 +24,8 @@ from .types import RequestType
 from .types import ResponseReturnValueType
 from .types import SchemaType
 
+from pprint import pprint
+
 BODY_LOCATIONS = ['json', 'files', 'form', 'form_and_files', 'json_or_form']
 SUPPORTED_LOCATIONS = BODY_LOCATIONS + [
     'query', 'headers', 'cookies', 'querystring', 'path', 'view_args'
@@ -443,22 +445,29 @@ class APIScaffold:
 
         def decorator(f):
             f = _ensure_sync(f)
-            _annotate(f, response={
+            m_response = {}
+            if hasattr(f, '_spec') and 'm_response' in f._spec:
+                m_response = f._spec.get('m_response')
+
+            m_response[status_code] = {
                 'schema': schema,
-                'status_code': status_code,
                 'description': description,
                 'example': example,
                 'examples': examples,
                 'links': links,
-            })
+            }
+
+            _annotate(f, m_response=m_response)
 
             def _jsonify(
                 obj: t.Any,
-                many: bool = _sentinel,  # type: ignore
+                many: bool = _sentinel, # type: ignore
+                status_code_to_use: int = 200,
                 *args: t.Any,
                 **kwargs: t.Any
             ) -> Response:  # pragma: no cover
                 """From Flask-Marshmallow, see the NOTICE file for license information."""
+                schema = m_response[status_code_to_use]['schema']
                 if many is _sentinel:
                     many = schema.many  # type: ignore
                 base_schema: OpenAPISchemaType = current_app.config['BASE_RESPONSE_SCHEMA']
@@ -480,8 +489,12 @@ class APIScaffold:
                 if isinstance(rv, Response):
                     return rv
                 if not isinstance(rv, tuple):
-                    return _jsonify(rv), status_code
-                json = _jsonify(rv[0])
+                    return _jsonify(rv,status_code_to_use=rv[1]), rv[1]
+
+                if isinstance(rv[0], Response):
+                    return rv
+
+                json = _jsonify(rv[0],status_code_to_use=rv[1])
                 if len(rv) == 2:
                     rv = (json, rv[1]) if isinstance(rv[1], int) else (json, status_code, rv[1])
                 elif len(rv) >= 3:
