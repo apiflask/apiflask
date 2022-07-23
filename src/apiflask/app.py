@@ -578,7 +578,7 @@ class APIFlask(APIScaffold, Flask):
 
         if self.spec_path:
             @bp.route(self.spec_path)
-            def spec() -> ResponseReturnValueType:
+            def spec():
                 if self.config['SPEC_FORMAT'] == 'json':
                     response = jsonify(self._get_spec('json'))
                     response.mimetype = self.config['JSON_SPEC_MIMETYPE']
@@ -594,7 +594,7 @@ class APIFlask(APIScaffold, Flask):
                 )
 
             @bp.route(self.docs_path)
-            def docs() -> str:
+            def docs():
                 return render_template_string(
                     ui_templates[self.docs_ui],
                     title=self.title,
@@ -610,7 +610,7 @@ class APIFlask(APIScaffold, Flask):
 
         if self.redoc_path:
             @bp.route(self.redoc_path)
-            def redoc() -> str:
+            def redoc():
                 warnings.warn(
                     'The `/redoc` path and `redoc_path` parameter is deprecated '
                     'and will be removed in 2.0, Set `APIFlask(docs_ui="redoc")` '
