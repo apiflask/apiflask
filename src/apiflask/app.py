@@ -267,7 +267,7 @@ class APIFlask(APIScaffold, Flask):
         version: str = '0.1.0',
         spec_path: t.Optional[str] = '/openapi.json',
         docs_path: t.Optional[str] = '/docs',
-        docs_oauth2_redirect_path: str = '/docs/oauth2-redirect',
+        docs_oauth2_redirect_path: t.Optional[str] = '/docs/oauth2-redirect',
         docs_ui: str = 'swagger-ui',
         redoc_path: t.Optional[str] = '/redoc',
         openapi_blueprint_url_prefix: t.Optional[str] = None,
