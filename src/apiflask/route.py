@@ -1,6 +1,6 @@
 import typing as t
 
-from flask.views import MethodViewType
+from flask.views import MethodView
 
 from .openapi import get_path_description
 from .openapi import get_path_summary
@@ -79,7 +79,7 @@ def route_patch(cls):
             # a function returned by MethodViewClass.as_view()
             is_view_class = True
             view_class = view_func.view_class  # type: ignore
-        elif isinstance(view_func, MethodViewType):
+        elif isinstance(view_func, type(MethodView)):
             # a MethodView class passed with the route decorator
             is_view_class = True
             view_class = view_func  # type: ignore
