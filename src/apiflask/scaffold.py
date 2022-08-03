@@ -7,7 +7,7 @@ import flask
 from flask import current_app
 from flask import jsonify
 from flask import Response
-from flask.views import MethodViewType
+from flask.views import MethodView
 from marshmallow import ValidationError as MarshmallowValidationError
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 from webargs.multidictproxy import MultiDictProxy
@@ -116,7 +116,7 @@ class APIScaffold:
             raise RuntimeError('Use the "route" decorator to use the "methods" argument.')
 
         def decorator(f):
-            if isinstance(f, MethodViewType):
+            if isinstance(f, type(MethodView)):
                 raise RuntimeError(
                     'The route shortcuts cannot be used with "MethodView" classes, '
                     'use the "route" decorator instead.'
