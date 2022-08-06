@@ -29,19 +29,19 @@ def init_database():
     db.session.commit()
 
 
-class PetQuerySchema(Schema):
+class PetQuery(Schema):
     page = Integer(load_default=1)
     per_page = Integer(load_default=20, validate=Range(max=30))
 
 
-class PetOutSchema(Schema):
+class PetOut(Schema):
     id = Integer()
     name = String()
     category = String()
 
 
-class PetsOutSchema(Schema):
-    pets = List(Nested(PetOutSchema))
+class PetsOut(Schema):
+    pets = List(Nested(PetOut))
     pagination = Nested(PaginationSchema)
 
 
@@ -51,14 +51,14 @@ def say_hello():
 
 
 @app.get('/pets/<int:pet_id>')
-@app.output(PetOutSchema)
+@app.output(PetOut)
 def get_pet(pet_id):
     return PetModel.query.get_or_404(pet_id)
 
 
 @app.get('/pets')
-@app.input(PetQuerySchema, 'query')
-@app.output(PetsOutSchema)
+@app.input(PetQuery, location='query')
+@app.output(PetsOut)
 def get_pets(query):
     pagination = PetModel.query.paginate(
         page=query['page'],

@@ -66,12 +66,12 @@ pets = [
 ]
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(required=True, validate=Length(0, 10))
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 
 
-class PetOutSchema(Schema):
+class PetOut(Schema):
     id = Integer()
     name = String()
     category = String()
@@ -84,7 +84,7 @@ def say_hello():
 
 
 @app.get('/pets/<int:pet_id>')
-@app.output(PetOutSchema)
+@app.output(PetOut)
 def get_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)
@@ -94,8 +94,8 @@ def get_pet(pet_id):
 
 
 @app.patch('/pets/<int:pet_id>')
-@app.input(PetInSchema(partial=True))
-@app.output(PetOutSchema)
+@app.input(PetIn(partial=True))
+@app.output(PetOut)
 def update_pet(pet_id, data):
     # the validated and parsed input data will
     # be injected into the view function as a dict
@@ -123,12 +123,12 @@ pets = [
 ]
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(required=True, validate=Length(0, 10))
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 
 
-class PetOutSchema(Schema):
+class PetOut(Schema):
     id = Integer()
     name = String()
     category = String()
@@ -147,15 +147,15 @@ class Hello(MethodView):
 @app.route('/pets/<int:pet_id>')
 class Pet(MethodView):
 
-    @app.output(PetOutSchema)
+    @app.output(PetOut)
     def get(self, pet_id):
         """Get a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
         return pets[pet_id]
 
-    @app.input(PetInSchema(partial=True))
-    @app.output(PetOutSchema)
+    @app.input(PetIn(partial=True))
+    @app.output(PetOut)
     def patch(self, pet_id, data):
         """Update a pet"""
         if pet_id > len(pets) - 1:

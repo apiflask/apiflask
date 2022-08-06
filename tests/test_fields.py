@@ -2,13 +2,13 @@ import io
 
 from werkzeug.datastructures import FileStorage
 
-from .schemas import FilesListSchema
-from .schemas import FilesSchema
+from .schemas import Files
+from .schemas import FilesList
 
 
 def test_file_field(app, client):
     @app.post('/')
-    @app.input(FilesSchema, location='files')
+    @app.input(Files, location='files')
     def index(files_data):
         data = {}
         if 'image' in files_data and isinstance(files_data['image'], FileStorage):
@@ -44,7 +44,7 @@ def test_file_field(app, client):
 
 def test_multiple_file_field(app, client):
     @app.post('/')
-    @app.input(FilesListSchema, location='files')
+    @app.input(FilesList, location='files')
     def index(files_list_data):
         data = {'images': True}
         for f in files_list_data['images']:

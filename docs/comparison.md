@@ -68,8 +68,8 @@ Assume a view like this:
 
 ```python
 @app.get('/<category>/articles/<int:article_id>')  # category, article_id
-@app.input(ArticleQuerySchema, location='query')  # query
-@app.input(ArticleInSchema)  # data
+@app.input(ArticleQuery, location='query')  # query
+@app.input(ArticleIn)  # data
 def get_article(category, article_id, query, data):
     pass
 ```

@@ -238,7 +238,7 @@ class APIScaffold:
         app = APIFlask(__name__)
 
         @app.get('/')
-        @app.input(PetInSchema)
+        @app.input(PetIn)
         def hello(parsed_and_validated_input_data):
             print(parsed_and_validated_input_data)
             return 'Hello'!
@@ -362,7 +362,7 @@ class APIScaffold:
         app = APIFlask(__name__)
 
         @app.get('/')
-        @app.output(PetOutSchema)
+        @app.output(PetOut)
         def hello():
             return the_dict_or_object_match_petout_schema
         ```

@@ -7,7 +7,7 @@ from apiflask.fields import List
 from apiflask.fields import String
 
 
-class FooSchema(Schema):
+class Foo(Schema):
     class Meta:
         unknown = EXCLUDE
 
@@ -15,7 +15,7 @@ class FooSchema(Schema):
     name = String(required=True)
 
 
-class BarSchema(Schema):
+class Bar(Schema):
     class Meta:
         unknown = EXCLUDE
 
@@ -23,36 +23,36 @@ class BarSchema(Schema):
     name2 = String(required=True)
 
 
-class BazSchema(Schema):
+class Baz(Schema):
     id = Integer(dump_default=123)
     name = String()
 
 
-class QuerySchema(Schema):
+class Query(Schema):
     class Meta:
         unknown = EXCLUDE
 
     id = Integer(load_default=1)
 
 
-class FormSchema(Schema):
+class Form(Schema):
     name = String()
 
 
-class FilesSchema(Schema):
+class Files(Schema):
     image = File()
 
 
-class FilesListSchema(Schema):
+class FilesList(Schema):
     images = List(File())
 
 
-class FormAndFilesSchema(Schema):
+class FormAndFiles(Schema):
     name = String()
     image = File()
 
 
-class PaginationSchema(Schema):
+class Pagination(Schema):
     class Meta:
         unknown = EXCLUDE
 
@@ -60,18 +60,18 @@ class PaginationSchema(Schema):
     per_page = Integer(load_default=10)
 
 
-class HeaderSchema(Schema):
+class Header(Schema):
     class Meta:
         unknown = EXCLUDE
 
     foo = String(load_default='bar')
 
 
-class ValidationErrorSchema(Schema):
+class ValidationError(Schema):
     status_code = String(required=True)
     message = String(required=True)
 
 
-class HTTPErrorSchema(Schema):
+class HTTPError(Schema):
     status_code = String(required=True)
     message = String(required=True)

@@ -3,9 +3,9 @@ from flask import Blueprint
 from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
-from .schemas import BarSchema
-from .schemas import FooSchema
-from .schemas import PaginationSchema
+from .schemas import Bar
+from .schemas import Foo
+from .schemas import Pagination
 from apiflask import APIBlueprint
 from apiflask import APIFlask
 from apiflask import Schema
@@ -64,27 +64,27 @@ def test_json_errors_reuse_werkzeug_headers(app, client):
 
 def test_view_function_arguments_order(app, client):
 
-    class QuerySchema(Schema):
+    class Query(Schema):
         foo = String(required=True)
         bar = String(required=True)
 
-    class PetSchema(Schema):
+    class Pet(Schema):
         name = String(required=True)
         age = Integer(dump_default=123)
 
     @app.post('/pets/<int:pet_id>/toys/<int:toy_id>')
-    @app.input(QuerySchema, 'query')
-    @app.input(PaginationSchema, 'query')
-    @app.input(PetSchema)
+    @app.input(Query, location='query')
+    @app.input(Pagination, location='query')
+    @app.input(Pet)
     def pets(pet_id, toy_id, query, pagination, body):
         return {'pet_id': pet_id, 'toy_id': toy_id,
                 'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **body}
 
     @app.route('/animals/<int:pet_id>/toys/<int:toy_id>')
     class Animals(MethodView):
-        @app.input(QuerySchema, 'query')
-        @app.input(PaginationSchema, 'query')
-        @app.input(PetSchema)
+        @app.input(Query, location='query')
+        @app.input(Pagination, location='query')
+        @app.input(Pet)
         def post(self, pet_id, toy_id, query, pagination, body):
             return {'pet_id': pet_id, 'toy_id': toy_id,
                     'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **body}
@@ -195,7 +195,7 @@ def test_dispatch_static_request(app, client):
 
     # positional arguments
     @app.get('/mystatic/<int:pet_id>')
-    @app.input(FooSchema)
+    @app.input(Foo)
     def mystatic(pet_id, foo):  # endpoint: mystatic
         return {'pet_id': pet_id, 'foo': foo}
 
@@ -237,19 +237,19 @@ def test_schema_name_resolver(app, client, resolver):
     app.schema_name_resolver = resolver
 
     @app.route('/foo')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def foo():
         pass
 
     @app.route('/bar')
-    @app.output(BarSchema(partial=True))
+    @app.output(Bar(partial=True))
     def bar():
         pass
 
     spec = app.spec
     if resolver == schema_name_resolver1:
-        assert 'FooSchema' in spec['components']['schemas']
-        assert 'BarSchema_' in spec['components']['schemas']
+        assert 'Foo' in spec['components']['schemas']
+        assert 'Bar_' in spec['components']['schemas']
     elif resolver == schema_name_resolver2:
         assert 'Foo' in spec['components']['schemas']
         assert 'BarPartial' in spec['components']['schemas']

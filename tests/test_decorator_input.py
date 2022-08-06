@@ -5,24 +5,24 @@ from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 from werkzeug.datastructures import FileStorage
 
-from .schemas import BarSchema
-from .schemas import FilesSchema
-from .schemas import FooSchema
-from .schemas import FormAndFilesSchema
-from .schemas import FormSchema
-from .schemas import QuerySchema
+from .schemas import Bar
+from .schemas import Files
+from .schemas import Foo
+from .schemas import Form
+from .schemas import FormAndFiles
+from .schemas import Query
 from apiflask.fields import String
 
 
 def test_input(app, client):
     @app.route('/foo', methods=['POST'])
-    @app.input(FooSchema)
+    @app.input(Foo)
     def foo(schema):
         return schema
 
     @app.route('/bar')
     class Bar(MethodView):
-        @app.input(FooSchema)
+        @app.input(Foo)
         def post(self, data):
             return data
 
@@ -62,8 +62,8 @@ def test_input(app, client):
 
 def test_input_with_query_location(app, client):
     @app.route('/foo', methods=['POST'])
-    @app.input(FooSchema, location='query')
-    @app.input(BarSchema, location='query')
+    @app.input(Foo, location='query')
+    @app.input(Bar, location='query')
     def foo(schema, schema2):
         return {'name': schema['name'], 'name2': schema2['name2']}
 
@@ -96,7 +96,7 @@ def test_input_with_query_location(app, client):
 
 def test_input_with_form_location(app, client):
     @app.post('/')
-    @app.input(FormSchema, location='form')
+    @app.input(Form, location='form')
     def index(form_data):
         return form_data
 
@@ -116,7 +116,7 @@ def test_input_with_form_location(app, client):
 
 def test_input_with_files_location(app, client):
     @app.post('/')
-    @app.input(FilesSchema, location='files')
+    @app.input(Files, location='files')
     def index(files_data):
         data = {}
         if 'image' in files_data and isinstance(files_data['image'], FileStorage):
@@ -148,7 +148,7 @@ def test_input_with_files_location(app, client):
 
 def test_input_with_form_and_files_location(app, client):
     @app.post('/')
-    @app.input(FormAndFilesSchema, location='form_and_files')
+    @app.input(FormAndFiles, location='form_and_files')
     def index(form_data):
         data = {}
         if 'name' in form_data:
@@ -196,8 +196,8 @@ def test_input_with_form_and_files_location(app, client):
 def test_multiple_input_body_location(app, locations):
     with pytest.raises(RuntimeError):
         @app.route('/foo')
-        @app.input(FooSchema, locations[0])
-        @app.input(BarSchema, locations[1])
+        @app.input(Foo, locations[0])
+        @app.input(Bar, locations[1])
         def foo(query):
             pass
 
@@ -205,7 +205,7 @@ def test_multiple_input_body_location(app, locations):
 def test_bad_input_location(app):
     with pytest.raises(ValueError):
         @app.route('/foo')
-        @app.input(QuerySchema, 'bad')
+        @app.input(Query, location='bad')
         def foo(query):
             pass
 
@@ -306,22 +306,22 @@ def test_input_body_example(app, client):
     }
 
     @app.post('/foo')
-    @app.input(FooSchema, example=example)
+    @app.input(Foo, example=example)
     def foo():
         pass
 
     @app.post('/bar')
-    @app.input(FooSchema, examples=examples)
+    @app.input(Foo, examples=examples)
     def bar():
         pass
 
     @app.route('/baz')
     class Baz(MethodView):
-        @app.input(FooSchema, example=example)
+        @app.input(Foo, example=example)
         def get(self):
             pass
 
-        @app.input(FooSchema, examples=examples)
+        @app.input(Foo, examples=examples)
         def post(self):
             pass
 

@@ -2,7 +2,7 @@ import pytest
 from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
-from .schemas import FooSchema
+from .schemas import Foo
 from apiflask import APIBlueprint
 from apiflask import HTTPTokenAuth
 
@@ -13,7 +13,7 @@ def test_route_shortcuts(app, client, method):
     client_method = getattr(client, method)
 
     @route_method('/pet')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def test_shortcuts():
         return {'name': method}
 

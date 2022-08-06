@@ -73,7 +73,7 @@ Or you prefer to keep a reference:
 ```python
 from apiflask import Schema, fields
 
-class FooBarSchema(Schema):
+class FooBar(Schema):
     foo = fields.String()
     bar = fields.Integer()
 ```
@@ -194,7 +194,7 @@ from apiflask.fields import String
 from apiflask.validators import OneOf
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 ```
 
@@ -206,7 +206,7 @@ from apiflask.fields import String
 from apiflask.validators import Length, OneOf
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     category = String(required=True, validate=[OneOf(['dog', 'cat']), Length(0, 10)])
 ```
 
@@ -301,12 +301,12 @@ from apiflask.fields import String, Integer, Field
 
 app = APIFlask(__name__)
 
-class BaseResponseSchema(Schema):
+class BaseResponse(Schema):
     data = Field()  # the data key
     message = String()
     code = Integer()
 
-app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
+app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
 ```
 
 The default data key is "data", you can change it to match your data field name in your schema

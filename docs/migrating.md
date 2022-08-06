@@ -90,7 +90,7 @@ class Pet(MethodView):
 
     decorators = [doc(responses=[404])]
 
-    @app.output(PetOutSchema)
+    @app.output(PetOut)
     def get(self, pet_id):
         pass
 
@@ -98,13 +98,13 @@ class Pet(MethodView):
     def delete(self, pet_id):
         pass
 
-    @app.input(PetInSchema)
-    @app.output(PetOutSchema)
+    @app.input(PetIn)
+    @app.output(PetOut)
     def put(self, pet_id, data):
         pass
 
-    @app.input(PetInSchema(partial=True))
-    @app.output(PetOutSchema)
+    @app.input(PetIn(partial=True))
+    @app.output(PetOut)
     def patch(self, pet_id, data):
         pass
 ```

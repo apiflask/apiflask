@@ -421,8 +421,8 @@ from apiflask import APIFlask
 app = APIFlask(__name__)
 
 @app.get('/')
-@app.input(FooSchema)
-@app.output(BarSchema)
+@app.input(Foo)
+@app.output(Bar)
 def hello():
     return {'message': 'Hello'}
 ```
@@ -435,8 +435,8 @@ from apiflask import APIFlask, input, output
 app = APIFlask(__name__)
 
 @app.get('/')
-@input(FooSchema)
-@output(BarSchema)
+@input(Foo)
+@output(Bar)
 def hello():
     return {'message': 'Hello'}
 ```
@@ -461,7 +461,7 @@ from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(required=True, validate=Length(0, 10))
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 ```
@@ -479,7 +479,7 @@ from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(required=True, validate=Length(0, 10))
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 ```
@@ -492,7 +492,7 @@ from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(required=True, validate=Length(0, 10))
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 ```
@@ -507,7 +507,7 @@ from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(required=True, validate=Length(0, 10))
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 ```
@@ -545,13 +545,13 @@ from apiflask.validators import Length, OneOf
 app = APIFlask(__name__)
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(required=True, validate=Length(0, 10))
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 
 
 @app.post('/pets')
-@app.input(PetInSchema)
+@app.input(PetIn)
 def create_pet(data):
     print(data)
     return {'message': 'created'}, 201
@@ -570,8 +570,8 @@ you can do something like this to create an ORM model instance:
 
 ```python hl_lines="5"
 @app.post('/pets')
-@app.input(PetInSchema)
-@app.output(PetOutSchema)
+@app.input(PetIn)
+@app.output(PetOut)
 def create_pet(pet_id, data):
     pet = Pet(**data)
     return pet
@@ -581,8 +581,8 @@ or update an ORM model class instance like this:
 
 ```python hl_lines="6 7"
 @app.patch('/pets/<int:pet_id>')
-@app.input(PetInSchema)
-@app.output(PetOutSchema)
+@app.input(PetIn)
+@app.output(PetOut)
 def update_pet(pet_id, data):
     pet = Pet.query.get(pet_id)
     for attr, value in data.items():
@@ -619,7 +619,7 @@ Similarly, we can define a schema for output data with `@app.output` decorator. 
 from apiflask.fields import String, Integer
 
 
-class PetOutSchema(Schema):
+class PetOut(Schema):
     id = Integer()
     name = String()
     category = String()
@@ -645,14 +645,14 @@ from apiflask.fields import String, Integer
 app = APIFlask(__name__)
 
 
-class PetOutSchema(Schema):
+class PetOut(Schema):
     id = Integer()
     name = String()
     category = String()
 
 
 @app.get('/pets/<int:pet_id>')
-@app.output(PetOutSchema)
+@app.output(PetOut)
 def get_pet(pet_id):
     return {
         'name': 'Coco',
@@ -665,8 +665,8 @@ status code with the `status_code` argument:
 
 ```python hl_lines="3"
 @app.post('/pets')
-@app.input(PetInSchema)
-@app.output(PetOutSchema, status_code=201)
+@app.input(PetIn)
+@app.output(PetOut, status_code=201)
 def create_pet(data):
     data['id'] = 2
     return data
@@ -675,7 +675,7 @@ def create_pet(data):
 Or just:
 
 ```python
-@app.output(PetOutSchema, 201)
+@app.output(PetOut, 201)
 ```
 
 If you want to return a 204 response, you can use the `EmptySchema` from `apiflask.schemas`:
@@ -709,8 +709,8 @@ def delete_pet(pet_id):
 
     ```python hl_lines="4"
     @app.put('/pets/<int:pet_id>')
-    @app.input(PetInSchema)
-    @app.output(PetOutSchema)  # 200
+    @app.input(PetIn)
+    @app.output(PetOut)  # 200
     @app.doc(responses=[204, 404])
     def update_pet(pet_id, data):
         pass
@@ -735,7 +735,7 @@ from apiflask import Schema
 from apiflask.fields import String, Integer
 
 
-class PetOutSchema(Schema):
+class PetOut(Schema):
     id = Integer()
     name = String()
     category = String()
@@ -745,7 +745,7 @@ Now you can return a dict:
 
 ```python
 @app.get('/pets/<int:pet_id>')
-@app.output(PetOutSchema)
+@app.output(PetOut)
 def get_pet(pet_id):
     return {
         'id': 1,
@@ -758,7 +758,7 @@ or you can return an ORM model instance directly:
 
 ```python hl_lines="5"
 @app.get('/pets/<int:pet_id>')
-@app.output(PetOutSchema)
+@app.output(PetOut)
 def get_pet(pet_id):
     pet = Pet.query.get(pet_id)
     return pet
@@ -787,7 +787,7 @@ class Pet(Model):
     `data_key` to declare the actual key name to dump to:
 
     ```python
-    class UserOutSchema(Schema):
+    class UserOut(Schema):
         phone = String(data_key='phone_number')
     ```
 
@@ -796,7 +796,7 @@ class Pet(Model):
     Similarly, you can tell APIFlask to load from different key in input schema:
 
     ```python
-    class UserInSchema(Schema):
+    class UserIn(Schema):
         phone = String(data_key='phone_number')
     ```
 
@@ -807,8 +807,8 @@ you can pass a `status_code` argument in the `@app.output` decorator:
 
 ```python hl_lines="3"
 @app.post('/pets')
-@app.input(PetInSchema)
-@app.output(PetOutSchema, 201)
+@app.input(PetIn)
+@app.output(PetOut, 201)
 def create_pet(data):
     # ...
     return pet
@@ -819,8 +819,8 @@ You don't need to return the same status code in the end of the view function
 
 ```python hl_lines="8"
 @app.post('/pets')
-@app.input(PetInSchema)
-@app.output(PetOutSchema, 201)
+@app.input(PetIn)
+@app.output(PetOut, 201)
 def create_pet(data):
     # ...
     # equals to:
@@ -833,8 +833,8 @@ of the return tuple:
 
 ```python hl_lines="8"
 @app.post('/pets')
-@app.input(PetInSchema)
-@app.output(PetOutSchema, 201)
+@app.input(PetIn)
+@app.output(PetOut, 201)
 def create_pet(data):
     # ...
     # equals to:
@@ -1097,19 +1097,19 @@ instead of class:
 @app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 
-    @app.output(PetOutSchema)
+    @app.output(PetOut)
     @app.doc(summary='Get a Pet')
     def get(self, pet_id):
         # ...
 
     @app.auth_required(auth)
-    @app.input(PetInSchema)
-    @app.output(PetOutSchema)
+    @app.input(PetIn)
+    @app.output(PetOut)
     def put(self, pet_id, data):
         # ...
 
-    @app.input(PetInSchema(partial=True))
-    @app.output(PetOutSchema)
+    @app.input(PetIn(partial=True))
+    @app.output(PetOut)
     def patch(self, pet_id, data):
         # ...
 ```
@@ -1124,19 +1124,19 @@ class Pet(MethodView):
 
     decorators = [auth_required(auth), doc(responses=[404])]
 
-    @app.output(PetOutSchema)
+    @app.output(PetOut)
     @app.doc(summary='Get a Pet')
     def get(self, pet_id):
         # ...
 
     @app.auth_required(auth)
-    @app.input(PetInSchema)
-    @app.output(PetOutSchema)
+    @app.input(PetIn)
+    @app.output(PetOut)
     def put(self, pet_id, data):
         # ...
 
-    @app.input(PetInSchema(partial=True))
-    @app.output(PetOutSchema)
+    @app.input(PetIn(partial=True))
+    @app.output(PetOut)
     def patch(self, pet_id, data):
         # ...
 ```
