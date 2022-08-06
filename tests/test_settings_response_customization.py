@@ -19,7 +19,7 @@ def test_response_description_config(app, client):
         pass
 
     @app.get('/bar')
-    @app.output(Foo, 201)
+    @app.output(Foo, status_code=201)
     def create():
         pass
 
@@ -29,7 +29,7 @@ def test_response_description_config(app, client):
         pass
 
     @app.get('/spam')
-    @app.output(Foo, 206)
+    @app.output(Foo, status_code=206)
     def spam():
         pass
 

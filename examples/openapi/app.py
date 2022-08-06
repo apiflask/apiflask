@@ -194,7 +194,7 @@ def update_pet(pet_id, data):
 
 
 @app.delete('/pets/<int:pet_id>')
-@app.output({}, 204, description='Empty')
+@app.output({}, status_code=204, description='Empty')
 @app.doc(tags=['Pet'])
 def delete_pet(pet_id):
     """Delete a Pet

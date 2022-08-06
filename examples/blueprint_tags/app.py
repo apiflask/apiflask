@@ -52,7 +52,7 @@ def get_pets():
 
 @pet_bp.post('/pets')
 @pet_bp.input(PetIn)
-@pet_bp.output(PetOut, 201)
+@pet_bp.output(PetOut, status_code=201)
 def create_pet(data):
     pet_id = len(pets)
     data['id'] = pet_id
@@ -72,7 +72,7 @@ def update_pet(pet_id, data):
 
 
 @pet_bp.delete('/pets/<int:pet_id>')
-@pet_bp.output({}, 204)
+@pet_bp.output({}, status_code=204)
 def delete_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)

@@ -138,7 +138,7 @@ def test_base_response_204(app, client):
     app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
 
     @app.get('/')
-    @app.output({}, 204)
+    @app.output({}, status_code=204)
     def foo():
         return ''
 

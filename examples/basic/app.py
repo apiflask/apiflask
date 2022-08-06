@@ -43,7 +43,7 @@ def get_pets():
 
 @app.post('/pets')
 @app.input(PetIn)
-@app.output(PetOut, 201)
+@app.output(PetOut, status_code=201)
 def create_pet(data):
     pet_id = len(pets)
     data['id'] = pet_id
@@ -63,7 +63,7 @@ def update_pet(pet_id, data):
 
 
 @app.delete('/pets/<int:pet_id>')
-@app.output({}, 204)
+@app.output({}, status_code=204)
 def delete_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)

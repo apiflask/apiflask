@@ -94,7 +94,7 @@ class Pet(MethodView):
     def get(self, pet_id):
         pass
 
-    @app.output({}, 204)
+    @app.output({}, status_code=204)
     def delete(self, pet_id):
         pass
 

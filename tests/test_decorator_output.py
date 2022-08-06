@@ -204,13 +204,13 @@ def test_output_body_example(app, client):
 
 def test_output_with_empty_dict_as_schema(app, client):
     @app.delete('/foo')
-    @app.output({}, 204)
+    @app.output({}, status_code=204)
     def delete_foo():
         return ''
 
     @app.route('/bar')
     class Bar(MethodView):
-        @app.output({}, 204)
+        @app.output({}, status_code=204)
         def delete(self):
             return ''
 

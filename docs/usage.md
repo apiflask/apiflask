@@ -675,7 +675,7 @@ def create_pet(data):
 Or just:
 
 ```python
-@app.output(PetOut, 201)
+@app.output(PetOut, status_code=201)
 ```
 
 If you want to return a 204 response, you can use the `EmptySchema` from `apiflask.schemas`:
@@ -685,7 +685,7 @@ from apiflask.schemas import EmptySchema
 
 
 @app.delete('/pets/<int:pet_id>')
-@app.output(EmptySchema, 204)
+@app.output(EmptySchema, status_code=204)
 def delete_pet(pet_id):
     return ''
 ```
@@ -694,7 +694,7 @@ From version 0.4.0, you can use a empty dict to represent empty schema:
 
 ```python hl_lines="2"
 @app.delete('/pets/<int:pet_id>')
-@app.output({}, 204)
+@app.output({}, status_code=204)
 def delete_pet(pet_id):
     return ''
 ```
@@ -808,7 +808,7 @@ you can pass a `status_code` argument in the `@app.output` decorator:
 ```python hl_lines="3"
 @app.post('/pets')
 @app.input(PetIn)
-@app.output(PetOut, 201)
+@app.output(PetOut, status_code=201)
 def create_pet(data):
     # ...
     return pet
@@ -820,7 +820,7 @@ You don't need to return the same status code in the end of the view function
 ```python hl_lines="8"
 @app.post('/pets')
 @app.input(PetIn)
-@app.output(PetOut, 201)
+@app.output(PetOut, status_code=201)
 def create_pet(data):
     # ...
     # equals to:
@@ -834,7 +834,7 @@ of the return tuple:
 ```python hl_lines="8"
 @app.post('/pets')
 @app.input(PetIn)
-@app.output(PetOut, 201)
+@app.output(PetOut, status_code=201)
 def create_pet(data):
     # ...
     # equals to:

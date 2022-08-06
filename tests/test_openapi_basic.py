@@ -164,7 +164,7 @@ def test_auto_200_response(app, client):
         pass
 
     @app.get('/eggs')
-    @app.output(Foo, 204)
+    @app.output(Foo, status_code=204)
     def output_204():
         pass
 

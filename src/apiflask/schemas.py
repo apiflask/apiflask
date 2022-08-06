@@ -66,7 +66,7 @@ class EmptySchema(Schema):
 
     ```python
     @app.delete('/foo')
-    @app.output({}, 204)
+    @app.output({}, status_code=204)
     def delete_foo():
         return ''
     ```

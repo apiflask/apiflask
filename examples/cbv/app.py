@@ -52,7 +52,7 @@ class Pet(MethodView):
             pets[pet_id][attr] = value
         return pets[pet_id]
 
-    @app.output({}, 204)
+    @app.output({}, status_code=204)
     def delete(self, pet_id):
         """Delete a pet"""
         if pet_id > len(pets) - 1:
@@ -71,7 +71,7 @@ class Pets(MethodView):
         return pets
 
     @app.input(PetIn)
-    @app.output(PetOut, 201)
+    @app.output(PetOut, status_code=201)
     def post(self, data):
         """Create a pet"""
         pet_id = len(pets)
