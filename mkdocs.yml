@@ -27,7 +27,9 @@ extra:
     - name: 简体中文
       link: https://zh.apiflask.com
       lang: zh
-copyright: Copyright &copy; 2021 <a href="https://greyli.com/en" target="_blank" rel="noopener">Grey Li</a>
+copyright:
+  Copyright &copy; 2021 <a href="https://github.com/greyli" target="_blank" rel="noopener">Grey Li</a><br>
+  <span style="color:#555">Hosted with</span> <a href="https://www.netlify.com" target="_blank" rel="noopener">Netlify</a>
 markdown_extensions:
   - admonition
   - pymdownx.details
