@@ -77,15 +77,21 @@ $ flask run
 If your script's name isn't `app.py`, you will need to declare which application
 should be started before execute `flask run`. See the note below for more details.
 
-??? note "Assign the specific application to run with `FLASK_APP`"
+??? note "Assign the specific application to run"
 
     In default, Flask will look for an application instance called `app` or `application`
     or application factory function called `create_app` or `make_app` in module/package
     called `app` or `wsgi`. That's why I recommend naming the file as `app.py`. If you
     use a different name, then you need to tell Flask the application module path via the
-    environment variable `FLASK_APP`. For example, if your application instance stored in
-    a file called `hello.py`, then you will need to set `FLASK_APP` to the module name
-    `hello`:
+    `--app` (Flask 2.2+) option or the environment variable `FLASK_APP`. For example, if
+    your application instance stored in a file called `hello.py`, then you will need to
+    set `--app` or `FLASK_APP` to the module name `hello`:
+
+    ```
+    $ flask --app hello run
+    ```
+
+    or:
 
     === "Bash"
 
@@ -106,7 +112,11 @@ should be started before execute `flask run`. See the note below for more detail
         ```
 
     Similarly, If your application instance or application factory function stored in
-    `mypkg/__init__.py`, you can set  `FLASK_APP` to the package name:
+    `mypkg/__init__.py`, you can pass the package name:
+
+    ```
+    $ flask --app mypkg run
+    ```
 
     === "Bash"
 
@@ -127,7 +137,13 @@ should be started before execute `flask run`. See the note below for more detail
         ```
 
     However, if the application instance or application factory function store in
-    `mypkg/myapp.py`, you will need to set  `FLASK_APP` to:
+    `mypkg/myapp.py`, you will need to use:
+
+    ```
+    $ flask --app mypkg.myapp run
+    ```
+
+    or:
 
     === "Bash"
 
@@ -177,29 +193,35 @@ $ flask run --reload
 We highly recommend enabling "debug mode" when developing Flask application. See the
 note below for the details.
 
-??? note "Enable the debug mode with `FLASK_ENV`"
+??? note "Enable the debug mode"
 
     Flask can automatically restart and reload the application when code changes
     and display useful debug information for errors. To enable these features
-    in your Flask application, we will need to set the environment variable
-    `FLASK_ENV` to `development`:
+    in your Flask application, we will need to use the `--debug` option:
+
+    ```
+    $ flask --debug run
+    ```
+
+    If you are not using the latest Flask version (>2.2), you will need to set
+    the environment variable `FLASK_DEBUG` to `True` instead:
 
     === "Bash"
 
         ```bash
-        $ export FLASK_ENV=development
+        $ export FLASK_DEBUG=True
         ```
 
     === "Windows CMD"
 
         ```
-        > set FLASK_ENV=development
+        > set FLASK_DEBUG=True
         ```
 
     === "Powershell"
 
         ```
-        > $env:FLASK_APP="development"
+        > $env:FLASK_DEBUG="True"
         ```
 
     See *[Debug Mode][_debug_mode]{target=_blank}* for more details.
