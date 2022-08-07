@@ -3,9 +3,9 @@ import json
 import pytest
 from openapi_spec_validator import validate_spec
 
-from .schemas import BarSchema
-from .schemas import BazSchema
-from .schemas import FooSchema
+from .schemas import Bar
+from .schemas import Baz
+from .schemas import Foo
 from apiflask import Schema as BaseSchema
 from apiflask.fields import Integer
 
@@ -46,7 +46,7 @@ def test_get_spec_force_update(app):
     app._get_spec()
 
     @app.route('/foo')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def foo():
         pass
 
@@ -61,7 +61,7 @@ def test_spec_attribute(app):
     spec = app._get_spec()
 
     @app.route('/foo')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def foo():
         pass
 
@@ -71,17 +71,17 @@ def test_spec_attribute(app):
 
 def test_spec_schemas(app):
     @app.route('/foo')
-    @app.output(FooSchema(partial=True))
+    @app.output(Foo(partial=True))
     def foo():
         pass
 
     @app.route('/bar')
-    @app.output(BarSchema(many=True))
+    @app.output(Bar(many=True))
     def bar():
         pass
 
     @app.route('/baz')
-    @app.output(BazSchema)
+    @app.output(Baz)
     def baz():
         pass
 
@@ -154,7 +154,7 @@ def test_auto_200_response(app, client):
         pass
 
     @app.get('/bar')
-    @app.input(FooSchema)
+    @app.input(Foo)
     def only_input():
         pass
 
@@ -164,7 +164,7 @@ def test_auto_200_response(app, client):
         pass
 
     @app.get('/eggs')
-    @app.output(FooSchema, 204)
+    @app.output(Foo, status_code=204)
     def output_204():
         pass
 

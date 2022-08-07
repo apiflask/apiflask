@@ -1,9 +1,9 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from .schemas import FooSchema
-from .schemas import HTTPErrorSchema
-from .schemas import ValidationErrorSchema
+from .schemas import Foo
+from .schemas import HTTPError
+from .schemas import ValidationError
 from apiflask.schemas import EmptySchema
 from apiflask.schemas import http_error_schema
 from apiflask.security import HTTPBasicAuth
@@ -14,12 +14,12 @@ def test_response_description_config(app, client):
     app.config['NOT_FOUND_DESCRIPTION'] = 'Egg not found'
 
     @app.get('/foo')
-    @app.input(FooSchema)  # 200
+    @app.input(Foo)  # 200
     def only_body_schema(foo):
         pass
 
     @app.get('/bar')
-    @app.output(FooSchema, 201)
+    @app.output(Foo, status_code=201)
     def create():
         pass
 
@@ -29,7 +29,7 @@ def test_response_description_config(app, client):
         pass
 
     @app.get('/spam')
-    @app.output(FooSchema, 206)
+    @app.output(Foo, status_code=206)
     def spam():
         pass
 
@@ -57,7 +57,7 @@ def test_validation_error_status_code_and_description(app, client):
     app.config['VALIDATION_ERROR_DESCRIPTION'] = 'Bad'
 
     @app.post('/foo')
-    @app.input(FooSchema)
+    @app.input(Foo)
     def foo():
         pass
 
@@ -71,13 +71,13 @@ def test_validation_error_status_code_and_description(app, client):
 
 @pytest.mark.parametrize('schema', [
     http_error_schema,
-    ValidationErrorSchema
+    ValidationError
 ])
 def test_validation_error_schema(app, client, schema):
     app.config['VALIDATION_ERROR_SCHEMA'] = schema
 
     @app.post('/foo')
-    @app.input(FooSchema)
+    @app.input(Foo)
     def foo():
         pass
 
@@ -94,7 +94,7 @@ def test_validation_error_schema_bad_type(app):
     app.config['VALIDATION_ERROR_SCHEMA'] = 'schema'
 
     @app.post('/foo')
-    @app.input(FooSchema)
+    @app.input(Foo)
     def foo():
         pass
 
@@ -137,7 +137,7 @@ def test_auth_error_schema(app, client):
 
 def test_http_auth_error_response(app, client):
     @app.get('/foo')
-    @app.output(FooSchema)
+    @app.output(Foo)
     @app.doc(responses={204: 'empty', 400: 'bad', 404: 'not found', 500: 'server error'})
     def foo():
         pass
@@ -157,13 +157,13 @@ def test_http_auth_error_response(app, client):
 
 @pytest.mark.parametrize('schema', [
     http_error_schema,
-    HTTPErrorSchema
+    HTTPError
 ])
 def test_http_error_schema(app, client, schema):
     app.config['HTTP_ERROR_SCHEMA'] = schema
 
     @app.get('/foo')
-    @app.output(FooSchema)
+    @app.output(Foo)
     @app.doc(responses={400: 'bad', 404: 'not found', 500: 'server error'})
     def foo():
         pass
@@ -179,7 +179,7 @@ def test_http_error_schema_bad_type(app):
     app.config['HTTP_ERROR_SCHEMA'] = 'schema'
 
     @app.get('/foo')
-    @app.output(FooSchema)
+    @app.output(Foo)
     @app.doc(responses={400: 'bad', 404: 'not found', 500: 'server error'})
     def foo():
         pass

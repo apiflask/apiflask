@@ -396,8 +396,8 @@ class APIFlask(APIScaffold, Flask):
 
         ```python
         @app.get('/pets/<name>/<int:pet_id>/<age>')  # -> name, pet_id, age
-        @app.input(QuerySchema)  # -> query
-        @app.output(PetSchema)  # -> pet
+        @app.input(Query)  # -> query
+        @app.output(Pet)  # -> pet
         def get_pet(name, pet_id, age, query, pet):
             pass
         ```

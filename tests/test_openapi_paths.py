@@ -1,20 +1,20 @@
 from openapi_spec_validator import validate_spec
 
-from .schemas import FooSchema
-from .schemas import HeaderSchema
-from .schemas import PaginationSchema
-from .schemas import QuerySchema
+from .schemas import Foo
+from .schemas import Header
+from .schemas import Pagination
+from .schemas import Query
 
 
 def test_spec_path_summary_description_from_docs(app, client):
     @app.route('/users')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def get_users():
         """Get Users"""
         pass
 
     @app.route('/users/<id>', methods=['PUT'])
-    @app.output(FooSchema)
+    @app.output(Foo)
     def update_user(id):
         """Update User
 
@@ -34,22 +34,22 @@ def test_spec_path_summary_description_from_docs(app, client):
 
 def test_spec_path_parameters_registration(app, client):
     @app.route('/strings/<some_string>')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def get_string(some_string):
         pass
 
     @app.route('/floats/<float:some_float>', methods=['POST'])
-    @app.output(FooSchema)
+    @app.output(Foo)
     def get_float(some_float):
         pass
 
     @app.route('/integers/<int:some_integer>', methods=['PUT'])
-    @app.output(FooSchema)
+    @app.output(Foo)
     def get_integer(some_integer):
         pass
 
     @app.route('/users/<int:user_id>/articles/<int:article_id>')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def get_article(user_id, article_id):
         pass
 
@@ -74,17 +74,17 @@ def test_spec_path_parameters_registration(app, client):
 
 def test_spec_path_summary_auto_generation(app, client):
     @app.route('/users')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def get_users():
         pass
 
     @app.route('/users/<id>', methods=['PUT'])
-    @app.output(FooSchema)
+    @app.output(Foo)
     def update_user(id):
         pass
 
     @app.route('/users/<id>', methods=['DELETE'])
-    @app.output(FooSchema)
+    @app.output(Foo)
     def delete_user(id):
         """Summary from Docs
 
@@ -106,27 +106,27 @@ def test_spec_path_summary_auto_generation(app, client):
 
 def test_path_arguments_detection(app, client):
     @app.route('/foo/<bar>')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def pattern1(bar):
         pass
 
     @app.route('/<foo>/bar')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def pattern2(foo):
         pass
 
     @app.route('/<int:foo>/<bar>/baz')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def pattern3(foo, bar):
         pass
 
     @app.route('/foo/<int:bar>/<int:baz>')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def pattern4(bar, baz):
         pass
 
     @app.route('/<int:foo>/<bar>/<float:baz>')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def pattern5(foo, bar, baz):
         pass
 
@@ -148,13 +148,13 @@ def test_path_arguments_detection(app, client):
 
 def test_path_arguments_order(app, client):
     @app.route('/<foo>/bar')
-    @app.input(QuerySchema, 'query')
-    @app.output(FooSchema)
+    @app.input(Query, location='query')
+    @app.output(Foo)
     def path_and_query(foo, query):
         pass
 
     @app.route('/<foo>/<bar>')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def two_path_variables(foo, bar):
         pass
 
@@ -175,15 +175,15 @@ def test_path_arguments_order(app, client):
 
 def test_parameters_registration(app, client):
     @app.route('/foo')
-    @app.input(QuerySchema, 'query')
-    @app.output(FooSchema)
+    @app.input(Query, location='query')
+    @app.output(Foo)
     def foo(query):
         pass
 
     @app.route('/bar')
-    @app.input(QuerySchema, 'query')
-    @app.input(PaginationSchema, 'query')
-    @app.input(HeaderSchema, 'headers')
+    @app.input(Query, location='query')
+    @app.input(Pagination, location='query')
+    @app.input(Header, location='headers')
     def bar(query, pagination, header):
         return {
             'query': query['id'],
@@ -212,12 +212,12 @@ def test_register_validation_error_response(app, client):
     error_code = str(app.config['VALIDATION_ERROR_STATUS_CODE'])
 
     @app.post('/foo')
-    @app.input(FooSchema)
+    @app.input(Foo)
     def foo():
         pass
 
     @app.get('/bar')
-    @app.input(FooSchema, 'query')
+    @app.input(Foo, location='query')
     def bar():
         pass
 

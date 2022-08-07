@@ -2,8 +2,8 @@ import pytest
 from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
-from .schemas import FooSchema
-from .schemas import QuerySchema
+from .schemas import Foo
+from .schemas import Query
 from apiflask import APIBlueprint
 from apiflask.security import HTTPBasicAuth
 
@@ -188,7 +188,7 @@ def test_auto_200_response_for_bare_views(app, client, config_value):
         def get(self):
             pass
 
-        @app.input(FooSchema)
+        @app.input(Foo)
         def post(self):
             pass
 
@@ -207,13 +207,13 @@ def test_auto_200_response_for_no_output_views(app, client, config_value):
     app.config['AUTO_200_RESPONSE'] = config_value
 
     @app.get('/foo')
-    @app.input(QuerySchema, 'query')
+    @app.input(Query, location='query')
     def foo():
         pass
 
     @app.route('/bar')
     class Bar(MethodView):
-        @app.input(QuerySchema, 'query')
+        @app.input(Query, location='query')
         def get(self):
             pass
 
@@ -231,7 +231,7 @@ def test_auto_validation_error_response(app, client, config_value):
     app.config['AUTO_VALIDATION_ERROR_RESPONSE'] = config_value
 
     @app.post('/foo')
-    @app.input(FooSchema)
+    @app.input(Foo)
     def foo():
         pass
 

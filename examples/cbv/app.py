@@ -12,12 +12,12 @@ pets = [
 ]
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(required=True, validate=Length(0, 10))
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 
 
-class PetOutSchema(Schema):
+class PetOut(Schema):
     id = Integer()
     name = String()
     category = String()
@@ -35,15 +35,15 @@ class Hello(MethodView):
 @app.route('/pets/<int:pet_id>')
 class Pet(MethodView):
 
-    @app.output(PetOutSchema)
+    @app.output(PetOut)
     def get(self, pet_id):
         """Get a pet"""
         if pet_id > len(pets) - 1 or pets[pet_id].get('deleted'):
             abort(404)
         return pets[pet_id]
 
-    @app.input(PetInSchema(partial=True))
-    @app.output(PetOutSchema)
+    @app.input(PetIn(partial=True))
+    @app.output(PetOut)
     def patch(self, pet_id, data):
         """Update a pet"""
         if pet_id > len(pets) - 1:
@@ -52,7 +52,7 @@ class Pet(MethodView):
             pets[pet_id][attr] = value
         return pets[pet_id]
 
-    @app.output({}, 204)
+    @app.output({}, status_code=204)
     def delete(self, pet_id):
         """Delete a pet"""
         if pet_id > len(pets) - 1:
@@ -65,13 +65,13 @@ class Pet(MethodView):
 @app.route('/pets')
 class Pets(MethodView):
 
-    @app.output(PetOutSchema(many=True))
+    @app.output(PetOut(many=True))
     def get(self):
         """Get all pets"""
         return pets
 
-    @app.input(PetInSchema)
-    @app.output(PetOutSchema, 201)
+    @app.input(PetIn)
+    @app.output(PetOut, status_code=201)
     def post(self, data):
         """Create a pet"""
         pet_id = len(pets)

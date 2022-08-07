@@ -1,7 +1,7 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from .schemas import FooSchema
+from .schemas import Foo
 from apiflask import HTTPTokenAuth
 
 
@@ -73,7 +73,7 @@ def test_doc_on_async_view(app, client):
 def test_input_on_async_view(app, client):
 
     @app.post('/')
-    @app.input(FooSchema)
+    @app.input(Foo)
     async def index(data):
         return data
 
@@ -86,7 +86,7 @@ def test_input_on_async_view(app, client):
 def test_output_on_async_view(app, client):
 
     @app.get('/foo')
-    @app.output(FooSchema)
+    @app.output(Foo)
     async def foo():
         return {'id': 1, 'name': 'foo'}
 
@@ -107,8 +107,8 @@ def test_async_doc_input_and_output_decorator(app, client):
 
     @app.post('/')
     @app.doc(summary='Test Root Endpoint')
-    @app.input(FooSchema)
-    @app.output(FooSchema)
+    @app.input(Foo)
+    @app.output(Foo)
     async def index(data):
         return data
 

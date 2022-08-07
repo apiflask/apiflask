@@ -413,7 +413,7 @@ on the view function:
 
 ```python hl_lines="2"
 @app.get('/pets/<int:pet_id>')
-@app.output(PetOutSchema)
+@app.output(PetOut)
 def get_pet(pet_id):
     return pets[pet_id]
 ```
@@ -423,7 +423,7 @@ corresponding parameters in the `output` decorator:
 
 ```python hl_lines="2"
 @app.get('/pets/<int:pet_id>')
-@app.output(PetOutSchema, status_code=200, description='Output data of a pet')
+@app.output(PetOut, status_code=200, description='Output data of a pet')
 def get_pet(pet_id):
     return pets[pet_id]
 ```
@@ -450,7 +450,7 @@ on the view function:
 
 ```python hl_lines="2"
 @app.post('/pets')
-@app.input(PetInSchema)
+@app.input(PetIn)
 def create_pet(pet_id):
     pass
 ```
@@ -460,7 +460,7 @@ will be generated instead:
 
 ```python hl_lines="2"
 @app.get('/pets')
-@app.input(PetQuerySchema, location='query')
+@app.input(PetQuery, location='query')
 def get_pets():
     pass
 ```
@@ -502,7 +502,7 @@ you passed.
 To set the OpenAPI spec for schema fields, you can pass a dict with the `metadata` keyword:
 
 ```python
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(metadata={'description': 'The name of the pet.'})
 ```
 
@@ -553,7 +553,7 @@ to `validate`:
 from apiflask import Schema
 from apiflask.fields import String
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(
         required=True,
         validate=Length(0, 10),
@@ -608,7 +608,7 @@ from apiflask import APIFlask, input
 app = APIFlask(__name__)
 
 @app.post('/pets')
-@app.input(PetInSchema, example={'name': 'foo', 'category': 'cat'})
+@app.input(PetIn, example={'name': 'foo', 'category': 'cat'})
 def create_pet():
     pass
 ```
@@ -633,7 +633,7 @@ examples = {
 }
 
 @app.get('/pets')
-@app.output(PetOutSchema, examples=examples)
+@app.output(PetOut, examples=examples)
 def get_pets():
     pass
 ```
@@ -645,7 +645,7 @@ def get_pets():
     you can set the field example (property-level example) in the data schema:
 
     ```python
-    class PetQuerySchema(Schema):
+    class PetQuery(Schema):
         name = String(metadata={'example': 'Flash'})
     ```
 

@@ -51,12 +51,12 @@ def verify_token(token: str) -> t.Union[User, None]:
     return user
 
 
-class TokenSchema(Schema):
+class Token(Schema):
     token = String()
 
 
 @app.post('/token/<int:id>')
-@app.output(TokenSchema)
+@app.output(Token)
 def get_token(id: int):
     if get_user_by_id(id) is None:
         abort(404)
