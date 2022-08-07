@@ -66,12 +66,12 @@ pets = [
 ]
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(required=True, validate=Length(0, 10))
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 
 
-class PetOutSchema(Schema):
+class PetOut(Schema):
     id = Integer()
     name = String()
     category = String()
@@ -84,7 +84,7 @@ def say_hello():
 
 
 @app.get('/pets/<int:pet_id>')
-@app.output(PetOutSchema)
+@app.output(PetOut)
 def get_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)
@@ -94,8 +94,8 @@ def get_pet(pet_id):
 
 
 @app.patch('/pets/<int:pet_id>')
-@app.input(PetInSchema(partial=True))
-@app.output(PetOutSchema)
+@app.input(PetIn(partial=True))
+@app.output(PetOut)
 def update_pet(pet_id, data):
     # the validated and parsed input data will
     # be injected into the view function as a dict
@@ -105,11 +105,6 @@ def update_pet(pet_id, data):
         pets[pet_id][attr] = value
     return pets[pet_id]
 ```
-
-Notice: The `input`, `output`, `doc`, and `auth_required` decorators are now bound
-to application/blueprint instances, use standalone decorators if you are still using
-APIFlask < 0.12, see [here](https://apiflask.com/usage/#move-to-new-api-decorators)
-for more details.
 
 <details>
 <summary>You can also use class-based views with <code>MethodView</code></summary>
@@ -128,12 +123,12 @@ pets = [
 ]
 
 
-class PetInSchema(Schema):
+class PetIn(Schema):
     name = String(required=True, validate=Length(0, 10))
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 
 
-class PetOutSchema(Schema):
+class PetOut(Schema):
     id = Integer()
     name = String()
     category = String()
@@ -152,15 +147,15 @@ class Hello(MethodView):
 @app.route('/pets/<int:pet_id>')
 class Pet(MethodView):
 
-    @app.output(PetOutSchema)
+    @app.output(PetOut)
     def get(self, pet_id):
         """Get a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
         return pets[pet_id]
 
-    @app.input(PetInSchema(partial=True))
-    @app.output(PetOutSchema)
+    @app.input(PetIn(partial=True))
+    @app.output(PetOut)
     def patch(self, pet_id, data):
         """Update a pet"""
         if pet_id > len(pets) - 1:
@@ -206,18 +201,15 @@ Now visit the interactive API documentation (Swagger UI) at <http://localhost:50
 
 ![](https://apiflask.com/_assets/swagger-ui.png)
 
-Or you can change the API documentation UI when creating the APIFlask instance with the `docs_ui` parameter
-([APIFlask 1.1+](https://apiflask.com/changelog/#version-110)):
+Or you can change the API documentation UI when creating the APIFlask instance with the `docs_ui` parameter:
 
 ```py
 app = APIFlask(__name__, docs_ui='redoc')
 ```
 
-Now <http://localhost:5000/docs> will render the API documentation with Redoc:
+Now <http://localhost:5000/docs> will render the API documentation with Redoc.
 
-![](https://apiflask.com/_assets/redoc.png)
-
-Supported `docs_ui` value (UI libraries) include:
+Supported `docs_ui` values (UI libraries) include:
 
 - `swagger-ui` (default value): [Swagger UI](https://github.com/swagger-api/swagger-ui)
 - `redoc`: [Redoc](https://github.com/Redocly/redoc)
@@ -279,8 +271,8 @@ APIFlask accepts marshmallow schema as data schema, uses webargs to validate the
 You can build marshmallow schemas just like before, but APIFlask also exposes some marshmallow APIs for convenience (it's optional, you can still import everything from marshamallow directly):
 
 - `apiflask.Schema`: The base marshmallow schema class.
-- `apiflask.fields`: The marshmallow fields, contain the fields from both marshmallow and Flask-Marshmallow. Beware that the aliases (`Url`, `Str`, `Int`, `Bool`, etc.) were removed (vote in [marshmallow #1828](https://github.com/marshmallow-code/marshmallow/issues/1828) to remove these aliases from marshmallow).
-- `apiflask.validators`: The marshmallow validators (vote in [marshmallow #1829](https://github.com/marshmallow-code/marshmallow/issues/1829) for better names for validate-related APIs in marshmallow).
+- `apiflask.fields`: The marshmallow fields, contain the fields from both marshmallow and Flask-Marshmallow. Beware that the aliases (`Url`, `Str`, `Int`, `Bool`, etc.) were removed.
+- `apiflask.validators`: The marshmallow validators.
 
 ```python
 from apiflask import Schema

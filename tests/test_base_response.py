@@ -1,20 +1,20 @@
 import pytest
 from openapi_spec_validator import validate_spec
 
-from .schemas import FooSchema
+from .schemas import Foo
 from apiflask import Schema
 from apiflask.fields import Field
 from apiflask.fields import Integer
 from apiflask.fields import String
 
 
-class BaseResponseSchema(Schema):
+class BaseResponse(Schema):
     message = String()
     status_code = Integer()
     data = Field()
 
 
-class BadBaseResponseSchema(Schema):
+class BadBaseResponse(Schema):
     message = String()
     status_code = Integer()
     some_data = Field()
@@ -52,10 +52,10 @@ bad_base_response_schema_dict = {
 
 
 def test_output_base_response(app, client):
-    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
+    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
 
     @app.get('/')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def foo():
         data = {'id': '123', 'name': 'test'}
         return {'message': 'Success.', 'status_code': '200', 'data': data}
@@ -73,9 +73,9 @@ def test_output_base_response(app, client):
 @pytest.mark.parametrize(
     'base_schema',
     [
-        BaseResponseSchema,
+        BaseResponse,
         base_response_schema_dict,
-        BadBaseResponseSchema,
+        BadBaseResponse,
         bad_base_response_schema_dict,
         '',
         None
@@ -85,7 +85,7 @@ def test_base_response_spec(app, client, base_schema):
     app.config['BASE_RESPONSE_SCHEMA'] = base_schema
 
     @app.get('/')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def foo():
         data = {'id': '123', 'name': 'test'}
         return {'message': 'Success.', 'status_code': '200', 'data': data}
@@ -94,7 +94,7 @@ def test_base_response_spec(app, client, base_schema):
         with pytest.raises(TypeError) as e:
             app.spec
         assert 'marshmallow' in str(e.value)
-    elif base_schema in [BadBaseResponseSchema, bad_base_response_schema_dict]:
+    elif base_schema in [BadBaseResponse, bad_base_response_schema_dict]:
         with pytest.raises(RuntimeError) as e:
             app.spec
         assert 'data key' in str(e.value)
@@ -108,7 +108,7 @@ def test_base_response_spec(app, client, base_schema):
         # TODO the output schema ref contains unused `'x-scope': ['']` field
         # it seems related to openapi-spec-validator:
         # https://github.com/p1c2u/openapi-spec-validator/issues/53
-        if base_schema in [BaseResponseSchema, base_response_schema_dict]:
+        if base_schema in [BaseResponse, base_response_schema_dict]:
             properties = schema['properties']
             assert properties['data']['$ref'] == schema_ref
             assert properties['status_code'] == {'type': 'integer'}
@@ -121,11 +121,11 @@ def test_base_response_spec(app, client, base_schema):
 def test_base_response_data_key(app, client):
     pytest.skip()
 
-    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
+    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
     app.config['BASE_RESPONSE_DATA_KEY '] = 'data'
 
     @app.get('/')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def foo():
         data = {'id': '123', 'name': 'test'}
         return {'message': 'Success.', 'status_code': '200', 'info': data}
@@ -135,10 +135,10 @@ def test_base_response_data_key(app, client):
 
 
 def test_base_response_204(app, client):
-    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
+    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
 
     @app.get('/')
-    @app.output({}, 204)
+    @app.output({}, status_code=204)
     def foo():
         return ''
 
@@ -149,10 +149,10 @@ def test_base_response_204(app, client):
 
 
 def test_base_response_many(app, client):
-    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
+    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
 
     @app.get('/')
-    @app.output(FooSchema(many=True))
+    @app.output(Foo(many=True))
     def foo():
         data = {'id': '123', 'name': 'test'}
         return {'message': 'Success.', 'status_code': '200', 'data': data}

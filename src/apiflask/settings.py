@@ -44,7 +44,7 @@ VALIDATION_ERROR_SCHEMA: OpenAPISchemaType = validation_error_schema
 HTTP_ERROR_SCHEMA: OpenAPISchemaType = http_error_schema
 BASE_RESPONSE_SCHEMA: t.Optional[OpenAPISchemaType] = None
 BASE_RESPONSE_DATA_KEY: str = 'data'
-# Swagger UI and Redoc
+# API docs
 DOCS_FAVICON: str = 'https://apiflask.com/_assets/favicon.png'
 REDOC_USE_GOOGLE_FONT: bool = True
 REDOC_STANDALONE_JS: str = 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/\

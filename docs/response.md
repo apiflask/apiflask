@@ -37,14 +37,14 @@ from apiflask.fields import Integer
 from apiflask.validators import Range
 
 
-class PetQuerySchema(Schema):
+class PetQuery(Schema):
     page = Integer(load_default=1)  # set default page to 1
     # set default value to 20, and make sure the value is less than 30
     per_page = Integer(load_default=20, validate=Range(max=30))
 ```
 
 Then we create a pet output schema, and a pets schema that contains
-a list of nested `PetOutSchema` schema, and a nested `PaginationSchema`
+a list of nested `PetOut` schema, and a nested `PaginationSchema`
 schema.
 
 ```python
@@ -52,14 +52,14 @@ from apiflask import Schema, PaginationSchema
 from apiflask.fields import Integer, String, List, Nested
 
 
-class PetOutSchema(Schema):
+class PetOut(Schema):
     id = Integer()
     name = String()
     category = String()
 
 
-class PetsOutSchema(Schema):
-    pets = List(Nested(PetOutSchema))
+class PetsOut(Schema):
+    pets = List(Nested(PetOut))
     pagination = Nested(PaginationSchema)
 ```
 
@@ -70,8 +70,8 @@ from apiflask import APIFlask, pagination_builder
 
 
 @app.get('/pets')
-@app.input(PetQuerySchema, 'query')
-@app.output(PetsOutSchema)
+@app.input(PetQuery, location='query')
+@app.output(PetsOut)
 def get_pets(query):
     pagination = PetModel.query.paginate(
         page=query['page'],
@@ -137,7 +137,7 @@ from apiflask.fields import Integer
 
 
 @app.get('/')
-@app.output({'answer': Integer(dump_default=42)}, schema_name='AnswerSchema')
+@app.output({'answer': Integer(dump_default=42)}, schema_name='Answer')
 def get_answer():
     return {'answer': 'Nothing'}
 ```

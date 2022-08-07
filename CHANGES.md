@@ -6,6 +6,18 @@
 Released: -
 
 
+## Version 1.1.1
+
+Released: 2022/8/3
+
+- Improve CI setup and test again Python 3.10 and 3.11.
+- Fix the typing of `APIFlask` path parameters ([issue #329][issue_329]).
+- Update `MethodViewType` usages for Flask 2.2 ([issue #335][issue_335]).
+
+[issue_329]: https://github.com/apiflask/apiflask/issues/329
+[issue_335]: https://github.com/apiflask/apiflask/issues/335
+
+
 ## Version 1.1.0
 
 Released: 2022/7/3

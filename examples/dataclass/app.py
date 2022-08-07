@@ -52,7 +52,7 @@ def get_pets():
 
 @app.post('/pets')
 @app.input(PetIn.Schema)
-@app.output(PetOut.Schema, 201)
+@app.output(PetOut.Schema, status_code=201)
 def create_pet(pet: PetIn):
     pet_id = len(pets)
     pets.append({
@@ -77,7 +77,7 @@ def update_pet(pet_id, pet: PetIn):
 
 
 @app.delete('/pets/<int:pet_id>')
-@app.output({}, 204)
+@app.output({}, status_code=204)
 def delete_pet(pet_id):
     if pet_id > len(pets) - 1:
         abort(404)

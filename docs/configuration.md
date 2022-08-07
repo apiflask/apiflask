@@ -99,7 +99,7 @@ Read more about configuration management in
 
     from .settings import CATEGORIES  # import the configuration variable
 
-    class PetInSchema(Schema):
+    class PetIn(Schema):
         name = String(required=True, validate=Length(0, 10))
         category = String(required=True, validate=OneOf(CATEGORIES))  # use it
     ```
@@ -801,12 +801,12 @@ from apiflask.fields import String, Integer, Field
 
 app = APIFlask(__name__)
 
-class BaseResponseSchema(Schema):
+class BaseResponse(Schema):
     message = String()
     status_code = Integer()
     data = Field()
 
-app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseSchema
+app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
 ```
 
 !!! warning "Version >= 0.9.0"
@@ -832,9 +832,9 @@ app.config['BASE_RESPONSE_DATA_KEY'] = 'data'
     This configuration variable was added in the [version 0.9.0](/changelog/#version-090).
 
 
-## API documentations
+## API documentation
 
-The following configuration variables used to customize API documentations.
+The following configuration variables used to customize API documentation.
 
 
 ### DOCS_FAVICON

@@ -2,7 +2,7 @@ import pytest
 from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
-from .schemas import FooSchema
+from .schemas import Foo
 
 
 def test_doc_summary_and_description(app, client):
@@ -146,7 +146,7 @@ def test_doc_deprecated(app, client):
 
 def test_doc_deprecated_with_methodview(app, client):
     @app.route('/foo')
-    class Foo(MethodView):
+    class FooAPI(MethodView):
         @app.doc(deprecated=True)
         def get(self):
             pass
@@ -159,15 +159,15 @@ def test_doc_deprecated_with_methodview(app, client):
 
 def test_doc_responses(app, client):
     @app.route('/foo')
-    @app.input(FooSchema)
-    @app.output(FooSchema)
+    @app.input(Foo)
+    @app.output(Foo)
     @app.doc(responses={200: 'success', 400: 'bad', 404: 'not found', 500: 'server error'})
     def foo():
         pass
 
     @app.route('/bar')
-    @app.input(FooSchema)
-    @app.output(FooSchema)
+    @app.input(Foo)
+    @app.output(Foo)
     @app.doc(responses=[200, 400, 404, 500])
     def bar():
         pass
@@ -205,17 +205,17 @@ def test_doc_responses(app, client):
 
 def test_doc_responses_with_methodview(app, client):
     @app.route('/foo')
-    class Foo(MethodView):
-        @app.input(FooSchema)
-        @app.output(FooSchema)
+    class FooAPI(MethodView):
+        @app.input(Foo)
+        @app.output(Foo)
         @app.doc(responses={200: 'success', 400: 'bad', 404: 'not found', 500: 'server error'})
         def get(self):
             pass
 
     @app.route('/bar')
-    class Bar(MethodView):
-        @app.input(FooSchema)
-        @app.output(FooSchema)
+    class BarAPI(MethodView):
+        @app.input(Foo)
+        @app.output(Foo)
         @app.doc(responses=[200, 400, 404, 500])
         def get(self):
             pass

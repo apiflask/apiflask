@@ -7,7 +7,7 @@ import flask
 from flask import current_app
 from flask import jsonify
 from flask import Response
-from flask.views import MethodViewType
+from flask.views import MethodView
 from marshmallow import ValidationError as MarshmallowValidationError
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 from webargs.multidictproxy import MultiDictProxy
@@ -116,7 +116,7 @@ class APIScaffold:
             raise RuntimeError('Use the "route" decorator to use the "methods" argument.')
 
         def decorator(f):
-            if isinstance(f, MethodViewType):
+            if isinstance(f, type(MethodView)):
                 raise RuntimeError(
                     'The route shortcuts cannot be used with "MethodView" classes, '
                     'use the "route" decorator instead.'
@@ -238,7 +238,7 @@ class APIScaffold:
         app = APIFlask(__name__)
 
         @app.get('/')
-        @app.input(PetInSchema)
+        @app.input(PetIn)
         def hello(parsed_and_validated_input_data):
             print(parsed_and_validated_input_data)
             return 'Hello'!
@@ -362,7 +362,7 @@ class APIScaffold:
         app = APIFlask(__name__)
 
         @app.get('/')
-        @app.output(PetOutSchema)
+        @app.output(PetOut)
         def hello():
             return the_dict_or_object_match_petout_schema
         ```

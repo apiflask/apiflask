@@ -265,11 +265,11 @@ class APIFlask(APIScaffold, Flask):
         import_name: str,
         title: str = 'APIFlask',
         version: str = '0.1.0',
-        spec_path: str = '/openapi.json',
-        docs_path: str = '/docs',
-        docs_oauth2_redirect_path: str = '/docs/oauth2-redirect',
+        spec_path: t.Optional[str] = '/openapi.json',
+        docs_path: t.Optional[str] = '/docs',
+        docs_oauth2_redirect_path: t.Optional[str] = '/docs/oauth2-redirect',
         docs_ui: str = 'swagger-ui',
-        redoc_path: str = '/redoc',
+        redoc_path: t.Optional[str] = '/redoc',
         openapi_blueprint_url_prefix: t.Optional[str] = None,
         json_errors: bool = True,
         enable_openapi: bool = True,
@@ -396,8 +396,8 @@ class APIFlask(APIScaffold, Flask):
 
         ```python
         @app.get('/pets/<name>/<int:pet_id>/<age>')  # -> name, pet_id, age
-        @app.input(QuerySchema)  # -> query
-        @app.output(PetSchema)  # -> pet
+        @app.input(Query)  # -> query
+        @app.output(Pet)  # -> pet
         def get_pet(name, pet_id, age, query, pet):
             pass
         ```
@@ -560,7 +560,7 @@ class APIFlask(APIScaffold, Flask):
         """Register a blueprint for OpenAPI support.
 
         The name of the blueprint is "openapi". This blueprint will hold the view
-        functions for spec file, Swagger UI and Redoc.
+        functions for spec file and API docs.
 
         *Version changed: 1.1.0*
 
@@ -578,7 +578,7 @@ class APIFlask(APIScaffold, Flask):
 
         if self.spec_path:
             @bp.route(self.spec_path)
-            def spec() -> ResponseReturnValueType:
+            def spec():
                 if self.config['SPEC_FORMAT'] == 'json':
                     response = jsonify(self._get_spec('json'))
                     response.mimetype = self.config['JSON_SPEC_MIMETYPE']
@@ -594,7 +594,7 @@ class APIFlask(APIScaffold, Flask):
                 )
 
             @bp.route(self.docs_path)
-            def docs() -> str:
+            def docs():
                 return render_template_string(
                     ui_templates[self.docs_ui],
                     title=self.title,
@@ -610,7 +610,7 @@ class APIFlask(APIScaffold, Flask):
 
         if self.redoc_path:
             @bp.route(self.redoc_path)
-            def redoc() -> str:
+            def redoc():
                 warnings.warn(
                     'The `/redoc` path and `redoc_path` parameter is deprecated '
                     'and will be removed in 2.0, Set `APIFlask(docs_ui="redoc")` '

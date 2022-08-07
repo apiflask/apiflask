@@ -2,25 +2,25 @@ from flask import make_response
 from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
-from .schemas import FooSchema
-from .schemas import QuerySchema
+from .schemas import Foo
+from .schemas import Query
 from apiflask.fields import String
 
 
 def test_output(app, client):
     @app.route('/foo')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def foo():
         return {'name': 'bar'}
 
     @app.route('/bar')
-    @app.output(FooSchema, status_code=201)
+    @app.output(Foo, status_code=201)
     def bar():
         return {'name': 'foo'}
 
     @app.route('/baz')
-    @app.input(QuerySchema, 'query')
-    @app.output(FooSchema, status_code=201)
+    @app.input(Query, location='query')
+    @app.output(Foo, status_code=201)
     def baz(query):
         if query['id'] == 1:
             return {'name': 'baz'}, 202
@@ -61,17 +61,17 @@ def test_output(app, client):
 
 def test_output_with_methodview(app, client):
     @app.route('/')
-    class Foo(MethodView):
-        @app.output(FooSchema)
+    class FooAPI(MethodView):
+        @app.output(Foo)
         def get(self):
             return {'name': 'bar'}
 
-        @app.output(FooSchema, status_code=201)
+        @app.output(Foo, status_code=201)
         def post(self):
             return {'name': 'foo'}
 
-        @app.input(QuerySchema, 'query')
-        @app.output(FooSchema, status_code=201)
+        @app.input(Query, location='query')
+        @app.output(Foo, status_code=201)
         def delete(self, query):
             if query['id'] == 1:
                 return {'name': 'baz'}, 202
@@ -184,12 +184,12 @@ def test_output_body_example(app, client):
     }
 
     @app.get('/foo')
-    @app.output(FooSchema, example=example)
+    @app.output(Foo, example=example)
     def foo():
         pass
 
     @app.get('/bar')
-    @app.output(FooSchema, examples=examples)
+    @app.output(Foo, examples=examples)
     def bar():
         pass
 
@@ -204,13 +204,13 @@ def test_output_body_example(app, client):
 
 def test_output_with_empty_dict_as_schema(app, client):
     @app.delete('/foo')
-    @app.output({}, 204)
+    @app.output({}, status_code=204)
     def delete_foo():
         return ''
 
     @app.route('/bar')
     class Bar(MethodView):
-        @app.output({}, 204)
+        @app.output({}, status_code=204)
         def delete(self):
             return ''
 
@@ -228,7 +228,7 @@ def test_output_with_empty_dict_as_schema(app, client):
 
 def test_output_response_object_directly(app, client):
     @app.get('/foo')
-    @app.output(FooSchema)
+    @app.output(Foo)
     def foo():
         return make_response({'message': 'hello'})
 
@@ -250,7 +250,7 @@ def test_response_links(app, client):
     }
 
     @app.get('/foo')
-    @app.output(FooSchema, links=links)
+    @app.output(Foo, links=links)
     def foo():
         pass
 
@@ -274,7 +274,7 @@ def test_response_links_ref(app, client):
         return spec
 
     @app.get('/foo')
-    @app.output(FooSchema, links=links)
+    @app.output(Foo, links=links)
     def foo():
         pass
 

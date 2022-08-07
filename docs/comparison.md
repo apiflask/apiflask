@@ -13,14 +13,16 @@ differences between APIFlask and similar projects.
 ## APIFlask vs FastAPI
 
 - For the web part, FastAPI builds on top of Starlette, while APIFlask builts on top of
-Flask.
+  Flask.
 - For the data part (serialization/deserialization, OpenAPI support), FastAPI relies
-on Pydantic, while APIFlask uses marshmallow-code projects (marshmallow, webargs, apispec).
+  on Pydantic, while APIFlask uses marshmallow-code projects (marshmallow, webargs, apispec).
 - APIFlask builds on top of Flask, so it's compatible with Flask extensions.
 - FastAPI support async. APIFlask will have the basic async support with Flask 2.0.
 - APIFlask provides more decorators to help organize things better.
 - FastAPI injects the input data as an object, while APIFlask passes it as a dict.
 - APIFlask has built-in class-based views support based on Flask's `MethodView`.
+- On top of Swagger UI and Redoc, APIFlask supports more API documentation tools:
+  Elements, RapiDoc, and RapiPDF.
 
 
 ## APIFlask vs APIFairy/flask-smorest
@@ -68,8 +70,8 @@ Assume a view like this:
 
 ```python
 @app.get('/<category>/articles/<int:article_id>')  # category, article_id
-@app.input(ArticleQuerySchema, location='query')  # query
-@app.input(ArticleInSchema)  # data
+@app.input(ArticleQuery, location='query')  # query
+@app.input(ArticleIn)  # data
 def get_article(category, article_id, query, data):
     pass
 ```
