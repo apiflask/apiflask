@@ -92,6 +92,12 @@ def test_swagger_ui_oauth_config(app, client):
 
 def test_elements_config():
     app = APIFlask(__name__, docs_ui='elements')
+
+    rv = app.test_client().get('/docs')
+    assert rv.status_code == 200
+    # test default router
+    assert b'router="hash"' in rv.data
+
     app.config['ELEMENTS_CONFIG'] = {
         'hideTryIt': False,
         'router': 'memory'
