@@ -47,13 +47,13 @@ BASE_RESPONSE_DATA_KEY: str = 'data'
 # API docs
 DOCS_FAVICON: str = 'https://apiflask.com/_assets/favicon.png'
 REDOC_USE_GOOGLE_FONT: bool = True
-REDOC_STANDALONE_JS: str = 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/\
+REDOC_STANDALONE_JS: str = 'https://cdn.redoc.ly/redoc/latest/bundles/\
 redoc.standalone.js'  # TODO: rename to REDOC_JS
 REDOC_CONFIG: t.Optional[dict] = None
-SWAGGER_UI_CSS: str = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css'
-SWAGGER_UI_BUNDLE_JS: str = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/\
+SWAGGER_UI_CSS: str = 'https://unpkg.com/swagger-ui-dist/swagger-ui.css'
+SWAGGER_UI_BUNDLE_JS: str = 'https://unpkg.com/swagger-ui-dist/\
 swagger-ui-bundle.js'  # TODO: rename to SWAGGER_UI_JS
-SWAGGER_UI_STANDALONE_PRESET_JS: str = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/\
+SWAGGER_UI_STANDALONE_PRESET_JS: str = 'https://unpkg.com/swagger-ui-dist/\
 swagger-ui-standalone-preset.js'  # TODO: rename to SWAGGER_UI_STANDALONE_JS
 SWAGGER_UI_LAYOUT: str = 'BaseLayout'
 SWAGGER_UI_CONFIG: t.Optional[dict] = None
