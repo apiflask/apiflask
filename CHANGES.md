@@ -6,6 +6,13 @@
 Released: -
 
 
+## Version 1.1.2
+
+Released: 2022/8/13
+
+- Set default Elements router to `hash` to fix incorrect path updates.
+
+
 ## Version 1.1.1
 
 Released: 2022/8/3
