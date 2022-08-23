@@ -46,15 +46,15 @@ def test_json_errors_reuse_werkzeug_headers(app, client):
     def foo():
         pass
 
-    rv = client.post('/foo')
-    assert rv.status_code == 405
-    assert 'Allow' in rv.headers
-
     # test manually raise 405
     @app.get('/bar')
     def bar():
         from werkzeug.exceptions import MethodNotAllowed
         raise MethodNotAllowed(valid_methods=['GET'])
+
+    rv = client.post('/foo')
+    assert rv.status_code == 405
+    assert 'Allow' in rv.headers
 
     rv = client.get('/bar')
     assert rv.status_code == 405
@@ -189,26 +189,27 @@ def test_skip_raw_blueprint(app, client):
 
 
 def test_dispatch_static_request(app, client):
-    # keyword arguments
-    rv = client.get('/static/hello.css')  # endpoint: static
-    assert rv.status_code == 404
-
     # positional arguments
     @app.get('/mystatic/<int:pet_id>')
     @app.input(Foo)
     def mystatic(pet_id, foo):  # endpoint: mystatic
         return {'pet_id': pet_id, 'foo': foo}
 
+    # positional arguments
+    # blueprint static route accepts both keyword/positional arguments
+    bp = APIBlueprint('foo', __name__, static_folder='static')
+    app.register_blueprint(bp, url_prefix='/foo')
+
     rv = client.get('/mystatic/2', json={'id': 1, 'name': 'foo'})
     assert rv.status_code == 200
     assert rv.json['pet_id'] == 2
     assert rv.json['foo'] == {'id': 1, 'name': 'foo'}
 
-    # positional arguments
-    # blueprint static route accepts both keyword/positional arguments
-    bp = APIBlueprint('foo', __name__, static_folder='static')
-    app.register_blueprint(bp, url_prefix='/foo')
     rv = client.get('/foo/static/hello.css')  # endpoint: foo.static
+    assert rv.status_code == 404
+
+    # keyword arguments
+    rv = client.get('/static/hello.css')  # endpoint: static
     assert rv.status_code == 404
 
 
