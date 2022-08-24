@@ -20,7 +20,7 @@ try:
     from flask.globals import request_ctx
 except ImportError:
     from flask.globals import _request_ctx_stack
-    request_ctx = None
+    request_ctx = None  # type: ignore
 from flask.wrappers import Response
 
 with warnings.catch_warnings():
