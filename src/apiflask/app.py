@@ -16,7 +16,11 @@ from flask import Flask
 from flask import jsonify
 from flask import render_template_string
 from flask.config import ConfigAttribute
-from flask.globals import _request_ctx_stack
+try:
+    from flask.globals import request_ctx
+except ImportError:
+    from flask.globals import _request_ctx_stack
+    request_ctx = None  # type: ignore
 from flask.wrappers import Response
 
 with warnings.catch_warnings():
@@ -406,7 +410,7 @@ class APIFlask(APIScaffold, Flask):
 
         *Version added: 0.2.0*
         """
-        req = _request_ctx_stack.top.request
+        req = request_ctx.request if request_ctx else _request_ctx_stack.top.request
         if req.routing_exception is not None:
             self.raise_routing_exception(req)
         rule = req.url_rule
