@@ -711,7 +711,7 @@ app.config['NOT_FOUND_DESCRIPTION'] = 'Missing'
 The status code of validation error response.
 
 - Type: `int`
-- Default value: `400`
+- Default value: `422`
 - Examples:
 
 ```python

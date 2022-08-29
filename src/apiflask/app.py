@@ -503,7 +503,7 @@ class APIFlask(APIScaffold, Flask):
         so you can get error information via it's attributes:
 
         - status_code: If the error is triggered by a validation error, the value will be
-          400 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
+          422 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
           If the error is triggered by [`HTTPError`][apiflask.exceptions.HTTPError]
           or [`abort`][apiflask.exceptions.abort], it will be the status code
           you passed. Otherwise, it will be the status code set by Werkzueg when

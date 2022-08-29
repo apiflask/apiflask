@@ -38,7 +38,7 @@ def test_file_field(app, client):
         },
         content_type='multipart/form-data'
     )
-    assert rv.status_code == 400
+    assert rv.status_code == 422
     assert rv.json['detail']['files']['image'] == ['Not a valid file.']
 
 
@@ -77,5 +77,5 @@ def test_multiple_file_field(app, client):
         },
         content_type='multipart/form-data'
     )
-    assert rv.status_code == 400
+    assert rv.status_code == 422
     assert rv.json['detail']['files']['images']['2'] == ['Not a valid file.']

@@ -53,7 +53,7 @@ def test_response_description_config(app, client):
 
 
 def test_validation_error_status_code_and_description(app, client):
-    app.config['VALIDATION_ERROR_STATUS_CODE'] = 422
+    app.config['VALIDATION_ERROR_STATUS_CODE'] = 400
     app.config['VALIDATION_ERROR_DESCRIPTION'] = 'Bad'
 
     @app.post('/foo')
@@ -64,9 +64,9 @@ def test_validation_error_status_code_and_description(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert rv.json['paths']['/foo']['post']['responses']['422'] is not None
+    assert rv.json['paths']['/foo']['post']['responses']['400'] is not None
     assert rv.json['paths']['/foo']['post']['responses'][
-        '422']['description'] == 'Bad'
+        '400']['description'] == 'Bad'
 
 
 @pytest.mark.parametrize('schema', [
@@ -84,8 +84,8 @@ def test_validation_error_schema(app, client, schema):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert rv.json['paths']['/foo']['post']['responses']['400']
-    assert rv.json['paths']['/foo']['post']['responses']['400'][
+    assert rv.json['paths']['/foo']['post']['responses']['422']
+    assert rv.json['paths']['/foo']['post']['responses']['422'][
         'description'] == 'Validation error'
     assert 'ValidationError' in rv.json['components']['schemas']
 

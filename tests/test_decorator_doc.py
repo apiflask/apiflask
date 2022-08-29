@@ -194,7 +194,7 @@ def test_doc_responses(app, client):
     assert rv.json['paths']['/bar']['get']['responses'][
         '200']['description'] == 'Successful response'
     assert rv.json['paths']['/bar']['get']['responses'][
-        '400']['description'] == 'Validation error'
+        '400']['description'] == 'Bad Request'
     assert '404' in rv.json['paths']['/foo']['get']['responses']
     assert rv.json['paths']['/bar']['get']['responses'][
         '404']['description'] == 'Not Found'
@@ -242,7 +242,7 @@ def test_doc_responses_with_methodview(app, client):
     assert rv.json['paths']['/bar']['get']['responses'][
         '200']['description'] == 'Successful response'
     assert rv.json['paths']['/bar']['get']['responses'][
-        '400']['description'] == 'Validation error'
+        '400']['description'] == 'Bad Request'
     assert '404' in rv.json['paths']['/foo']['get']['responses']
     assert rv.json['paths']['/bar']['get']['responses'][
         '404']['description'] == 'Not Found'
