@@ -278,7 +278,7 @@ class APIFlask(APIScaffold, Flask):
         openapi_blueprint_url_prefix: t.Optional[str] = None,
         json_errors: bool = True,
         enable_openapi: bool = True,
-        spec_plugins: t.Optional[list[BasePlugin]] = None,
+        spec_plugins: t.Optional[t.List[BasePlugin]] = None,
         static_url_path: t.Optional[str] = None,
         static_folder: str = 'static',
         static_host: t.Optional[str] = None,
