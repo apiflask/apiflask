@@ -357,7 +357,7 @@ class APIFlask(APIScaffold, Flask):
         self.error_callback: ErrorCallbackType = self._error_handler
         self.schema_name_resolver = self._schema_name_resolver
 
-        self.spec_plugins: list[BasePlugin] = spec_plugins or []
+        self.spec_plugins: t.List[BasePlugin] = spec_plugins or []
         self._spec: t.Optional[t.Union[dict, str]] = None
         self._auth_blueprints: t.Dict[str, t.Dict[str, t.Any]] = {}
 
@@ -860,7 +860,7 @@ class APIFlask(APIScaffold, Flask):
             schema_name_resolver=self.schema_name_resolver
         )
 
-        spec_plugins: list[BasePlugin] = [ma_plugin, *self.spec_plugins]
+        spec_plugins: t.List[BasePlugin] = [ma_plugin, *self.spec_plugins]
 
         spec: APISpec = APISpec(
             title=self.title,
