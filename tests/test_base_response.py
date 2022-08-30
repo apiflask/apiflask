@@ -117,10 +117,7 @@ def test_base_response_spec(app, client, base_schema):
             assert schema['$ref'] == schema_ref
 
 
-# TODO pytest seems can't catch the ValueError happened in the output decorator
 def test_base_response_data_key(app, client):
-    pytest.skip()
-
     app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
     app.config['BASE_RESPONSE_DATA_KEY '] = 'data'
 
@@ -130,8 +127,9 @@ def test_base_response_data_key(app, client):
         data = {'id': '123', 'name': 'test'}
         return {'message': 'Success.', 'status_code': '200', 'info': data}
 
-    with pytest.raises(ValueError):
-        client.get('/')
+    with app.test_request_context('/'):
+        with pytest.raises(RuntimeError, match=r'The data key.*is not found in the returned dict.'):
+            foo()
 
 
 def test_base_response_204(app, client):
