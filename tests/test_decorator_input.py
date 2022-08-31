@@ -186,7 +186,7 @@ def test_input_with_path_location(app, client):
     @app.get('/<image_type>')
     @app.input(EnumPathParameter, location='path')
     def index(image_type, _):
-        return image_type
+        return {'image_type': image_type}
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
@@ -204,7 +204,7 @@ def test_input_with_path_location(app, client):
 
     rv = client.get('/png')
     assert rv.status_code == 200
-    assert rv.text == 'png'
+    assert rv.json == {'image_type': 'png'}
 
     rv = client.get('/gif')
     assert rv.status_code == 400
