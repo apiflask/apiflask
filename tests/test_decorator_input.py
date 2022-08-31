@@ -6,6 +6,7 @@ from openapi_spec_validator import validate_spec
 from werkzeug.datastructures import FileStorage
 
 from .schemas import Bar
+from .schemas import EnumPathParameter
 from .schemas import Files
 from .schemas import Foo
 from .schemas import Form
@@ -179,6 +180,38 @@ def test_input_with_form_and_files_location(app, client):
     )
     assert rv.status_code == 200
     assert rv.json == {'name': True, 'image': True}
+
+
+def test_input_with_path_location(app, client):
+    @app.get('/<image_type>')
+    @app.input(EnumPathParameter, location='path')
+    def index(image_type, _):
+        return image_type
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    # TODO: Failed validating 'oneOf' in schema
+    # https://github.com/p1c2u/openapi-spec-validator/issues/113
+    # validate_spec(rv.json)
+    assert '/{image_type}' in rv.json['paths']
+    assert len(rv.json['paths']['/{image_type}']['get']['parameters']) == 1
+    assert rv.json['paths']['/{image_type}']['get']['parameters'][0]['in'] == 'path'
+    assert rv.json['paths']['/{image_type}']['get']['parameters'][0]['name'] == 'image_type'
+    assert rv.json['paths']['/{image_type}']['get']['parameters'][0]['schema'] == {
+        'type': 'string',
+        'enum': ['jpg', 'png', 'tiff', 'webp'],
+    }
+
+    rv = client.get('/png')
+    assert rv.status_code == 200
+    assert rv.text == 'png'
+
+    rv = client.get('/gif')
+    assert rv.status_code == 400
+    assert rv.json['message'] == 'Validation error'
+    assert 'path' in rv.json['detail']
+    assert 'image_type' in rv.json['detail']['path']
+    assert rv.json['detail']['path']['image_type'] == ['Must be one of: jpg, png, tiff, webp.']
 
 
 @pytest.mark.parametrize('locations', [
