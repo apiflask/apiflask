@@ -6,6 +6,17 @@
 Released: -
 
 
+## Version 1.1.3
+
+Released: 2022/9/4
+
+- Fix some tests and import statements for Flask 2.2 ([pr #343][pr_343]).
+- Pin Flask < 2.2 as a temp fix for the breaking changes of class-based view support ([issue #341][issue_341]).
+
+[pr_343]: https://github.com/apiflask/apiflask/pull/343
+[issue_341]: https://github.com/apiflask/apiflask/issues/341
+
+
 ## Version 1.1.2
 
 Released: 2022/8/13
