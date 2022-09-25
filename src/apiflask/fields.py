@@ -35,6 +35,7 @@ from marshmallow.fields import TimeDelta as TimeDelta
 from marshmallow.fields import Tuple as Tuple
 from marshmallow.fields import URL as URL
 from marshmallow.fields import UUID as UUID
+from marshmallow.fields import Enum as Enum
 from webargs.fields import DelimitedList as DelimitedList
 from webargs.fields import DelimitedTuple as DelimitedTuple
 
