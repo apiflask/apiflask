@@ -5,6 +5,8 @@
 
 Released: -
 
+- Add `Enum` field from marshmallow 3.18.
+
 
 ## Version 1.1.3
 
