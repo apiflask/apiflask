@@ -5,6 +5,11 @@
 
 Released: -
 
+- Add `spec_plugins` param to `APIFlask` class to support using custom apispec plugins ([issue #349][issue_349]).
+
+
+[issue_349]: https://github.com/apiflask/apiflask/issues/349
+
 
 ## Version 1.1.2
 

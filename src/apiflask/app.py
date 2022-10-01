@@ -312,11 +312,15 @@ class APIFlask(APIScaffold, Flask):
                 `docs_path`, etc.), defaults to `None`.
             json_errors: If `True`, APIFlask will return a JSON response for HTTP errors.
             enable_openapi: If `False`, will disable OpenAPI spec and API docs views.
-            spec_plugins: List of APISpec-compatible plugins (subclasses of `apispec.BasePlugin`),
-                defaults to `None`. The `MarshmallowPlugin` for APISpec is already included
+            spec_plugins: List of apispec-compatible plugins (subclasses of `apispec.BasePlugin`),
+                defaults to `None`. The `MarshmallowPlugin` for apispec is already included
                 by default, so it doesn't need to be provided here.
 
         Other keyword arguments are directly passed to `flask.Flask`.
+
+        *Version changed: 1.2.0*
+
+        - Add `spec_plugins` parameter.
 
         *Version changed: 1.1.0*
 
