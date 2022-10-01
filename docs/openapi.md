@@ -41,6 +41,22 @@ a spec process function to update the spec before it returns. See
 *[Register a spec processor](#register-a-spec-processor)* for more details.
 
 
+### Automation behaviors
+
+When generating the OpenAPI spec from your code, APIFlask has some automation behaviors:
+
+- Generate a default operation summary from the name of the view function.
+- Generate a default operation description from the docstring of the view function.
+- Generate tags from the name of blueprints.
+- Add a default 200 response for any views registered to the application.
+- Add a 400 response if the view is decorated with `app.input`.
+- Add a 401 response if the view is decorated with `app.auth_required`.
+- Add a 404 response if the view's URL rule contains variables.
+
+All these automation behaviors can be disabled with
+[the corresponding configurations](/configuration/#automation-behavior-control).
+
+
 ### The spec format
 
 The default format of the OpenAPI spec is JSON, while YAML is also supported.
