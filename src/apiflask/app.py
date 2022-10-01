@@ -1172,7 +1172,13 @@ class APIFlask(APIScaffold, Flask):
 
             # parameters
             path_arguments: t.Iterable = re.findall(r'<(([^<:]+:)?([^>]+))>', rule.rule)
-            if path_arguments:
+            if (
+                path_arguments
+                and not (
+                    hasattr(view_func, '_spec')
+                    and view_func._spec.get('omit_default_path_parameters', False)
+                )
+            ):
                 arguments: t.List[t.Dict[str, str]] = []
                 for _, argument_type, argument_name in path_arguments:
                     argument = get_argument(argument_type, argument_name)
