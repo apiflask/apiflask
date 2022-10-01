@@ -5,10 +5,23 @@
 
 Released: -
 
+- Add `Enum` field from marshmallow 3.18.
+- Fix OpenAPI spec generating for path parameters when path schema is provided ([issue #350][issue_350]).
 - Add `spec_plugins` param to `APIFlask` class to support using custom apispec plugins ([issue #349][issue_349]).
 
-
+[issue_350]: https://github.com/apiflask/apiflask/issues/350
 [issue_349]: https://github.com/apiflask/apiflask/issues/349
+
+
+## Version 1.1.3
+
+Released: 2022/9/4
+
+- Fix some tests and import statements for Flask 2.2 ([pr #343][pr_343]).
+- Pin Flask < 2.2 as a temp fix for the breaking changes of class-based view support ([issue #341][issue_341]).
+
+[pr_343]: https://github.com/apiflask/apiflask/pull/343
+[issue_341]: https://github.com/apiflask/apiflask/issues/341
 
 
 ## Version 1.1.2

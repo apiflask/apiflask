@@ -18,7 +18,7 @@ from flask import jsonify
 from flask import render_template_string
 from flask.config import ConfigAttribute
 try:
-    from flask.globals import request_ctx
+    from flask.globals import request_ctx  # type: ignore
 except ImportError:
     from flask.globals import _request_ctx_stack
     request_ctx = None  # type: ignore
@@ -420,7 +420,7 @@ class APIFlask(APIScaffold, Flask):
 
         *Version added: 0.2.0*
         """
-        req = request_ctx.request if request_ctx else _request_ctx_stack.top.request
+        req = request_ctx.request if request_ctx else _request_ctx_stack.top.request  # type: ignore
         if req.routing_exception is not None:
             self.raise_routing_exception(req)
         rule = req.url_rule
@@ -1185,7 +1185,13 @@ class APIFlask(APIScaffold, Flask):
 
             # parameters
             path_arguments: t.Iterable = re.findall(r'<(([^<:]+:)?([^>]+))>', rule.rule)
-            if path_arguments:
+            if (
+                path_arguments
+                and not (
+                    hasattr(view_func, '_spec')
+                    and view_func._spec.get('omit_default_path_parameters', False)
+                )
+            ):
                 arguments: t.List[t.Dict[str, str]] = []
                 for _, argument_type, argument_name in path_arguments:
                     argument = get_argument(argument_type, argument_name)
