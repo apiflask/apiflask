@@ -7,8 +7,10 @@ Released: -
 
 - Add `Enum` field from marshmallow 3.18.
 - Fix OpenAPI spec generating for path parameters when path schema is provided ([issue #350][issue_350]).
+- Add `spec_plugins` param to `APIFlask` class to support using custom apispec plugins ([issue #349][issue_349]).
 
 [issue_350]: https://github.com/apiflask/apiflask/issues/350
+[issue_349]: https://github.com/apiflask/apiflask/issues/349
 
 
 ## Version 1.1.3
