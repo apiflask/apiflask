@@ -5,6 +5,7 @@ from apiflask.fields import File
 from apiflask.fields import Integer
 from apiflask.fields import List
 from apiflask.fields import String
+from apiflask.validators import OneOf
 
 
 class Foo(Schema):
@@ -50,6 +51,10 @@ class FilesList(Schema):
 class FormAndFiles(Schema):
     name = String()
     image = File()
+
+
+class EnumPathParameter(Schema):
+    image_type = String(validate=OneOf(['jpg', 'png', 'tiff', 'webp']))
 
 
 class Pagination(Schema):

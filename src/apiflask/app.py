@@ -10,6 +10,7 @@ if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pra
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # pragma: no cover
 
 from apispec import APISpec
+from apispec import BasePlugin
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Blueprint
 from flask import Flask
@@ -17,7 +18,7 @@ from flask import jsonify
 from flask import render_template_string
 from flask.config import ConfigAttribute
 try:
-    from flask.globals import request_ctx
+    from flask.globals import request_ctx  # type: ignore
 except ImportError:
     from flask.globals import _request_ctx_stack
     request_ctx = None  # type: ignore
@@ -277,6 +278,7 @@ class APIFlask(APIScaffold, Flask):
         openapi_blueprint_url_prefix: t.Optional[str] = None,
         json_errors: bool = True,
         enable_openapi: bool = True,
+        spec_plugins: t.Optional[t.List[BasePlugin]] = None,
         static_url_path: t.Optional[str] = None,
         static_folder: str = 'static',
         static_host: t.Optional[str] = None,
@@ -310,8 +312,15 @@ class APIFlask(APIScaffold, Flask):
                 `docs_path`, etc.), defaults to `None`.
             json_errors: If `True`, APIFlask will return a JSON response for HTTP errors.
             enable_openapi: If `False`, will disable OpenAPI spec and API docs views.
+            spec_plugins: List of apispec-compatible plugins (subclasses of `apispec.BasePlugin`),
+                defaults to `None`. The `MarshmallowPlugin` for apispec is already included
+                by default, so it doesn't need to be provided here.
 
         Other keyword arguments are directly passed to `flask.Flask`.
+
+        *Version changed: 1.2.0*
+
+        - Add `spec_plugins` parameter.
 
         *Version changed: 1.1.0*
 
@@ -352,6 +361,7 @@ class APIFlask(APIScaffold, Flask):
         self.error_callback: ErrorCallbackType = self._error_handler
         self.schema_name_resolver = self._schema_name_resolver
 
+        self.spec_plugins: t.List[BasePlugin] = spec_plugins or []
         self._spec: t.Optional[t.Union[dict, str]] = None
         self._auth_blueprints: t.Dict[str, t.Dict[str, t.Any]] = {}
 
@@ -410,7 +420,7 @@ class APIFlask(APIScaffold, Flask):
 
         *Version added: 0.2.0*
         """
-        req = request_ctx.request if request_ctx else _request_ctx_stack.top.request
+        req = request_ctx.request if request_ctx else _request_ctx_stack.top.request  # type: ignore
         if req.routing_exception is not None:
             self.raise_routing_exception(req)
         rule = req.url_rule
@@ -853,11 +863,14 @@ class APIFlask(APIScaffold, Flask):
         ma_plugin: MarshmallowPlugin = MarshmallowPlugin(
             schema_name_resolver=self.schema_name_resolver
         )
+
+        spec_plugins: t.List[BasePlugin] = [ma_plugin, *self.spec_plugins]
+
         spec: APISpec = APISpec(
             title=self.title,
             version=self.version,
             openapi_version=self.config['OPENAPI_VERSION'],
-            plugins=[ma_plugin],
+            plugins=spec_plugins,
             info=self._make_info(),
             tags=self._make_tags(),
             **kwargs
@@ -1172,7 +1185,13 @@ class APIFlask(APIScaffold, Flask):
 
             # parameters
             path_arguments: t.Iterable = re.findall(r'<(([^<:]+:)?([^>]+))>', rule.rule)
-            if path_arguments:
+            if (
+                path_arguments
+                and not (
+                    hasattr(view_func, '_spec')
+                    and view_func._spec.get('omit_default_path_parameters', False)
+                )
+            ):
                 arguments: t.List[t.Dict[str, str]] = []
                 for _, argument_type, argument_name in path_arguments:
                     argument = get_argument(argument_type, argument_name)

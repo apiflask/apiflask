@@ -24,6 +24,9 @@ extra:
     - name: English
       link: https://apiflask.com
       lang: en
+    - name: فارسی
+      link: https://fa.apiflask.com
+      lang: fa
     - name: 简体中文
       link: https://zh.apiflask.com
       lang: zh
