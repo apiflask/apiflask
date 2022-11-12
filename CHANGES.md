@@ -5,6 +5,10 @@
 
 Released: -
 
+- Change the status code of request validation error from 400 to 422 ([issue #345][issue_345]).
+
+[issue_345]: https://github.com/apiflask/apiflask/issues/345
+
 
 ## Version 1.1.2
 

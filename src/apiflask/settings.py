@@ -67,3 +67,6 @@ RAPIDOC_THEME: str = 'light'
 RAPIDOC_CONFIG: t.Optional[dict] = None
 RAPIPDF_JS: str = 'https://unpkg.com/rapipdf/dist/rapipdf-min.js'
 RAPIPDF_CONFIG: t.Optional[dict] = None
+
+# Version changed: 1.2.0
+# Change VALIDATION_ERROR_STATUS_CODE from 400 to 422.
