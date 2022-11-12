@@ -207,7 +207,7 @@ def test_input_with_path_location(app, client):
     assert rv.json == {'image_type': 'png'}
 
     rv = client.get('/gif')
-    assert rv.status_code == 400
+    assert rv.status_code == 422
     assert rv.json['message'] == 'Validation error'
     assert 'path' in rv.json['detail']
     assert 'image_type' in rv.json['detail']['path']
