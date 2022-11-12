@@ -108,7 +108,7 @@ The value of `<location>` is where the validation error happened.
 
 - status code
 
-The default status code of validation error is 400, you can change this via the
+The default status code of validation error is 422, you can change this via the
 config `VALIDATION_ERROR_STATUS_CODE`.
 
 

@@ -108,7 +108,7 @@ def test_create_pet(client):
 ])
 def test_create_pet_with_bad_data(client, data):
     rv = client.post('/pets', json=data)
-    assert rv.status_code == 400
+    assert rv.status_code == 422
     assert rv.json
 
 
@@ -144,7 +144,7 @@ def test_update_pet(client):
 ])
 def test_update_pet_with_bad_data(client, data):
     rv = client.patch('/pets/1', json=data)
-    assert rv.status_code == 400
+    assert rv.status_code == 422
     assert rv.json
 
 
@@ -194,7 +194,7 @@ def test_get_pets_pagination(client):
 @pytest.mark.parametrize('client', ['pagination'], indirect=True)
 def test_get_pets_pagination_with_bad_data(client):
     rv = client.get('/pets?per_page=100')
-    assert rv.status_code == 400
+    assert rv.status_code == 422
 
     rv = client.get('/pets?page=100')
     assert rv.status_code == 404

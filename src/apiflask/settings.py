@@ -38,7 +38,7 @@ SUCCESS_DESCRIPTION: str = 'Successful response'
 NOT_FOUND_DESCRIPTION: str = 'Not found'
 VALIDATION_ERROR_DESCRIPTION: str = 'Validation error'
 AUTH_ERROR_DESCRIPTION: str = 'Authentication error'
-VALIDATION_ERROR_STATUS_CODE: int = 400
+VALIDATION_ERROR_STATUS_CODE: int = 422
 AUTH_ERROR_STATUS_CODE: int = 401
 VALIDATION_ERROR_SCHEMA: OpenAPISchemaType = validation_error_schema
 HTTP_ERROR_SCHEMA: OpenAPISchemaType = http_error_schema
@@ -67,3 +67,6 @@ RAPIDOC_THEME: str = 'light'
 RAPIDOC_CONFIG: t.Optional[dict] = None
 RAPIPDF_JS: str = 'https://unpkg.com/rapipdf/dist/rapipdf-min.js'
 RAPIPDF_CONFIG: t.Optional[dict] = None
+
+# Version changed: 1.2.0
+# Change VALIDATION_ERROR_STATUS_CODE from 400 to 422.

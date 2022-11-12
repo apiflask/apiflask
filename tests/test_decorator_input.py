@@ -29,7 +29,7 @@ def test_input(app, client):
 
     for rule in ['/foo', '/bar']:
         rv = client.post(rule)
-        assert rv.status_code == 400
+        assert rv.status_code == 422
         assert rv.json == {
             'detail': {
                 'json': {'name': ['Missing data for required field.']}
@@ -38,7 +38,7 @@ def test_input(app, client):
         }
 
         rv = client.post(rule, json={'id': 1})
-        assert rv.status_code == 400
+        assert rv.status_code == 422
         assert rv.json == {
             'detail': {
                 'json': {'name': ['Missing data for required field.']}
@@ -69,7 +69,7 @@ def test_input_with_query_location(app, client):
         return {'name': schema['name'], 'name2': schema2['name2']}
 
     rv = client.post('/foo')
-    assert rv.status_code == 400
+    assert rv.status_code == 422
     assert rv.json == {
         'detail': {
             'query': {'name': ['Missing data for required field.']}
@@ -78,7 +78,7 @@ def test_input_with_query_location(app, client):
     }
 
     rv = client.post('/foo?id=1&name=bar')
-    assert rv.status_code == 400
+    assert rv.status_code == 422
     assert rv.json == {
         'detail': {
             'query': {'name2': ['Missing data for required field.']}
@@ -207,7 +207,7 @@ def test_input_with_path_location(app, client):
     assert rv.json == {'image_type': 'png'}
 
     rv = client.get('/gif')
-    assert rv.status_code == 400
+    assert rv.status_code == 422
     assert rv.json['message'] == 'Validation error'
     assert 'path' in rv.json['detail']
     assert 'image_type' in rv.json['detail']['path']
@@ -269,7 +269,7 @@ def test_input_with_dict_schema(app, client):
         return body
 
     rv = client.get('/foo')
-    assert rv.status_code == 400
+    assert rv.status_code == 422
     assert rv.json == {
         'detail': {
             'query': {'name': ['Missing data for required field.']}
@@ -282,7 +282,7 @@ def test_input_with_dict_schema(app, client):
     assert rv.json == {'name': 'grey'}
 
     rv = client.post('/bar')
-    assert rv.status_code == 400
+    assert rv.status_code == 422
     assert rv.json == {
         'detail': {
             'json': {'name': ['Missing data for required field.']}
