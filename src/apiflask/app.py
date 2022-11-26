@@ -49,6 +49,7 @@ from .types import TagsType
 from .types import OpenAPISchemaType
 from .openapi import add_response
 from .openapi import add_response_with_schema
+from .openapi import default_bypassed_endpoints
 from .openapi import default_response
 from .openapi import get_tag
 from .openapi import get_operation_tags
@@ -906,8 +907,7 @@ class APIFlask(APIScaffold, Flask):
             operations: t.Dict[str, t.Any] = {}
             view_func: ViewFuncType = self.view_functions[rule.endpoint]  # type: ignore
             # skip endpoints from openapi blueprint and the built-in static endpoint
-            if rule.endpoint.startswith('openapi') or \
-               rule.endpoint.startswith('static'):
+            if rule.endpoint in default_bypassed_endpoints:
                 continue
             blueprint_name: t.Optional[str] = None  # type: ignore
             if '.' in rule.endpoint:
@@ -917,7 +917,8 @@ class APIFlask(APIScaffold, Flask):
                     # just a normal view with dots in its endpoint, reset blueprint_name
                     blueprint_name = None
                 else:
-                    if not hasattr(blueprint, 'enable_openapi') or \
+                    if rule.endpoint == (f'{blueprint_name}.static') or \
+                       not hasattr(blueprint, 'enable_openapi') or \
                        not blueprint.enable_openapi:  # type: ignore
                         continue
             # add a default 200 response for bare views
