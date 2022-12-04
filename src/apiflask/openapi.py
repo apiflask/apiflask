@@ -15,6 +15,15 @@ if t.TYPE_CHECKING:  # pragma: no cover
     from .blueprint import APIBlueprint
 
 
+default_bypassed_endpoints: t.List[str] = [
+    'static',
+    'openapi.spec',
+    'openapi.docs',
+    'openapi.redoc',
+    'openapi.swagger_ui_oauth_redirect',
+    '_debug_toolbar.static',  # Flask-DebugToolbar
+]
+
 default_response = {
     'schema': {},
     'status_code': 200,

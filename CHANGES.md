@@ -9,10 +9,14 @@ Released: -
 - Fix OpenAPI spec generating for path parameters when path schema is provided ([issue #350][issue_350]).
 - Add `spec_plugins` param to `APIFlask` class to support using custom apispec plugins ([issue #349][issue_349]).
 - Change the status code of request validation error from 400 to 422 ([issue #345][issue_345]).
+- Improve the default bypassing rules to support bypass blueprint's static endpoint and
+  Flask-DebugToolbar ([issue #344][issue_344], [issue #369][issue_369]).
 
 [issue_350]: https://github.com/apiflask/apiflask/issues/350
 [issue_349]: https://github.com/apiflask/apiflask/issues/349
 [issue_345]: https://github.com/apiflask/apiflask/issues/345
+[issue_344]: https://github.com/apiflask/apiflask/issues/344
+[issue_369]: https://github.com/apiflask/apiflask/issues/369
 
 
 ## Version 1.1.3
