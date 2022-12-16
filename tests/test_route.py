@@ -223,7 +223,7 @@ def test_add_url_rule_with_view_as_view(app, client):
 
     foo_view = Foo.as_view('foo')
 
-    app.add_url_rule("/foo", view_func = foo_view)
+    app.add_url_rule('/foo', view_func=foo_view)
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
