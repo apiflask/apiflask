@@ -1,7 +1,6 @@
 import typing as t
 
 from flask.views import MethodView
-from flask.views import MethodViewType
 
 from .openapi import get_path_description
 from .openapi import get_path_summary
@@ -78,7 +77,7 @@ def route_patch(cls):
 
         if hasattr(view_func, 'view_class'):
             view_class = view_func.view_class  # type: ignore
-            if type(view_class) != MethodViewType:
+            if not isinstance(view_class, type(MethodView)):
                 return
             # a function returned by MethodViewClass.as_view()
             is_view_class = True
