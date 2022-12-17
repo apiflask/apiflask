@@ -1,5 +1,6 @@
 import pytest
 from flask.views import MethodView
+from flask.views import View
 from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
@@ -212,3 +213,19 @@ def test_view_endpoint_contains_dot(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/']['get']
+
+
+def test_add_url_rule_with_view_as_view(app, client):
+    """Flask Views should be ignored by add_url_rule"""
+    class Foo(View):
+        def dispatch_request(self):
+            pass
+
+    foo_view = Foo.as_view('foo')
+
+    app.add_url_rule('/foo', view_func=foo_view)
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+
+    assert '/foo' not in rv.json['paths']
