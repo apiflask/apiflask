@@ -77,9 +77,13 @@ def route_patch(cls):
 
         if hasattr(view_func, 'view_class'):
             view_class = view_func.view_class  # type: ignore
-            if isinstance(view_class, type(MethodView)):
-                # a function returned by MethodViewClass.as_view()
-                is_view_class = True
+            # a function returned by MethodViewClass.as_view()
+            is_view_class = True
+            if not isinstance(view_class, type(MethodView)):
+                # avoid recording spec for view class
+                is_view_class = False
+                # avoid auto response being added to bare view
+                view_func._spec = {'hide': True}  # type: ignore
 
         elif isinstance(view_func, type(MethodView)):
             # a MethodView class passed with the route decorator
