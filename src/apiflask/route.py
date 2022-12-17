@@ -77,10 +77,10 @@ def route_patch(cls):
 
         if hasattr(view_func, 'view_class'):
             view_class = view_func.view_class  # type: ignore
-            if not isinstance(view_class, type(MethodView)):
-                return
-            # a function returned by MethodViewClass.as_view()
-            is_view_class = True
+            if isinstance(view_class, type(MethodView)):
+                # a function returned by MethodViewClass.as_view()
+                is_view_class = True
+
         elif isinstance(view_func, type(MethodView)):
             # a MethodView class passed with the route decorator
             is_view_class = True
