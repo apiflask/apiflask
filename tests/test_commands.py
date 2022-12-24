@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from .schemas import Foo
 from apiflask.commands import spec_command
 
 
@@ -17,6 +18,21 @@ def test_flask_spec_output(app, cli_runner, tmp_path):
     assert 'openapi' in result.output
     with open(local_spec_path) as f:
         assert json.loads(f.read()) == app.spec
+
+
+def test_flask_spec_fields_order(app, cli_runner):
+    @app.get('/foo')
+    @app.output(Foo)
+    def foo():
+        pass
+
+    result = cli_runner.invoke(spec_command)
+    assert 'openapi' in result.output
+    assert json.loads(result.output) == app.spec
+    assert (
+        list(json.loads(result.output)['components']['schemas']['Foo']['properties'].keys())
+        == ['id', 'name']
+    )
 
 
 @pytest.mark.parametrize('format', ['json', 'yaml', 'yml', 'foo'])
