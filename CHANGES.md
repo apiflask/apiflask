@@ -12,6 +12,8 @@ Released: -
 - Improve the default bypassing rules to support bypass blueprint's static endpoint and
   Flask-DebugToolbar ([issue #344][issue_344], [issue #369][issue_369]).
 - Explicitly check if `view_func.view_class` is `MethodViewType` in `add_url_rule` ([issue #379][issue_379]).
+- The schema fields are now in order by default, which ensures the output of `flask spec` is deterministic
+  ([issue #373][issue_373]).
 
 [issue_350]: https://github.com/apiflask/apiflask/issues/350
 [issue_349]: https://github.com/apiflask/apiflask/issues/349
@@ -19,6 +21,7 @@ Released: -
 [issue_344]: https://github.com/apiflask/apiflask/issues/344
 [issue_369]: https://github.com/apiflask/apiflask/issues/369
 [issue_379]: https://github.com/apiflask/apiflask/issues/379
+[issue_373]: https://github.com/apiflask/apiflask/issues/373
 
 
 ## Version 1.1.3

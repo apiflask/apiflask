@@ -862,7 +862,7 @@ class APIFlask(APIScaffold, Flask):
             kwargs['externalDocs'] = self.external_docs
 
         ma_plugin: MarshmallowPlugin = MarshmallowPlugin(
-            schema_name_resolver=self.schema_name_resolver
+            schema_name_resolver=self.schema_name_resolver  # type: ignore
         )
 
         spec_plugins: t.List[BasePlugin] = [ma_plugin, *self.spec_plugins]
