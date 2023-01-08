@@ -1,10 +1,10 @@
 from flask import make_response
-from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from .schemas import Query
 from apiflask.fields import String
+from apiflask.views import MethodView
 
 
 def test_output(app, client):

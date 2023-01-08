@@ -1,9 +1,9 @@
-from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from apiflask import APIBlueprint
 from apiflask.security import HTTPBasicAuth
 from apiflask.security import HTTPTokenAuth
+from apiflask.views import MethodView
 
 
 def test_blueprint_object():

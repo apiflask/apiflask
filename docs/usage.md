@@ -1022,8 +1022,8 @@ You can create a group of routes under the same URL rule with the `MethodView` c
 Here is a simple example:
 
 ```python
-from flask.views import MethodView
 from apiflask import APIFlask
+from apiflask.views import MethodView
 
 app = APIFlask(__name__)
 
