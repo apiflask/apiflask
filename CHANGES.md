@@ -1,7 +1,9 @@
-## Versions 1.2.0
+## Version 1.2.1
 
-- [1.2.0 milestone](https://github.com/apiflask/apiflask/milestone/12)
-- [1.2.0 kanban](https://github.com/apiflask/apiflask/projects/3)
+Released: -
+
+
+## Version 1.2.0
 
 Released: 2023/1/8
 
