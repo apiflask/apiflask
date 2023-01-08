@@ -3,9 +3,9 @@
 - [1.2.0 milestone](https://github.com/apiflask/apiflask/milestone/12)
 - [1.2.0 kanban](https://github.com/apiflask/apiflask/projects/3)
 
-Released: -
+Released: 2023/1/8
 
-- Add `apiflask.views.MethodView` to replace `flask.views.MethodView`, raise error if
+- **[Breaking change]** Add `apiflask.views.MethodView` to replace `flask.views.MethodView`, raise error if
   using `flask.views.MethodView` ([issue #341][issue_341]).
 - Add `Enum` field from marshmallow 3.18.
 - Fix OpenAPI spec generating for path parameters when path schema is provided ([issue #350][issue_350]).
