@@ -113,7 +113,7 @@ def update_pet(pet_id, data):
 from apiflask import APIFlask, Schema, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
-from flask.views import MethodView
+from apiflask.views import MethodView
 
 app = APIFlask(__name__)
 
@@ -232,6 +232,7 @@ APIFlask is a thin wrapper on top of Flask. You only need to remember the follow
 
 - When creating an application instance, use `APIFlask` instead of `Flask`.
 - When creating a blueprint instance, use `APIBlueprint` instead of `Blueprint`.
+- When creating a class-based view, use `apiflask.views.MethodView` instead of `flask.views.MethodView`.
 - The `abort()` function from APIFlask (`apiflask.abort`) returns JSON error response.
 
 For a minimal Flask application:

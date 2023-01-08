@@ -1,7 +1,6 @@
 import io
 
 import pytest
-from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 from werkzeug.datastructures import FileStorage
 
@@ -13,6 +12,7 @@ from .schemas import Form
 from .schemas import FormAndFiles
 from .schemas import Query
 from apiflask.fields import String
+from apiflask.views import MethodView
 
 
 def test_input(app, client):

@@ -8,7 +8,6 @@ else:  # pragma: no cover
 
 if t.TYPE_CHECKING:  # pragma: no cover
     from flask.wrappers import Response  # noqa: F401
-    from flask.views import View  # noqa: F401
     from werkzeug.datastructures import Headers  # noqa: F401
     from _typeshed.wsgi import WSGIApplication  # noqa: F401
     from .fields import Field  # noqa: F401
@@ -16,29 +15,38 @@ if t.TYPE_CHECKING:  # pragma: no cover
     from .security import HTTPBasicAuth  # noqa: F401
     from .security import HTTPTokenAuth  # noqa: F401
     from .exceptions import HTTPError  # noqa: F401
+    from .views import View  # noqa: F401
 
 
 DecoratedType = t.TypeVar('DecoratedType', bound=t.Callable[..., t.Any])
 RequestType = t.TypeVar('RequestType')
 
 ResponseBodyType = t.Union[
-    str, bytes, list, t.Dict[str, t.Any], t.Generator[str, None, None], 'Response'
+    str,
+    bytes,
+    t.List[t.Any],
+    # Only dict is actually accepted, but Mapping allows for TypedDict.
+    t.Mapping[str, t.Any],
+    t.Iterator[str],
+    t.Iterator[bytes],
+    'Response',
 ]
+
 ResponseStatusType = t.Union[str, int]
 _HeaderName = str
 _HeaderValue = t.Union[str, t.List[str], t.Tuple[str, ...]]
 ResponseHeaderType = t.Union[
     t.Dict[_HeaderName, _HeaderValue],
     t.Mapping[_HeaderName, _HeaderValue],
-    t.List[t.Tuple[_HeaderName, _HeaderValue]],
+    t.Sequence[t.Tuple[_HeaderName, _HeaderValue]],
     'Headers'
 ]
 ResponseReturnValueType = t.Union[
     ResponseBodyType,
-    t.Tuple[ResponseBodyType, ResponseStatusType],
     t.Tuple[ResponseBodyType, ResponseHeaderType],
+    t.Tuple[ResponseBodyType, ResponseStatusType],
     t.Tuple[ResponseBodyType, ResponseStatusType, ResponseHeaderType],
-    'WSGIApplication'
+    'WSGIApplication',
 ]
 SpecCallbackType = t.Callable[[t.Union[dict, str]], t.Union[dict, str]]
 ErrorCallbackType = t.Callable[['HTTPError'], ResponseReturnValueType]
@@ -50,6 +58,11 @@ HTTPAuthType = t.Union['HTTPBasicAuth', 'HTTPTokenAuth']
 TagsType = t.Union[t.List[str], t.List[t.Dict[str, t.Any]]]
 ViewClassType = t.Type['View']
 ViewFuncOrClassType = t.Union[t.Callable, ViewClassType]
+
+RouteCallableType = t.Union[
+    t.Callable[..., ResponseReturnValueType],
+    t.Callable[..., t.Awaitable[ResponseReturnValueType]],
+]
 
 
 class PaginationType(Protocol):

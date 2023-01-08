@@ -5,6 +5,8 @@
 
 Released: -
 
+- Add `apiflask.views.MethodView` to replace `flask.views.MethodView`, raise error if
+  using `flask.views.MethodView` ([issue #341][issue_341]).
 - Add `Enum` field from marshmallow 3.18.
 - Fix OpenAPI spec generating for path parameters when path schema is provided ([issue #350][issue_350]).
 - Add `spec_plugins` param to `APIFlask` class to support using custom apispec plugins ([issue #349][issue_349]).
@@ -22,6 +24,7 @@ Released: -
 [issue_369]: https://github.com/apiflask/apiflask/issues/369
 [issue_379]: https://github.com/apiflask/apiflask/issues/379
 [issue_373]: https://github.com/apiflask/apiflask/issues/373
+[issue_341]: https://github.com/apiflask/apiflask/issues/341
 
 
 ## Version 1.1.3

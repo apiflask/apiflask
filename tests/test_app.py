@@ -1,7 +1,6 @@
 import pytest
 from apispec import BasePlugin
 from flask import Blueprint
-from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from .schemas import Bar
@@ -12,6 +11,7 @@ from apiflask import APIFlask
 from apiflask import Schema
 from apiflask.fields import Integer
 from apiflask.fields import String
+from apiflask.views import MethodView
 
 
 def test_app_init(app):

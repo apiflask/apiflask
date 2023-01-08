@@ -7,7 +7,6 @@ import flask
 from flask import current_app
 from flask import jsonify
 from flask import Response
-from flask.views import MethodView
 from marshmallow import ValidationError as MarshmallowValidationError
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
 from webargs.multidictproxy import MultiDictProxy
@@ -23,6 +22,7 @@ from .types import OpenAPISchemaType
 from .types import RequestType
 from .types import ResponseReturnValueType
 from .types import SchemaType
+from .views import MethodView
 
 BODY_LOCATIONS = ['json', 'files', 'form', 'form_and_files', 'json_or_form']
 SUPPORTED_LOCATIONS = BODY_LOCATIONS + [

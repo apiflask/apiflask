@@ -19,7 +19,7 @@ from flask import render_template_string
 from flask.config import ConfigAttribute
 try:
     from flask.globals import request_ctx  # type: ignore
-except ImportError:
+except ImportError:  # pragma: no cover
     from flask.globals import _request_ctx_stack
     request_ctx = None  # type: ignore
 from flask.wrappers import Response
@@ -436,8 +436,9 @@ class APIFlask(APIScaffold, Flask):
         view_function = self.view_functions[rule.endpoint]
         if hasattr(self, 'ensure_sync'):  # pragma: no cover
             view_function = self.ensure_sync(view_function)
-        if rule.endpoint == 'static':
+        if rule.endpoint == 'static' or hasattr(view_function, '_only_kwargs'):
             # app static route only accepts keyword arguments, see flask#3762
+            # view classes created by Flask only accept keyword arguments
             return view_function(**req.view_args)  # type: ignore
         else:
             return view_function(*req.view_args.values())  # type: ignore

@@ -81,7 +81,7 @@ APIFlask support to use the `MethodView`-based view class, for example:
 
 ```python
 from apiflask import APIFlask, Schema, input, output
-from flask.views import MethodView
+from apiflask.views import MethodView
 
 # ...
 

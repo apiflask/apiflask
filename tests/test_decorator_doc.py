@@ -1,8 +1,8 @@
 import pytest
-from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
+from apiflask.views import MethodView
 
 
 def test_doc_summary_and_description(app, client):
