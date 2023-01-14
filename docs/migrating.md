@@ -81,11 +81,10 @@ APIFlask support to use the `MethodView`-based view class, for example:
 
 ```python
 from apiflask import APIFlask, Schema, input, output
-from flask.views import MethodView
+from apiflask.views import MethodView
 
 # ...
 
-@app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 
     decorators = [doc(responses=[404])]
@@ -107,10 +106,9 @@ class Pet(MethodView):
     @app.output(PetOut)
     def patch(self, pet_id, data):
         pass
-```
 
-APIFlask supports to use the `route` decorator on a `MethodView`-based view class as a
-shortcut, but you can also use the `add_url_rule` method to register it for flexibility.
+app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
+```
 
 The `View`-based view class is not supported, you can still use it but currently
 APIFlask can't generate OpenAPI spec (and API documentation) for it.

@@ -1,11 +1,11 @@
 import pytest
-from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from .schemas import Query
 from apiflask import APIBlueprint
 from apiflask.security import HTTPBasicAuth
+from apiflask.views import MethodView
 
 
 def test_auto_tags(app, client):
@@ -238,11 +238,11 @@ def test_auto_validation_error_response(app, client, config_value):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert bool('400' in rv.json['paths']['/foo']['post']['responses']) is config_value
+    assert bool('422' in rv.json['paths']['/foo']['post']['responses']) is config_value
     if config_value:
         assert 'ValidationError' in rv.json['components']['schemas']
         assert '#/components/schemas/ValidationError' in \
-            rv.json['paths']['/foo']['post']['responses']['400'][
+            rv.json['paths']['/foo']['post']['responses']['422'][
                 'content']['application/json']['schema']['$ref']
 
 

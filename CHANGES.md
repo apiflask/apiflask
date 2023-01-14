@@ -1,9 +1,50 @@
-## Versions 1.2.0
-
-- [1.2.0 milestone](https://github.com/apiflask/apiflask/milestone/12)
-- [1.2.0 kanban](https://github.com/apiflask/apiflask/projects/3)
+## Version 1.2.1
 
 Released: -
+
+
+## Version 1.2.0
+
+Released: 2023/1/8
+
+- **[Breaking change]** Add `apiflask.views.MethodView` to replace `flask.views.MethodView`, raise error if
+  using `flask.views.MethodView` ([issue #341][issue_341]).
+- **[Breaking change]** Change the status code of request validation error from 400 to 422 ([issue #345][issue_345]).
+- Add `Enum` field from marshmallow 3.18.
+- Fix OpenAPI spec generating for path parameters when path schema is provided ([issue #350][issue_350]).
+- Add `spec_plugins` param to `APIFlask` class to support using custom apispec plugins ([issue #349][issue_349]).
+- Improve the default bypassing rules to support bypass blueprint's static endpoint and
+  Flask-DebugToolbar ([issue #344][issue_344], [issue #369][issue_369]).
+- Explicitly check if `view_func.view_class` is `MethodViewType` in `add_url_rule` ([issue #379][issue_379]).
+- The schema fields are now in order by default, which ensures the output of `flask spec` is deterministic
+  ([issue #373][issue_373]).
+
+[issue_350]: https://github.com/apiflask/apiflask/issues/350
+[issue_349]: https://github.com/apiflask/apiflask/issues/349
+[issue_345]: https://github.com/apiflask/apiflask/issues/345
+[issue_344]: https://github.com/apiflask/apiflask/issues/344
+[issue_369]: https://github.com/apiflask/apiflask/issues/369
+[issue_379]: https://github.com/apiflask/apiflask/issues/379
+[issue_373]: https://github.com/apiflask/apiflask/issues/373
+[issue_341]: https://github.com/apiflask/apiflask/issues/341
+
+
+## Version 1.1.3
+
+Released: 2022/9/4
+
+- Fix some tests and import statements for Flask 2.2 ([pr #343][pr_343]).
+- Pin Flask < 2.2 as a temp fix for the breaking changes of class-based view support ([issue #341][issue_341]).
+
+[pr_343]: https://github.com/apiflask/apiflask/pull/343
+[issue_341]: https://github.com/apiflask/apiflask/issues/341
+
+
+## Version 1.1.2
+
+Released: 2022/8/13
+
+- Set default Elements router to `hash` to fix incorrect path updates.
 
 
 ## Version 1.1.1

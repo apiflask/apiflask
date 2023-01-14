@@ -207,6 +207,12 @@ elements_template = """
   <elements-api
     apiDescriptionUrl="{{ url_for('openapi.spec') }}"
     layout="{{ config.ELEMENTS_LAYOUT }}"
+    {% if config.ELEMENTS_CONFIG and 'router' in config.ELEMENTS_CONFIG %}
+      {% set router = config.ELEMENTS_CONFIG['router'] %}
+    {% else %}
+      {% set router = 'hash' %}
+    {% endif %}
+    router={{ router | tojson }}
     {% if config.ELEMENTS_CONFIG %}
       {% for key, value in config.ELEMENTS_CONFIG.items() %}
         {{ key }}={{ value | tojson }}

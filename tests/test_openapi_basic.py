@@ -6,6 +6,7 @@ from openapi_spec_validator import validate_spec
 from .schemas import Bar
 from .schemas import Baz
 from .schemas import Foo
+from apiflask import APIBlueprint
 from apiflask import Schema as BaseSchema
 from apiflask.fields import Integer
 
@@ -55,6 +56,20 @@ def test_get_spec_force_update(app):
 
     new_spec = app._get_spec(force_update=True)
     assert '/foo' in new_spec['paths']
+
+
+def test_spec_bypass_endpoints(app):
+
+    bp = APIBlueprint('foo', __name__, static_folder='static', url_prefix='/foo')
+    app.register_blueprint(bp)
+
+    spec = app._get_spec()
+    assert '/static' not in spec['paths']
+    assert '/foo/static' not in spec['paths']
+    assert '/docs' not in spec['paths']
+    assert '/openapi.json' not in spec['paths']
+    assert '/redoc' not in spec['paths']
+    assert '/docs/oauth2-redirect' not in spec['paths']
 
 
 def test_spec_attribute(app):

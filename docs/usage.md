@@ -557,7 +557,7 @@ following format:
 
     Read the *[Data Schema](/schema)* chapter for the advanced topics on data schema.
 
-Now let's add it to the view function which used to create a new pet:
+Now let's add it to the view function which is used to create a new pet:
 
 ```python hl_lines="1 14"
 from apiflask import APIFlask, Schema, input
@@ -712,7 +712,7 @@ def delete_pet(pet_id):
     return ''
 ```
 
-From version 0.4.0, you can use a empty dict to represent empty schema:
+From version 0.4.0, you can use an empty dict to represent empty schema:
 
 ```python hl_lines="2"
 @app.delete('/pets/<int:pet_id>')
@@ -1022,13 +1022,12 @@ You can create a group of routes under the same URL rule with the `MethodView` c
 Here is a simple example:
 
 ```python
-from flask.views import MethodView
 from apiflask import APIFlask
+from apiflask.views import MethodView
 
 app = APIFlask(__name__)
 
 
-@app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 
     def get(self, pet_id):
@@ -1036,37 +1035,17 @@ class Pet(MethodView):
 
     def delete(self, pet_id):
         return '', 204
+
+
+app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
 ```
 
 When creating a view class, it needs to inherit from the `MethodView` class, since APIFlask
-can only generate OpenAPI spec for `MethodView`-based view classes.:
-
-```python
-from flask.views import MethodView
-
-@app.route('/pets/<int:pet_id>', endpoint='pet')
-class Pet(MethodView):
-    # ...
-```
-
-APIFlask supports to use the `route` decorator on view classes as a shortcut for `add_url_rule`:
-
-```python
-@app.route('/pets/<int:pet_id>', endpoint='pet')
-class Pet(MethodView):
-    # ...
-```
-
-!!! tip
-
-    If the `endpoint` argument isn't provided, the class name will be used as
-    endpoint. You don't need to pass a `methods` argument, since Flask will handle
-    it for you.
+can only generate OpenAPI spec for `MethodView`-based view classes.
 
 Now, you can define view methods for each HTTP method, use the (HTTP) method name as method name:
 
 ```python
-@app.route('/pets/<int:pet_id>', endpoint='pet')
 class Pet(MethodView):
 
     def get(self, pet_id):  # triggered by GET request
@@ -1083,25 +1062,18 @@ class Pet(MethodView):
 
     def patch(self, pet_id):  # triggered by PATCH request
         return {'message': 'OK'}
+
+
+app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
 ```
 
 With the example application above, when the user sends a *GET* request to
 `/pets/<int:pet_id>`, the `get()` method of the `Pet` class will be called,
 and so on for the others.
 
-From [version 0.10.0](/changelog/#version-0100), you can also use the `add_url_rule` method to register
-view classes:
-
-```python
-class Pet(MethodView):
-    # ...
-
-app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
-```
-
-You still don't need to set the `methods`, but you will need if you want to register multiple rules
-for one view classes based on the methods, this can only be achieved with `add_url_rule`. For
-example, the `post` method you created above normally has a different URL rule than the others:
+Normally you don't need to specify the methods, unless you want to register
+multiple rules for one single view classe. For example, register the `post` method
+to a different URL rule than the others:
 
 ```python
 class Pet(MethodView):
@@ -1112,11 +1084,12 @@ app.add_url_rule('/pets/<int:pet_id>', view_func=pet_view, methods=['GET', 'PUT'
 app.add_url_rule('/pets', view_func=pet_view, methods=['POST'])
 ```
 
+However, you may want to create separate classes for different URL rules.
+
 When you use decorators like `@app.input`, `@app.output`, be sure to use it on method
 instead of class:
 
-```python hl_lines="4 5 9 10 11 15 16"
-@app.route('/pets/<int:pet_id>', endpoint='pet')
+```python
 class Pet(MethodView):
 
     @app.output(PetOut)
@@ -1134,14 +1107,16 @@ class Pet(MethodView):
     @app.output(PetOut)
     def patch(self, pet_id, data):
         # ...
+
+
+app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
 ```
 
 If you want to apply a decorator for all methods, instead of repeat yourself,
 you can pass the decorator to the class attribute `decorators`, it accepts
 a list of decorators:
 
-```python hl_lines="4"
-@app.route('/pets/<int:pet_id>', endpoint='pet')
+```python hl_lines="3"
 class Pet(MethodView):
 
     decorators = [auth_required(auth), doc(responses=[404])]
@@ -1161,7 +1136,12 @@ class Pet(MethodView):
     @app.output(PetOut)
     def patch(self, pet_id, data):
         # ...
+
+
+app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
 ```
+
+Read [Flask docs on class-based views](https://flask.palletsprojects.com/views/) for more information.
 
 
 ## Use `abort()` to return an error response

@@ -107,13 +107,13 @@ def update_pet(pet_id, data):
 ```
 
 <details>
-<summary>You can also use class-based views with <code>MethodView</code></summary>
+<summary>You can also use class-based views based on <code>MethodView</code></summary>
 
 ```python
 from apiflask import APIFlask, Schema, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
-from flask.views import MethodView
+from apiflask.views import MethodView
 
 app = APIFlask(__name__)
 
@@ -134,9 +134,6 @@ class PetOut(Schema):
     category = String()
 
 
-# "app.route" is just a shortcut,
-# you can also use "app.add_url_rule" directly
-@app.route('/')
 class Hello(MethodView):
 
     # use HTTP method name as class method name
@@ -144,7 +141,6 @@ class Hello(MethodView):
         return {'message': 'Hello!'}
 
 
-@app.route('/pets/<int:pet_id>')
 class Pet(MethodView):
 
     @app.output(PetOut)
@@ -163,6 +159,10 @@ class Pet(MethodView):
         for attr, value in data.items():
             pets[pet_id][attr] = value
         return pets[pet_id]
+
+
+app.add_url_rule('/', view_func=Hello.as_view('hello'))
+app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
 ```
 </details>
 
@@ -232,6 +232,7 @@ APIFlask is a thin wrapper on top of Flask. You only need to remember the follow
 
 - When creating an application instance, use `APIFlask` instead of `Flask`.
 - When creating a blueprint instance, use `APIBlueprint` instead of `Blueprint`.
+- When creating a class-based view, use `apiflask.views.MethodView` instead of `flask.views.MethodView`.
 - The `abort()` function from APIFlask (`apiflask.abort`) returns JSON error response.
 
 For a minimal Flask application:
@@ -268,9 +269,9 @@ In a word, to make Web API development in Flask more easily, APIFlask provides `
 
 APIFlask accepts marshmallow schema as data schema, uses webargs to validate the request data against the schema, and uses apispec to generate the OpenAPI representation from the schema.
 
-You can build marshmallow schemas just like before, but APIFlask also exposes some marshmallow APIs for convenience (it's optional, you can still import everything from marshamallow directly):
+You can build marshmallow schemas just like before, but APIFlask also exposes some marshmallow APIs for convenience:
 
-- `apiflask.Schema`: The base marshmallow schema class.
+- `apiflask.Schema`: The base marshmallow schema class. Notice it sets the `set_class` to `OrderedSet` by default.
 - `apiflask.fields`: The marshmallow fields, contain the fields from both marshmallow and Flask-Marshmallow. Beware that the aliases (`Url`, `Str`, `Int`, `Bool`, etc.) were removed.
 - `apiflask.validators`: The marshmallow validators.
 

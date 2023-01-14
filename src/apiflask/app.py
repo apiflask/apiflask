@@ -10,13 +10,18 @@ if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pra
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # pragma: no cover
 
 from apispec import APISpec
+from apispec import BasePlugin
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Blueprint
 from flask import Flask
 from flask import jsonify
 from flask import render_template_string
 from flask.config import ConfigAttribute
-from flask.globals import _request_ctx_stack
+try:
+    from flask.globals import request_ctx  # type: ignore
+except ImportError:  # pragma: no cover
+    from flask.globals import _request_ctx_stack
+    request_ctx = None  # type: ignore
 from flask.wrappers import Response
 
 with warnings.catch_warnings():
@@ -44,6 +49,7 @@ from .types import TagsType
 from .types import OpenAPISchemaType
 from .openapi import add_response
 from .openapi import add_response_with_schema
+from .openapi import default_bypassed_endpoints
 from .openapi import default_response
 from .openapi import get_tag
 from .openapi import get_operation_tags
@@ -273,6 +279,7 @@ class APIFlask(APIScaffold, Flask):
         openapi_blueprint_url_prefix: t.Optional[str] = None,
         json_errors: bool = True,
         enable_openapi: bool = True,
+        spec_plugins: t.Optional[t.List[BasePlugin]] = None,
         static_url_path: t.Optional[str] = None,
         static_folder: str = 'static',
         static_host: t.Optional[str] = None,
@@ -306,8 +313,15 @@ class APIFlask(APIScaffold, Flask):
                 `docs_path`, etc.), defaults to `None`.
             json_errors: If `True`, APIFlask will return a JSON response for HTTP errors.
             enable_openapi: If `False`, will disable OpenAPI spec and API docs views.
+            spec_plugins: List of apispec-compatible plugins (subclasses of `apispec.BasePlugin`),
+                defaults to `None`. The `MarshmallowPlugin` for apispec is already included
+                by default, so it doesn't need to be provided here.
 
         Other keyword arguments are directly passed to `flask.Flask`.
+
+        *Version changed: 1.2.0*
+
+        - Add `spec_plugins` parameter.
 
         *Version changed: 1.1.0*
 
@@ -348,6 +362,7 @@ class APIFlask(APIScaffold, Flask):
         self.error_callback: ErrorCallbackType = self._error_handler
         self.schema_name_resolver = self._schema_name_resolver
 
+        self.spec_plugins: t.List[BasePlugin] = spec_plugins or []
         self._spec: t.Optional[t.Union[dict, str]] = None
         self._auth_blueprints: t.Dict[str, t.Dict[str, t.Any]] = {}
 
@@ -406,7 +421,7 @@ class APIFlask(APIScaffold, Flask):
 
         *Version added: 0.2.0*
         """
-        req = _request_ctx_stack.top.request
+        req = request_ctx.request if request_ctx else _request_ctx_stack.top.request  # type: ignore
         if req.routing_exception is not None:
             self.raise_routing_exception(req)
         rule = req.url_rule
@@ -421,8 +436,9 @@ class APIFlask(APIScaffold, Flask):
         view_function = self.view_functions[rule.endpoint]
         if hasattr(self, 'ensure_sync'):  # pragma: no cover
             view_function = self.ensure_sync(view_function)
-        if rule.endpoint == 'static':
+        if rule.endpoint == 'static' or hasattr(view_function, '_only_kwargs'):
             # app static route only accepts keyword arguments, see flask#3762
+            # view classes created by Flask only accept keyword arguments
             return view_function(**req.view_args)  # type: ignore
         else:
             return view_function(*req.view_args.values())  # type: ignore
@@ -499,7 +515,7 @@ class APIFlask(APIScaffold, Flask):
         so you can get error information via it's attributes:
 
         - status_code: If the error is triggered by a validation error, the value will be
-          400 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
+          422 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
           If the error is triggered by [`HTTPError`][apiflask.exceptions.HTTPError]
           or [`abort`][apiflask.exceptions.abort], it will be the status code
           you passed. Otherwise, it will be the status code set by Werkzueg when
@@ -847,13 +863,16 @@ class APIFlask(APIScaffold, Flask):
             kwargs['externalDocs'] = self.external_docs
 
         ma_plugin: MarshmallowPlugin = MarshmallowPlugin(
-            schema_name_resolver=self.schema_name_resolver
+            schema_name_resolver=self.schema_name_resolver  # type: ignore
         )
+
+        spec_plugins: t.List[BasePlugin] = [ma_plugin, *self.spec_plugins]
+
         spec: APISpec = APISpec(
             title=self.title,
             version=self.version,
             openapi_version=self.config['OPENAPI_VERSION'],
-            plugins=[ma_plugin],
+            plugins=spec_plugins,
             info=self._make_info(),
             tags=self._make_tags(),
             **kwargs
@@ -889,8 +908,7 @@ class APIFlask(APIScaffold, Flask):
             operations: t.Dict[str, t.Any] = {}
             view_func: ViewFuncType = self.view_functions[rule.endpoint]  # type: ignore
             # skip endpoints from openapi blueprint and the built-in static endpoint
-            if rule.endpoint.startswith('openapi') or \
-               rule.endpoint.startswith('static'):
+            if rule.endpoint in default_bypassed_endpoints:
                 continue
             blueprint_name: t.Optional[str] = None  # type: ignore
             if '.' in rule.endpoint:
@@ -900,7 +918,8 @@ class APIFlask(APIScaffold, Flask):
                     # just a normal view with dots in its endpoint, reset blueprint_name
                     blueprint_name = None
                 else:
-                    if not hasattr(blueprint, 'enable_openapi') or \
+                    if rule.endpoint == (f'{blueprint_name}.static') or \
+                       not hasattr(blueprint, 'enable_openapi') or \
                        not blueprint.enable_openapi:  # type: ignore
                         continue
             # add a default 200 response for bare views
@@ -1168,7 +1187,13 @@ class APIFlask(APIScaffold, Flask):
 
             # parameters
             path_arguments: t.Iterable = re.findall(r'<(([^<:]+:)?([^>]+))>', rule.rule)
-            if path_arguments:
+            if (
+                path_arguments
+                and not (
+                    hasattr(view_func, '_spec')
+                    and view_func._spec.get('omit_default_path_parameters', False)
+                )
+            ):
                 arguments: t.List[t.Dict[str, str]] = []
                 for _, argument_type, argument_name in path_arguments:
                     argument = get_argument(argument_type, argument_name)

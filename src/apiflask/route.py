@@ -1,12 +1,14 @@
 import typing as t
 
-from flask.views import MethodView
+from flask.views import MethodView as FlaskMethodView
+from flask.views import View as FlaskView
 
 from .openapi import get_path_description
 from .openapi import get_path_summary
 from .types import ViewClassType
 from .types import ViewFuncOrClassType
 from .types import ViewFuncType
+from .views import MethodView
 
 
 def route_patch(cls):
@@ -34,6 +36,8 @@ def route_patch(cls):
         view_func._method_spec = {}
         if not hasattr(view_func, '_spec'):
             view_func._spec = {}
+        if not view_class.methods:  # no methods defined
+            return view_func
         for method_name in view_class.methods:  # type: ignore
             # method_name: ['GET', 'POST', ...]
             method = view_class.__dict__[method_name.lower()]
@@ -64,6 +68,7 @@ def route_patch(cls):
         rule: str,
         endpoint: t.Optional[str] = None,
         view_func: t.Optional[ViewFuncOrClassType] = None,
+        provide_automatic_options: t.Optional[bool] = None,
         **options: t.Any,
     ):
         """Record the spec for view classes before calling the actual `add_url_rule` method.
@@ -72,25 +77,40 @@ def route_patch(cls):
         a view function created by `ViewClass.as_view()`. It only accepts a view class when
         using the route decorator on a view class.
         """
-        view_class: ViewClassType
-        is_view_class: bool = False
+        if isinstance(view_func, type):
+            # call as_view() for MethodView passed with @route
+            if endpoint is None:
+                endpoint = view_func.__name__
+            view_func = view_func.as_view(endpoint)  # type: ignore
 
         if hasattr(view_func, 'view_class'):
-            # a function returned by MethodViewClass.as_view()
-            is_view_class = True
+            # view function created with MethodViewClass.as_view()
             view_class = view_func.view_class  # type: ignore
-        elif isinstance(view_func, type(MethodView)):
-            # a MethodView class passed with the route decorator
-            is_view_class = True
-            view_class = view_func  # type: ignore
-            if endpoint is None:
-                endpoint = view_class.__name__
-            view_func = view_class.as_view(endpoint)
+            if not issubclass(view_class, MethodView):
+                # skip View-based class
+                view_func._spec = {'hide': True}  # type: ignore
+            else:
+                # record spec for MethodView class
+                if hasattr(self, 'enable_openapi') and self.enable_openapi:
+                    view_func = record_spec_for_view_class(view_func, view_class)  # type: ignore
 
-        if is_view_class and hasattr(self, 'enable_openapi') and self.enable_openapi:
-            view_func = record_spec_for_view_class(view_func, view_class)  # type: ignore
+            # view func created by Flask's View only accpets keyword arguments
+            if issubclass(view_class, FlaskView):
+                view_func._only_kwargs = True  # type: ignore
 
-        super(cls, self).add_url_rule(rule, endpoint, view_func, **options)
+            if issubclass(view_class, FlaskMethodView):
+                raise RuntimeError(
+                    'APIFlask only supports generating OpenAPI spec for view classes created '
+                    'with apiflask.views.MethodView (`from apiflask.views import MethodView`).',
+                )
+
+        super(cls, self).add_url_rule(
+            rule,
+            endpoint,
+            view_func,
+            provide_automatic_options=provide_automatic_options,
+            **options
+        )
 
     cls.add_url_rule = add_url_rule
     return cls

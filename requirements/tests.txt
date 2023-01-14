@@ -5,50 +5,61 @@
 #
 #    pip-compile-multi
 #
-asgiref==3.5.2
+asgiref==3.6.0
     # via -r requirements/tests.in
-attrs==21.4.0
+attrs==22.2.0
     # via
     #   jsonschema
+    #   openapi-schema-validator
     #   pytest
-coverage[toml]==6.4.1
+coverage[toml]==7.0.4
     # via pytest-cov
-importlib-resources==5.8.0
-    # via jsonschema
-iniconfig==1.1.1
-    # via pytest
-jsonschema==4.6.0
+importlib-resources==5.10.2
     # via
+    #   jsonschema
+    #   openapi-spec-validator
+iniconfig==2.0.0
+    # via pytest
+jsonschema==4.17.3
+    # via
+    #   jsonschema-spec
     #   openapi-schema-validator
     #   openapi-spec-validator
-openapi-schema-validator==0.2.3
+jsonschema-spec==0.1.2
     # via openapi-spec-validator
-openapi-spec-validator==0.4.0
+lazy-object-proxy==1.9.0
+    # via openapi-spec-validator
+openapi-schema-validator==0.3.4
+    # via openapi-spec-validator
+openapi-spec-validator==0.5.1
     # via -r requirements/tests.in
-packaging==21.3
+packaging==22.0
     # via pytest
+pathable==0.4.3
+    # via jsonschema-spec
+pkgutil-resolve-name==1.3.10
+    # via jsonschema
 pluggy==1.0.0
     # via pytest
 py==1.11.0
     # via pytest
-pyparsing==3.0.9
-    # via packaging
-pyrsistent==0.18.1
+pyrsistent==0.19.3
     # via jsonschema
 pytest==6.2.5
     # via
     #   -r requirements/tests.in
     #   pytest-cov
-pytest-cov==3.0.0
+pytest-cov==4.0.0
     # via -r requirements/tests.in
 pyyaml==6.0
-    # via openapi-spec-validator
+    # via
+    #   jsonschema-spec
+    #   openapi-spec-validator
 toml==0.10.2
     # via pytest
 tomli==2.0.1
     # via coverage
-zipp==3.8.0
+typing-extensions==4.4.0
+    # via jsonschema-spec
+zipp==3.11.0
     # via importlib-resources
-
-# The following packages are considered to be unsafe in a requirements file:
-# setuptools

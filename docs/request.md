@@ -108,8 +108,8 @@ The value of `<location>` is where the validation error happened.
 
 - status code
 
-The default status code of validation error is 404, you can change this via the
-config `AUTH_ERROR_STATUS_CODE`.
+The default status code of validation error is 422, you can change this via the
+config `VALIDATION_ERROR_STATUS_CODE`.
 
 
 ## Dict schema

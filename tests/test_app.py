@@ -1,6 +1,6 @@
 import pytest
+from apispec import BasePlugin
 from flask import Blueprint
-from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from .schemas import Bar
@@ -11,6 +11,7 @@ from apiflask import APIFlask
 from apiflask import Schema
 from apiflask.fields import Integer
 from apiflask.fields import String
+from apiflask.views import MethodView
 
 
 def test_app_init(app):
@@ -46,15 +47,15 @@ def test_json_errors_reuse_werkzeug_headers(app, client):
     def foo():
         pass
 
-    rv = client.post('/foo')
-    assert rv.status_code == 405
-    assert 'Allow' in rv.headers
-
     # test manually raise 405
     @app.get('/bar')
     def bar():
         from werkzeug.exceptions import MethodNotAllowed
         raise MethodNotAllowed(valid_methods=['GET'])
+
+    rv = client.post('/foo')
+    assert rv.status_code == 405
+    assert 'Allow' in rv.headers
 
     rv = client.get('/bar')
     assert rv.status_code == 405
@@ -189,26 +190,27 @@ def test_skip_raw_blueprint(app, client):
 
 
 def test_dispatch_static_request(app, client):
-    # keyword arguments
-    rv = client.get('/static/hello.css')  # endpoint: static
-    assert rv.status_code == 404
-
     # positional arguments
     @app.get('/mystatic/<int:pet_id>')
     @app.input(Foo)
     def mystatic(pet_id, foo):  # endpoint: mystatic
         return {'pet_id': pet_id, 'foo': foo}
 
+    # positional arguments
+    # blueprint static route accepts both keyword/positional arguments
+    bp = APIBlueprint('foo', __name__, static_folder='static')
+    app.register_blueprint(bp, url_prefix='/foo')
+
     rv = client.get('/mystatic/2', json={'id': 1, 'name': 'foo'})
     assert rv.status_code == 200
     assert rv.json['pet_id'] == 2
     assert rv.json['foo'] == {'id': 1, 'name': 'foo'}
 
-    # positional arguments
-    # blueprint static route accepts both keyword/positional arguments
-    bp = APIBlueprint('foo', __name__, static_folder='static')
-    app.register_blueprint(bp, url_prefix='/foo')
     rv = client.get('/foo/static/hello.css')  # endpoint: foo.static
+    assert rv.status_code == 404
+
+    # keyword arguments
+    rv = client.get('/static/hello.css')  # endpoint: static
     assert rv.status_code == 404
 
 
@@ -295,3 +297,19 @@ def test_return_list_as_json(app, client):
     assert rv.status_code == 201
     assert rv.headers['Content-Type'] == 'application/json'
     assert rv.json == test_list
+
+
+def test_apispec_plugins(app):
+    class TestPlugin(BasePlugin):
+        def operation_helper(self, path=None, operations=None, **kwargs) -> None:
+            operations.update({'post': 'some_injected_test_data'})
+
+    app.spec_plugins = [TestPlugin()]
+
+    @app.get('/plugin_test')
+    def single_value():
+        return 'plugin_test'
+
+    spec = app._get_spec('json')
+
+    assert spec['paths']['/plugin_test'].get('post') == 'some_injected_test_data'

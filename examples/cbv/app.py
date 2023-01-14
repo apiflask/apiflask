@@ -1,7 +1,7 @@
 from apiflask import APIFlask, Schema, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
-from flask.views import MethodView
+from apiflask.views import MethodView
 
 app = APIFlask(__name__)
 
@@ -23,16 +23,12 @@ class PetOut(Schema):
     category = String()
 
 
-# "app.route" is just a shortcut,
-# you can also use "app.add_url_rule" directly
-@app.route('/')
 class Hello(MethodView):
 
     def get(self):
         return {'message': 'Hello!'}
 
 
-@app.route('/pets/<int:pet_id>')
 class Pet(MethodView):
 
     @app.output(PetOut)
@@ -62,7 +58,6 @@ class Pet(MethodView):
         return ''
 
 
-@app.route('/pets')
 class Pets(MethodView):
 
     @app.output(PetOut(many=True))
@@ -78,3 +73,8 @@ class Pets(MethodView):
         data['id'] = pet_id
         pets.append(data)
         return pets[pet_id]
+
+
+app.add_url_rule('/', view_func=Hello.as_view('hello'))
+app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
+app.add_url_rule('/pets', view_func=Pets.as_view('pets'))

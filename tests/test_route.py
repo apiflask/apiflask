@@ -1,10 +1,13 @@
 import pytest
-from flask.views import MethodView
+from flask.views import MethodView as FlaskMethodView
+from flask.views import View as FlaskView
 from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from apiflask import APIBlueprint
 from apiflask import HTTPTokenAuth
+from apiflask.views import MethodView
+from apiflask.views import View
 
 
 @pytest.mark.parametrize('method', ['get', 'post', 'put', 'patch', 'delete'])
@@ -164,7 +167,7 @@ def test_add_url_rule_with_method_view(app, client):
             """Create foo"""
             return 'post'
 
-    app.add_url_rule('/', view_func=Foo, methods=['GET', 'POST'])
+    app.add_url_rule('/', view_func=Foo.as_view('foo'), methods=['GET', 'POST'])
 
     rv = client.get('/')
     assert rv.data == b'get'
@@ -212,3 +215,37 @@ def test_view_endpoint_contains_dot(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/']['get']
+
+
+@pytest.mark.parametrize('view_class', [View, FlaskView])
+def test_add_url_rule_skip_collecting_spec_from_view_class(app, client, view_class):
+    class Foo(view_class):
+        def dispatch_request(self):
+            return 'Hello'
+
+    app.add_url_rule('/foo', view_func=Foo.as_view('foo'))
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    assert '/foo' not in rv.json['paths']
+
+    rv = client.get('/foo')
+    assert rv.status_code == 200
+
+
+def test_runtime_error_on_flask_methodview_class(app):
+    with pytest.raises(RuntimeError):
+        class Foo(FlaskMethodView):
+            pass
+
+        app.add_url_rule('/foo', view_func=Foo.as_view('foo'))
+
+
+def test_empty_methodview_class(app, client):
+    class Foo(MethodView):
+        pass
+
+    app.add_url_rule('/foo', view_func=Foo.as_view('foo'))
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    assert '/foo' not in rv.json['paths']

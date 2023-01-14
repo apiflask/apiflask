@@ -15,6 +15,15 @@ if t.TYPE_CHECKING:  # pragma: no cover
     from .blueprint import APIBlueprint
 
 
+default_bypassed_endpoints: t.List[str] = [
+    'static',
+    'openapi.spec',
+    'openapi.docs',
+    'openapi.redoc',
+    'openapi.swagger_ui_oauth_redirect',
+    '_debug_toolbar.static',  # Flask-DebugToolbar
+]
+
 default_response = {
     'schema': {},
     'status_code': 200,
@@ -112,7 +121,7 @@ def get_security_and_security_schemes(
     """Make security and security schemes from given auth names and schemes."""
     security: t.Dict[HTTPAuthType, str] = {}
     security_schemes: t.Dict[str, t.Dict[str, str]] = {}
-    for name, auth in zip(auth_names, auth_schemes):
+    for name, auth in zip(auth_names, auth_schemes):  # noqa: B905
         security[auth] = name
         security_schemes[name] = get_security_scheme(auth)
         if hasattr(auth, 'description') and auth.description is not None:

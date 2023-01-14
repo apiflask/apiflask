@@ -5,9 +5,8 @@ section first in the Basic Usage chapter for the basics of writing input and out
 
 Basic concepts on data schema:
 
-- APIFlask schema = [marshmallow](https://github.com/marshmallow-code/marshmallow) schema.
-- APIFlask's `apiflask.Schema` base class is directly imported from marshmallow, see the
-  [API documentation](https://marshmallow.readthedocs.io/en/stable/marshmallow.schema.html)
+- APIFlask's `apiflask.Schema` base class is directly imported from marshmallow with some minor changes,
+  see the [API documentation](https://marshmallow.readthedocs.io/en/stable/marshmallow.schema.html)
   for the details.
 - We recommend separating input and output schema. Since the output data is not
   validated, you don't need to define validators on output fields.
