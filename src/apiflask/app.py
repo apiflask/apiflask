@@ -608,7 +608,8 @@ class APIFlask(APIScaffold, Flask):
             if self.docs_ui not in ui_templates:
                 valid_values = list(ui_templates.keys())
                 raise ValueError(
-                    f'Invalid docs_ui value, expected one of {valid_values}, got "{self.docs_ui}".'
+                    f'Invalid docs_ui value, expected one of {valid_values!r}, '
+                    f'got {self.docs_ui!r}.'
                 )
 
             @bp.route(self.docs_path)
@@ -1056,7 +1057,7 @@ class APIFlask(APIScaffold, Flask):
                         data_key: str = self.config['BASE_RESPONSE_DATA_KEY']
                         if data_key not in base_schema_spec['properties']:
                             raise RuntimeError(
-                                f'The data key "{data_key}" is not found in'
+                                f'The data key {data_key!r} is not found in'
                                 ' the base response schema spec.'
                             )
                         base_schema_spec['properties'][data_key] = schema

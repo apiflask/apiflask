@@ -303,7 +303,7 @@ class APIScaffold:
                 raise ValueError(
                     'Unknown input location. The supported locations are: "json", "files",'
                     ' "form", "cookies", "headers", "query" (same as "querystring"), "path"'
-                    f' (same as "view_args") and "form_and_files". Got "{location}" instead.'
+                    f' (same as "view_args") and "form_and_files". Got {location!r} instead.'
                 )
             if location == 'json':
                 _annotate(f, body=schema, body_example=example, body_examples=examples)
@@ -468,7 +468,7 @@ class APIScaffold:
                     data_key: str = current_app.config['BASE_RESPONSE_DATA_KEY']
                     if data_key not in obj:
                         raise RuntimeError(
-                            f'The data key "{data_key}" is not found in the returned dict.'
+                            f'The data key {data_key!r} is not found in the returned dict.'
                         )
                     obj[data_key] = schema.dump(obj[data_key], many=many)  # type: ignore
                     data = base_schema().dump(obj)  # type: ignore
