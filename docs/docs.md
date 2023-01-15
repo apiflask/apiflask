@@ -26,6 +26,8 @@ it with `@app.doc` decorator and configuration variables.
 documentation tools.
 - **[Configuration](/configuration)**: A list of all the built-in configuration variables
 - **[Examples](/examples)**: A collection of application examples.
+- **[Tips](/tips)**: A collection of best practices and notes for web API development with APIFlask.
+
 
 The following chapters are useful for contributors and who want to know more about
 APIFlask:

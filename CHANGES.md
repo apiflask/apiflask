@@ -2,6 +2,11 @@
 
 Released: -
 
+- Support to generate the OpenAPI `servers` field when the reqeust context is available. Add
+  the config `AUTO_SERVERS` to control this automation behavior ([issue #377][issue_377]).
+
+[issue_377]: https://github.com/apiflask/apiflask/issues/377
+
 
 ## Version 1.2.0
 
