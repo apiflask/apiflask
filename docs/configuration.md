@@ -550,7 +550,7 @@ Enable or disable auto servers (`openapi.servers`) generation from the request c
 
 It's useful when you are running the API behind a reverse proxy with a URL prefix.
 
-Notice the `servers` field will not exist when the request context is not available (e.g. `flask spec`).
+Notice the `servers` field will not exist when the request context is not available (e.g. `flask spec` command).
 
 !!! tip
 

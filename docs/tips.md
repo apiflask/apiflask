@@ -1,6 +1,6 @@
 # Tips
 
-## Running the application behide a reverse proxy
+## Run the application behind a reverse proxy
 
 If you are running the application behind a reverse proxy (e.g. Nginx),
 you will need to set the config file like this:
