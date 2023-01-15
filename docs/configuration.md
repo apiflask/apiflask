@@ -143,12 +143,19 @@ The server information of the API (`openapi.servers`), accepts multiple
 server dicts. This configuration can also be configured from the `app.servers`
 attribute.
 
+[`AUTO_SERVERS`](/configuration#auto_servers) config is default to `True`, which
+means the server information will be set automatically when the request context is available.
+
 - Type: `List[Dict[str, str]]`
 - Default value: `None`
 - Examples:
 
 ```python
 app.config['SERVERS'] = [
+    {
+        'name': 'Dev Server',
+        'url': 'http://localhost:5000'
+    },
     {
         'name': 'Production Server',
         'url': 'http://api.example.com'
@@ -160,6 +167,10 @@ Or:
 
 ```python
 app.servers = [
+    {
+        'name': 'Dev Server',
+        'url': 'http://localhost:5000'
+    },
     {
         'name': 'Production Server',
         'url': 'http://api.example.com'
@@ -526,6 +537,31 @@ Enable or disable auto tags (`openapi.tags`) generation from the name of the blu
 
 ```python
 app.config['AUTO_TAGS'] = False
+```
+
+
+### AUTO_SERVERS
+
+!!! warning "Version >= 1.2.1"
+
+    This configuration variable was added in the [version 1.2.1](/changelog/#version-121).
+
+Enable or disable auto servers (`openapi.servers`) generation from the request context.
+
+It's useful when you are running the API behind a reverse proxy with a URL prefix.
+
+Notice the `servers` field will not exist when the request context is not available (e.g. `flask spec`).
+
+!!! tip
+
+    This automation behavior only happens when `app.servers` or config `SERVERS` is not set.
+
+- Type: `bool`
+- Default value: `True`
+- Examples:
+
+```python
+app.config['AUTO_SERVERS'] = False
 ```
 
 
