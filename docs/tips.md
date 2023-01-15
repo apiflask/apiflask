@@ -38,10 +38,10 @@ server {
 }
 ```
 
-??? notes
+!!! notes
 
-    APIFlask will update the OpenAPI's `servers` field automatically. If you
-    set the `AUTO_SERVERS` config to `False`, then you will need to update
+    From version 1.2.1, APIFlask will update the OpenAPI's `servers` field automatically.
+    If you set the `AUTO_SERVERS` config to `False`, then you will need to update
     the `servers` field manually to specify the URL prefix:
 
     ```python

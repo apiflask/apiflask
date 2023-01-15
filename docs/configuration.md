@@ -542,6 +542,10 @@ app.config['AUTO_TAGS'] = False
 
 ### AUTO_SERVERS
 
+!!! warning "Version >= 1.2.1"
+
+    This configuration variable was added in the [version 1.2.1](/changelog/#version-121).
+
 Enable or disable auto servers (`openapi.servers`) generation from the request context.
 
 It's useful when you are running the API behind a reverse proxy with a URL prefix.
