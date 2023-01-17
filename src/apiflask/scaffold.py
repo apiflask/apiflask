@@ -25,9 +25,6 @@ from .types import SchemaType
 from .views import MethodView
 
 BODY_LOCATIONS = ['json', 'files', 'form', 'form_and_files', 'json_or_form']
-SUPPORTED_LOCATIONS = BODY_LOCATIONS + [
-    'query', 'headers', 'cookies', 'querystring', 'path', 'view_args'
-]
 
 
 class FlaskParser(BaseFlaskParser):
@@ -298,12 +295,6 @@ class APIScaffold:
                     'When using the app.input() decorator, you can only declare one request '
                     'body location (one of "json", "form", "files", "form_and_files", '
                     'and "json_or_form").'
-                )
-            if location not in SUPPORTED_LOCATIONS:
-                raise ValueError(
-                    'Unknown input location. The supported locations are: "json", "files",'
-                    ' "form", "cookies", "headers", "query" (same as "querystring"), "path"'
-                    f' (same as "view_args") and "form_and_files". Got {location!r} instead.'
                 )
             if location == 'json':
                 _annotate(f, body=schema, body_example=example, body_examples=examples)

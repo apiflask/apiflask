@@ -2,6 +2,10 @@
 
 Released: -
 
+- Remove the validation of input locations ([issue #259][issue_259]).
+
+[issue_259]: https://github.com/apiflask/apiflask/issues/259
+
 
 ## Version 1.2.1
 
