@@ -25,6 +25,15 @@ def test_auto_tags(app, client):
 
 
 @pytest.mark.parametrize('config_value', [True, False])
+def test_auto_servers(app, client, config_value):
+    app.config['AUTO_SERVERS'] = config_value
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert bool('servers' in rv.json) == config_value
+
+
+@pytest.mark.parametrize('config_value', [True, False])
 def test_auto_path_summary(app, client, config_value):
     app.config['AUTO_OPERATION_SUMMARY'] = config_value
 

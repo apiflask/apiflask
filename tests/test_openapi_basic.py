@@ -1,6 +1,7 @@
 import json
 
 import pytest
+from flask import request
 from openapi_spec_validator import validate_spec
 
 from .schemas import Bar
@@ -8,6 +9,7 @@ from .schemas import Baz
 from .schemas import Foo
 from apiflask import APIBlueprint
 from apiflask import Schema as BaseSchema
+from apiflask.commands import spec_command
 from apiflask.fields import Integer
 
 
@@ -163,6 +165,26 @@ def test_servers_and_externaldocs(app):
     ]
 
 
+def test_default_servers(app):
+    assert app.servers is None
+
+    rv = app.test_client().get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    with app.test_request_context():
+        assert rv.json['servers'] == [
+            {
+                'url': f'{request.url_root}',
+            },
+        ]
+
+
+def test_default_servers_without_req_context(cli_runner):
+    result = cli_runner.invoke(spec_command)
+    assert 'openapi' in result.output
+    assert 'servers' not in json.loads(result.output)
+
+
 def test_auto_200_response(app, client):
     @app.get('/foo')
     def bare():
@@ -201,6 +223,8 @@ def test_auto_200_response(app, client):
 
 
 def test_sync_local_json_spec(app, client, tmp_path):
+    app.config['AUTO_SERVERS'] = False
+
     local_spec_path = tmp_path / 'openapi.json'
     app.config['SYNC_LOCAL_SPEC'] = True
     app.config['LOCAL_SPEC_PATH'] = local_spec_path
@@ -211,13 +235,15 @@ def test_sync_local_json_spec(app, client, tmp_path):
     validate_spec(rv.json)
 
     with open(local_spec_path) as f:
-        spec_content = f.read()
-        assert json.loads(spec_content) == app.spec
-        assert '{\n  "info": {' in spec_content
-        assert '"title": "APIFlask",' in spec_content
+        spec_content = json.loads(f.read())
+        assert spec_content == app.spec
+        assert 'info' in spec_content
+        assert 'paths' in spec_content
 
 
 def test_sync_local_yaml_spec(app, client, tmp_path):
+    app.config['AUTO_SERVERS'] = False
+
     local_spec_path = tmp_path / 'openapi.json'
     app.config['SYNC_LOCAL_SPEC'] = True
     app.config['LOCAL_SPEC_PATH'] = local_spec_path

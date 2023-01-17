@@ -60,6 +60,7 @@ nav:
   - Configuration: configuration.md
   - Error Handling: error-handling.md
   - Examples: examples.md
+  - Tips: tips.md
   - API Reference:
     - APIFlask: api/app.md
     - APIBlueprint: api/blueprint.md

@@ -14,8 +14,10 @@ from apispec import BasePlugin
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Blueprint
 from flask import Flask
+from flask import has_request_context
 from flask import jsonify
 from flask import render_template_string
+from flask import request
 from flask.config import ConfigAttribute
 try:
     from flask.globals import request_ctx  # type: ignore
@@ -606,7 +608,8 @@ class APIFlask(APIScaffold, Flask):
             if self.docs_ui not in ui_templates:
                 valid_values = list(ui_templates.keys())
                 raise ValueError(
-                    f'Invalid docs_ui value, expected one of {valid_values}, got "{self.docs_ui}".'
+                    f'Invalid docs_ui value, expected one of {valid_values!r}, '
+                    f'got {self.docs_ui!r}.'
                 )
 
             @bp.route(self.docs_path)
@@ -843,6 +846,10 @@ class APIFlask(APIScaffold, Flask):
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`.
 
+        *Version changed: 1.2.1*
+
+        - Set default `servers` value.
+
         *Version changed: 0.10.0*
 
         - Add support for `operationId`.
@@ -859,6 +866,9 @@ class APIFlask(APIScaffold, Flask):
         kwargs: dict = {}
         if self.servers:
             kwargs['servers'] = self.servers
+        else:
+            if self.config['AUTO_SERVERS'] and has_request_context():
+                kwargs['servers'] = [{'url': request.url_root}]
         if self.external_docs:
             kwargs['externalDocs'] = self.external_docs
 
@@ -1047,7 +1057,7 @@ class APIFlask(APIScaffold, Flask):
                         data_key: str = self.config['BASE_RESPONSE_DATA_KEY']
                         if data_key not in base_schema_spec['properties']:
                             raise RuntimeError(
-                                f'The data key "{data_key}" is not found in'
+                                f'The data key {data_key!r} is not found in'
                                 ' the base response schema spec.'
                             )
                         base_schema_spec['properties'][data_key] = schema

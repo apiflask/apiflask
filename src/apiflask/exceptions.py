@@ -71,7 +71,7 @@ class HTTPError(Exception):
             # TODO: support use custom error status code?
             if status_code not in default_exceptions:
                 raise LookupError(
-                    f'No exception for status code "{status_code}",'
+                    f'No exception for status code {status_code!r},'
                     ' valid error status code are "4XX" and "5XX".'
                 )
             self.status_code = status_code

@@ -459,7 +459,7 @@ class APIScaffold:
                     data_key: str = current_app.config['BASE_RESPONSE_DATA_KEY']
                     if data_key not in obj:
                         raise RuntimeError(
-                            f'The data key "{data_key}" is not found in the returned dict.'
+                            f'The data key {data_key!r} is not found in the returned dict.'
                         )
                     obj[data_key] = schema.dump(obj[data_key], many=many)  # type: ignore
                     data = base_schema().dump(obj)  # type: ignore
