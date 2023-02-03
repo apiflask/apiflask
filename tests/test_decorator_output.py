@@ -1,10 +1,14 @@
+from dataclasses import dataclass
+
 from flask import make_response
 from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from .schemas import Query
-from apiflask.fields import String
+from apiflask.fields import Field
 from apiflask.views import MethodView
+from apiflask import Schema
+from apiflask.fields import String
 
 
 def test_output(app, client):
@@ -168,6 +172,35 @@ def test_output_with_dict_schema(app, client):
         'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated'
     assert rv.json['paths']['/spam']['get']['responses']['200'][
         'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated1'
+
+
+def test_output_with_object_schema(app, client):
+    class BaseResponse(Schema):
+        data = Field()
+        message = String(dump_default='Success')
+
+    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
+
+    class PetOut(Schema):
+        name = String()
+
+    @dataclass
+    class Pet:
+        name: str
+
+    @dataclass
+    class Response:
+        data: Pet
+
+    @app.get('/foo')
+    @app.output(PetOut)
+    def foo():
+        pet = Pet('foo')
+        return Response(data=pet)
+
+    rv = client.get('/foo')
+    assert rv.status_code == 200
+    assert rv.json['data'] == {'name': 'foo'}
 
 
 def test_output_body_example(app, client):

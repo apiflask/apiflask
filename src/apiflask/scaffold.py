@@ -457,11 +457,24 @@ class APIScaffold:
                 base_schema: OpenAPISchemaType = current_app.config['BASE_RESPONSE_SCHEMA']
                 if base_schema is not None and status_code != 204:
                     data_key: str = current_app.config['BASE_RESPONSE_DATA_KEY']
-                    if data_key not in obj:
-                        raise RuntimeError(
-                            f'The data key {data_key!r} is not found in the returned dict.'
+
+                    if isinstance(obj, dict):
+                        if data_key not in obj:
+                            raise RuntimeError(
+                                f'The data key {data_key!r} is not found in the returned dict.'
+                            )
+                        obj[data_key] = schema.dump(obj[data_key], many=many)  # type: ignore
+                    else:
+                        if not hasattr(obj, data_key):
+                            raise RuntimeError(
+                                f'The data key {data_key!r} is not found in the returned object.'
+                            )
+                        setattr(
+                            obj,
+                            data_key,
+                            schema.dump(getattr(obj, data_key), many=many)  # type: ignore
                         )
-                    obj[data_key] = schema.dump(obj[data_key], many=many)  # type: ignore
+
                     data = base_schema().dump(obj)  # type: ignore
                 else:
                     data = schema.dump(obj, many=many)  # type: ignore
