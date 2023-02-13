@@ -1006,12 +1006,12 @@ app.config['SWAGGER_UI_CONFIG'] = {
 
 !!! tip
 
-    Configurations of `Function` type can be provided through strings after  [version 1.2.2](/changelog/#version-122).
+    Configurations of `Function` type can be provided through strings after [version 1.2.2](/changelog/#version-122).
 
     For example:
     ```py
     app.config['SWAGGER_UI_CONFIG'] = {
-        'requestInterceptor': "(req) => { console.log('intercepted!'); return req; }"
+        'requestInterceptor': '(req) => { console.log("Intercepted!"); return req; }'
     }
     ```
 

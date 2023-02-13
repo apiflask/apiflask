@@ -96,7 +96,7 @@ swagger_ui_template = """
     {% if config.SWAGGER_UI_CONFIG %}
     var userConfig = {{ config.SWAGGER_UI_CONFIG | tojson }}
     for (var attr in userConfig) {
-      baseConfig[attr] = funcConfigItems.includes(attr)?parseFunc(userConfig[attr]):userConfig[attr]
+      baseConfig[attr] = funcConfigItems.includes(attr) ? parseFunc(userConfig[attr]) : userConfig[attr]
     }
     {% endif %}
     window.onload = function () {
