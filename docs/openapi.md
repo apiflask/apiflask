@@ -920,11 +920,25 @@ def update_spec(spec):
     return spec
 ```
 
-Notice the format of the spec depends on the value of the configuration
-variable `SPEC_FORMAT` (defaults to `'json'`):
+By default, the `spec` argument is a dict. When the `SPEC_PROCESSOR_PASS_OBJECT` config is
+`True`, the `spec` argument will be an
+[`apispec.APISpec`](https://apispec.readthedocs.io/en/latest/api_core.html#apispec.APISpec) object.
 
-- `'json'` -> dict
-- `'yaml'` -> string
+```python
+from apiflask import APIFlask
+
+app = APIFlask(__name__)
+app.config['SPEC_PROCESSOR_PASS_OBJECT'] = True
+
+class FooSchema(Schema):
+    id = Integer()
+
+@app.spec_processor
+def update_spec(spec):
+    spec.title = 'Updated Title'
+    spec.components.schema('Foo', schema=FooSchema)  # add a schema manually
+    return spec
+```
 
 Check out [the example application](https://github.com/apiflask/apiflask/tree/main/examples/openapi/app.py)
 for OpenAPI support, see [the examples page](/examples) for running the example application.
