@@ -1,6 +1,6 @@
 ## Version 1.2.2
 
-Released: -
+Released: 2023/2/18
 
 - Remove the validation of input locations ([issue #259][issue_259]).
 - Support passing `Function` type config to `SWAGGER_UI_CONFIG` ([issue #381][issue_381]).
