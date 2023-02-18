@@ -3,8 +3,10 @@
 Released: -
 
 - Remove the validation of input locations ([issue #259][issue_259]).
+- Support passing `Function` type config to `SWAGGER_UI_CONFIG` ([issue #381][issue_381]).
 
 [issue_259]: https://github.com/apiflask/apiflask/issues/259
+[issue_381]: https://github.com/apiflask/apiflask/issues/381
 
 
 ## Version 1.2.1
