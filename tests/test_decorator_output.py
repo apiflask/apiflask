@@ -5,10 +5,10 @@ from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from .schemas import Query
-from apiflask.fields import Field
-from apiflask.views import MethodView
 from apiflask import Schema
+from apiflask.fields import Field
 from apiflask.fields import String
+from apiflask.views import MethodView
 
 
 def test_output(app, client):
