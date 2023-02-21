@@ -74,6 +74,18 @@ def test_spec_bypass_endpoints(app):
     assert '/docs/oauth2-redirect' not in spec['paths']
 
 
+def test_spec_bypass_methods(app):
+
+    class Foo:
+        def bar(self):
+            pass
+
+    app.add_url_rule('/foo', 'foo', Foo().bar)
+
+    spec = app._get_spec()
+    assert '/foo' not in spec['paths']
+
+
 def test_spec_attribute(app):
     spec = app._get_spec()
 

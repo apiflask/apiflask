@@ -2,6 +2,10 @@
 
 Released: -
 
+- Bypass OpenAPI spec generation for view methods ([issue #406][issue_406]).
+
+[issue_406]: https://github.com/apiflask/apiflask/issues/406
+
 
 ## Version 1.2.2
 
