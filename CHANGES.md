@@ -1,3 +1,8 @@
+## Version 1.2.4
+
+Released: -
+
+
 ## Version 1.2.3
 
 Released: 2023/2/21
