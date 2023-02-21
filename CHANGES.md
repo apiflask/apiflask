@@ -1,6 +1,6 @@
 ## Version 1.2.3
 
-Released: -
+Released: 2023/2/21
 
 - Bypass OpenAPI spec generation for view methods ([issue #406][issue_406]).
 
