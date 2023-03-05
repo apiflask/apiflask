@@ -71,16 +71,20 @@ def get_auth_name(
     auth_names: t.List[str]
 ) -> str:
     """Get auth name from auth object."""
-    name: str
-    if isinstance(auth, HTTPBasicAuth):
-        name = 'BasicAuth'
-    elif isinstance(auth, HTTPTokenAuth):
-        if auth.scheme.lower() == 'bearer' and auth.header is None:
-            name = 'BearerAuth'
+    name: str = ''
+    if hasattr(auth, 'security_scheme_name'):
+        name = auth.security_scheme_name  # type: ignore
+    if not name:
+        if isinstance(auth, HTTPBasicAuth):
+            name = 'BasicAuth'
+        elif isinstance(auth, HTTPTokenAuth):
+            if auth.scheme.lower() == 'bearer' and auth.header is None:
+                name = 'BearerAuth'
+            else:
+                name = 'ApiKeyAuth'
         else:
-            name = 'ApiKeyAuth'
-    else:
-        raise TypeError('Unknown authentication scheme.')
+            raise TypeError('Unknown authentication scheme.')
+
     if name in auth_names:
         v = 2
         new_name = f'{name}_{v}'
