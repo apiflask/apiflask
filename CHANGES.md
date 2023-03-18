@@ -1,6 +1,56 @@
-## Version 1.2.1
+## Version 1.3.1
 
 Released: -
+
+
+## Version 1.3.0
+
+Released: 2023/3/18
+
+- Add `scurity_scheme_name` for `HTTPBasicAuth` and `HTTPTokenAuth` to define custom
+  OpenAPI security scheme name ([issue #410][issue_410]).
+- Add config `SPEC_PROCESSOR_PASS_OBJECT` to control the argument type of
+  spec processor. The `spec` argument will be an `apispec.APISpec` object
+  when this config is `True` ([issue #213][issue_213]).
+- Add `content_type` parameter to the `output()` decorator to customize the
+  response's content/media type.
+
+[issue_410]: https://github.com/apiflask/apiflask/issues/410
+[issue_357]: https://github.com/apiflask/apiflask/issues/357
+[issue_213]: https://github.com/apiflask/apiflask/issues/213
+
+
+## Version 1.2.3
+
+Released: 2023/2/21
+
+- Bypass OpenAPI spec generation for view methods ([issue #406][issue_406]).
+
+[issue_406]: https://github.com/apiflask/apiflask/issues/406
+
+
+## Version 1.2.2
+
+Released: 2023/2/18
+
+- Remove the validation of input locations ([issue #259][issue_259]).
+- Support passing `Function` type config to `SWAGGER_UI_CONFIG` ([issue #381][issue_381]).
+- Fix the base response support so that a custom class can be returned from
+  the view function ([issue #384][issue_384]).
+
+[issue_259]: https://github.com/apiflask/apiflask/issues/259
+[issue_381]: https://github.com/apiflask/apiflask/issues/381
+[issue_384]: https://github.com/apiflask/apiflask/issues/384
+
+
+## Version 1.2.1
+
+Released: 2023/1/15
+
+- Support to generate the OpenAPI `servers` field when the reqeust context is available. Add
+  the config `AUTO_SERVERS` to control this automation behavior ([issue #377][issue_377]).
+
+[issue_377]: https://github.com/apiflask/apiflask/issues/377
 
 
 ## Version 1.2.0

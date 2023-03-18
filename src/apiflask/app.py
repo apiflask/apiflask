@@ -1,3 +1,4 @@
+import inspect
 import json
 import re
 import sys
@@ -12,10 +13,13 @@ if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pra
 from apispec import APISpec
 from apispec import BasePlugin
 from apispec.ext.marshmallow import MarshmallowPlugin
+from apispec.yaml_utils import dict_to_yaml
 from flask import Blueprint
 from flask import Flask
+from flask import has_request_context
 from flask import jsonify
 from flask import render_template_string
+from flask import request
 from flask.config import ConfigAttribute
 try:
     from flask.globals import request_ctx  # type: ignore
@@ -606,7 +610,8 @@ class APIFlask(APIScaffold, Flask):
             if self.docs_ui not in ui_templates:
                 valid_values = list(ui_templates.keys())
                 raise ValueError(
-                    f'Invalid docs_ui value, expected one of {valid_values}, got "{self.docs_ui}".'
+                    f'Invalid docs_ui value, expected one of {valid_values!r}, '
+                    f'got {self.docs_ui!r}.'
                 )
 
             @bp.route(self.docs_path)
@@ -676,16 +681,29 @@ class APIFlask(APIScaffold, Flask):
 
         - Rename the method name to `_get_spec`.
         - Add the `force_update` parameter.
+
+        *Version changed: 1.3.0*
+
+        - Add the `SPEC_PROCESSOR_PASS_OBJECT` config to control the argument type
+          when calling the spec processor.
         """
         if spec_format is None:
             spec_format = self.config['SPEC_FORMAT']
         if self._spec is None or force_update:
-            if spec_format == 'json':
-                self._spec = self._generate_spec().to_dict()
-            else:
-                self._spec = self._generate_spec().to_yaml()
+            spec_object: APISpec = self._generate_spec()
             if self.spec_callback:
-                self._spec = self.spec_callback(self._spec)  # type: ignore
+                if self.config['SPEC_PROCESSOR_PASS_OBJECT']:
+                    self._spec = self.spec_callback(
+                        spec_object  # type: ignore
+                    ).to_dict()
+                else:
+                    self._spec = self.spec_callback(
+                        spec_object.to_dict()
+                    )
+            else:
+                self._spec = spec_object.to_dict()
+            if spec_format in ['yml', 'yaml']:
+                self._spec = dict_to_yaml(self._spec)  # type: ignore
         # sync local spec
         if self.config['SYNC_LOCAL_SPEC']:
             spec_path = self.config['LOCAL_SPEC_PATH']
@@ -843,6 +861,14 @@ class APIFlask(APIScaffold, Flask):
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`.
 
+        *Version changed: 1.3.0*
+
+        - Support setting custom response content type.
+
+        *Version changed: 1.2.1*
+
+        - Set default `servers` value.
+
         *Version changed: 0.10.0*
 
         - Add support for `operationId`.
@@ -859,6 +885,9 @@ class APIFlask(APIScaffold, Flask):
         kwargs: dict = {}
         if self.servers:
             kwargs['servers'] = self.servers
+        else:
+            if self.config['AUTO_SERVERS'] and has_request_context():
+                kwargs['servers'] = [{'url': request.url_root}]
         if self.external_docs:
             kwargs['externalDocs'] = self.external_docs
 
@@ -924,7 +953,7 @@ class APIFlask(APIScaffold, Flask):
                         continue
             # add a default 200 response for bare views
             if not hasattr(view_func, '_spec'):
-                if self.config['AUTO_200_RESPONSE']:
+                if not inspect.ismethod(view_func) and self.config['AUTO_200_RESPONSE']:
                     view_func._spec = {'response': default_response}
                 else:
                     continue  # pragma: no cover
@@ -1047,7 +1076,7 @@ class APIFlask(APIScaffold, Flask):
                         data_key: str = self.config['BASE_RESPONSE_DATA_KEY']
                         if data_key not in base_schema_spec['properties']:
                             raise RuntimeError(
-                                f'The data key "{data_key}" is not found in'
+                                f'The data key {data_key!r} is not found in'
                                 ' the base response schema spec.'
                             )
                         base_schema_spec['properties'][data_key] = schema
@@ -1059,8 +1088,16 @@ class APIFlask(APIScaffold, Flask):
                     example = view_func._spec.get('response')['example']
                     examples = view_func._spec.get('response')['examples']
                     links = view_func._spec.get('response')['links']
+                    content_type = view_func._spec.get('response')['content_type']
                     add_response(
-                        operation, status_code, schema, description, example, examples, links
+                        operation,
+                        status_code,
+                        schema,
+                        description,
+                        example,
+                        examples,
+                        links,
+                        content_type,
                     )
                 else:
                     # add a default 200 response for views without using @app.output

@@ -25,9 +25,6 @@ from .types import SchemaType
 from .views import MethodView
 
 BODY_LOCATIONS = ['json', 'files', 'form', 'form_and_files', 'json_or_form']
-SUPPORTED_LOCATIONS = BODY_LOCATIONS + [
-    'query', 'headers', 'cookies', 'querystring', 'path', 'view_args'
-]
 
 
 class FlaskParser(BaseFlaskParser):
@@ -299,12 +296,6 @@ class APIScaffold:
                     'body location (one of "json", "form", "files", "form_and_files", '
                     'and "json_or_form").'
                 )
-            if location not in SUPPORTED_LOCATIONS:
-                raise ValueError(
-                    'Unknown input location. The supported locations are: "json", "files",'
-                    ' "form", "cookies", "headers", "query" (same as "querystring"), "path"'
-                    f' (same as "view_args") and "form_and_files". Got "{location}" instead.'
-                )
             if location == 'json':
                 _annotate(f, body=schema, body_example=example, body_examples=examples)
             elif location == 'form':
@@ -342,6 +333,7 @@ class APIScaffold:
         example: t.Optional[t.Any] = None,
         examples: t.Optional[t.Dict[str, t.Any]] = None,
         links: t.Optional[t.Dict[str, t.Any]] = None,
+        content_type: t.Optional[str] = 'application/json',
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Add output settings for view functions.
 
@@ -409,6 +401,12 @@ class APIScaffold:
                 See the [docs](https://apiflask.com/openapi/#response-links) for more details
                 about setting response links.
 
+            content_type: The content/media type of the response. It defautls to `application/json`.
+
+        *Version changed: 1.3.0*
+
+        - Add parameter `content_type`.
+
         *Version changed: 0.12.0*
 
         - Move to APIFlask and APIBlueprint classes.
@@ -452,6 +450,7 @@ class APIScaffold:
                 'example': example,
                 'examples': examples,
                 'links': links,
+                'content_type': content_type,
             })
 
             def _jsonify(
@@ -466,11 +465,24 @@ class APIScaffold:
                 base_schema: OpenAPISchemaType = current_app.config['BASE_RESPONSE_SCHEMA']
                 if base_schema is not None and status_code != 204:
                     data_key: str = current_app.config['BASE_RESPONSE_DATA_KEY']
-                    if data_key not in obj:
-                        raise RuntimeError(
-                            f'The data key "{data_key}" is not found in the returned dict.'
+
+                    if isinstance(obj, dict):
+                        if data_key not in obj:
+                            raise RuntimeError(
+                                f'The data key {data_key!r} is not found in the returned dict.'
+                            )
+                        obj[data_key] = schema.dump(obj[data_key], many=many)  # type: ignore
+                    else:
+                        if not hasattr(obj, data_key):
+                            raise RuntimeError(
+                                f'The data key {data_key!r} is not found in the returned object.'
+                            )
+                        setattr(
+                            obj,
+                            data_key,
+                            schema.dump(getattr(obj, data_key), many=many)  # type: ignore
                         )
-                    obj[data_key] = schema.dump(obj[data_key], many=many)  # type: ignore
+
                     data = base_schema().dump(obj)  # type: ignore
                 else:
                     data = schema.dump(obj, many=many)  # type: ignore

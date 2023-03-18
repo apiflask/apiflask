@@ -1,8 +1,12 @@
+from dataclasses import dataclass
+
 from flask import make_response
 from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from .schemas import Query
+from apiflask import Schema
+from apiflask.fields import Field
 from apiflask.fields import String
 from apiflask.views import MethodView
 
@@ -170,6 +174,35 @@ def test_output_with_dict_schema(app, client):
         'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated1'
 
 
+def test_output_with_object_schema(app, client):
+    class BaseResponse(Schema):
+        data = Field()
+        message = String(dump_default='Success')
+
+    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
+
+    class PetOut(Schema):
+        name = String()
+
+    @dataclass
+    class Pet:
+        name: str
+
+    @dataclass
+    class Response:
+        data: Pet
+
+    @app.get('/foo')
+    @app.output(PetOut)
+    def foo():
+        pet = Pet('foo')
+        return Response(data=pet)
+
+    rv = client.get('/foo')
+    assert rv.status_code == 200
+    assert rv.json['data'] == {'name': 'foo'}
+
+
 def test_output_body_example(app, client):
     example = {'name': 'foo', 'id': 2}
     examples = {
@@ -282,3 +315,23 @@ def test_response_links_ref(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert 'getFoo' in rv.json['paths']['/foo']['get']['responses']['200']['links']
+
+
+def test_response_content_type(app, client):
+    @app.get('/foo')
+    @app.output(Foo)  # default value is application/json
+    def foo():
+        pass
+
+    @app.get('/bar')
+    @app.output(Foo, content_type='image/png')
+    def bar():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert len(rv.json['paths']['/foo']['get']['responses']['200']['content']) == 1
+    assert len(rv.json['paths']['/bar']['get']['responses']['200']['content']) == 1
+    assert 'application/json' in rv.json['paths']['/foo']['get']['responses']['200']['content']
+    assert 'image/png' in rv.json['paths']['/bar']['get']['responses']['200']['content']

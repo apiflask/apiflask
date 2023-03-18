@@ -1,13 +1,15 @@
 import json
 
 import pytest
+from flask import request
 from openapi_spec_validator import validate_spec
 
 from .schemas import Bar
 from .schemas import Baz
 from .schemas import Foo
 from apiflask import APIBlueprint
-from apiflask import Schema as BaseSchema
+from apiflask import Schema
+from apiflask.commands import spec_command
 from apiflask.fields import Integer
 
 
@@ -31,6 +33,26 @@ def test_spec_processor(app, client):
     validate_spec(rv.json)
     assert rv.json['openapi'] == '3.0.2'
     assert rv.json['info']['title'] == 'Foo'
+
+
+def test_spec_processor_pass_object(app, client):
+    app.config['SPEC_PROCESSOR_PASS_OBJECT'] = True
+
+    class NotUsedSchema(Schema):
+        id = Integer()
+
+    @app.spec_processor
+    def process_spec(spec):
+        spec.title = 'Foo'
+        spec.components.schema('NotUsed', schema=NotUsedSchema)
+        return spec
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['info']['title'] == 'Foo'
+    assert 'NotUsed' in rv.json['components']['schemas']
+    assert 'id' in rv.json['components']['schemas']['NotUsed']['properties']
 
 
 @pytest.mark.parametrize('spec_format', ['json', 'yaml', 'yml'])
@@ -72,6 +94,18 @@ def test_spec_bypass_endpoints(app):
     assert '/docs/oauth2-redirect' not in spec['paths']
 
 
+def test_spec_bypass_methods(app):
+
+    class Foo:
+        def bar(self):
+            pass
+
+    app.add_url_rule('/foo', 'foo', Foo().bar)
+
+    spec = app._get_spec()
+    assert '/foo' not in spec['paths']
+
+
 def test_spec_attribute(app):
     spec = app._get_spec()
 
@@ -100,7 +134,7 @@ def test_spec_schemas(app):
     def baz():
         pass
 
-    class Spam(BaseSchema):
+    class Spam(Schema):
         id = Integer()
 
     @app.route('/spam')
@@ -108,12 +142,12 @@ def test_spec_schemas(app):
     def spam():
         pass
 
-    class Schema(BaseSchema):
+    class Ham(Schema):
         id = Integer()
 
-    @app.route('/schema')
-    @app.output(Schema)
-    def schema():
+    @app.route('/ham')
+    @app.output(Ham)
+    def ham():
         pass
 
     spec = app.spec
@@ -122,7 +156,7 @@ def test_spec_schemas(app):
     assert 'Bar' in spec['components']['schemas']
     assert 'Baz' in spec['components']['schemas']
     assert 'Spam' in spec['components']['schemas']
-    assert 'Schema' in spec['components']['schemas']
+    assert 'Ham' in spec['components']['schemas']
 
 
 def test_servers_and_externaldocs(app):
@@ -163,6 +197,26 @@ def test_servers_and_externaldocs(app):
     ]
 
 
+def test_default_servers(app):
+    assert app.servers is None
+
+    rv = app.test_client().get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    with app.test_request_context():
+        assert rv.json['servers'] == [
+            {
+                'url': f'{request.url_root}',
+            },
+        ]
+
+
+def test_default_servers_without_req_context(cli_runner):
+    result = cli_runner.invoke(spec_command)
+    assert 'openapi' in result.output
+    assert 'servers' not in json.loads(result.output)
+
+
 def test_auto_200_response(app, client):
     @app.get('/foo')
     def bare():
@@ -201,6 +255,8 @@ def test_auto_200_response(app, client):
 
 
 def test_sync_local_json_spec(app, client, tmp_path):
+    app.config['AUTO_SERVERS'] = False
+
     local_spec_path = tmp_path / 'openapi.json'
     app.config['SYNC_LOCAL_SPEC'] = True
     app.config['LOCAL_SPEC_PATH'] = local_spec_path
@@ -211,13 +267,15 @@ def test_sync_local_json_spec(app, client, tmp_path):
     validate_spec(rv.json)
 
     with open(local_spec_path) as f:
-        spec_content = f.read()
-        assert json.loads(spec_content) == app.spec
-        assert '{\n  "info": {' in spec_content
-        assert '"title": "APIFlask",' in spec_content
+        spec_content = json.loads(f.read())
+        assert spec_content == app.spec
+        assert 'info' in spec_content
+        assert 'paths' in spec_content
 
 
 def test_sync_local_yaml_spec(app, client, tmp_path):
+    app.config['AUTO_SERVERS'] = False
+
     local_spec_path = tmp_path / 'openapi.json'
     app.config['SYNC_LOCAL_SPEC'] = True
     app.config['LOCAL_SPEC_PATH'] = local_spec_path

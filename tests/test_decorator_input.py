@@ -10,7 +10,6 @@ from .schemas import Files
 from .schemas import Foo
 from .schemas import Form
 from .schemas import FormAndFiles
-from .schemas import Query
 from apiflask.fields import String
 from apiflask.views import MethodView
 
@@ -231,14 +230,6 @@ def test_multiple_input_body_location(app, locations):
         @app.route('/foo')
         @app.input(Foo, locations[0])
         @app.input(Bar, locations[1])
-        def foo(query):
-            pass
-
-
-def test_bad_input_location(app):
-    with pytest.raises(ValueError):
-        @app.route('/foo')
-        @app.input(Query, location='bad')
         def foo(query):
             pass
 

@@ -143,12 +143,19 @@ The server information of the API (`openapi.servers`), accepts multiple
 server dicts. This configuration can also be configured from the `app.servers`
 attribute.
 
+[`AUTO_SERVERS`](/configuration#auto_servers) config is default to `True`, which
+means the server information will be set automatically when the request context is available.
+
 - Type: `List[Dict[str, str]]`
 - Default value: `None`
 - Examples:
 
 ```python
 app.config['SERVERS'] = [
+    {
+        'name': 'Dev Server',
+        'url': 'http://localhost:5000'
+    },
     {
         'name': 'Production Server',
         'url': 'http://api.example.com'
@@ -160,6 +167,10 @@ Or:
 
 ```python
 app.servers = [
+    {
+        'name': 'Dev Server',
+        'url': 'http://localhost:5000'
+    },
     {
         'name': 'Production Server',
         'url': 'http://api.example.com'
@@ -385,6 +396,42 @@ app.license = {
 ```
 
 
+### SECURITY_SCHEMES
+
+The custom security schemes of the API (`openapi.compomnents.securitySchemes`).
+You should only this when you use a third-party authentication library and you
+want to add OpenAPI spec for them. When using the built-in `HTTPBasicAuth`
+and `HTTPTokenAuth`, the security schemes will be generated automatically.
+
+This configuration can also be configured from the `app.security_schemes` attribute.
+
+- Type: `Dict[str, t.Any]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['SECURITY_SCHEMES'] = {
+    'ApiKeyAuth': {
+      'type': 'apiKey',
+      'in': 'header',
+      'name': 'X-API-Key',
+    }
+}
+```
+
+Or:
+
+```python
+app.security_schemes = {
+    'ApiKeyAuth': {
+      'type': 'apiKey',
+      'in': 'header',
+      'name': 'X-API-Key',
+    }
+}
+```
+
+
 ## OpenAPI spec
 
 Customize the generation of the OpenAPI spec.
@@ -505,6 +552,24 @@ app.config['YAML_SPEC_MIMETYPE'] = 'text/x-yaml'
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
 
 
+### SPEC_PROCESSOR_PASS_OBJECT
+
+If `True`, the `spec` argument passed to the spec processor will be an
+[`apispec.APISpec`](https://apispec.readthedocs.io/en/latest/api_core.html#apispec.APISpec) object.
+
+- Type: `bool`
+- Default value: `False`
+- Examples:
+
+```python
+app.config['SPEC_PROCESSOR_PASS_OBJECT'] = True
+```
+
+!!! warning "Version >= 1.3.0"
+
+    This configuration variable was added in the [version 1.3.0](/changelog/#version-130).
+
+
 ## Automation behavior control
 
 The following configuration variables are used to control the automation behavior
@@ -526,6 +591,31 @@ Enable or disable auto tags (`openapi.tags`) generation from the name of the blu
 
 ```python
 app.config['AUTO_TAGS'] = False
+```
+
+
+### AUTO_SERVERS
+
+!!! warning "Version >= 1.2.1"
+
+    This configuration variable was added in the [version 1.2.1](/changelog/#version-121).
+
+Enable or disable auto servers (`openapi.servers`) generation from the request context.
+
+It's useful when you are running the API behind a reverse proxy with a URL prefix.
+
+Notice the `servers` field will not exist when the request context is not available (e.g. `flask spec` command).
+
+!!! tip
+
+    This automation behavior only happens when `app.servers` or config `SERVERS` is not set.
+
+- Type: `bool`
+- Default value: `True`
+- Examples:
+
+```python
+app.config['AUTO_SERVERS'] = False
 ```
 
 
@@ -967,6 +1057,17 @@ app.config['SWAGGER_UI_CONFIG'] = {
     'layout': 'StandaloneLayout'
 }
 ```
+
+!!! tip
+
+    Configurations of `Function` type can be provided through strings after [version 1.2.2](/changelog/#version-122).
+
+    For example:
+    ```py
+    app.config['SWAGGER_UI_CONFIG'] = {
+        'requestInterceptor': '(req) => { console.log("Intercepted!"); return req; }'
+    }
+    ```
 
 
 ### SWAGGER_UI_OAUTH_CONFIG

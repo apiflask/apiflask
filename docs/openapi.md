@@ -709,10 +709,33 @@ def update_spec(spec):
 
 
 @app.post('/pets')
-@app.output(PetOutSchem, links={'getAddressByUserId': {'$ref': '#/components/links/getAddressByUserId'}})
+@app.output(PetOutSchema, links={'getAddressByUserId': {'$ref': '#/components/links/getAddressByUserId'}})
 def new_pet(data):
     pass
 ```
+
+
+## Request and response content type / media type
+
+For request, the content type is set automically based on the input location:
+
+- `json`: `application/json`
+- `form`: `application/x-www-form-urlencoded`
+- `files`, `form_and_files`: `multipart/form-data`
+
+For response, the default content type is `application/json`. You can set a custom content type with the
+`content_type` parameter (APIFlsak >= 1.3.0) in the `output()` decorator:
+
+```python
+@app.post('/image')
+@app.output(ImageOutSchema, content_type='image/png')
+def get_image():
+    pass
+```
+
+!!! note
+
+    For the consistency with Flask/Werkzeug, we use `content_type` instead of `media_type`.
 
 
 ## Use the `doc` decorator
@@ -920,11 +943,25 @@ def update_spec(spec):
     return spec
 ```
 
-Notice the format of the spec depends on the value of the configuration
-variable `SPEC_FORMAT` (defaults to `'json'`):
+By default, the `spec` argument is a dict. When the `SPEC_PROCESSOR_PASS_OBJECT` config is
+`True`, the `spec` argument will be an
+[`apispec.APISpec`](https://apispec.readthedocs.io/en/latest/api_core.html#apispec.APISpec) object.
 
-- `'json'` -> dict
-- `'yaml'` -> string
+```python
+from apiflask import APIFlask
+
+app = APIFlask(__name__)
+app.config['SPEC_PROCESSOR_PASS_OBJECT'] = True
+
+class FooSchema(Schema):
+    id = Integer()
+
+@app.spec_processor
+def update_spec(spec):
+    spec.title = 'Updated Title'
+    spec.components.schema('Foo', schema=FooSchema)  # add a schema manually
+    return spec
+```
 
 Check out [the example application](https://github.com/apiflask/apiflask/tree/main/examples/openapi/app.py)
 for OpenAPI support, see [the examples page](/examples) for running the example application.

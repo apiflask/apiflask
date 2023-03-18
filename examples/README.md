@@ -95,7 +95,7 @@ Then click the "Execute" button, it will send a request to the related endpoint 
 ![](https://apiflask.com/_assets/execute.png)
 
 
-## Do some experiment
+## Do some experiments
 
 If you want to do some experiment on the example application, just open the `app.py` with your favorite editor. To make the application reload every time after you change the code, use the `--reload` option for `flask run`:
 
@@ -103,4 +103,10 @@ If you want to do some experiment on the example application, just open the `app
 $ flask run --reload
 ```
 
-Furthermore, you can run the application in debug mode; it will enable the reloader and debugger as default. To enable the debug mode, you will need to set the environment variable `FLASK_ENV` to `development` before executing `flask run`, see *[Debug Mode](https://flask.palletsprojects.com/en/main/quickstart/#debug-mode)* for more details.
+Or run in debug mode:
+
+```bash
+$ flask run --debug
+```
+
+With debug mode, it will enable the reloader and debugger as default. See *[Debug Mode](https://flask.palletsprojects.com/en/main/quickstart/#debug-mode)* for more details.

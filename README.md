@@ -191,10 +191,16 @@ See <em><a href="https://flask.palletsprojects.com/async-await">Using async and 
 
 </details>
 
-Save this as `app.py`, then run it with :
+Save this as `app.py`, then run it with:
 
 ```bash
 $ flask run --reload
+```
+
+Or run in debug mode:
+
+```bash
+$ flask run --debug
 ```
 
 Now visit the interactive API documentation (Swagger UI) at <http://localhost:5000/docs>:

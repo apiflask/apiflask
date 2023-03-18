@@ -31,6 +31,7 @@ default_response = {
     'example': None,
     'examples': None,
     'links': None,
+    'content_type': 'application/json',
 }
 
 
@@ -71,16 +72,20 @@ def get_auth_name(
     auth_names: t.List[str]
 ) -> str:
     """Get auth name from auth object."""
-    name: str
-    if isinstance(auth, HTTPBasicAuth):
-        name = 'BasicAuth'
-    elif isinstance(auth, HTTPTokenAuth):
-        if auth.scheme.lower() == 'bearer' and auth.header is None:
-            name = 'BearerAuth'
+    name: str = ''
+    if hasattr(auth, 'security_scheme_name'):
+        name = auth.security_scheme_name  # type: ignore
+    if not name:
+        if isinstance(auth, HTTPBasicAuth):
+            name = 'BasicAuth'
+        elif isinstance(auth, HTTPTokenAuth):
+            if auth.scheme.lower() == 'bearer' and auth.header is None:
+                name = 'BearerAuth'
+            else:
+                name = 'ApiKeyAuth'
         else:
-            name = 'ApiKeyAuth'
-    else:
-        raise TypeError('Unknown authentication scheme.')
+            raise TypeError('Unknown authentication scheme.')
+
     if name in auth_names:
         v = 2
         new_name = f'{name}_{v}'
@@ -159,8 +164,13 @@ def add_response(
     example: t.Optional[t.Any] = None,
     examples: t.Optional[t.Dict[str, t.Any]] = None,
     links: t.Optional[t.Dict[str, t.Any]] = None,
+    content_type: t.Optional[str] = 'application/json',
 ) -> None:
     """Add response to operation.
+
+    *Version changed: 1.3.0*
+
+    - Add parameter `content_type`.
 
     *Version changed: 0.10.0*
 
@@ -169,17 +179,17 @@ def add_response(
     operation['responses'][status_code] = {}
     if status_code != '204':
         operation['responses'][status_code]['content'] = {
-            'application/json': {
+            content_type: {
                 'schema': schema
             }
         }
     operation['responses'][status_code]['description'] = description
     if example is not None:
         operation['responses'][status_code]['content'][
-            'application/json']['example'] = example
+            content_type]['example'] = example
     if examples is not None:
         operation['responses'][status_code]['content'][
-            'application/json']['examples'] = examples
+            content_type]['examples'] = examples
     if links is not None:
         operation['responses'][status_code]['links'] = links
 

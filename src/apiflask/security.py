@@ -13,8 +13,13 @@ from .types import ResponseReturnValueType
 class _AuthBase:
     """Base class for `HTTPBasicAuth` and `HTTPBasicAuth`."""
 
-    def __init__(self, description: t.Optional[str] = None) -> None:
+    def __init__(
+        self,
+        description: t.Optional[str] = None,
+        security_scheme_name: t.Optional[str] = None,
+    ) -> None:
         self.description = description
+        self.security_scheme_name = security_scheme_name
         self.error_handler(self._auth_error_handler)  # type: ignore
 
     @property
@@ -88,13 +93,18 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
     app = APIFlask(__name__)
     auth = HTTPBasicAuth()
     ```
+
+    *Version changed: 1.3.0*
+
+    - Add `security_scheme_name` parameter.
     """
 
     def __init__(
         self,
         scheme: str = 'Basic',
         realm: t.Optional[str] = None,
-        description: t.Optional[str] = None
+        description: t.Optional[str] = None,
+        security_scheme_name: t.Optional[str] = None,
     ) -> None:
         """Initialize an `HTTPBasicAuth` object.
 
@@ -103,10 +113,11 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
                 header. Defaults to `'Basic'`.
             realm: The realm used in the `WWW-Authenticate` header to indicate
                 a scope of protection, defaults to use `'Authentication Required'`.
-            description: The description of the security scheme.
+            description: The description of the OpenAPI security scheme.
+            security_scheme_name: The name of the OpenAPI security scheme, default to `BasicAuth`.
         """
         BaseHTTPBasicAuth.__init__(self, scheme=scheme, realm=realm)
-        super().__init__(description=description)
+        super().__init__(description=description, security_scheme_name=security_scheme_name)
 
 
 class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
@@ -131,7 +142,8 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
         scheme: str = 'Bearer',
         realm: t.Optional[str] = None,
         header: t.Optional[str] = None,
-        description: t.Optional[str] = None
+        description: t.Optional[str] = None,
+        security_scheme_name: t.Optional[str] = None,
     ) -> None:
         """Initialize a `HTTPTokenAuth` object.
 
@@ -148,7 +160,13 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
                 X-API-Key: this-is-my-token
                 ```
 
-            description: The description of the security scheme.
+            description: The description of the OpenAPI security scheme.
+            security_scheme_name: The name of the OpenAPI security scheme,
+                defaults to `BearerAuth` or `ApiKeyAuth`.
+
+        *Version changed: 1.3.0*
+
+        - Add `security_scheme_name` parameter.
         """
         BaseHTTPTokenAuth.__init__(self, scheme=scheme, realm=realm, header=header)
-        super().__init__(description=description)
+        super().__init__(description=description, security_scheme_name=security_scheme_name)
