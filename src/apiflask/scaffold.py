@@ -333,6 +333,7 @@ class APIScaffold:
         example: t.Optional[t.Any] = None,
         examples: t.Optional[t.Dict[str, t.Any]] = None,
         links: t.Optional[t.Dict[str, t.Any]] = None,
+        content_type: t.Optional[str] = 'application/json',
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Add output settings for view functions.
 
@@ -400,6 +401,12 @@ class APIScaffold:
                 See the [docs](https://apiflask.com/openapi/#response-links) for more details
                 about setting response links.
 
+            content_type: The content/media type of the response. It defautls to `application/json`.
+
+        *Version changed: 1.3.0*
+
+        - Add parameter `content_type`.
+
         *Version changed: 0.12.0*
 
         - Move to APIFlask and APIBlueprint classes.
@@ -443,6 +450,7 @@ class APIScaffold:
                 'example': example,
                 'examples': examples,
                 'links': links,
+                'content_type': content_type,
             })
 
             def _jsonify(

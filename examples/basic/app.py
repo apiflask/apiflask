@@ -36,7 +36,7 @@ def get_pet(pet_id):
 
 
 @app.get('/pets')
-@app.output(PetOut(many=True))
+@app.output(PetOut(many=True), content_type='image/png')
 def get_pets():
     return pets
 

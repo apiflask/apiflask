@@ -315,3 +315,23 @@ def test_response_links_ref(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert 'getFoo' in rv.json['paths']['/foo']['get']['responses']['200']['links']
+
+
+def test_response_content_type(app, client):
+    @app.get('/foo')
+    @app.output(Foo)  # default value is application/json
+    def foo():
+        pass
+
+    @app.get('/bar')
+    @app.output(Foo, content_type='image/png')
+    def bar():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert len(rv.json['paths']['/foo']['get']['responses']['200']['content']) == 1
+    assert len(rv.json['paths']['/bar']['get']['responses']['200']['content']) == 1
+    assert 'application/json' in rv.json['paths']['/foo']['get']['responses']['200']['content']
+    assert 'image/png' in rv.json['paths']['/bar']['get']['responses']['200']['content']
