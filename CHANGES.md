@@ -1,10 +1,13 @@
 
 ## Version 1.3.0
 
+- Add `scurity_scheme_name` for `HTTPBasicAuth` and `HTTPTokenAuth` to define custom
+OpenAPI security scheme name ([issue #410][issue_410]).
 - Add config `SPEC_PROCESSOR_PASS_OBJECT` to control the argument type of
   spec processor. The `spec` argument will be an `apispec.APISpec` object
   when this config is `True` ([issue #213][issue_213]).
 
+[issue_410]: https://github.com/apiflask/apiflask/issues/410
 [issue_213]: https://github.com/apiflask/apiflask/issues/213
 
 

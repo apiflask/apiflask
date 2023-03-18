@@ -137,6 +137,7 @@ def test_security_shemes(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
+    assert len(rv.json['components']['securitySchemes']) == 2
     assert rv.json['components']['securitySchemes']['ApiKeyAuth'] == \
         app.config['SECURITY_SCHEMES']['ApiKeyAuth']
     assert rv.json['components']['securitySchemes']['BasicAuth'] == \
