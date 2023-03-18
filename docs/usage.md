@@ -200,10 +200,10 @@ note below for the details.
     in your Flask application, we will need to use the `--debug` option:
 
     ```
-    $ flask --debug run
+    $ flask run --debug
     ```
 
-    If you are not using the latest Flask version (>2.2), you will need to set
+    If you are not using the latest Flask version (>=2.2.3), you will need to set
     the environment variable `FLASK_DEBUG` to `True` instead:
 
     === "Bash"
@@ -256,7 +256,7 @@ variables should keep in a file called `.flaskenv`:
 ```ini
 # save as .flaskenv
 FLASK_APP=hello
-FLASK_ENV=development
+FLASK_DEBUG=1
 ```
 
 While the secrets values should save in the `.env` file:
@@ -285,7 +285,7 @@ app.secret_key = os.getenv('SECRET_KEY')
 ```
 
 Any `flask` command will read environment variables set by `.flaskenv` and `.env`.
-Now when you run `flask run`, Flask will read the value of `FLASK_APP` and `FLASK_ENV`
+Now when you run `flask run`, Flask will read the value of `FLASK_APP` and `FLASK_DEBUG`
 in `.flaskenv` file to find the app instance from given import path and enable the
 debug mode:
 
