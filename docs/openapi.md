@@ -709,10 +709,33 @@ def update_spec(spec):
 
 
 @app.post('/pets')
-@app.output(PetOutSchem, links={'getAddressByUserId': {'$ref': '#/components/links/getAddressByUserId'}})
+@app.output(PetOutSchema, links={'getAddressByUserId': {'$ref': '#/components/links/getAddressByUserId'}})
 def new_pet(data):
     pass
 ```
+
+
+## Request and response content type / media type
+
+For request, the content type is set automically based on the input location:
+
+- `json`: `application/json`
+- `form`: `application/x-www-form-urlencoded`
+- `files`, `form_and_files`: `multipart/form-data`
+
+For response, the default content type is `application/json`. You can set a custom content type with the
+`content_type` parameter (APIFlsak >= 1.3.0) in the `output()` decorator:
+
+```python
+@app.post('/image')
+@app.output(ImageOutSchema, content_type='image/png')
+def get_image():
+    pass
+```
+
+!!! note
+
+    For the consistency with Flask/Werkzeug, we use `content_type` instead of `media_type`.
 
 
 ## Use the `doc` decorator

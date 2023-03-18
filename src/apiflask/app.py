@@ -861,6 +861,10 @@ class APIFlask(APIScaffold, Flask):
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`.
 
+        *Version changed: 1.3.0*
+
+        - Support setting custom response content type.
+
         *Version changed: 1.2.1*
 
         - Set default `servers` value.
@@ -1084,8 +1088,16 @@ class APIFlask(APIScaffold, Flask):
                     example = view_func._spec.get('response')['example']
                     examples = view_func._spec.get('response')['examples']
                     links = view_func._spec.get('response')['links']
+                    content_type = view_func._spec.get('response')['content_type']
                     add_response(
-                        operation, status_code, schema, description, example, examples, links
+                        operation,
+                        status_code,
+                        schema,
+                        description,
+                        example,
+                        examples,
+                        links,
+                        content_type,
                     )
                 else:
                     # add a default 200 response for views without using @app.output
