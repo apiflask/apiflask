@@ -396,6 +396,42 @@ app.license = {
 ```
 
 
+### SECURITY_SCHEMES
+
+The custom security schemes of the API (`openapi.compomnents.securitySchemes`).
+You should only this when you use a third-party authentication library and you
+want to add OpenAPI spec for them. When using the built-in `HTTPBasicAuth`
+and `HTTPTokenAuth`, the security schemes will be generated automatically.
+
+This configuration can also be configured from the `app.security_schemes` attribute.
+
+- Type: `Dict[str, t.Any]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['SECURITY_SCHEMES'] = {
+    'ApiKeyAuth': {
+      'type': 'apiKey',
+      'in': 'header',
+      'name': 'X-API-Key',
+    }
+}
+```
+
+Or:
+
+```python
+app.security_schemes = {
+    'ApiKeyAuth': {
+      'type': 'apiKey',
+      'in': 'header',
+      'name': 'X-API-Key',
+    }
+}
+```
+
+
 ## OpenAPI spec
 
 Customize the generation of the OpenAPI spec.
