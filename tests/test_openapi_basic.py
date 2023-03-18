@@ -8,7 +8,7 @@ from .schemas import Bar
 from .schemas import Baz
 from .schemas import Foo
 from apiflask import APIBlueprint
-from apiflask import Schema as BaseSchema
+from apiflask import Schema
 from apiflask.commands import spec_command
 from apiflask.fields import Integer
 
@@ -33,6 +33,26 @@ def test_spec_processor(app, client):
     validate_spec(rv.json)
     assert rv.json['openapi'] == '3.0.2'
     assert rv.json['info']['title'] == 'Foo'
+
+
+def test_spec_processor_pass_object(app, client):
+    app.config['SPEC_PROCESSOR_PASS_OBJECT'] = True
+
+    class NotUsedSchema(Schema):
+        id = Integer()
+
+    @app.spec_processor
+    def process_spec(spec):
+        spec.title = 'Foo'
+        spec.components.schema('NotUsed', schema=NotUsedSchema)
+        return spec
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert rv.json['info']['title'] == 'Foo'
+    assert 'NotUsed' in rv.json['components']['schemas']
+    assert 'id' in rv.json['components']['schemas']['NotUsed']['properties']
 
 
 @pytest.mark.parametrize('spec_format', ['json', 'yaml', 'yml'])
@@ -114,7 +134,7 @@ def test_spec_schemas(app):
     def baz():
         pass
 
-    class Spam(BaseSchema):
+    class Spam(Schema):
         id = Integer()
 
     @app.route('/spam')
@@ -122,12 +142,12 @@ def test_spec_schemas(app):
     def spam():
         pass
 
-    class Schema(BaseSchema):
+    class Ham(Schema):
         id = Integer()
 
-    @app.route('/schema')
-    @app.output(Schema)
-    def schema():
+    @app.route('/ham')
+    @app.output(Ham)
+    def ham():
         pass
 
     spec = app.spec
@@ -136,7 +156,7 @@ def test_spec_schemas(app):
     assert 'Bar' in spec['components']['schemas']
     assert 'Baz' in spec['components']['schemas']
     assert 'Spam' in spec['components']['schemas']
-    assert 'Schema' in spec['components']['schemas']
+    assert 'Ham' in spec['components']['schemas']
 
 
 def test_servers_and_externaldocs(app):

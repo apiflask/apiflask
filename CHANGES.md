@@ -1,3 +1,13 @@
+
+## Version 1.3.0
+
+- Add config `SPEC_PROCESSOR_PASS_OBJECT` to control the argument type of
+  spec processor. The `spec` argument will be an `apispec.APISpec` object
+  when this config is `True` ([issue #213][issue_213]).
+
+[issue_213]: https://github.com/apiflask/apiflask/issues/213
+
+
 ## Version 1.2.4
 
 Released: -
