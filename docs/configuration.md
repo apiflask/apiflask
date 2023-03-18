@@ -516,6 +516,24 @@ app.config['YAML_SPEC_MIMETYPE'] = 'text/x-yaml'
     This configuration variable was added in the [version 0.4.0](/changelog/#version-040).
 
 
+### SPEC_PROCESSOR_PASS_OBJECT
+
+If `True`, the `spec` argument passed to the spec processor will be an
+[`apispec.APISpec`](https://apispec.readthedocs.io/en/latest/api_core.html#apispec.APISpec) object.
+
+- Type: `bool`
+- Default value: `False`
+- Examples:
+
+```python
+app.config['SPEC_PROCESSOR_PASS_OBJECT'] = True
+```
+
+!!! warning "Version >= 1.3.0"
+
+    This configuration variable was added in the [version 1.3.0](/changelog/#version-130).
+
+
 ## Automation behavior control
 
 The following configuration variables are used to control the automation behavior

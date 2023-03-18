@@ -13,6 +13,7 @@ if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pra
 from apispec import APISpec
 from apispec import BasePlugin
 from apispec.ext.marshmallow import MarshmallowPlugin
+from apispec.yaml_utils import dict_to_yaml
 from flask import Blueprint
 from flask import Flask
 from flask import has_request_context
@@ -680,16 +681,29 @@ class APIFlask(APIScaffold, Flask):
 
         - Rename the method name to `_get_spec`.
         - Add the `force_update` parameter.
+
+        *Version changed: 1.3.0*
+
+        - Add the `SPEC_PROCESSOR_PASS_OBJECT` config to control the argument type
+          when calling the spec processor.
         """
         if spec_format is None:
             spec_format = self.config['SPEC_FORMAT']
         if self._spec is None or force_update:
-            if spec_format == 'json':
-                self._spec = self._generate_spec().to_dict()
-            else:
-                self._spec = self._generate_spec().to_yaml()
+            spec_object: APISpec = self._generate_spec()
             if self.spec_callback:
-                self._spec = self.spec_callback(self._spec)  # type: ignore
+                if self.config['SPEC_PROCESSOR_PASS_OBJECT']:
+                    self._spec = self.spec_callback(
+                        spec_object  # type: ignore
+                    ).to_dict()
+                else:
+                    self._spec = self.spec_callback(
+                        spec_object.to_dict()
+                    )
+            else:
+                self._spec = spec_object.to_dict()
+            if spec_format in ['yml', 'yaml']:
+                self._spec = dict_to_yaml(self._spec)  # type: ignore
         # sync local spec
         if self.config['SYNC_LOCAL_SPEC']:
             spec_path = self.config['LOCAL_SPEC_PATH']
