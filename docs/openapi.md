@@ -685,7 +685,7 @@ pet_links = {
 }
 
 @app.post('/pets')
-@app.output(PetOutSchem, links=pet_links)
+@app.output(PetOutSchema, links=pet_links)
 def new_pet(data):
     pass
 ```
@@ -724,7 +724,7 @@ For request, the content type is set automically based on the input location:
 - `files`, `form_and_files`: `multipart/form-data`
 
 For response, the default content type is `application/json`. You can set a custom content type with the
-`content_type` parameter (APIFlsak >= 1.3.0) in the `output()` decorator:
+`content_type` parameter (APIFlask >= 1.3.0) in the `output()` decorator:
 
 ```python
 @app.post('/image')
@@ -735,7 +735,7 @@ def get_image():
 
 !!! note
 
-    For the consistency with Flask/Werkzeug, we use `content_type` instead of `media_type`.
+    For consistency with Flask/Werkzeug, we use `content_type` instead of `media_type`.
 
 
 ## Use the `doc` decorator
