@@ -1,6 +1,6 @@
 ## Version 1.3.1
 
-Released: -
+Released: 2023/3/27
 
 - Fix the import error when calling `apispec.yaml_utils.dict_to_yaml`
   ([issue #419][issue_419]).
