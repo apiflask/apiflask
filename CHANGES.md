@@ -2,6 +2,11 @@
 
 Released: -
 
+- Fix the import error when calling `apispec.yaml_utils.dict_to_yaml`
+  ([issue #419][issue_419]).
+
+[issue_419]: https://github.com/apiflask/apiflask/issues/419
+
 
 ## Version 1.3.0
 
