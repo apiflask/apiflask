@@ -445,6 +445,13 @@ will be used in the following conditions:
 - Serve the spec via the built-in route.
 - Execute `flask spec` without passing the `--format`/`-f` option.
 
+If you want to enable the YAML support, install APIFlask with the `yaml` extra
+(it will install `PyYAML`):
+
+```
+$ pip install "apiflask[yaml]"
+```
+
 !!! warning
     The auto-detection of the format from the `APIFlask(spec_path=...)` was
     removed in favor of this config in 0.7.0.

@@ -170,7 +170,7 @@ app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
 <summary>Or use <code>async def</code> with Flask 2.0</summary>
 
 ```bash
-$ pip install -U flask[async]
+$ pip install -U "apiflask[async]"
 ```
 
 ```python

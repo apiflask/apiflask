@@ -13,7 +13,6 @@ if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pra
 from apispec import APISpec
 from apispec import BasePlugin
 from apispec.ext.marshmallow import MarshmallowPlugin
-from apispec.yaml_utils import dict_to_yaml
 from flask import Blueprint
 from flask import Flask
 from flask import has_request_context
@@ -703,6 +702,7 @@ class APIFlask(APIScaffold, Flask):
             else:
                 self._spec = spec_object.to_dict()
             if spec_format in ['yml', 'yaml']:
+                from apispec.yaml_utils import dict_to_yaml
                 self._spec = dict_to_yaml(self._spec)  # type: ignore
         # sync local spec
         if self.config['SYNC_LOCAL_SPEC']:

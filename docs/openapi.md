@@ -64,7 +64,7 @@ If you want to enable the YAML support, install APIFlask with the `yaml` extra
 (it will install `PyYAML`):
 
 ```
-$ pip install apiflask[yaml]
+$ pip install "apiflask[yaml]"
 ```
 
 Now you can change the format via the `SPEC_FORMAT` config:
