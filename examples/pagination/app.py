@@ -18,7 +18,6 @@ class PetModel(db.Model):
     category = db.Column(db.String(10))
 
 
-@app.before_first_request
 def init_database():
     db.create_all()
     for i in range(1, 101):
@@ -69,3 +68,7 @@ def get_pets(query):
         'pets': pets,
         'pagination': pagination_builder(pagination)
     }
+
+
+with app.app_context():
+    init_database()

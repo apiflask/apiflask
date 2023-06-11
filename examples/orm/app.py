@@ -16,7 +16,6 @@ class PetModel(db.Model):
     category = db.Column(db.String(10))
 
 
-@app.before_first_request
 def init_database():
     db.create_all()
 
@@ -87,3 +86,7 @@ def delete_pet(pet_id):
     db.session.delete(pet)
     db.session.commit()
     return ''
+
+
+with app.app_context():
+    init_database()

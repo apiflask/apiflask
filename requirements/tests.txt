@@ -5,14 +5,20 @@
 #
 #    pip-compile-multi
 #
-asgiref==3.6.0
+asgiref==3.7.2
     # via -r requirements/tests.in
-attrs==22.2.0
+attrs==23.1.0
     # via
     #   jsonschema
     #   pytest
-coverage[toml]==7.2.2
+certifi==2023.5.7
+    # via requests
+charset-normalizer==3.1.0
+    # via requests
+coverage[toml]==7.2.7
     # via pytest-cov
+idna==3.4
+    # via requests
 iniconfig==2.0.0
     # via pytest
 jsonschema==4.17.3
@@ -20,7 +26,7 @@ jsonschema==4.17.3
     #   jsonschema-spec
     #   openapi-schema-validator
     #   openapi-spec-validator
-jsonschema-spec==0.1.4
+jsonschema-spec==0.1.6
     # via openapi-spec-validator
 lazy-object-proxy==1.9.0
     # via openapi-spec-validator
@@ -28,7 +34,7 @@ openapi-schema-validator==0.4.4
     # via openapi-spec-validator
 openapi-spec-validator==0.5.6
     # via -r requirements/tests.in
-packaging==23.0
+packaging==23.1
     # via pytest
 pathable==0.4.3
     # via jsonschema-spec
@@ -42,9 +48,11 @@ pytest==6.2.5
     # via
     #   -r requirements/tests.in
     #   pytest-cov
-pytest-cov==4.0.0
+pytest-cov==4.1.0
     # via -r requirements/tests.in
 pyyaml==6.0
+    # via jsonschema-spec
+requests==2.31.0
     # via jsonschema-spec
 rfc3339-validator==0.1.4
     # via openapi-schema-validator
@@ -55,4 +63,6 @@ toml==0.10.2
 tomli==2.0.1
     # via coverage
 typing-extensions==4.5.0
-    # via jsonschema-spec
+    # via asgiref
+urllib3==2.0.3
+    # via requests
