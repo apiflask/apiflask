@@ -7,6 +7,8 @@
 #
 authlib==1.2.0
     # via -r requirements/examples.in
+blinker==1.6.2
+    # via flask
 cffi==1.15.1
     # via cryptography
 click==8.1.3
@@ -29,22 +31,22 @@ markupsafe==2.1.2
     #   werkzeug
 marshmallow==3.19.0
     # via marshmallow-dataclass
-marshmallow-dataclass==8.5.12
+marshmallow-dataclass==8.5.14
     # via -r requirements/examples.in
 mypy-extensions==1.0.0
     # via typing-inspect
-packaging==23.0
+packaging==23.1
     # via marshmallow
 pycparser==2.21
     # via cffi
-sqlalchemy==2.0.6
+sqlalchemy==2.0.16
     # via flask-sqlalchemy
 typing-extensions==4.5.0
     # via
     #   marshmallow-dataclass
     #   sqlalchemy
     #   typing-inspect
-typing-inspect==0.8.0
+typing-inspect==0.9.0
     # via marshmallow-dataclass
 werkzeug==2.2.3
     # via flask
