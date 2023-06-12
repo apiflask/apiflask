@@ -129,7 +129,7 @@ Released: 2022/7/3
 - Add a `docs_ui` parameter to APIFlask to set the API docs UI (can be
   `swagger-ui` (default), `redoc`, `rapidoc`, and `rapipdf`).
 - Deprecate the separate docs path `/redoc` and the `redoc_path` parameter.
-- Add the following configuration variables for new docs supprt:
+- Add the following configuration variables for new docs support:
     - `ELEMENTS_JS`
     - `ELEMENTS_CSS`
     - `ELEMENTS_LAYOUT`
