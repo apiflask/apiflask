@@ -125,7 +125,7 @@ the `flask` package:
 
 ```python
 from apiflask import APIFlask, APIBlueprint
-from flask import request, escape, render_template, g, session, url_for
+from flask import request, render_template, g, session, url_for
 ```
 
 

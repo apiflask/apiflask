@@ -15,7 +15,7 @@ class HTTPError(Exception):
 
     ```python
     from apiflask import APIFlask, HTTPError
-    from flask import escape
+    from markupsafe import escape
 
     app = APIFlask(__name__)
 
@@ -110,7 +110,7 @@ def abort(
 
     ```python
     from apiflask import APIFlask, abort
-    from flask import escape
+    from markupsafe import escape
 
     app = APIFlask(__name__)
 
