@@ -244,7 +244,8 @@ APIFlask is a thin wrapper on top of Flask. You only need to remember the follow
 For a minimal Flask application:
 
 ```python
-from flask import Flask, request, escape
+from flask import Flask, request
+from markupsafe import escape
 
 app = Flask(__name__)
 
@@ -258,7 +259,8 @@ Now change to APIFlask:
 
 ```python
 from apiflask import APIFlask  # step one
-from flask import request, escape
+from flask import request
+from markupsafe import escape
 
 app = APIFlask(__name__)  # step two
 
