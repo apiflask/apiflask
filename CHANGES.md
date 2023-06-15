@@ -1,6 +1,12 @@
-## Version 1.3.2
+## Version 2.0
 
-Released: -
+APIFlask 2.0 project: https://github.com/apiflask/apiflask/projects/4
+
+Released: -<br>Codename: Gongqing
+
+- Drop Flask 1.x support ([issue #442][issue_442]).
+
+[issue_442]: https://github.com/apiflask/apiflask/issues/442
 
 
 ## Version 1.3.1

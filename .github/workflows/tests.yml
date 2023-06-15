@@ -29,7 +29,6 @@ jobs:
           - {name: '3.8', python: '3.8', os: ubuntu-latest, tox: py38}
           - {name: '3.7', python: '3.7', os: ubuntu-latest, tox: py37}
           - {name: 'PyPy', python: 'pypy-3.7', os: ubuntu-latest, tox: pypy37}
-          - {name: Flask1, python: '3.8', os: ubuntu-latest, tox: flask1}
           - {name: Style, python: '3.10', os: ubuntu-latest, tox: style}
           - {name: Docs, python: '3.10', os: ubuntu-latest, tox: docs}
           - {name: Typing, python: '3.10', os: ubuntu-latest, tox: typing}

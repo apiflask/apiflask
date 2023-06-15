@@ -1,14 +1,7 @@
-import pytest
 from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from apiflask import HTTPTokenAuth
-
-
-@pytest.fixture(autouse=True)
-def skip_async_test(app):
-    if not hasattr(app, 'ensure_sync'):
-        pytest.skip('This test requires Flask 2.0 or higher')
 
 
 def test_async_view(app, client):

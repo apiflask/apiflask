@@ -436,9 +436,7 @@ class APIFlask(APIScaffold, Flask):
         ):
             return self.make_default_options_response()  # pragma: no cover
         # otherwise dispatch to the handler for that endpoint
-        view_function = self.view_functions[rule.endpoint]
-        if hasattr(self, 'ensure_sync'):  # pragma: no cover
-            view_function = self.ensure_sync(view_function)
+        view_function = self.ensure_sync(self.view_functions[rule.endpoint])
         if rule.endpoint == 'static' or hasattr(view_function, '_only_kwargs'):
             # app static route only accepts keyword arguments, see flask#3762
             # view classes created by Flask only accept keyword arguments
@@ -568,10 +566,7 @@ class APIFlask(APIScaffold, Flask):
 
         - Support registering an async callback function.
         """
-        if hasattr(self, 'ensure_sync'):  # pragma: no cover
-            self.error_callback = self.ensure_sync(f)
-        else:  # pragma: no cover
-            self.error_callback = f
+        self.error_callback = self.ensure_sync(f)
         self._apply_error_callback_to_werkzeug_errors()
         return f
 
@@ -748,10 +743,7 @@ class APIFlask(APIScaffold, Flask):
 
         - Support registering an async callback function.
         """
-        if hasattr(self, 'ensure_sync'):  # pragma: no cover
-            self.spec_callback = self.ensure_sync(f)
-        else:  # pragma: no cover
-            self.spec_callback = f
+        self.spec_callback = self.ensure_sync(f)
         return f
 
     @property
