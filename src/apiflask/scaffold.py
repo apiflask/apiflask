@@ -3,7 +3,6 @@ import warnings
 from collections.abc import Mapping as ABCMapping
 from functools import wraps
 
-import flask
 from flask import current_app
 from flask import jsonify
 from flask import Response
@@ -79,7 +78,7 @@ def _annotate(f: t.Any, **kwargs: t.Any) -> None:
 
 
 def _ensure_sync(f):
-    if flask.__version__ < '2.' or hasattr(f, '_sync_ensured'):
+    if hasattr(f, '_sync_ensured'):
         return f
 
     @wraps(f)

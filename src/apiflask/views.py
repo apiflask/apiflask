@@ -92,21 +92,17 @@ class View:
                 self = view.view_class(  # type: ignore[attr-defined]
                     *class_args, **class_kwargs
                 )
-                if hasattr(current_app, 'ensure_sync'):
-                    return current_app.ensure_sync(  # type: ignore
-                        self.dispatch_request
-                    )(*args, **kwargs)
-                return self.dispatch_request(*args, **kwargs)  # type: ignore
+                return current_app.ensure_sync(  # type: ignore
+                    self.dispatch_request
+                )(*args, **kwargs)
 
         else:
             self = cls(*class_args, **class_kwargs)
 
             def view(*args: t.Any, **kwargs: t.Any) -> ResponseReturnValueType:
-                if hasattr(current_app, 'ensure_sync'):
-                    return current_app.ensure_sync(  # type: ignore
-                        self.dispatch_request
-                    )(*args, **kwargs)
-                return self.dispatch_request(*args, **kwargs)
+                return current_app.ensure_sync(  # type: ignore
+                    self.dispatch_request
+                )(*args, **kwargs)
 
         if cls.decorators:
             view.__name__ = name
@@ -184,6 +180,4 @@ class MethodView(View):
             meth = getattr(self, 'get', None)
 
         assert meth is not None, f'Unimplemented method {request.method!r}'
-        if hasattr(current_app, 'ensure_sync'):
-            meth = current_app.ensure_sync(meth)
-        return meth(*args, **kwargs)  # type: ignore
+        return current_app.ensure_sync(meth)(*args, **kwargs)  # type: ignore

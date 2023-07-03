@@ -4,11 +4,6 @@ from openapi_spec_validator import validate_spec
 from apiflask import APIBlueprint
 
 
-def skip_flask1():
-    if not hasattr(APIBlueprint, 'register_blueprint'):
-        pytest.skip('This test requires Flask 2.0 or higher')
-
-
 def test_tags(app, client):
     assert app.tags is None
     app.tags = [
@@ -92,7 +87,6 @@ def test_auto_tag_from_blueprint(app, client):
 
 
 def test_auto_tag_from_nesting_blueprints(app, client):
-    skip_flask1()
 
     parent_bp = APIBlueprint('parent', __name__)
     child_bp = APIBlueprint('child', __name__)
@@ -139,7 +133,6 @@ def test_path_tags_with_blueprint_tag(app, client, tag):
 
 
 def test_path_tags_with_nesting_blueprints(app, client):
-    skip_flask1()
 
     parent_bp = APIBlueprint('parent', __name__, url_prefix='/parent')
     child_bp = APIBlueprint('child', __name__, url_prefix='/child')
