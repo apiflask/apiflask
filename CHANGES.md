@@ -5,8 +5,12 @@ APIFlask 2.0 project: https://github.com/apiflask/apiflask/projects/4
 Released: -<br>Codename: Gongqing
 
 - Drop Flask 1.x support ([issue #442][issue_442]).
+- Only pass keyword arguments to the view function. The argument name
+  of the parsed data from `app.input()` will be `{location}_data` or the
+  value of `arg_name` ([issue #427][issue_427]).
 
 [issue_442]: https://github.com/apiflask/apiflask/issues/442
+[issue_427]: https://github.com/apiflask/apiflask/issues/427
 
 
 ## Version 1.3.1

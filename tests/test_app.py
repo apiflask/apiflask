@@ -1,6 +1,7 @@
 import pytest
 from apispec import BasePlugin
 from flask import Blueprint
+from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from .schemas import Bar
@@ -11,7 +12,6 @@ from apiflask import APIFlask
 from apiflask import Schema
 from apiflask.fields import Integer
 from apiflask.fields import String
-from apiflask.views import MethodView
 
 
 def test_app_init(app):
@@ -74,21 +74,21 @@ def test_view_function_arguments_order(app, client):
         age = Integer(dump_default=123)
 
     @app.post('/pets/<int:pet_id>/toys/<int:toy_id>')
-    @app.input(Query, location='query')
-    @app.input(Pagination, location='query')
-    @app.input(Pet)
-    def pets(pet_id, toy_id, query, pagination, body):
+    @app.input(Query, location='query', arg_name='query')
+    @app.input(Pagination, location='query', arg_name='pagination')
+    @app.input(Pet, location='json')
+    def pets(pet_id, toy_id, query, pagination, json_data):
         return {'pet_id': pet_id, 'toy_id': toy_id,
-                'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **body}
+                'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **json_data}
 
     @app.route('/animals/<int:pet_id>/toys/<int:toy_id>')
     class Animals(MethodView):
-        @app.input(Query, location='query')
-        @app.input(Pagination, location='query')
-        @app.input(Pet)
-        def post(self, pet_id, toy_id, query, pagination, body):
+        @app.input(Query, location='query', arg_name='query')
+        @app.input(Pagination, location='query', arg_name='pagination')
+        @app.input(Pet, location='json')
+        def post(self, pet_id, toy_id, query, pagination, json_data):
             return {'pet_id': pet_id, 'toy_id': toy_id,
-                    'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **body}
+                    'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **json_data}
 
     rv = client.post('/pets/1/toys/3?foo=yes&bar=no',
                      json={'name': 'dodge', 'age': 5})
@@ -193,8 +193,8 @@ def test_dispatch_static_request(app, client):
     # positional arguments
     @app.get('/mystatic/<int:pet_id>')
     @app.input(Foo)
-    def mystatic(pet_id, foo):  # endpoint: mystatic
-        return {'pet_id': pet_id, 'foo': foo}
+    def mystatic(pet_id, json_data):  # endpoint: mystatic
+        return {'pet_id': pet_id, 'foo': json_data}
 
     # positional arguments
     # blueprint static route accepts both keyword/positional arguments

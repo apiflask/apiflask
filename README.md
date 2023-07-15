@@ -96,12 +96,12 @@ def get_pet(pet_id):
 @app.patch('/pets/<int:pet_id>')
 @app.input(PetIn(partial=True))
 @app.output(PetOut)
-def update_pet(pet_id, data):
+def update_pet(pet_id, json_data):
     # the validated and parsed input data will
     # be injected into the view function as a dict
     if pet_id > len(pets) - 1:
         abort(404)
-    for attr, value in data.items():
+    for attr, value in json_data.items():
         pets[pet_id][attr] = value
     return pets[pet_id]
 ```
@@ -113,7 +113,7 @@ def update_pet(pet_id, data):
 from apiflask import APIFlask, Schema, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
-from apiflask.views import MethodView
+from flask.views import MethodView
 
 app = APIFlask(__name__)
 
@@ -152,11 +152,11 @@ class Pet(MethodView):
 
     @app.input(PetIn(partial=True))
     @app.output(PetOut)
-    def patch(self, pet_id, data):
+    def patch(self, pet_id, json_data):
         """Update a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
-        for attr, value in data.items():
+        for attr, value in json_data.items():
             pets[pet_id][attr] = value
         return pets[pet_id]
 
@@ -238,7 +238,6 @@ APIFlask is a thin wrapper on top of Flask. You only need to remember the follow
 
 - When creating an application instance, use `APIFlask` instead of `Flask`.
 - When creating a blueprint instance, use `APIBlueprint` instead of `Blueprint`.
-- When creating a class-based view, use `apiflask.views.MethodView` instead of `flask.views.MethodView`.
 - The `abort()` function from APIFlask (`apiflask.abort`) returns JSON error response.
 
 For a minimal Flask application:

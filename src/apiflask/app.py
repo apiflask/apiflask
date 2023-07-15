@@ -20,11 +20,6 @@ from flask import jsonify
 from flask import render_template_string
 from flask import request
 from flask.config import ConfigAttribute
-try:
-    from flask.globals import request_ctx  # type: ignore
-except ImportError:  # pragma: no cover
-    from flask.globals import _request_ctx_stack
-    request_ctx = None  # type: ignore
 from flask.wrappers import Response
 
 with warnings.catch_warnings():
@@ -402,47 +397,6 @@ class APIFlask(APIScaffold, Flask):
                 headers=headers
             )
             return self.error_callback(error)
-
-    def dispatch_request(self) -> ResponseReturnValueType:  # type: ignore
-        """Overwrite the default dispatch method in Flask.
-
-        With this overwrite, view arguments are passed as positional
-        arguments so that the view function can intuitively accept the
-        parameters (i.e., from top to bottom, from left to right).
-
-        Examples:
-
-        ```python
-        @app.get('/pets/<name>/<int:pet_id>/<age>')  # -> name, pet_id, age
-        @app.input(Query)  # -> query
-        @app.output(Pet)  # -> pet
-        def get_pet(name, pet_id, age, query, pet):
-            pass
-        ```
-
-        From Flask, see the NOTICE file for license information.
-
-        *Version added: 0.2.0*
-        """
-        req = request_ctx.request if request_ctx else _request_ctx_stack.top.request  # type: ignore
-        if req.routing_exception is not None:
-            self.raise_routing_exception(req)
-        rule = req.url_rule
-        # if we provide automatic options for this URL and the
-        # request came with the OPTIONS method, reply automatically
-        if (  # pragma: no cover
-            getattr(rule, 'provide_automatic_options', False)
-            and req.method == 'OPTIONS'
-        ):
-            return self.make_default_options_response()  # pragma: no cover
-        # otherwise dispatch to the handler for that endpoint
-        view_function = self.ensure_sync(self.view_functions[rule.endpoint])
-        if rule.endpoint == 'static' or hasattr(view_function, '_only_kwargs'):
-            # app static route only accepts keyword arguments, see flask#3762
-            # view classes created by Flask only accept keyword arguments
-            return view_function(**req.view_args)  # type: ignore
-        else:
-            return view_function(*req.view_args.values())  # type: ignore
 
     # TODO: remove this function when we dropped the Flask 1.x support
     # the list return values are supported in Flask 2.2

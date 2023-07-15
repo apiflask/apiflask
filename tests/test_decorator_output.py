@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from flask import make_response
+from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
@@ -8,7 +9,6 @@ from .schemas import Query
 from apiflask import Schema
 from apiflask.fields import Field
 from apiflask.fields import String
-from apiflask.views import MethodView
 
 
 def test_output(app, client):
@@ -25,12 +25,12 @@ def test_output(app, client):
     @app.route('/baz')
     @app.input(Query, location='query')
     @app.output(Foo, status_code=201)
-    def baz(query):
-        if query['id'] == 1:
+    def baz(query_data):
+        if query_data['id'] == 1:
             return {'name': 'baz'}, 202
-        elif query['id'] == 2:
+        elif query_data['id'] == 2:
             return {'name': 'baz'}, {'Location': '/baz'}
-        elif query['id'] == 3:
+        elif query_data['id'] == 3:
             return {'name': 'baz'}, 202, {'Location': '/baz'}
         return ({'name': 'baz'},)
 
@@ -76,12 +76,12 @@ def test_output_with_methodview(app, client):
 
         @app.input(Query, location='query')
         @app.output(Foo, status_code=201)
-        def delete(self, query):
-            if query['id'] == 1:
+        def delete(self, query_data):
+            if query_data['id'] == 1:
                 return {'name': 'baz'}, 202
-            elif query['id'] == 2:
+            elif query_data['id'] == 2:
                 return {'name': 'baz'}, {'Location': '/baz'}
-            elif query['id'] == 3:
+            elif query_data['id'] == 3:
                 return {'name': 'baz'}, 202, {'Location': '/baz'}
             return ({'name': 'baz'},)
 

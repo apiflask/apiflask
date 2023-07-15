@@ -1,8 +1,5 @@
 import typing as t
 
-from flask.views import MethodView as FlaskMethodView
-from flask.views import View as FlaskView
-
 from .openapi import get_path_description
 from .openapi import get_path_summary
 from .types import ViewClassType
@@ -93,16 +90,6 @@ def route_patch(cls):
                 # record spec for MethodView class
                 if hasattr(self, 'enable_openapi') and self.enable_openapi:
                     view_func = record_spec_for_view_class(view_func, view_class)  # type: ignore
-
-            # view func created by Flask's View only accpets keyword arguments
-            if issubclass(view_class, FlaskView):
-                view_func._only_kwargs = True  # type: ignore
-
-            if issubclass(view_class, FlaskMethodView):
-                raise RuntimeError(
-                    'APIFlask only supports generating OpenAPI spec for view classes created '
-                    'with apiflask.views.MethodView (`from apiflask.views import MethodView`).',
-                )
 
         super(cls, self).add_url_rule(
             rule,

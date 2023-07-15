@@ -51,7 +51,7 @@ def get_pets():
 
 
 @app.post('/pets')
-@app.input(PetIn.Schema)
+@app.input(PetIn.Schema, location='json', arg_name='pet')
 @app.output(PetOut.Schema, status_code=201)
 def create_pet(pet: PetIn):
     pet_id = len(pets)
@@ -66,7 +66,7 @@ def create_pet(pet: PetIn):
 # partial=True is not supported in marshmallow-dataclass currently
 # https://github.com/lovasoa/marshmallow_dataclass/issues/169
 @app.patch('/pets/<int:pet_id>')
-@app.input(PetIn.Schema)
+@app.input(PetIn.Schema, location='json', arg_name='pet')
 @app.output(PetOut.Schema)
 def update_pet(pet_id, pet: PetIn):
     if pet_id > len(pets) - 1:

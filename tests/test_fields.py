@@ -45,9 +45,9 @@ def test_file_field(app, client):
 def test_multiple_file_field(app, client):
     @app.post('/')
     @app.input(FilesList, location='files')
-    def index(files_list_data):
+    def index(files_data):
         data = {'images': True}
-        for f in files_list_data['images']:
+        for f in files_data['images']:
             if not isinstance(f, FileStorage):
                 data['images'] = False
         return data

@@ -32,6 +32,7 @@ class FlaskParser(BaseFlaskParser):
     Update the default status code and the error description from related
     configuration variables.
     """
+    USE_ARGS_POSITIONAL = False
 
     def handle_error(  # type: ignore
         self,
@@ -212,6 +213,7 @@ class APIScaffold:
         self,
         schema: SchemaType,
         location: str = 'json',
+        arg_name: t.Optional[str] = None,
         schema_name: t.Optional[str] = None,
         example: t.Optional[t.Any] = None,
         examples: t.Optional[t.Dict[str, t.Any]] = None,
@@ -219,12 +221,13 @@ class APIScaffold:
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Add input settings for view functions.
 
+        If the validation passed, the data will be injected into the view
+        function as a keyword argument in the form of `dict` and named `{location}_data`.
+        Otherwise, an error response with the detail of the validation result will be
+        returned.
+
         > Be sure to put it under the routes decorators (i.e., `app.route`, `app.get`,
         `app.post`, etc.).
-
-        If the validation passed, the data will inject into view
-        function as a positional argument in the form of `dict`. Otherwise,
-        an error response with the detail of the validation result will be returned.
 
         Examples:
 
@@ -234,9 +237,9 @@ class APIScaffold:
         app = APIFlask(__name__)
 
         @app.get('/')
-        @app.input(PetIn)
-        def hello(parsed_and_validated_input_data):
-            print(parsed_and_validated_input_data)
+        @app.input(PetIn, location='json')
+        def hello(json_data):
+            print(json_data)
             return 'Hello'!
         ```
 
@@ -245,6 +248,8 @@ class APIScaffold:
             location: The location of the input data, one of `'json'` (default),
                 `'files'`, `'form'`, `'cookies'`, `'headers'`, `'query'`
                 (same as `'querystring'`).
+            arg_name: The name of the argument passed to the view function,
+                defaults to `{location}_data`.
             schema_name: The schema name for dict schema, only needed when you pass
                 a schema dict (e.g., `{'name': String(required=True)}`) for `json`
                 location.
@@ -265,6 +270,11 @@ class APIScaffold:
                     },
                 }
                 ```
+
+        *Version changed: 2.0.0*
+
+        - Always pass parsed data to view function as a keyword argument.
+          The argument name will be in the form of `{location}_data`.
 
         *Version changed: 1.0*
 
@@ -320,7 +330,12 @@ class APIScaffold:
                     _annotate(f, omit_default_path_parameters=True)
                 # TODO: Support set example for request parameters
                 f._spec['args'].append((schema, location))
-            return use_args(schema, location=location, **kwargs)(f)
+            return use_args(
+                schema,
+                location=location,
+                arg_name=arg_name or f'{location}_data',
+                **kwargs
+            )(f)
         return decorator
 
     def output(
