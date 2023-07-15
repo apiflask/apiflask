@@ -452,7 +452,7 @@ def hello():
 instead of:
 
 ```python
-from apiflask import APIFlask, input, output
+from apiflask import APIFlask
 
 app = APIFlask(__name__)
 
@@ -560,7 +560,7 @@ following format:
 Now let's add it to the view function which is used to create a new pet:
 
 ```python hl_lines="1 14"
-from apiflask import APIFlask, Schema, input
+from apiflask import APIFlask, Schema
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
@@ -574,43 +574,13 @@ class PetIn(Schema):
 
 @app.post('/pets')
 @app.input(PetIn)
-def create_pet(data):
-    print(data)
+def create_pet(json_data):
+    print(json_data)
     return {'message': 'created'}, 201
 ```
 
 You just need to pass the schema class to the `@app.input` decorator. When a request
 was received, APIFlask will validate the request body against the schema.
-
-If the validation passed, the data will inject into the view function as
-a positional argument in the form of `dict`. Otherwise, an error response
-with the detail of the validation result will be returned.
-
-In the example above, I use the name `data` to accept the input data dict.
-You can change the argument name to whatever you like. Since this is a dict,
-you can do something like this to create an ORM model instance:
-
-```python hl_lines="5"
-@app.post('/pets')
-@app.input(PetIn)
-@app.output(PetOut)
-def create_pet(pet_id, data):
-    pet = Pet(**data)
-    return pet
-```
-
-or update an ORM model class instance like this:
-
-```python hl_lines="6 7"
-@app.patch('/pets/<int:pet_id>')
-@app.input(PetIn)
-@app.output(PetOut)
-def update_pet(pet_id, data):
-    pet = Pet.query.get(pet_id)
-    for attr, value in data.items():
-        setattr(pet, attr, value)
-    return pet
-```
 
 If you want to mark the input with a different location, you can pass a `location`
 argument for `@app.input()` decorator, the value can be:
@@ -623,6 +593,55 @@ argument for `@app.input()` decorator, the value can be:
 - HTTP headers: `'headers'`
 - Query string: `'query'` (same as `'querystring'`)
 - Path variable (URL variable): `'path'` (same as `'view_args'`, added in APIFlask 1.0.2)
+
+If the validation passed, the data will inject into the view function as
+a keyword argument in the form of `dict`. Otherwise, an error response
+with the detail of the validation result will be returned.
+
+The keyword argument will be named `{location}_data`
+(e.g. `json_data`). You can set a custom argument name with `arg_name`:
+
+```python
+@app.post('/pets')
+@app.input(PetIn, arg_name='pet')
+def create_pet(pet):
+    print(pet)
+    return {'message': 'created'}, 201
+```
+
+Here is an example with multiple input data:
+
+```python
+@app.post('/foo')
+@app.input(PetIn, location='json')
+@app.input(PaginationIn, location='query')
+def foo(json_data, query_data):
+    return {'message': 'success'}
+```
+
+Since the parsed data will be a dict, you can do something like this to create an ORM model instance:
+
+```python hl_lines="5"
+@app.post('/pets')
+@app.input(PetIn)
+@app.output(PetOut)
+def create_pet(pet_id, json_data):
+    pet = Pet(**json_data)
+    return pet
+```
+
+or update an ORM model class instance like this:
+
+```python hl_lines="6 7"
+@app.patch('/pets/<int:pet_id>')
+@app.input(PetIn)
+@app.output(PetOut)
+def update_pet(pet_id, json_data):
+    pet = Pet.query.get(pet_id)
+    for attr, value in json_data.items():
+        setattr(pet, attr, value)
+    return pet
+```
 
 !!! warning
 
@@ -661,7 +680,7 @@ schema.
 Now add it to the view function which used to get a pet resource:
 
 ```python hl_lines="1 14"
-from apiflask import APIFlask, output
+from apiflask import APIFlask
 from apiflask.fields import String, Integer
 
 app = APIFlask(__name__)
@@ -689,7 +708,7 @@ status code with the `status_code` argument:
 @app.post('/pets')
 @app.input(PetIn)
 @app.output(PetOut, status_code=201)
-def create_pet(data):
+def create_pet(json_data):
     data['id'] = 2
     return data
 ```
@@ -734,7 +753,7 @@ def delete_pet(pet_id):
     @app.input(PetIn)
     @app.output(PetOut)  # 200
     @app.doc(responses=[204, 404])
-    def update_pet(pet_id, data):
+    def update_pet(pet_id, json_data):
         pass
     ```
 
@@ -831,7 +850,7 @@ you can pass a `status_code` argument in the `@app.output` decorator:
 @app.post('/pets')
 @app.input(PetIn)
 @app.output(PetOut, status_code=201)
-def create_pet(data):
+def create_pet(json_data):
     # ...
     return pet
 ```
@@ -843,7 +862,7 @@ You don't need to return the same status code in the end of the view function
 @app.post('/pets')
 @app.input(PetIn)
 @app.output(PetOut, status_code=201)
-def create_pet(data):
+def create_pet(json_data):
     # ...
     # equals to:
     # return pet, 201
@@ -857,7 +876,7 @@ of the return tuple:
 @app.post('/pets')
 @app.input(PetIn)
 @app.output(PetOut, status_code=201)
-def create_pet(data):
+def create_pet(json_data):
     # ...
     # equals to:
     # return pet, 201, {'FOO': 'bar'}
@@ -1023,7 +1042,7 @@ Here is a simple example:
 
 ```python
 from apiflask import APIFlask
-from apiflask.views import MethodView
+from flask.views import MethodView
 
 app = APIFlask(__name__)
 
@@ -1100,12 +1119,12 @@ class Pet(MethodView):
     @app.auth_required(auth)
     @app.input(PetIn)
     @app.output(PetOut)
-    def put(self, pet_id, data):
+    def put(self, pet_id, json_data):
         # ...
 
     @app.input(PetIn(partial=True))
     @app.output(PetOut)
-    def patch(self, pet_id, data):
+    def patch(self, pet_id, json_data):
         # ...
 
 
@@ -1129,12 +1148,12 @@ class Pet(MethodView):
     @app.auth_required(auth)
     @app.input(PetIn)
     @app.output(PetOut)
-    def put(self, pet_id, data):
+    def put(self, pet_id, json_data):
         # ...
 
     @app.input(PetIn(partial=True))
     @app.output(PetOut)
-    def patch(self, pet_id, data):
+    def patch(self, pet_id, json_data):
         # ...
 
 

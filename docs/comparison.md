@@ -60,37 +60,6 @@ injected into the view function.
 See the following two sections for more details.
 
 
-### A natural order of view arguments
-
-By acting as a framework on top of Flask, APIFlask can overwrite the way Flask
-passes path arguments to view functions from keyword arguments to positional
-arguments.
-
-Assume a view like this:
-
-```python
-@app.get('/<category>/articles/<int:article_id>')  # category, article_id
-@app.input(ArticleQuery, location='query')  # query
-@app.input(ArticleIn)  # data
-def get_article(category, article_id, query, data):
-    pass
-```
-
-With APIFlask, you can accept the arguments in the view function in a natural way
-(from left to right, from top to bottom):
-
-```python
-def get_article(category, article_id, query, data)
-```
-
-However, with APIFairy, Flask-Smorest, or webargs, the path variables
-(`category` and `article_id`) need to be declared after the input data:
-
-```python
-def get_article(query, data, category, article_id)
-```
-
-
 ### Route shortcuts
 
 APIFlask added some route shortcuts (`app.get()`, `app.post()` , etc) for

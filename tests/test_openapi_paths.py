@@ -150,7 +150,7 @@ def test_path_arguments_order(app, client):
     @app.route('/<foo>/bar')
     @app.input(Query, location='query')
     @app.output(Foo)
-    def path_and_query(foo, query):
+    def path_and_query(foo, query_data):
         pass
 
     @app.route('/<foo>/<bar>')
@@ -177,18 +177,18 @@ def test_parameters_registration(app, client):
     @app.route('/foo')
     @app.input(Query, location='query')
     @app.output(Foo)
-    def foo(query):
+    def foo(query_data):
         pass
 
     @app.route('/bar')
-    @app.input(Query, location='query')
-    @app.input(Pagination, location='query')
+    @app.input(Query, location='query', arg_name='query')
+    @app.input(Pagination, location='query', arg_name='pagination')
     @app.input(Header, location='headers')
-    def bar(query, pagination, header):
+    def bar(query, pagination, headers_data):
         return {
             'query': query['id'],
             'pagination': pagination,
-            'foo': header['foo']
+            'foo': headers_data['foo']
         }
 
     rv = client.get('/openapi.json')

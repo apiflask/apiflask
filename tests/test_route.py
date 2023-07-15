@@ -1,13 +1,11 @@
 import pytest
-from flask.views import MethodView as FlaskMethodView
-from flask.views import View as FlaskView
+from flask.views import MethodView
+from flask.views import View
 from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from apiflask import APIBlueprint
 from apiflask import HTTPTokenAuth
-from apiflask.views import MethodView
-from apiflask.views import View
 
 
 @pytest.mark.parametrize('method', ['get', 'post', 'put', 'patch', 'delete'])
@@ -217,7 +215,7 @@ def test_view_endpoint_contains_dot(app, client):
     assert rv.json['paths']['/']['get']
 
 
-@pytest.mark.parametrize('view_class', [View, FlaskView])
+@pytest.mark.parametrize('view_class', [View])
 def test_add_url_rule_skip_collecting_spec_from_view_class(app, client, view_class):
     class Foo(view_class):
         def dispatch_request(self):
@@ -231,14 +229,6 @@ def test_add_url_rule_skip_collecting_spec_from_view_class(app, client, view_cla
 
     rv = client.get('/foo')
     assert rv.status_code == 200
-
-
-def test_runtime_error_on_flask_methodview_class(app):
-    with pytest.raises(RuntimeError):
-        class Foo(FlaskMethodView):
-            pass
-
-        app.add_url_rule('/foo', view_func=Foo.as_view('foo'))
 
 
 def test_empty_methodview_class(app, client):

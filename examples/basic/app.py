@@ -42,22 +42,22 @@ def get_pets():
 
 
 @app.post('/pets')
-@app.input(PetIn)
+@app.input(PetIn, location='json')
 @app.output(PetOut, status_code=201)
-def create_pet(data):
+def create_pet(json_data):
     pet_id = len(pets)
-    data['id'] = pet_id
-    pets.append(data)
+    json_data['id'] = pet_id
+    pets.append(json_data)
     return pets[pet_id]
 
 
 @app.patch('/pets/<int:pet_id>')
-@app.input(PetIn(partial=True))
+@app.input(PetIn(partial=True), location='json')
 @app.output(PetOut)
-def update_pet(pet_id, data):
+def update_pet(pet_id, json_data):
     if pet_id > len(pets) - 1:
         abort(404)
-    for attr, value in data.items():
+    for attr, value in json_data.items():
         pets[pet_id][attr] = value
     return pets[pet_id]
 

@@ -1,7 +1,7 @@
 from apiflask import APIFlask, Schema, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
-from apiflask.views import MethodView
+from flask.views import MethodView
 
 app = APIFlask(__name__)
 
@@ -38,13 +38,13 @@ class Pet(MethodView):
             abort(404)
         return pets[pet_id]
 
-    @app.input(PetIn(partial=True))
+    @app.input(PetIn(partial=True), location='json')
     @app.output(PetOut)
-    def patch(self, pet_id, data):
+    def patch(self, pet_id, json_data):
         """Update a pet"""
         if pet_id > len(pets) - 1:
             abort(404)
-        for attr, value in data.items():
+        for attr, value in json_data.items():
             pets[pet_id][attr] = value
         return pets[pet_id]
 
@@ -65,13 +65,13 @@ class Pets(MethodView):
         """Get all pets"""
         return pets
 
-    @app.input(PetIn)
+    @app.input(PetIn, location='json')
     @app.output(PetOut, status_code=201)
-    def post(self, data):
+    def post(self, json_data):
         """Create a pet"""
         pet_id = len(pets)
-        data['id'] = pet_id
-        pets.append(data)
+        json_data['id'] = pet_id
+        pets.append(json_data)
         return pets[pet_id]
 
 

@@ -619,7 +619,7 @@ When rendering the spec in the API documentation, the docs tool will generate a 
 example for you. If you want to add a custom example, you can use the `example` parameter to pass a dict as the response `example` in the `input`/`output` decorator:
 
 ```python hl_lines="6"
-from apiflask import APIFlask, input
+from apiflask import APIFlask
 
 app = APIFlask(__name__)
 
@@ -633,7 +633,7 @@ For multiple examples, use the `examples` parameter and pass a dict of dict, eve
 example dict maps a unique name:
 
 ```python hl_lines="17"
-from apiflask import APIFlask, output
+from apiflask import APIFlask
 
 app = APIFlask(__name__)
 
@@ -686,7 +686,7 @@ pet_links = {
 
 @app.post('/pets')
 @app.output(PetOutSchema, links=pet_links)
-def new_pet(data):
+def new_pet():
     pass
 ```
 
@@ -710,7 +710,7 @@ def update_spec(spec):
 
 @app.post('/pets')
 @app.output(PetOutSchema, links={'getAddressByUserId': {'$ref': '#/components/links/getAddressByUserId'}})
-def new_pet(data):
+def new_pet():
     pass
 ```
 

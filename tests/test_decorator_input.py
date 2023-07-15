@@ -1,6 +1,7 @@
 import io
 
 import pytest
+from flask.views import MethodView
 from openapi_spec_validator import validate_spec
 from werkzeug.datastructures import FileStorage
 
@@ -11,20 +12,19 @@ from .schemas import Foo
 from .schemas import Form
 from .schemas import FormAndFiles
 from apiflask.fields import String
-from apiflask.views import MethodView
 
 
 def test_input(app, client):
     @app.route('/foo', methods=['POST'])
     @app.input(Foo)
-    def foo(schema):
-        return schema
+    def foo(json_data):
+        return json_data
 
     @app.route('/bar')
     class Bar(MethodView):
         @app.input(Foo)
-        def post(self, data):
-            return data
+        def post(self, json_data):
+            return json_data
 
     for rule in ['/foo', '/bar']:
         rv = client.post(rule)
@@ -62,10 +62,10 @@ def test_input(app, client):
 
 def test_input_with_query_location(app, client):
     @app.route('/foo', methods=['POST'])
-    @app.input(Foo, location='query')
-    @app.input(Bar, location='query')
-    def foo(schema, schema2):
-        return {'name': schema['name'], 'name2': schema2['name2']}
+    @app.input(Foo, location='query', arg_name='foo')
+    @app.input(Bar, location='query', arg_name='bar')
+    def foo(foo, bar):
+        return {'name': foo['name'], 'name2': bar['name2']}
 
     rv = client.post('/foo')
     assert rv.status_code == 422
@@ -149,11 +149,11 @@ def test_input_with_files_location(app, client):
 def test_input_with_form_and_files_location(app, client):
     @app.post('/')
     @app.input(FormAndFiles, location='form_and_files')
-    def index(form_data):
+    def index(form_and_files_data):
         data = {}
-        if 'name' in form_data:
+        if 'name' in form_and_files_data:
             data['name'] = True
-        if 'image' in form_data and isinstance(form_data['image'], FileStorage):
+        if 'image' in form_and_files_data and isinstance(form_and_files_data['image'], FileStorage):
             data['image'] = True
         return data
 
@@ -184,7 +184,7 @@ def test_input_with_form_and_files_location(app, client):
 def test_input_with_path_location(app, client):
     @app.get('/<image_type>')
     @app.input(EnumPathParameter, location='path')
-    def index(image_type, _):
+    def index(image_type, path_data):
         return {'image_type': image_type}
 
     rv = client.get('/openapi.json')
@@ -226,11 +226,13 @@ def test_input_with_path_location(app, client):
     ['json_or_form', 'form_and_files'],
 ])
 def test_multiple_input_body_location(app, locations):
+    arg_name_1 = f'{locations[0]}_data'  # noqa: F841
+    arg_name_2 = f'{locations[1]}_data'  # noqa: F841
     with pytest.raises(RuntimeError):
         @app.route('/foo')
         @app.input(Foo, locations[0])
         @app.input(Bar, locations[1])
-        def foo(query):
+        def foo(arg_name_1, arg_name_2):
             pass
 
 
@@ -241,23 +243,23 @@ def test_input_with_dict_schema(app, client):
 
     @app.get('/foo')
     @app.input(dict_schema, 'query')
-    def foo(query):
-        return query
+    def foo(query_data):
+        return query_data
 
     @app.post('/bar')
     @app.input(dict_schema, schema_name='MyName')
-    def bar(body):
-        return body
+    def bar(json_data):
+        return json_data
 
     @app.post('/baz')
     @app.input(dict_schema)
-    def baz(body):
-        return body
+    def baz(json_data):
+        return json_data
 
     @app.post('/spam')
     @app.input(dict_schema)
-    def spam(body):
-        return body
+    def spam(json_data):
+        return json_data
 
     rv = client.get('/foo')
     assert rv.status_code == 422

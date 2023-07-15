@@ -58,8 +58,8 @@ class File(Field):
 
     @app.post('/images')
     @app.input(Image, location='files')
-    def upload_image(data):
-        f = data['image']
+    def upload_image(files):
+        f = files['image']
         # use `secure_filename` to clean the filename, notice it will only keep ascii characters
         filename = secure_filename(f.filename)
         f.save(os.path.join(the_path_to_uploads, filename))
@@ -85,9 +85,9 @@ class File(Field):
 
     @app.post('/profiles')
     @app.input(ProfileIn, location='form_and_files')
-    def create_profile(data):
-        avatar_file = data['avatar']
-        name = data['name']
+    def create_profile(form_and_files_data):
+        avatar_file = form_and_files_data['avatar']
+        name = form_and_files_data['name']
 
         # use `secure_filename` to clean the filename, notice it will only keep ascii characters
         avatar_filename = secure_filename(avatar_file.filename)
