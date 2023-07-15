@@ -8,9 +8,11 @@ Released: -<br>Codename: Gongqing
 - Only pass keyword arguments to the view function. The argument name
   of the parsed data from `app.input()` will be `{location}_data` or the
   value of `arg_name` ([issue #427][issue_427]).
+- Add `FileSchema` to generate OpenAPI file response ([issue #447][issue_447]).
 
-[issue_442]: https://github.com/apiflask/apiflask/issues/442
 [issue_427]: https://github.com/apiflask/apiflask/issues/427
+[issue_442]: https://github.com/apiflask/apiflask/issues/442
+[issue_447]: https://github.com/apiflask/apiflask/issues/447
 
 
 ## Version 1.3.1

@@ -727,15 +727,58 @@ For response, the default content type is `application/json`. You can set a cust
 `content_type` parameter (APIFlask >= 1.3.0) in the `output()` decorator:
 
 ```python
-@app.post('/image')
-@app.output(ImageOutSchema, content_type='image/png')
-def get_image():
+@app.post('/foo')
+@app.output({FooSchema}, content_type='custom/type')
+def get_foo():
     pass
 ```
 
 !!! note
 
     For consistency with Flask/Werkzeug, we use `content_type` instead of `media_type`.
+
+
+## File response
+
+!!! warning "Version >= 2.0.0"
+
+    This feature was added in the [version 2.0.0](/changelog/#version-0200).
+
+When you create an endpoint to return a file, the `FileSchema` should be used:
+
+```python
+from apiflask.schemas import FileSchema
+from flask import send_from_directory
+
+@app.get('/images/<filename>')
+@app.output(FileSchema, content_type='image/png')
+def get_image(filename):
+    return send_from_directory(app.config['IMAGE_FOLDER'], filename)
+```
+
+Acoording the OpenAPI spec, the schema may be omit if the file format is binary, so you
+can also use `EmptySchema`:
+
+```python
+from apiflask.schemas import EmptySchema
+
+@app.get('/images/<filename>')
+@app.output(EmptySchema, content_type='image/png')
+```
+
+Or:
+
+```python
+@app.get('/images/<filename>')
+@app.output({}, content_type='image/png')
+```
+
+You can use `type` and `format` to set the custom file type and format
+(one of `binary` and `base64`, defaults to `binary`):
+
+```python
+@app.output(FileSchema(format='base64'), content_type='image/png')
+```
 
 
 ## Use the `doc` decorator

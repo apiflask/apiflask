@@ -100,3 +100,64 @@ class PaginationSchema(Schema):
     prev = URL()
     first = URL()
     last = URL()
+
+
+class FileSchema(Schema):
+    """A schema for file response.
+
+    This is used to represent a file response in OpenAPI spec. If you want to
+    embed a file as base64 string in the JSON body, you can use the
+    `apiflask.fields.File` field instead.
+
+    Example:
+
+    ```python
+    from apiflask.schemas import FileSchema
+    from flask import send_from_directory
+
+    @app.get('/images/<filename>')
+    @app.output(
+        FileSchema(type='string', format='binary'),
+        content_type='image/png',
+        description='An image file'
+    )
+    @app.doc(summary="Returns the image file")
+    def get_image(filename):
+        return send_from_directory(app.config['IMAGE_FOLDER'], filename)
+    ```
+
+    The output OpenAPI spec will be:
+
+    ```yaml
+    paths:
+    /images/{filename}:
+      get:
+        summary: Returns the image file
+        responses:
+          '200':
+            description: An image file
+            content:
+              image/png:
+                schema:
+                  type: string
+                  format: binary
+    ```
+
+    *Version Added: 2.0.0*
+    """
+    def __init__(
+        self,
+        *,
+        type: str = 'string',
+        format: str = 'binary'
+    ) -> None:
+        """
+        Arguments:
+            type: The type of the file. Defaults to `string`.
+            format: The format of the file, one of `binary` and `base64`. Defaults to `binary`.
+        """
+        self.type = type
+        self.format = format
+
+    def __repr__(self) -> str:
+        return f'schema: \n  type: {self.type}\n  format: {self.format}'
