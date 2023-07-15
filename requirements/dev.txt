@@ -19,7 +19,7 @@ chardet==5.1.0
     # via tox
 distlib==0.3.6
     # via virtualenv
-filelock==3.12.1
+filelock==3.12.2
     # via
     #   tox
     #   virtualenv
@@ -29,23 +29,23 @@ nodeenv==1.8.0
     # via pre-commit
 pip-compile-multi==2.6.3
     # via -r requirements/dev.in
-pip-tools==6.13.0
+pip-tools==7.0.0
     # via pip-compile-multi
-platformdirs==3.5.3
+platformdirs==3.8.1
     # via
     #   tox
     #   virtualenv
-pre-commit==3.3.2
+pre-commit==3.3.3
     # via -r requirements/dev.in
-pyproject-api==1.5.1
+pyproject-api==1.5.3
     # via tox
 pyproject-hooks==1.0.0
     # via build
 toposort==1.10
     # via pip-compile-multi
-tox==4.6.0
+tox==4.6.4
     # via -r requirements/dev.in
-virtualenv==20.23.0
+virtualenv==20.24.0
     # via
     #   pre-commit
     #   tox

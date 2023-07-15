@@ -52,14 +52,15 @@ def say_hello():
 @app.get('/pets/<int:pet_id>')
 @app.output(PetOut)
 def get_pet(pet_id):
-    return PetModel.query.get_or_404(pet_id)
+    return db.get_or_404(PetModel, pet_id)
 
 
 @app.get('/pets')
 @app.input(PetQuery, location='query')
 @app.output(PetsOut)
 def get_pets(query_data):
-    pagination = PetModel.query.paginate(
+    pagination = db.paginate(
+        db.select(PetModel),
         page=query_data['page'],
         per_page=query_data['per_page']
     )
