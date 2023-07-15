@@ -4,6 +4,7 @@ APIFlask 2.0 project: https://github.com/apiflask/apiflask/projects/4
 
 Released: -<br>Codename: Gongqing
 
+- Drop Python 3.7 support.
 - Drop Flask 1.x support ([issue #442][issue_442]).
 - Only pass keyword arguments to the view function. The argument name
   of the parsed data from `app.input()` will be `{location}_data` or the

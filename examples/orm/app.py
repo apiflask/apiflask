@@ -49,7 +49,7 @@ def say_hello():
 @app.get('/pets/<int:pet_id>')
 @app.output(PetOut)
 def get_pet(pet_id):
-    return PetModel.query.get_or_404(pet_id)
+    return db.get_or_404(PetModel, pet_id)
 
 
 @app.get('/pets')
@@ -72,7 +72,7 @@ def create_pet(json_data):
 @app.input(PetIn(partial=True), location='json')
 @app.output(PetOut)
 def update_pet(pet_id, json_data):
-    pet = PetModel.query.get_or_404(pet_id)
+    pet = db.get_or_404(PetModel, pet_id)
     for attr, value in json_data.items():
         setattr(pet, attr, value)
     db.session.commit()
@@ -82,7 +82,7 @@ def update_pet(pet_id, json_data):
 @app.delete('/pets/<int:pet_id>')
 @app.output({}, status_code=204)
 def delete_pet(pet_id):
-    pet = PetModel.query.get_or_404(pet_id)
+    pet = db.get_or_404(PetModel, pet_id)
     db.session.delete(pet)
     db.session.commit()
     return ''

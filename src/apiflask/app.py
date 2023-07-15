@@ -1,14 +1,8 @@
 import inspect
 import json
 import re
-import sys
 import typing as t
 import warnings
-
-# temp fix for https://github.com/django/asgiref/issues/143
-if sys.platform == 'win32' and (3, 8, 0) <= sys.version_info < (3, 9, 0):  # pragma: no cover
-    import asyncio
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # pragma: no cover
 
 from apispec import APISpec
 from apispec import BasePlugin
@@ -20,7 +14,6 @@ from flask import jsonify
 from flask import render_template_string
 from flask import request
 from flask.config import ConfigAttribute
-from flask.wrappers import Response
 
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
@@ -397,19 +390,6 @@ class APIFlask(APIScaffold, Flask):
                 headers=headers
             )
             return self.error_callback(error)
-
-    # TODO: remove this function when we dropped the Flask 1.x support
-    # the list return values are supported in Flask 2.2
-    def make_response(self, rv) -> Response:
-        """Patch the make_response form Flask to allow returning list as JSON.
-
-        *Version added: 1.1.0*
-        """
-        if isinstance(rv, list):
-            rv = jsonify(rv)
-        elif isinstance(rv, tuple) and isinstance(rv[0], list):
-            rv = (jsonify(rv[0]), *rv[1:])
-        return super().make_response(rv)
 
     @staticmethod
     def _error_handler(
@@ -1197,7 +1177,6 @@ class APIFlask(APIScaffold, Flask):
             for method in ['get', 'post', 'put', 'patch', 'delete']:
                 if method in operations:
                     sorted_operations[method] = operations[method]
-            # TODO: remove the type ignore comment when apispec 5.3.0 released
-            spec.path(path=path, operations=sorted_operations)  # type: ignore
+            spec.path(path=path, operations=sorted_operations)
 
         return spec

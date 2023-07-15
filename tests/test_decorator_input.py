@@ -125,9 +125,7 @@ def test_input_with_files_location(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    # TODO: Failed validating 'oneOf' in schema
-    # https://github.com/p1c2u/openapi-spec-validator/issues/113
-    # validate_spec(rv.json)
+    validate_spec(rv.json)
     assert 'multipart/form-data' in rv.json['paths']['/']['post']['requestBody']['content']
     assert rv.json['paths']['/']['post']['requestBody'][
         'content']['multipart/form-data']['schema']['$ref'] == '#/components/schemas/Files'
@@ -159,9 +157,7 @@ def test_input_with_form_and_files_location(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    # TODO: Failed validating 'oneOf' in schema
-    # https://github.com/p1c2u/openapi-spec-validator/issues/113
-    # validate_spec(rv.json)
+    validate_spec(rv.json)
     assert 'multipart/form-data' in rv.json['paths']['/']['post']['requestBody']['content']
     assert rv.json['paths']['/']['post']['requestBody'][
         'content']['multipart/form-data']['schema']['$ref'] == '#/components/schemas/FormAndFiles'
@@ -189,9 +185,7 @@ def test_input_with_path_location(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    # TODO: Failed validating 'oneOf' in schema
-    # https://github.com/p1c2u/openapi-spec-validator/issues/113
-    # validate_spec(rv.json)
+    validate_spec(rv.json)
     assert '/{image_type}' in rv.json['paths']
     assert len(rv.json['paths']['/{image_type}']['get']['parameters']) == 1
     assert rv.json['paths']['/{image_type}']['get']['parameters'][0]['in'] == 'path'

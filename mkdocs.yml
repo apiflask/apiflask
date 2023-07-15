@@ -83,13 +83,13 @@ plugins:
       default_handler: python
       handlers:
         python:
-          rendering:
+          options:
             heading_level: 2
-      watch:
-        - src/apiflask
-        - README.md
-        - examples/README.md
-        - CHANGES.md
-        - CONTRIBUTING.md
+watch:
+  - src/apiflask
+  - README.md
+  - examples/README.md
+  - CHANGES.md
+  - CONTRIBUTING.md
 extra_css:
   - _assets/extra.css

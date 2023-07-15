@@ -20,7 +20,7 @@ With APIFlask, you will have:
 
 ## Requirements
 
-- Python 3.7+
+- Python 3.8+
 - Flask 2.0+
 
 
@@ -167,7 +167,7 @@ app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
 </details>
 
 <details>
-<summary>Or use <code>async def</code> with Flask 2.0</summary>
+<summary>Or use <code>async def</code></summary>
 
 ```bash
 $ pip install -U "apiflask[async]"
