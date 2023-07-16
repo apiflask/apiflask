@@ -731,7 +731,10 @@ def delete_pet(pet_id):
     return ''
 ```
 
-From version 0.4.0, you can use an empty dict to represent empty schema:
+`EmptySchema` represents an empty schema. For 204 response, it represents a empty
+reponse body.
+
+From version 0.4.0, you can use an empty dict as a shortcut:
 
 ```python hl_lines="2"
 @app.delete('/pets/<int:pet_id>')

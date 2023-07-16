@@ -65,18 +65,22 @@ class Schema(BaseSchema):
 
 
 class EmptySchema(Schema):
-    """An empty schema used to generate a 204 response.
+    """An empty schema used to generate empty response/schema.
+
+    For 204 response, you can use this schema to
+    generate an empty response body. For 200 response, you can use this schema
+    to generate an empty response body schema.
 
     Example:
 
     ```python
     @app.delete('/foo')
-    @app.output(EmptySchema)
+    @app.output(EmptySchema, status_code=204)
     def delete_foo():
         return ''
     ```
 
-    It equals to:
+    It equals to use `{}`:
 
     ```python
     @app.delete('/foo')

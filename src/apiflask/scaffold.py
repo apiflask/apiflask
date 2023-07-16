@@ -417,6 +417,10 @@ class APIScaffold:
 
             content_type: The content/media type of the response. It defautls to `application/json`.
 
+        *Version changed: 2.0.0*
+
+        - Don't change the status code to 204 for EmptySchema.
+
         *Version changed: 1.3.0*
 
         - Add parameter `content_type`.
@@ -451,9 +455,6 @@ class APIScaffold:
             schema = _generate_schema_from_mapping(schema, schema_name)
         if isinstance(schema, type):  # pragma: no cover
             schema = schema()
-
-        if isinstance(schema, EmptySchema):
-            status_code = 204
 
         def decorator(f):
             f = _ensure_sync(f)
