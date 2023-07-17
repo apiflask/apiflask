@@ -5,6 +5,7 @@ import typing as t
 from apispec import APISpec
 
 from .exceptions import _bad_schema_message
+from .schemas import EmptySchema
 from .schemas import FileSchema
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
@@ -181,6 +182,8 @@ def add_response(
     if status_code != '204':
         if isinstance(schema, FileSchema):
             schema = {'type': schema.type, 'format': schema.format}
+        elif isinstance(schema, EmptySchema):
+            schema = {}
         operation['responses'][status_code]['content'] = {
             content_type: {
                 'schema': schema

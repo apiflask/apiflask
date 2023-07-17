@@ -10,6 +10,7 @@ Released: -<br>Codename: Gongqing
   of the parsed data from `app.input()` will be `{location}_data` or the
   value of `arg_name` ([issue #427][issue_427]).
 - Add `FileSchema` to generate OpenAPI file response ([issue #447][issue_447]).
+- Support using `{}` to represent not only empty body (204) but also empty schema.
 
 [issue_427]: https://github.com/apiflask/apiflask/issues/427
 [issue_442]: https://github.com/apiflask/apiflask/issues/442

@@ -24,7 +24,7 @@ def test_response_description_config(app, client):
         pass
 
     @app.get('/baz')
-    @app.output(EmptySchema)  # 204
+    @app.output(EmptySchema)
     def no_schema():
         pass
 
@@ -45,7 +45,7 @@ def test_response_description_config(app, client):
     assert rv.json['paths']['/bar']['get']['responses'][
         '201']['description'] == 'Success'
     assert rv.json['paths']['/baz']['get']['responses'][
-        '204']['description'] == 'Success'
+        '200']['description'] == 'Success'
     assert rv.json['paths']['/spam']['get']['responses'][
         '206']['description'] == 'Success'
     assert rv.json['paths']['/eggs/{id}']['get']['responses'][
