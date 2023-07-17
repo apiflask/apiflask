@@ -685,7 +685,7 @@ pet_links = {
 }
 
 @app.post('/pets')
-@app.output(PetOutSchema, links=pet_links)
+@app.output(PetOut, links=pet_links)
 def new_pet():
     pass
 ```
@@ -709,7 +709,7 @@ def update_spec(spec):
 
 
 @app.post('/pets')
-@app.output(PetOutSchema, links={'getAddressByUserId': {'$ref': '#/components/links/getAddressByUserId'}})
+@app.output(PetOut, links={'getAddressByUserId': {'$ref': '#/components/links/getAddressByUserId'}})
 def new_pet():
     pass
 ```
