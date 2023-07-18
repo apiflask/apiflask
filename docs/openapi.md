@@ -79,7 +79,7 @@ app.config['SPEC_FORMAT'] = 'yaml'
 The default URL path for spec endpoint is `/openapi.json`, you may also want to update
 it when you want to use YAML format:
 
-```python hl_lines="3"
+```python
 from apiflask import APIFlask
 
 app = APIFlask(__name__, spec_path='/openapi.yaml')
@@ -427,7 +427,7 @@ your view functions or view classes automatically, while you may want to change 
 The operation `responses` will be generated when you add the `output` decorator
 on the view function:
 
-```python hl_lines="2"
+```python
 @app.get('/pets/<int:pet_id>')
 @app.output(PetOut)
 def get_pet(pet_id):
@@ -437,7 +437,7 @@ def get_pet(pet_id):
 You can set the `description` and `status_code` (default to `200`) through the
 corresponding parameters in the `output` decorator:
 
-```python hl_lines="2"
+```python
 @app.get('/pets/<int:pet_id>')
 @app.output(PetOut, status_code=200, description='Output data of a pet')
 def get_pet(pet_id):
@@ -464,7 +464,7 @@ You can disable these behaviors or configure them through related
 The operation `requestBody` will be generated when you add the `input` decorator
 on the view function:
 
-```python hl_lines="2"
+```python
 @app.post('/pets')
 @app.input(PetIn)
 def create_pet(pet_id):
@@ -474,7 +474,7 @@ def create_pet(pet_id):
 When you specify a request data location other than `json`, the operation `parameters`
 will be generated instead:
 
-```python hl_lines="2"
+```python
 @app.get('/pets')
 @app.input(PetQuery, location='query')
 def get_pets():
@@ -618,7 +618,7 @@ See details in
 When rendering the spec in the API documentation, the docs tool will generate a default
 example for you. If you want to add a custom example, you can use the `example` parameter to pass a dict as the response `example` in the `input`/`output` decorator:
 
-```python hl_lines="6"
+```python
 from apiflask import APIFlask
 
 app = APIFlask(__name__)
@@ -790,8 +790,8 @@ There is also a `doc` decorator that can be used to set operation fields explici
 
 Here is the example of using the `doc` decorator to set `summary` and `description`:
 
-```python hl_lines="6"
-from apiflask import APIFlask, doc
+```python
+from apiflask import APIFlask
 
 app = APIFlask(__name__)
 
@@ -811,7 +811,7 @@ You only need to set the tag if you are not using a blueprint or you want to con
 yourself. The `tags` parameter accepts a list of tag name string, they should match the values you
 passed in `TAGS` config or `app.tags` attribute:
 
-```python hl_lines="2"
+```python
 @app.get('/')
 @app.doc(tags=['Foo'])
 def hello():
@@ -832,7 +832,7 @@ set a custom description for each status, for example,
 `{404: 'Not Found', 418: 'Blah...'}`. If a response with the same status code is
 already exist, the existing description will be overwritten.
 
-```python hl_lines="2"
+```python
 @app.get('/')
 @app.doc(responses=[204, 404])
 def hello():
@@ -844,7 +844,7 @@ def hello():
 
 You can mark an operation as deprecated with the `deprecated` parameter:
 
-```python hl_lines="2"
+```python
 @app.get('/')
 @app.doc(deprecated=True)
 def hello():
@@ -860,7 +860,7 @@ def hello():
 
 You can set `operationId` for a view funtion (operation) with the `operation_id` parameter:
 
-```python hl_lines="2"
+```python
 @app.get('/')
 @app.doc(operation_id='myCustomHello')
 def hello():
@@ -896,7 +896,7 @@ def hello():
 
 You can use the `description` parameter to set the description for auth objects:
 
-```python hl_lines="4"
+```python
 from apiflask import APIFlask, HTTPTokenAuth
 
 app = APIFlask(__name__)
@@ -946,8 +946,8 @@ bp = APIBlueprint('foo', __name__, enable_openapi=False)
 To hide a view function from API documentations (and OpenAPI spec), you
 can set the `hide` parameter to `True` in the `doc` decorator:
 
-```python hl_lines="6"
-from apiflask import APIFlask, doc
+```python
+from apiflask import APIFlask
 
 app = APIFlask(__name__)
 

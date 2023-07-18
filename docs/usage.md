@@ -49,7 +49,7 @@ Similar to what you did to create a Flask `app` instance, you will need to impor
 `APIFlask` class from `apiflask` package, then create the `app` instance from
 the `APIFlask` class:
 
-```python hl_lines="1 3"
+```python
 from apiflask import APIFlask
 
 app = APIFlask(__name__)
@@ -275,7 +275,7 @@ FOO_APP_KEY=some-app-key
 
 In the application, now we can read these variables via `os.getenv(key, default_value)`:
 
-```python hl_lines="1 5"
+```python
 import os
 
 from apiflask import APIFlask
@@ -370,7 +370,7 @@ also use the following shortcuts decorators:
 
 Here is the same example with the route shortcuts:
 
-```python hl_lines="6 11 16 21 26 31"
+```python
 from apiflask import APIFlask
 
 app = APIFlask(__name__)
@@ -495,7 +495,7 @@ class PetIn(Schema):
 
 A schema class should inherit the `apiflask.Schema` class:
 
-```python hl_lines="1 6"
+```python
 from apiflask import Schema
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
@@ -508,7 +508,7 @@ class PetIn(Schema):
 
 fields are represented with field classes in `apiflask.fields`:
 
-```python hl_lines="2 7 8"
+```python
 from apiflask import Schema
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
@@ -523,7 +523,7 @@ To validate a field with a specific rule, you can pass a validator or a list of
 validators (import them from `apiflask.validators`) to the `validate` argument
 of the field class:
 
-```python hl_lines="3 7 8"
+```python
 from apiflask import Schema
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
@@ -559,7 +559,7 @@ following format:
 
 Now let's add it to the view function which is used to create a new pet:
 
-```python hl_lines="1 14"
+```python hl_lines="14"
 from apiflask import APIFlask, Schema
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
@@ -595,11 +595,11 @@ argument for `@app.input()` decorator, the value can be:
 - Path variable (URL variable): `'path'` (same as `'view_args'`, added in APIFlask 1.0.2)
 
 If the validation passed, the data will inject into the view function as
-a keyword argument in the form of `dict`. Otherwise, an error response
-with the detail of the validation result will be returned.
+a keyword argument named `{location}_data` (e.g. `json_data`) in the form
+of `dict`. Otherwise, an error response with the detail of the validation
+result will be returned.
 
-The keyword argument will be named `{location}_data`
-(e.g. `json_data`). You can set a custom argument name with `arg_name`:
+You can set a custom argument name with `arg_name`:
 
 ```python
 @app.post('/pets')
@@ -679,7 +679,7 @@ schema.
 
 Now add it to the view function which used to get a pet resource:
 
-```python hl_lines="1 14"
+```python hl_lines="14"
 from apiflask import APIFlask
 from apiflask.fields import String, Integer
 
@@ -704,7 +704,7 @@ def get_pet(pet_id):
 The default status code for output response is `200`, you can set a different
 status code with the `status_code` argument:
 
-```python hl_lines="3"
+```python
 @app.post('/pets')
 @app.input(PetIn)
 @app.output(PetOut, status_code=201)
@@ -721,7 +721,7 @@ Or just:
 
 If you want to return a 204 response, you can use the `EmptySchema` from `apiflask.schemas`:
 
-```python hl_lines="1 5"
+```python
 from apiflask.schemas import EmptySchema
 
 
@@ -736,7 +736,7 @@ reponse body.
 
 From version 0.4.0, you can use an empty dict as a shortcut:
 
-```python hl_lines="2"
+```python
 @app.delete('/pets/<int:pet_id>')
 @app.output({}, status_code=204)
 def delete_pet(pet_id):
@@ -751,7 +751,7 @@ def delete_pet(pet_id):
     use the `@app.doc` decorator and pass a list to the `responses` parameter.
     For example:
 
-    ```python hl_lines="4"
+    ```python
     @app.put('/pets/<int:pet_id>')
     @app.input(PetIn)
     @app.output(PetOut)  # 200
@@ -849,7 +849,7 @@ class Pet(Model):
 The default status code is `200`, if you want to use a different status code,
 you can pass a `status_code` argument in the `@app.output` decorator:
 
-```python hl_lines="3"
+```python
 @app.post('/pets')
 @app.input(PetIn)
 @app.output(PetOut, status_code=201)
@@ -861,7 +861,7 @@ def create_pet(json_data):
 You don't need to return the same status code in the end of the view function
 (i.e., `return data, 201`):
 
-```python hl_lines="8"
+```python
 @app.post('/pets')
 @app.input(PetIn)
 @app.output(PetOut, status_code=201)
@@ -875,7 +875,7 @@ def create_pet(json_data):
 When you want to pass a header dict, you can pass the dict as the second element
 of the return tuple:
 
-```python hl_lines="8"
+```python
 @app.post('/pets')
 @app.input(PetIn)
 @app.output(PetOut, status_code=201)
@@ -901,15 +901,15 @@ you to customize the spec:
 
 - Most of the fields of the `info` object and top-level field of `OpenAPI`
 objct are accessible with configuration variables.
-- The `tag` object, Operation `summary` and `description` will generated from
+- The `tag` object, Operation's `summary` and `description` will generated from
 the blueprint name, the view function name and docstring.
 - You can register a spec processor function to process the spec.
 - `requestBody` and `responses` fields can be set with the `input` and `output`
 decorator.
-- Other operation fields can be set with the `doc` decorator:
+- Other operation fields can be set with the `@app.doc` decorator:
 
-```python hl_lines="1 7"
-from apiflask import APIFlask, doc
+```python hl_lines="7"
+from apiflask import APIFlask
 
 app = APIFlask(__name__)
 
@@ -1138,7 +1138,7 @@ If you want to apply a decorator for all methods, instead of repeat yourself,
 you can pass the decorator to the class attribute `decorators`, it accepts
 a list of decorators:
 
-```python hl_lines="3"
+```python
 class Pet(MethodView):
 
     decorators = [auth_required(auth), doc(responses=[404])]
@@ -1172,7 +1172,7 @@ Similar to Flask's `abort`, but `abort` from APIFlask will return a JSON respons
 
 Example:
 
-```python hl_lines="1 8"
+```python
 from apiflask import APIFlask, abort
 
 app = APIFlask(__name__)
@@ -1191,7 +1191,7 @@ def hello(name):
 
 You can also raise an `HTTPError` exception to return an error response:
 
-```python hl_lines="1 8"
+```python
 from apiflask import APIFlask, HTTPError
 
 app = APIFlask(__name__)

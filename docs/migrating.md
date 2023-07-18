@@ -51,7 +51,7 @@ bp = APIBlueprint('foo', __name__)
 
 APIFlask provides some route shortcuts, you can update a view function:
 
-```python hl_lines="1"
+```python
 @app.route('/pets', methods=['POST'])
 def create_pet():
     return {'message': 'created'}
@@ -59,7 +59,7 @@ def create_pet():
 
 to:
 
-```python hl_lines="1"
+```python
 @app.post('/pets')
 def create_pet():
     return {'message': 'created'}
@@ -181,7 +181,7 @@ def foo():
 
 If you want to disable this behavior, just set `json_errors` parameter to `False`:
 
-```python hl_lines="3"
+```python
 from apiflask import APIFlask
 
 app = APIFlask(__name__, json_errors=False)
