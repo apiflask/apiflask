@@ -1,5 +1,4 @@
 import typing as t
-import warnings
 from collections.abc import Mapping as ABCMapping
 from functools import wraps
 
@@ -144,7 +143,6 @@ class APIScaffold:
     def auth_required(
         self,
         auth: HTTPAuthType,
-        role: t.Optional[str] = None,
         roles: t.Optional[list] = None,
         optional: t.Optional[str] = None
     ) -> t.Callable[[DecoratedType], DecoratedType]:
@@ -171,13 +169,16 @@ class APIScaffold:
             auth: The `auth` object, an instance of
                 [`HTTPBasicAuth`][apiflask.security.HTTPBasicAuth]
                 or [`HTTPTokenAuth`][apiflask.security.HTTPTokenAuth].
-            role: Deprecated since 1.0, use `roles` instead.
             roles: The selected roles to allow to visit this view, accepts a list of role names.
                 See [Flask-HTTPAuth's documentation][_role]{target:_blank} for more details.
                 [_role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
             optional: Set to `True` to allow the view to execute even the authentication
                 information is not included with the request, in which case the attribute
                 `auth.current_user` will be `None`.
+
+        *Version changed: 2.0.0*
+
+        - Remove the deprecated `role` parameter.
 
         *Version changed: 1.0.0*
 
@@ -191,22 +192,10 @@ class APIScaffold:
 
         - Add parameter `roles`.
         """
-        _roles = None
-        if role is not None:
-            warnings.warn(
-                'The `role` parameter is deprecated and will be removed in 1.1, '
-                'use `roles` and always pass a list instead.',
-                DeprecationWarning,
-                stacklevel=3,
-            )
-            _roles = [role]
-        elif roles is not None:
-            _roles = roles
-
         def decorator(f):
             f = _ensure_sync(f)
-            _annotate(f, auth=auth, roles=_roles or [])
-            return auth.login_required(role=_roles, optional=optional)(f)
+            _annotate(f, auth=auth, roles=roles or [])
+            return auth.login_required(role=roles, optional=optional)(f)
         return decorator
 
     def input(
@@ -525,7 +514,6 @@ class APIScaffold:
         self,
         summary: t.Optional[str] = None,
         description: t.Optional[str] = None,
-        tag: t.Optional[str] = None,
         tags: t.Optional[t.List[str]] = None,
         responses: t.Optional[t.Union[t.List[int], t.Dict[int, str]]] = None,
         deprecated: t.Optional[bool] = None,
@@ -563,7 +551,6 @@ class APIScaffold:
 
             description: The description of this endpoint. If not set, the lines after the empty
                 line of the docstring will be used.
-            tag: Deprecated since 1.0, use `tags` instead.
             tags: A list of tag names of this endpoint, map the tags you passed in the `app.tags`
                 attribute. If `app.tags` is not set, the blueprint name will be used as tag name.
             responses: The other responses for this view function, accepts a dict in a format
@@ -579,6 +566,10 @@ class APIScaffold:
                 the `SECURITY_SCHEMES` configuration. If you don't need specify the scopes, just
                 pass a security name (equals to `[{'foo': []}]`) or a list of security names (equals
                 to `[{'foo': []}, {'bar': []}]`).
+
+        *Version changed: 2.0.0*
+
+        - Remove the deprecated `tag` parameter.
 
         *Version changed: 1.0*
 
@@ -608,25 +599,13 @@ class APIScaffold:
 
         *Version added: 0.2.0*
         """
-        _tags = None
-        if tag is not None:
-            warnings.warn(
-                'The `tag` parameter is deprecated and will be removed in 1.1, '
-                'use `tags` and always pass a list instead.',
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            _tags = [tag]
-        elif tags is not None:
-            _tags = tags
-
         def decorator(f):
             f = _ensure_sync(f)
             _annotate(
                 f,
                 summary=summary,
                 description=description,
-                tags=_tags,
+                tags=tags,
                 responses=responses,
                 deprecated=deprecated,
                 hide=hide,

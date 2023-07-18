@@ -7,13 +7,12 @@ def test_openapi_blueprint(app):
     assert 'openapi' in app.blueprints
     rules = list(app.url_map.iter_rules())
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
-    assert len(bp_endpoints) == 4
+    assert len(bp_endpoints) == 3
     assert 'openapi.spec' in bp_endpoints
     assert 'openapi.docs' in bp_endpoints
     assert 'openapi.swagger_ui_oauth_redirect' in bp_endpoints
-    assert 'openapi.redoc' in bp_endpoints
 
-    app = APIFlask(__name__, spec_path=None, docs_path=None, redoc_path=None)
+    app = APIFlask(__name__, spec_path=None, docs_path=None)
     assert 'openapi' not in app.blueprints
 
 
@@ -25,7 +24,7 @@ def test_spec_path(app):
     assert 'openapi' in app.blueprints
     rules = list(app.url_map.iter_rules())
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
-    assert len(bp_endpoints) == 3
+    assert len(bp_endpoints) == 2
     assert 'openapi.spec' not in bp_endpoints
 
 
@@ -49,7 +48,7 @@ def test_docs_path(app):
 
     rules = list(app.url_map.iter_rules())
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
-    assert len(bp_endpoints) == 2
+    assert len(bp_endpoints) == 1
     assert 'openapi.docs' not in bp_endpoints
     assert 'openapi.swagger_ui_oauth_redirect' not in bp_endpoints
 
@@ -75,24 +74,12 @@ def test_docs_oauth2_redirect_path(client):
 
     rules = list(app.url_map.iter_rules())
     bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
-    assert len(bp_endpoints) == 3
+    assert len(bp_endpoints) == 2
     assert 'openapi.docs' in bp_endpoints
     assert 'openapi.swagger_ui_oauth_redirect' not in bp_endpoints
     rv = app.test_client().get('/docs')
     assert rv.status_code == 200
     assert b'oauth2RedirectUrl' not in rv.data
-
-
-def test_redoc_path(app):
-    assert app.redoc_path
-
-    app = APIFlask(__name__, redoc_path=None)
-    assert app.redoc_path is None
-
-    rules = list(app.url_map.iter_rules())
-    bp_endpoints = [rule.endpoint for rule in rules if rule.endpoint.startswith('openapi')]
-    assert len(bp_endpoints) == 3
-    assert 'openapi.redoc' not in bp_endpoints
 
 
 def test_disable_openapi_with_enable_openapi_arg(app):

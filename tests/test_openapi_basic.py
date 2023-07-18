@@ -90,7 +90,6 @@ def test_spec_bypass_endpoints(app):
     assert '/foo/static' not in spec['paths']
     assert '/docs' not in spec['paths']
     assert '/openapi.json' not in spec['paths']
-    assert '/redoc' not in spec['paths']
     assert '/docs/oauth2-redirect' not in spec['paths']
 
 
