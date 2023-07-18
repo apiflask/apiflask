@@ -224,8 +224,8 @@ def test_multiple_input_body_location(app, locations):
     arg_name_2 = f'{locations[1]}_data'  # noqa: F841
     with pytest.raises(RuntimeError):
         @app.route('/foo')
-        @app.input(Foo, locations[0])
-        @app.input(Bar, locations[1])
+        @app.input(Foo, location=locations[0])
+        @app.input(Bar, location=locations[1])
         def foo(arg_name_1, arg_name_2):
             pass
 
@@ -236,7 +236,7 @@ def test_input_with_dict_schema(app, client):
     }
 
     @app.get('/foo')
-    @app.input(dict_schema, 'query')
+    @app.input(dict_schema, location='query')
     def foo(query_data):
         return query_data
 

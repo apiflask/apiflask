@@ -94,7 +94,7 @@ Read more about configuration management in
     context, so you can't use `current_app`. In this situation, you can access
     the configration variables from the module you store them:
 
-    ```python hl_lines="3 6"
+    ```python
     from apiflask import Schema
 
     from .settings import CATEGORIES  # import the configuration variable

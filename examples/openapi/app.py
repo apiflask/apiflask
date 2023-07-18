@@ -156,7 +156,7 @@ def get_pets():
 @app.input(PetIn, location='json')
 @app.output(
     PetOut,
-    201,
+    status_code=201,
     description='The pet you just created',
     links={'getPetById': {
         'operationId': 'getPet',
