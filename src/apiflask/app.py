@@ -48,7 +48,6 @@ from .openapi import get_path_summary
 from .openapi import get_auth_name
 from .openapi import get_argument
 from .openapi import get_security_and_security_schemes
-from .ui_templates import redoc_template
 from .ui_templates import ui_templates
 from .ui_templates import swagger_ui_oauth2_redirect_template
 from .scaffold import APIScaffold
@@ -266,7 +265,6 @@ class APIFlask(APIScaffold, Flask):
         docs_path: t.Optional[str] = '/docs',
         docs_oauth2_redirect_path: t.Optional[str] = '/docs/oauth2-redirect',
         docs_ui: str = 'swagger-ui',
-        redoc_path: t.Optional[str] = '/redoc',
         openapi_blueprint_url_prefix: t.Optional[str] = None,
         json_errors: bool = True,
         enable_openapi: bool = True,
@@ -297,8 +295,6 @@ class APIFlask(APIScaffold, Flask):
             docs_ui: The UI of API documentation, one of `swagger-ui` (default), `redoc`,
                 `elements`, `rapidoc`, and `rapipdf`.
             docs_oauth2_redirect_path: The path to Swagger UI OAuth redirect.
-            redoc_path: Deprecated since 1.1, set `APIFlask(docs_ui='redoc')` to use Redoc.
-                The path to Redoc documentation, defaults to `/redoc`.
             openapi_blueprint_url_prefix: The url prefix of the OpenAPI blueprint. This
                 prefix will append before all the OpenAPI-related paths (`sepc_path`,
                 `docs_path`, etc.), defaults to `None`.
@@ -309,6 +305,10 @@ class APIFlask(APIScaffold, Flask):
                 by default, so it doesn't need to be provided here.
 
         Other keyword arguments are directly passed to `flask.Flask`.
+
+        *Version changed: 2.0.0*
+
+        - Remove the deprecated `redoc_path` parameter.
 
         *Version changed: 1.2.0*
 
@@ -343,7 +343,6 @@ class APIFlask(APIScaffold, Flask):
         self.spec_path = spec_path
         self.docs_ui = docs_ui
         self.docs_path = docs_path
-        self.redoc_path = redoc_path
         self.docs_oauth2_redirect_path = docs_oauth2_redirect_path
         self.openapi_blueprint_url_prefix = openapi_blueprint_url_prefix
         self.enable_openapi = enable_openapi
@@ -557,24 +556,8 @@ class APIFlask(APIScaffold, Flask):
                     def swagger_ui_oauth_redirect() -> str:
                         return render_template_string(swagger_ui_oauth2_redirect_template)
 
-        if self.redoc_path:
-            @bp.route(self.redoc_path)
-            def redoc():
-                warnings.warn(
-                    'The `/redoc` path and `redoc_path` parameter is deprecated '
-                    'and will be removed in 2.0, Set `APIFlask(docs_ui="redoc")` '
-                    'to use Redoc and then visit "/docs" instead.',
-                    UserWarning,
-                    stacklevel=2,
-                )
-                return render_template_string(
-                    redoc_template,
-                    title=self.title,
-                    version=self.version
-                )
-
         if self.enable_openapi and (
-            self.spec_path or self.docs_path or self.redoc_path
+            self.spec_path or self.docs_path
         ):
             self.register_blueprint(bp)
 

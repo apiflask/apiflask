@@ -12,18 +12,22 @@ def test_docs_favicon(app, client):
 
 
 @pytest.mark.parametrize('config_value', [True, False])
-def test_docs_use_google_font(app, client, config_value):
+def test_docs_use_google_font(client, config_value):
+    app = APIFlask(__name__, docs_ui='redoc')
     app.config['REDOC_USE_GOOGLE_FONT'] = config_value
+    client = app.test_client()
 
-    rv = client.get('/redoc')
+    rv = client.get('/docs')
     assert rv.status_code == 200
     assert bool(b'fonts.googleapis.com' in rv.data) is config_value
 
 
-def test_redoc_standalone_js(app, client):
+def test_redoc_standalone_js(client):
+    app = APIFlask(__name__, docs_ui='redoc')
     app.config['REDOC_STANDALONE_JS'] = 'https://cdn.example.com/redoc.js'
+    client = app.test_client()
 
-    rv = client.get('/redoc')
+    rv = client.get('/docs')
     assert rv.status_code == 200
     assert b'src="https://cdn.example.com/redoc.js"' in rv.data
 
@@ -31,10 +35,12 @@ def test_redoc_standalone_js(app, client):
 @pytest.mark.parametrize('config_value', [
     {}, {'disableSearch': True, 'hideLoading': True}
 ])
-def test_redoc_config(app, client, config_value):
+def test_redoc_config(client, config_value):
+    app = APIFlask(__name__, docs_ui='redoc')
     app.config['REDOC_CONFIG'] = config_value
+    client = app.test_client()
 
-    rv = client.get('/redoc')
+    rv = client.get('/docs')
     assert rv.status_code == 200
     if config_value == {}:
         assert b'{},' in rv.data
