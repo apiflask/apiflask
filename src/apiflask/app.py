@@ -679,7 +679,13 @@ class APIFlask(APIScaffold, Flask):
     @staticmethod
     def _schema_name_resolver(schema: t.Type[Schema]) -> str:
         """Default schema name resovler."""
+        # some schema are passed through the `doc(responses=...)`
+        # we need to make sure the schema is an instance of `Schema`
+        if isinstance(schema, type):  # pragma: no cover
+            schema = schema()  # type: ignore
+
         name = schema.__class__.__name__
+
         if name.endswith('Schema'):
             name = name[:-6] or name
         if schema.partial:
@@ -1057,27 +1063,35 @@ class APIFlask(APIScaffold, Flask):
                 if view_func._spec.get('responses'):
                     responses: t.Union[t.List[int], t.Dict[int, str]] \
                         = view_func._spec.get('responses')
+                    # turn status_code list to dict {status_code: reason_phrase}
                     if isinstance(responses, list):
                         responses: t.Dict[int, str] = {}  # type: ignore
                         for status_code in view_func._spec.get('responses'):
                             responses[  # type: ignore
                                 status_code
                             ] = get_reason_phrase(int(status_code), '')
-                    for status_code, description in responses.items():  # type: ignore
+                    for status_code, value in responses.items():  # type: ignore
                         status_code: str = str(status_code)  # type: ignore
+                        # custom complete response spec
+                        if isinstance(value, dict):
+                            operation['responses'][status_code] = value
+                            continue
+                        else:
+                            description = value
+                        # overwrite existing response description
                         if status_code in operation['responses']:
                             if not isinstance(
                                 view_func._spec.get('responses'), list
                             ):  # pragma: no cover
                                 operation['responses'][status_code]['description'] = description
                             continue
+                        # add error response schema for error responses
                         if status_code.startswith('4') or status_code.startswith('5'):
-                            # add error response schema for error responses
                             schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
                             add_response_with_schema(
                                 spec, operation, status_code, schema, 'HTTPError', description
                             )
-                        else:
+                        else:  # add default response for other responses
                             add_response(operation, status_code, {}, description)
 
                 # requestBody
