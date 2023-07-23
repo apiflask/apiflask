@@ -824,19 +824,62 @@ def hello():
 As described above, APIFlask will add some responses based on the decorators you added
 on the view function (200, 400, 401, 404). Sometimes you may want to add alternative
 responses the view function will return, then you can use the `@app.doc(responses=...)`
-parameter, it accepts the following values:
-
-- A list of status code int, for example, `[404, 418]`.
-- A dict in a format of `{<STATUS_CODE>: <DESCRIPTION>}`, this will allow you to
-set a custom description for each status, for example,
-`{404: 'Not Found', 418: 'Blah...'}`. If a response with the same status code is
-already exist, the existing description will be overwritten.
+parameter:
 
 ```python
 @app.get('/')
 @app.doc(responses=[204, 404])
 def hello():
     return 'Hello'
+```
+
+The `responses` parameter accepts the following values:
+
+- A list of status code int, for example, `[404, 418]`.
+- A dict in a format of `{<STATUS_CODE>: <DESCRIPTION>}`, this will allow you to
+set a custom description for each status, for example,
+`{404: 'Not Found', 418: 'Blah...'}`. If a response with the same status code is
+already exist, the existing description will be overwritten.
+- A dict in a format of `{<STATUS_CODE>: {RESPONSE}}`, where the `{RESPONSE}` is
+a complete spec dict for the response. For example:
+
+```python
+@app.doc(responses={
+    400: {
+        'description': 'Custom error',
+        'content': {
+            'application/json': {
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'data': {
+                            'type': 'object',
+                            'properties': {
+                                'error_id': {'type': 'integer'},
+                                'message': {'type': 'string'},
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
+```
+
+You can also pass a schema class for the `schema`:
+
+```python
+@app.doc(responses={
+    404: {
+        'description': 'Custom error',
+        'content': {
+            'application/json': {
+                'schema': SomeErrorSchema
+            }
+        }
+    }
+})
 ```
 
 

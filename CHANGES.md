@@ -15,7 +15,11 @@ Released: -<br>Codename: Gongqing
   - The `tag` parameter in `@app.doc`.
   - The `role` parameter in `@app.auth_required`.
   - The `redoc_path` parameter in `apiflask.APIFlask` and the `/redoc` path.
+- Support setting a complete response OpenAPI spec throught the `app.doc(responses)`
+  parameter (i.e. `responses={400: {'description': '', 'content': ...}}`)
+  ([issue #327][issue_327]).
 
+[issue_327]: https://github.com/apiflask/apiflask/issues/327
 [issue_427]: https://github.com/apiflask/apiflask/issues/427
 [issue_442]: https://github.com/apiflask/apiflask/issues/442
 [issue_447]: https://github.com/apiflask/apiflask/issues/447
