@@ -78,6 +78,7 @@ nav:
   - Changelog: changelog.md
   - Migration Guide: migration_guide.md
   - Contributing Guide: contributing.md
+  - Donate to APIFlask: https://opencollective.com/apiflask
 plugins:
   - search
   - mkdocstrings:

@@ -5,7 +5,7 @@ Welcome to APIFlask's documentation!
 
 ## Versions
 
-- [Latest](https://apiflask.com): The docs for the latest source code on GitHub.
+- [V2 (latest)](https://apiflask.com): The docs for the latest source code on GitHub.
 - [V1](https://v1.apiflask.com): The docs for the latest 1.x release.
 
 

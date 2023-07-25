@@ -49,6 +49,12 @@ For Windows:
 - Issue Tracker: <https://github.com/apiflask/apiflask/issues>
 - Discussion: <https://github.com/apiflask/apiflask/discussions>
 - Twitter: <https://twitter.com/apiflask>
+- Open Collective: <https://opencollective.com/apiflask>
+
+
+## Donate
+
+If you find APIFlask useful, please consider [donating](https://opencollective.com/apiflask) today. Your donation keeps APIFlask maintained and evolving.
 
 
 ## Example
