@@ -76,6 +76,7 @@ nav:
   - Comparison and Motivations: comparison.md
   - Authors: authors.md
   - Changelog: changelog.md
+  - Migration Guide: migration_guide.md
   - Contributing Guide: contributing.md
 plugins:
   - search

@@ -1,4 +1,4 @@
-## Version 2.0
+## Version 2.0.0
 
 APIFlask 2.0 project: https://github.com/apiflask/apiflask/projects/4
 
@@ -11,6 +11,7 @@ Released: -<br>Codename: Gongqing
   value of `arg_name` ([issue #427][issue_427]).
 - Add `FileSchema` to generate OpenAPI file response ([issue #447][issue_447]).
 - Support using `{}` to represent not only empty body (204) but also empty schema.
+  Use `{}` or `EmptySchema` will not set the status code to 204 anymore.
 - Remove the previously deprecated code:
   - The `tag` parameter in `@app.doc`.
   - The `role` parameter in `@app.auth_required`.

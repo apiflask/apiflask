@@ -17,7 +17,7 @@ differences between APIFlask and similar projects.
 - For the data part (serialization/deserialization, OpenAPI support), FastAPI relies
   on Pydantic, while APIFlask uses marshmallow-code projects (marshmallow, webargs, apispec).
 - APIFlask builds on top of Flask, so it's compatible with Flask extensions.
-- FastAPI support async. APIFlask will have the basic async support with Flask 2.0.
+- FastAPI supports async. APIFlask has the basic async support with Flask 2.0.
 - APIFlask provides more decorators to help organize things better.
 - FastAPI injects the input data as an object, while APIFlask passes it as a dict.
 - APIFlask has built-in class-based views support based on Flask's `MethodView`.
@@ -28,7 +28,7 @@ differences between APIFlask and similar projects.
 ## APIFlask vs APIFairy/flask-smorest
 
 
-### It's a framework (and why?)
+### APIFlask is a framework
 
 Although APIFlask is a thin wrapper on top of Flask, it's actually a framework.
 Thus, there is no need to instantiate additional extension object:
@@ -50,40 +50,14 @@ app = APIFlask(__name__)
 ```
 
 The key reasons behind making APIFlask a framework instead of a Flask
-extension is:
+extension is it makes possible to overwrite and change the internal
+behavior of Flask. For example:
 
-- I have to rewrite the `Flask` class to ensure the natural order of the arguments
-injected into the view function.
-- I have to rewrite the `Flask` and the `Blueprint` class to add route shortcuts.
-- Possible to add more high-level features, such as support returning list as JSON response.
-
-See the following two sections for more details.
-
-
-### Route shortcuts
-
-APIFlask added some route shortcuts (`app.get()`, `app.post()` , etc) for
-`app.route(..., methods=['GET/POST...'])`.
-
-Instead of doing something like this:
-
-```python
-@app.route('/pets', methods=['POST'])
-def create_pet():
-    pass
-```
-
-You can just use `@app.post()`:
-
-```python
-@app.post('/pets')
-def create_pet():
-    pass
-```
-
-!!! tip
-
-    Flask will have original support for these route shortcuts in the 2.0 version.
+- Rewrite `Flask.dispatch_request` to ensure the natural order of the arguments
+injected into the view function (APIFlask 1.x).
+- Add route shortcuts to the `Flask` and the `Blueprint` class (added in Flask 2.0).
+- Rewrite `Flask.make_response` to support returning list as JSON response (added in Flask 2.2).
+- Rewrite `Flask.add_url_rule` to support generating OpenAPI spec for class-based views.
 
 
 ### More automation for OpenAPI generating
@@ -102,7 +76,7 @@ def create_pet():
     [configuration variables](/configuration).
 
 
-### More features compare with APIFairy
+### More features
 
 - Add a `doc` decorator to allow set the OpenAPI spec for view functions in an explicit way.
 - Support more OpenAPI fields (all fields from `info`, `servers`, response/requestBody/parameters `example`, path `deprecated`, etc).
