@@ -5,7 +5,7 @@
 #
 #    pip-compile-multi
 #
-certifi==2023.5.7
+certifi==2023.7.22
     # via requests
 charset-normalizer==3.2.0
     # via requests
@@ -47,15 +47,15 @@ mkdocs==1.4.3
 mkdocs-autorefs==0.4.1
     # via mkdocstrings
 mkdocs-material==9.1.18
-    # via -r requirements/docs.in
+    # via -r docs.in
 mkdocs-material-extensions==1.1.1
     # via mkdocs-material
 mkdocstrings==0.22.0
     # via
-    #   -r requirements/docs.in
+    #   -r docs.in
     #   mkdocstrings-python
 mkdocstrings-python==1.2.0
-    # via -r requirements/docs.in
+    # via -r docs.in
 packaging==23.1
     # via mkdocs
 pygments==2.15.1
