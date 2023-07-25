@@ -676,12 +676,6 @@ def create_pet(json_data):
     return data
 ```
 
-Or just:
-
-```python
-@app.output(PetOut, status_code=201)
-```
-
 If you want to return a 204 response, you can use the `EmptySchema` from `apiflask.schemas`:
 
 ```python
