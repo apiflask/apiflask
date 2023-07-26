@@ -1,8 +1,8 @@
 ## Version 2.0.0
 
-APIFlask 2.0 project: https://github.com/apiflask/apiflask/projects/4
+Released: 2023/7/26<br>Codename: Gongqing
 
-Released: -<br>Codename: Gongqing
+Please see the [migration guide](/migration_guide/#migrate-to-apiflask-2x) for APIFlask 2.0.0 version.
 
 - Drop Python 3.7 support.
 - Drop Flask 1.x support ([issue #442][issue_442]).
@@ -13,9 +13,9 @@ Released: -<br>Codename: Gongqing
 - Support using `{}` to represent not only empty body (204) but also empty schema.
   Use `{}` or `EmptySchema` will not set the status code to 204 anymore.
 - Remove the previously deprecated code:
-  - The `tag` parameter in `@app.doc`.
-  - The `role` parameter in `@app.auth_required`.
-  - The `redoc_path` parameter in `apiflask.APIFlask` and the `/redoc` path.
+    - The `tag` parameter in `@app.doc`.
+    - The `role` parameter in `@app.auth_required`.
+    - The `redoc_path` parameter in `apiflask.APIFlask` and the `/redoc` path.
 - Support setting a complete response OpenAPI spec throught the `app.doc(responses)`
   parameter (i.e. `responses={400: {'description': '', 'content': ...}}`)
   ([issue #327][issue_327]).
