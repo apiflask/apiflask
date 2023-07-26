@@ -100,7 +100,7 @@ def get_pet(pet_id):
 
 
 @app.patch('/pets/<int:pet_id>')
-@app.input(PetIn(partial=True))
+@app.input(PetIn(partial=True))  # -> json_data
 @app.output(PetOut)
 def update_pet(pet_id, json_data):
     # the validated and parsed input data will
