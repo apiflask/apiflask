@@ -1,8 +1,13 @@
+## Version 2.0.1
+
+Released: -
+
+
 ## Version 2.0.0
 
 Released: 2023/7/26<br>Codename: Gongqing
 
-Please see the [migration guide](/migration_guide/#migrate-to-apiflask-2x) for APIFlask 2.0.0 version.
+Please see the [migration guide](/migration_guide/#migrate-to-apiflask-2x) for APIFlask 1.x -> 2.0.0.
 
 - Drop Python 3.7 support.
 - Drop Flask 1.x support ([issue #442][issue_442]).

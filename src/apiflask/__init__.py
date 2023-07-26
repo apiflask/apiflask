@@ -13,4 +13,4 @@ from .schemas import Schema as Schema
 from .security import HTTPBasicAuth as HTTPBasicAuth
 from .security import HTTPTokenAuth as HTTPTokenAuth
 
-__version__ = '2.0.0'
+__version__ = '2.0.1-dev'
