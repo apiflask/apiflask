@@ -152,12 +152,12 @@ def get_path_summary(func: t.Callable, fallback: t.Optional[str] = None) -> str:
 def get_path_description(func: t.Callable) -> str:
     """Get path description from the docstring of the view function."""
     docs: list = (func.__doc__ or '').split('\n')
-    
+
     if len(docs) > 1:
         # indent given by the last line
         indent_size = len(docs[-1])
         # use the remain lines of docstring as description
-        return '\n'.join(map(lambda x:x[indent_size:], docs[1:])).strip()
+        return '\n'.join(map(lambda x: x[indent_size:], docs[1:])).strip()
     return ''
 
 
