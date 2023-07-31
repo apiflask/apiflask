@@ -157,7 +157,7 @@ def get_path_description(func: t.Callable) -> str:
         # indent given by the last line
         indent_size = len(docs[-1])
         # use the remain lines of docstring as description
-        return '\n'.join(map(lambda x:x[indent_size:], docs[1:]))
+        return '\n'.join(map(lambda x:x[indent_size:], docs[1:])).strip()
     return ''
 
 
