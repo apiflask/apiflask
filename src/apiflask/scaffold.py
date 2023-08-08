@@ -515,7 +515,9 @@ class APIScaffold:
         summary: t.Optional[str] = None,
         description: t.Optional[str] = None,
         tags: t.Optional[t.List[str]] = None,
-        responses: t.Optional[t.Union[t.List[int], t.Dict[int, str]]] = None,
+        responses: t.Optional[
+            t.Union[t.List[int], t.Dict[int, str], t.Dict[int, t.Dict[str, t.Union[str, t.Dict]]]]
+        ] = None,
         deprecated: t.Optional[bool] = None,
         hide: t.Optional[bool] = None,
         operation_id: t.Optional[str] = None,
@@ -553,10 +555,11 @@ class APIScaffold:
                 line of the docstring will be used.
             tags: A list of tag names of this endpoint, map the tags you passed in the `app.tags`
                 attribute. If `app.tags` is not set, the blueprint name will be used as tag name.
-            responses: The other responses for this view function, accepts a dict in a format
-                of `{404: 'Not Found'}` or a list of status code (`[404, 418]`). If pass a dict,
-                and a response with the same status code is already exist, the existing
-                description will be overwritten.
+            responses: The other responses for this view function, accepts a list of status codes
+                (`[404, 418]`) or a dict in a format of either `{404: 'Not Found'}` or
+                `{404: {'description': 'Not Found', 'content': {'application/json':
+                {'schema': FooSchema}}}}`. If a dict is passed and a response with the same status
+                code is already present, the existing data will be overwritten.
             deprecated: Flag this endpoint as deprecated in API docs.
             hide: Hide this endpoint in API docs.
             operation_id: The `operationId` of this endpoint. Set config `AUTO_OPERATION_ID` to
@@ -570,6 +573,7 @@ class APIScaffold:
         *Version changed: 2.0.0*
 
         - Remove the deprecated `tag` parameter.
+        - Expand `responses` to support additional structure and parameters.
 
         *Version changed: 1.0*
 
