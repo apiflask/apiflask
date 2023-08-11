@@ -19,6 +19,7 @@ from .types import HTTPAuthType
 from .types import OpenAPISchemaType
 from .types import RequestType
 from .types import ResponseReturnValueType
+from .types import ResponsesType
 from .types import SchemaType
 from .views import MethodView
 
@@ -515,9 +516,7 @@ class APIScaffold:
         summary: t.Optional[str] = None,
         description: t.Optional[str] = None,
         tags: t.Optional[t.List[str]] = None,
-        responses: t.Optional[
-            t.Union[t.List[int], t.Dict[int, str], t.Dict[int, t.Dict[str, t.Union[str, t.Dict]]]]
-        ] = None,
+        responses: t.Optional[ResponsesType] = None,
         deprecated: t.Optional[bool] = None,
         hide: t.Optional[bool] = None,
         operation_id: t.Optional[str] = None,
