@@ -30,7 +30,7 @@ from .exceptions import _bad_schema_message
 from .helpers import get_reason_phrase
 from .route import route_patch
 from .schemas import Schema
-from .types import ResponseReturnValueType
+from .types import ResponseReturnValueType, ResponsesType
 from .types import ViewFuncType
 from .types import ErrorCallbackType
 from .types import SpecCallbackType
@@ -1061,11 +1061,7 @@ class APIFlask(APIScaffold, Flask):
                     )
 
                 if view_func._spec.get('responses'):
-                    responses: t.Union[
-                        t.List[int],
-                        t.Dict[int, str],
-                        t.Dict[int, t.Dict[str, t.Union[str, t.Dict]]],
-                    ] = view_func._spec.get('responses')
+                    responses: ResponsesType = view_func._spec.get('responses')
                     # turn status_code list to dict {status_code: reason_phrase}
                     if isinstance(responses, list):
                         responses: t.Dict[int, str] = {}  # type: ignore

@@ -59,6 +59,10 @@ TagsType = t.Union[t.List[str], t.List[t.Dict[str, t.Any]]]
 ViewClassType = t.Type['View']
 ViewFuncOrClassType = t.Union[t.Callable, ViewClassType]
 
+ResponseObjectType = t.Dict[str, t.Union[str, t.Dict[str, t.Dict[str, t.Any]]]]
+ResponsesObjectType = t.Dict[t.Union[int, str], ResponseObjectType]
+ResponsesType = t.Union[t.List[int], t.Dict[int, str], ResponsesObjectType]
+
 RouteCallableType = t.Union[
     t.Callable[..., ResponseReturnValueType],
     t.Callable[..., t.Awaitable[ResponseReturnValueType]],
