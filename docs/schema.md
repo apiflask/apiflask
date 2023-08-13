@@ -155,9 +155,10 @@ API documentation: <https://webargs.readthedocs.io/en/latest/api.html#module-web
 
 ## APIFlask fields
 
-API documentation: <https://apiflask.com/api/fields/#apiflask.fields.File>
+API documentation: <https://apiflask.com/api/fields>
 
-- `File`
+- `File`: represents a file input.
+- `Config`: dump a config value from Flask's `config` object.
 
 !!! tip
 

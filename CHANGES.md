@@ -2,6 +2,10 @@
 
 Released: -
 
+- Add `Config` field to dump Flask `app.config` variables ([issue #468][issue_468]).
+
+[issue_468]: https://github.com/apiflask/apiflask/issues/468
+
 
 ## Version 2.0.0
 

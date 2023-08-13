@@ -120,3 +120,44 @@ class File(Field):
         if not isinstance(value, FileStorage):
             raise self.make_error('invalid')
         return value
+
+
+class Config(Field):
+    """A field for Flask configuration values.
+
+    Examples:
+
+    ```python
+    from apiflask import APIFlask, Schema
+    from apiflask.fields import String, Config
+
+    app = APIFlask(__name__)
+    app.config['API_TITLE'] = 'Pet API'
+
+    class FooSchema(Schema):
+        user = String()
+        title = Config('API_TITLE')
+
+    @app.get('/foo')
+    @app.output(FooSchema)
+    def foo():
+        return {'user': 'test'}
+    ```
+
+    This field should only be used in an output schema. The `ValueError` will
+    be raised if the config key is not found in the app config.
+
+    *Version Added: 2.0.1*
+    """
+
+    _CHECK_ATTRIBUTE = False
+
+    def __init__(self, key, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.key = key
+
+    def _serialize(self, value, attr, obj, **kwargs) -> t.Any:
+        from flask import current_app
+        if self.key not in current_app.config:
+            raise ValueError(f'The key {self.key} is not found in the app config.')
+        return current_app.config[self.key]
