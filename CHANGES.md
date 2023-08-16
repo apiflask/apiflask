@@ -1,9 +1,11 @@
 ## Version 2.0.1
 
-Released: -
+Released: 2023/8/15
 
 - Add `Config` field to dump Flask `app.config` variables ([issue #468][issue_468]).
+- Fix the typing of newly updated `doc(responses)` parameter ([issue #466][issue_466]).
 
+[issue_466]: https://github.com/apiflask/apiflask/issues/466
 [issue_468]: https://github.com/apiflask/apiflask/issues/468
 
 
