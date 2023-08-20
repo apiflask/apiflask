@@ -229,79 +229,79 @@ note below for the details.
     [_debug_mode]: https://flask.palletsprojects.com/quickstart/#debug-mode
 
 
-## Manage environment variables with python-dotenv
+??? "Manage environment variables with python-dotenv"
 
-Manually setting environment is a bit inconvenient since the variable only lives in
-the current terminal session. You have to set it every time you reopen the terminal
-or reboot the computer. That's why we need to use python-dotenv, and Flask also
-has special support for it.
+    Manually setting environment is a bit inconvenient since the variable only lives in
+    the current terminal session. You have to set it every time you reopen the terminal
+    or reboot the computer. That's why we need to use python-dotenv, and Flask also
+    has special support for it.
 
-Install `python-dotenv` with pip:
+    Install `python-dotenv` with pip:
 
-=== "Linux/macOS"
+    === "Linux/macOS"
+
+        ```bash
+        $ pip3 install python-dotenv
+        ```
+
+    === "Windows"
+
+        ```
+        > pip install python-dotenv
+        ```
+
+    Now we can store environment variables in .env files. Flask-related environment
+    variables should keep in a file called `.flaskenv`:
+
+    ```ini
+    # save as .flaskenv
+    FLASK_APP=hello
+    FLASK_DEBUG=1
+    ```
+
+    While the secrets values should save in the `.env` file:
+
+    ```ini
+    # save as .env
+    SECRET_KEY=some-random-string
+    DATABASE_URL=your-database-url
+    FOO_APP_KEY=some-app-key
+    ```
+
+    !!! warning
+
+        Since the `.env` contains sensitive information, do not commit it into the
+        Git history. Be sure to ignore it by adding the file name into `.gitignore`.
+
+    In the application, now we can read these variables via `os.getenv(key, default_value)`:
+
+    ```python
+    import os
+
+    from apiflask import APIFlask
+
+    app = APIFlask(__name__)
+    app.secret_key = os.getenv('SECRET_KEY')
+    ```
+
+    Any `flask` command will read environment variables set by `.flaskenv` and `.env`.
+    Now when you run `flask run`, Flask will read the value of `FLASK_APP` and `FLASK_DEBUG`
+    in `.flaskenv` file to find the app instance from given import path and enable the
+    debug mode:
 
     ```bash
-    $ pip3 install python-dotenv
+    $ flask run
+    * Environment: development
+    * Debug mode: on
+    * Restarting with stat
+    * Debugger is active!
+    * Debugger PIN: 101-750-099
+    * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
     ```
 
-=== "Windows"
+    See *[Environment Variables From dotenv][_dotenv]{target=_blank}* for more details.
 
-    ```
-    > pip install python-dotenv
-    ```
-
-Now we can store environment variables in .env files. Flask-related environment
-variables should keep in a file called `.flaskenv`:
-
-```ini
-# save as .flaskenv
-FLASK_APP=hello
-FLASK_DEBUG=1
-```
-
-While the secrets values should save in the `.env` file:
-
-```ini
-# save as .env
-SECRET_KEY=some-random-string
-DATABASE_URL=your-database-url
-FOO_APP_KEY=some-app-key
-```
-
-!!! warning
-
-    Since the `.env` contains sensitive information, do not commit it into the
-    Git history. Be sure to ignore it by adding the file name into `.gitignore`.
-
-In the application, now we can read these variables via `os.getenv(key, default_value)`:
-
-```python
-import os
-
-from apiflask import APIFlask
-
-app = APIFlask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
-```
-
-Any `flask` command will read environment variables set by `.flaskenv` and `.env`.
-Now when you run `flask run`, Flask will read the value of `FLASK_APP` and `FLASK_DEBUG`
-in `.flaskenv` file to find the app instance from given import path and enable the
-debug mode:
-
-```bash
-$ flask run
- * Environment: development
- * Debug mode: on
- * Restarting with stat
- * Debugger is active!
- * Debugger PIN: 101-750-099
- * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-```
-
-See *[Environment Variables From dotenv][_dotenv]{target=_blank}* for more details.
-
-[_dotenv]: https://flask.palletsprojects.com/en/1.1.x/cli/#environment-variables-from-dotenv
+    [_dotenv]: https://flask.palletsprojects.com/en/1.1.x/cli/#environment-variables-from-dotenv
 
 
 ## Interactive API documentation
@@ -321,46 +321,15 @@ Read the *[API Documentations](/api-docs)* chapter for the advanced topics on AP
 
 ## Create a route with route decorators
 
-To create a view function, you can do exactly what you did with Flask:
+To create a view function, instead of using `app.route` and set the `methods`:
 
 ```python
-from apiflask import APIFlask
-
-app = APIFlask(__name__)
-
-
-@app.route('/')
-def index():
-    return {'message': 'hello'}
-
-
-@app.route('/pets/<int:pet_id>')
-def get_pet(pet_id):
-    return {'message': 'OK'}
-
-
-@app.route('/pets')
-def get_pets():
-    return {'message': 'OK'}
-
-
-@app.route('/pets', methods=['POST'])
+@app.post('/pets', methods=['POST'])
 def create_pet():
     return {'message': 'created'}, 201
-
-
-@app.route('/pets/<int:pet_id>', methods=['PUT'])
-def update_pet(pet_id):
-    return {'name': 'updated'}
-
-
-@app.route('/pets/<int:pet_id>', methods=['DELETE'])
-def delete_pet(pet_id):
-    return '', 204
 ```
 
-However, with APIFlask, instead of setting `methods` argument for each route, you can
-also use the following shortcuts decorators:
+you can just use the following shortcuts decorators:
 
 - `app.get()`: register a route that only accepts *GET* request.
 - `app.post()`: register a route that only accepts *POST* request.
@@ -374,16 +343,6 @@ Here is the same example with the route shortcuts:
 from apiflask import APIFlask
 
 app = APIFlask(__name__)
-
-
-@app.get('/')
-def index():
-    return {'message': 'hello'}
-
-
-@app.get('/pets/<int:pet_id>')
-def get_pet(pet_id):
-    return {'message': 'OK'}
 
 
 @app.get('/pets')
@@ -453,49 +412,14 @@ class PetIn(Schema):
 
 !!! tip
 
-    See Schema and Fields chapter (WIP) for the details of how to write a schema and
+    See [Data Schema chapter](/schema) for the details of how to write a schema and
     the examples for all the fields and validators.
 
-A schema class should inherit the `apiflask.Schema` class:
-
-```python
-from apiflask import Schema
-from apiflask.fields import Integer, String
-from apiflask.validators import Length, OneOf
-
-
-class PetIn(Schema):
-    name = String(required=True, validate=Length(0, 10))
-    category = String(required=True, validate=OneOf(['dog', 'cat']))
-```
-
-fields are represented with field classes in `apiflask.fields`:
-
-```python
-from apiflask import Schema
-from apiflask.fields import Integer, String
-from apiflask.validators import Length, OneOf
-
-
-class PetIn(Schema):
-    name = String(required=True, validate=Length(0, 10))
-    category = String(required=True, validate=OneOf(['dog', 'cat']))
-```
-
-To validate a field with a specific rule, you can pass a validator or a list of
+* A schema class should inherit the `apiflask.Schema` class.
+* Fields are represented with field classes in `apiflask.fields`.
+*  To validate a field with a specific rule, you can pass a validator or a list of
 validators (import them from `apiflask.validators`) to the `validate` argument
-of the field class:
-
-```python
-from apiflask import Schema
-from apiflask.fields import Integer, String
-from apiflask.validators import Length, OneOf
-
-
-class PetIn(Schema):
-    name = String(required=True, validate=Length(0, 10))
-    category = String(required=True, validate=OneOf(['dog', 'cat']))
-```
+of the field class.
 
 !!! tip
 
@@ -672,8 +596,8 @@ status code with the `status_code` argument:
 @app.input(PetIn)
 @app.output(PetOut, status_code=201)
 def create_pet(json_data):
-    data['id'] = 2
-    return data
+    pet = Pet(**json_data)
+    return pet
 ```
 
 If you want to return a 204 response, you can use the `EmptySchema` from `apiflask.schemas`:
@@ -1153,7 +1077,7 @@ from apiflask import APIFlask, HTTPError
 
 app = APIFlask(__name__)
 
-@app.get('/<name>')
+@app.get('/users/<name>')
 def hello(name):
     if name == 'Foo':
         raise HTTPError(404, 'This man is missing.')
