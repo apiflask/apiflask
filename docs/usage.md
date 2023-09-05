@@ -381,7 +381,7 @@ def delete_pet(pet_id):
 
     ```python
     @app.get('/')
-    @app.post('/')apiflask
+    @app.post('/')
     def index():
         return {'message': 'hello'}
     ```
