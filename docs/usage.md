@@ -381,7 +381,7 @@ def delete_pet(pet_id):
 
     ```python
     @app.get('/')
-    @app.post('/')
+    @app.post('/')apiflask
     def index():
         return {'message': 'hello'}
     ```
@@ -417,7 +417,7 @@ class PetIn(Schema):
 
 * A schema class should inherit the `apiflask.Schema` class.
 * Fields are represented with field classes in `apiflask.fields`.
-*  To validate a field with a specific rule, you can pass a validator or a list of
+* To validate a field with a specific rule, you can pass a validator or a list of
 validators (import them from `apiflask.validators`) to the `validate` argument
 of the field class.
 
@@ -612,8 +612,8 @@ def delete_pet(pet_id):
     return ''
 ```
 
-`EmptySchema` represents an empty schema. For 204 response, it represents a empty
-reponse body.
+`EmptySchema` represents an empty schema. For 204 response, it represents an empty
+response body.
 
 From version 0.4.0, you can use an empty dict as a shortcut:
 
@@ -802,7 +802,7 @@ def hello():
 ```
 
 See *[Use the `doc` decorator](/openapi/#use-the-doc-decorator)* for more details
-about OpenAPI genenrating and the usage of the `doc` decorator.
+about OpenAPI generating and the usage of the `doc` decorator.
 
 !!! warning
 
@@ -975,7 +975,7 @@ With the example application above, when the user sends a *GET* request to
 and so on for the others.
 
 Normally you don't need to specify the methods, unless you want to register
-multiple rules for one single view classe. For example, register the `post` method
+multiple rules for one single view classes. For example, register the `post` method
 to a different URL rule than the others:
 
 ```python
@@ -1105,7 +1105,7 @@ The `abort()` and `HTTPError` accept the following arguments:
 In the end, let's unpack the whole `apiflask` package to check out what it shipped with:
 
 - `APIFlask`: A class used to create an application instance (A wrapper for Flask's `Flask` class).
-- `APIBlueprint`: A class used to create a blueprint instance (A wrapper for Flask's `Blueprint` class)..
+- `APIBlueprint`: A class used to create a blueprint instance (A wrapper for Flask's `Blueprint` class).
 - `@app.input()`: A decorator used to validate the input/request data from request body, query string, etc.
 - `@app.output()`: A decorator used to format the response.
 - `@app.auth_required()`: A decorator used to protect a view from unauthenticated users.
