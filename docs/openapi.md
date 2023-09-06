@@ -901,7 +901,7 @@ def hello():
 
     This feature was added in the [version 0.10.0](/changelog/#version-0100).
 
-You can set `operationId` for a view funtion (operation) with the `operation_id` parameter:
+You can set `operationId` for a view function (operation) with the `operation_id` parameter:
 
 ```python
 @app.get('/')
