@@ -206,9 +206,9 @@ class ProfileIn(Schema):
 
 @app.post('/profiles')
 @app.input(ProfileIn, location='form_and_files')
-def create_profile(files_data):
-    avatar_file = files_data['avatar']
-    name = files_data['name']
+def create_profile(form_and_files_data):
+    avatar_file = form_and_files_data['avatar']
+    name = form_and_files_data['name']
 
     avatar_filename = secure_filename(avatar_file.filename)
     avatar_file.save(os.path.join(the_path_to_uploads, avatar_filename))
@@ -226,7 +226,7 @@ the form data (equals to `form_and_files`).
     Validators for the file field will be available in the version 1.1
     ([#253](https://github.com/apiflask/apiflask/issues/253)). For now,
     you can manually validate the file in the view function or the schema:
-
+    
     ```python
     class Image(Schema):
         image = File(validate=lambda f: f.mimetype in ['image/jpeg', 'image/png'])
