@@ -226,7 +226,7 @@ the form data (equals to `form_and_files`).
     Validators for the file field will be available in the version 1.1
     ([#253](https://github.com/apiflask/apiflask/issues/253)). For now,
     you can manually validate the file in the view function or the schema:
-    
+
     ```python
     class Image(Schema):
         image = File(validate=lambda f: f.mimetype in ['image/jpeg', 'image/png'])
