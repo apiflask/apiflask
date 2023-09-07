@@ -38,4 +38,4 @@ def create_profile(form_and_files_data):
     avatar_filename = secure_filename(avatar_file.filename)
     avatar_file.save(os.path.join(upload_dir, avatar_filename))
 
-    return {'message': f'{name}\'s profile created.'}
+    return {'message': f"{name}'s profile created."}
