@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name='APIFlask',
     install_requires=[
-        'flask >= 2.2.0',
+        'flask >= 2',
         'flask-marshmallow >= 0.12.0',
         'webargs >= 8.3',
         'flask-httpauth >= 4',
