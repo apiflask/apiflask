@@ -206,9 +206,9 @@ class ProfileIn(Schema):
 
 @app.post('/profiles')
 @app.input(ProfileIn, location='form_and_files')
-def create_profile(files_data):
-    avatar_file = files_data['avatar']
-    name = files_data['name']
+def create_profile(form_and_files_data):
+    avatar_file = form_and_files_data['avatar']
+    name = form_and_files_data['name']
 
     avatar_filename = secure_filename(avatar_file.filename)
     avatar_file.save(os.path.join(the_path_to_uploads, avatar_filename))
