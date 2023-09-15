@@ -47,7 +47,7 @@ def test_say_hello(client):
 
 
 @pytest.mark.skipif(flask_sqlalchemy.__version__ < '3',
-                    reason="Need flask_sqlalchemy 3 for get_or_404")
+                    reason='Need flask_sqlalchemy 3 for get_or_404')
 @pytest.mark.parametrize('client', examples, indirect=True)
 def test_get_pet(client):
     rv = client.get('/pets/1')
@@ -116,7 +116,7 @@ def test_create_pet_with_bad_data(client, data):
 
 
 @pytest.mark.skipif(flask_sqlalchemy.__version__ < '3',
-                    reason="Need flask_sqlalchemy 3 for get_or_404")
+                    reason='Need flask_sqlalchemy 3 for get_or_404')
 @pytest.mark.parametrize('client', full_examples, indirect=True)
 def test_update_pet(client):
     new_data = {
@@ -154,7 +154,7 @@ def test_update_pet_with_bad_data(client, data):
 
 
 @pytest.mark.skipif(flask_sqlalchemy.__version__ < '3',
-                    reason="Need flask_sqlalchemy 3 for get_or_404")
+                    reason='Need flask_sqlalchemy 3 for get_or_404')
 @pytest.mark.parametrize('client', full_examples, indirect=True)
 def test_delete_pet(client):
     rv = client.delete('/pets/1')
@@ -170,7 +170,7 @@ def test_delete_pet(client):
 
 
 @pytest.mark.skipif(flask_sqlalchemy.__version__ < '3',
-                    reason="Need flask_sqlalchemy 3 for paginate")
+                    reason='Need flask_sqlalchemy 3 for paginate')
 @pytest.mark.parametrize('client', ['pagination'], indirect=True)
 def test_get_pets_pagination(client):
     rv = client.get('/pets')
@@ -201,7 +201,7 @@ def test_get_pets_pagination(client):
 
 
 @pytest.mark.skipif(flask_sqlalchemy.__version__ < '3',
-                    reason="Need flask_sqlalchemy 3 for paginate")
+                    reason='Need flask_sqlalchemy 3 for paginate')
 @pytest.mark.parametrize('client', ['pagination'], indirect=True)
 def test_get_pets_pagination_with_bad_data(client):
     rv = client.get('/pets?per_page=100')
