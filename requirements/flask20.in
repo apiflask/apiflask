@@ -2,3 +2,4 @@ authlib==1.2.1
 flask-sqlalchemy==2.5.1
 flask==2.0.3
 marshmallow-dataclass
+sqlalchemy==1.4.49
