@@ -2,6 +2,7 @@ import os
 import sys
 from importlib import reload
 
+import flask
 import pytest
 
 full_examples = [
@@ -191,6 +192,7 @@ def test_get_pets_pagination(client):
     assert rv.json['pets'][-1]['id'] == 20
 
 
+@pytest.mark.skipif(flask.__version__ < '2.2', reason='Flask 2.2.0 or greater required')
 @pytest.mark.parametrize('client', ['pagination'], indirect=True)
 def test_get_pets_pagination_with_bad_data(client):
     rv = client.get('/pets?per_page=100')
