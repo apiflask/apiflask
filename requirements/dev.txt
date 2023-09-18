@@ -9,7 +9,7 @@
 -r examples.txt
 -r tests.txt
 -r typing.txt
-build==0.10.0
+build==1.0.3
     # via pip-tools
 cachetools==5.3.1
     # via tox
@@ -19,11 +19,11 @@ chardet==5.2.0
     # via tox
 distlib==0.3.7
     # via virtualenv
-filelock==3.12.3
+filelock==3.12.4
     # via
     #   tox
     #   virtualenv
-identify==2.5.27
+identify==2.5.29
     # via pre-commit
 nodeenv==1.8.0
     # via pre-commit
@@ -31,7 +31,7 @@ pip-compile-multi==2.6.3
     # via -r requirements/dev.in
 pip-tools==7.3.0
     # via pip-compile-multi
-pre-commit==3.3.3
+pre-commit==3.4.0
     # via -r requirements/dev.in
 pyproject-api==1.6.1
     # via tox
@@ -39,9 +39,9 @@ pyproject-hooks==1.0.0
     # via build
 toposort==1.10
     # via pip-compile-multi
-tox==4.11.0
+tox==4.11.3
     # via -r requirements/dev.in
-virtualenv==20.24.4
+virtualenv==20.24.5
     # via
     #   pre-commit
     #   tox
