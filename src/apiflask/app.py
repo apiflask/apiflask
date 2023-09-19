@@ -14,6 +14,7 @@ from flask import jsonify
 from flask import render_template_string
 from flask import request
 from flask.config import ConfigAttribute
+from flask.wrappers import Response
 
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
@@ -389,6 +390,18 @@ class APIFlask(APIScaffold, Flask):
                 headers=headers
             )
             return self.error_callback(error)
+
+    # TODO: remove this function when we drop the Flask < 2.2 support
+    # List return values are supported in Flask 2.2
+    def make_response(self, rv) -> Response:
+        """Patch the make_response form Flask to allow returning list as JSON.
+        *Version added: 1.1.0*
+        """
+        if isinstance(rv, list):
+            rv = jsonify(rv)
+        elif isinstance(rv, tuple) and isinstance(rv[0], list):
+            rv = (jsonify(rv[0]), *rv[1:])
+        return super().make_response(rv)
 
     @staticmethod
     def _error_handler(

@@ -29,6 +29,7 @@ jobs:
           - {name: '3.9', python: '3.9', os: ubuntu-latest, tox: py39}
           - {name: '3.8', python: '3.8', os: ubuntu-latest, tox: py38}
           - {name: 'PyPy', python: 'pypy-3.10', os: ubuntu-latest, tox: pypy310}
+          - {name: 'Minimum Versions', python: '3.8', os: ubuntu-latest, tox: 'min-versions'}
           - {name: Style, python: '3.10', os: ubuntu-latest, tox: style}
           - {name: Docs, python: '3.10', os: ubuntu-latest, tox: docs}
           - {name: Typing, python: '3.10', os: ubuntu-latest, tox: typing}
