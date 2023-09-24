@@ -20,14 +20,9 @@ coverage[toml]==7.3.1
     # via pytest-cov
 idna==3.4
     # via requests
-importlib-resources==5.13.0
-    # via
-    #   jsonschema
-    #   jsonschema-specifications
-    #   openapi-spec-validator
 iniconfig==2.0.0
     # via pytest
-jsonschema==4.19.0
+jsonschema==4.19.1
     # via
     #   openapi-schema-validator
     #   openapi-spec-validator
@@ -39,7 +34,7 @@ jsonschema-specifications==2023.7.1
     #   openapi-schema-validator
 lazy-object-proxy==1.9.0
     # via openapi-spec-validator
-openapi-schema-validator==0.6.0
+openapi-schema-validator==0.6.1
     # via openapi-spec-validator
 openapi-spec-validator==0.6.0
     # via -r requirements/tests.in
@@ -47,8 +42,6 @@ packaging==23.1
     # via pytest
 pathable==0.4.3
     # via jsonschema-spec
-pkgutil-resolve-name==1.3.10
-    # via jsonschema
 pluggy==1.3.0
     # via pytest
 py==1.11.0
@@ -82,7 +75,5 @@ tomli==2.0.1
     # via coverage
 typing-extensions==4.8.0
     # via asgiref
-urllib3==2.0.4
+urllib3==2.0.5
     # via requests
-zipp==3.16.2
-    # via importlib-resources

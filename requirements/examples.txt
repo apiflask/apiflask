@@ -13,7 +13,7 @@ cffi==1.15.1
     # via cryptography
 click==8.1.7
     # via flask
-cryptography==41.0.3
+cryptography==41.0.4
     # via authlib
 flask==2.3.3
     # via flask-sqlalchemy
@@ -21,8 +21,6 @@ flask-sqlalchemy==3.1.1
     # via -r requirements/examples.in
 greenlet==2.0.2
     # via sqlalchemy
-importlib-metadata==6.8.0
-    # via flask
 itsdangerous==2.1.2
     # via flask
 jinja2==3.1.2
@@ -41,7 +39,7 @@ packaging==23.1
     # via marshmallow
 pycparser==2.21
     # via cffi
-sqlalchemy==2.0.20
+sqlalchemy==2.0.21
     # via flask-sqlalchemy
 typing-extensions==4.8.0
     # via
@@ -52,5 +50,3 @@ typing-inspect==0.9.0
     # via marshmallow-dataclass
 werkzeug==2.3.7
     # via flask
-zipp==3.16.2
-    # via importlib-metadata

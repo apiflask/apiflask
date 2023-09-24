@@ -2,6 +2,15 @@
 
 Released: -
 
+- Loose Flask version requirement to >= 2.0.0 and add test
+  for minimum dependency versions ([issue #478][issue_478]).
+- Add file uploading example application ([pr #476][pr_476]).
+- Fix token authentication example application ([pr #472][pr_472]).
+
+[issue_478]: https://github.com/apiflask/apiflask/issues/478
+[pr_476]: https://github.com/apiflask/apiflask/pull/476
+[pr_472]: https://github.com/apiflask/apiflask/pull/472
+
 
 ## Version 2.0.1
 
