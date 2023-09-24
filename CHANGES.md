@@ -1,6 +1,6 @@
 ## Version 2.0.2
 
-Released: -
+Released: 2023/9/24
 
 - Loose Flask version requirement to >= 2.0.0 and add test
   for minimum dependency versions ([issue #478][issue_478]).
