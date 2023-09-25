@@ -1,8 +1,13 @@
+import io
+
 import pytest
+from werkzeug.datastructures import FileStorage
 
 from apiflask import get_reason_phrase
 from apiflask import pagination_builder
 from apiflask import PaginationSchema
+from apiflask.helpers import get_filestorage_size
+from apiflask.helpers import parse_size
 
 
 @pytest.mark.parametrize('code', [204, 400, 404, 456, 4123])
@@ -57,3 +62,36 @@ def test_pagination_builder(app, client):
     assert 'next_num' not in rv.json
     assert 'has_prev' not in rv.json
     assert 'prev_num' not in rv.json
+
+
+def test_get_filestorage_size():
+    rv = get_filestorage_size(FileStorage(io.BytesIO(b''.ljust(1024))))
+    assert rv == 1024
+
+
+@pytest.mark.parametrize(
+    'size',
+    ['1 KB', '1 KiB', '1 MB', '1 MiB', '1 GB', '1 GiB']
+)
+def test_parse_size(size):
+    rv = parse_size(size)
+    if size == '1 KB':
+        assert rv == 1000
+    elif size == '1 KiB':
+        assert rv == 1024
+    elif size == '1 MB':
+        assert rv == 1000000
+    elif size == '1 MiB':
+        assert rv == 1048576
+    elif size == '1 GB':
+        assert rv == 1000000000
+    elif size == '1 GiB':
+        assert rv == 1073741824
+
+
+def test_parse_size_wrong_value():
+    with pytest.raises(ValueError, match='Invalid size value: '):
+        parse_size('wrong_format')
+
+    with pytest.raises(ValueError, match='Invalid float value while parsing size: '):
+        parse_size('1.2.3 MiB')
