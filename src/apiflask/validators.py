@@ -1,3 +1,6 @@
+import os
+import typing as t
+
 from marshmallow.exceptions import ValidationError
 from marshmallow.validate import ContainsNoneOf as ContainsNoneOf
 from marshmallow.validate import ContainsOnly as ContainsOnly
@@ -83,7 +86,7 @@ class FileSize(Validator):
     def __call__(self, value: FileStorage) -> FileStorage:
         if not isinstance(value, FileStorage):
             raise TypeError(
-                f"a FileStorage object is required, not '{type(value).__name__!r}'"
+                f'a FileStorage object is required, not {type(value).__name__!r}'
             )
 
         file_size = get_filestorage_size(value)
@@ -98,5 +101,43 @@ class FileSize(Validator):
         ):
             message = self.message_max if self.min is None else self.message_all
             raise ValidationError(self._format_error(value, message))
+
+        return value
+
+
+class FileType(Validator):
+    """Validator which succeeds if the uploaded file is allowed by a given list
+        of extensions.
+
+    :param accept: A sequence of allowed extensions.
+    :param error: Error message to raise in case of a validation error.
+        Can be interpolated with `{input}` and `{extensions}`.
+    """
+
+    default_message = 'Not an allowed file type. Allowed file types: [{extensions}]'
+
+    def __init__(
+        self,
+        accept: t.Iterable[str],
+        error: str | None = None,
+    ) -> None:
+        self.allowed_types = {ext.lower() for ext in accept}
+        self.error = error or self.default_message
+
+    def _format_error(self, value: FileStorage) -> str:
+        return (self.error or self.default_message).format(
+            input=value,
+            extensions=''.join(self.allowed_types)
+        )
+
+    def __call__(self, value: FileStorage) -> FileStorage:
+        if not isinstance(value, FileStorage):
+            raise TypeError(
+                f'a FileStorage object is required, not {type(value).__name__!r}'
+            )
+
+        _, extension = os.path.splitext(value.filename) if value.filename else (None, None)
+        if extension and extension.lower() not in self.allowed_types:
+            raise ValidationError(self._format_error(value))
 
         return value

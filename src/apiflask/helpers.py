@@ -151,7 +151,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 """
-def parse_size(size: str) -> float: # noqa E302
+def parse_size(size: str) -> float:  # noqa: E302
     """A helper function to parse a str representing the size into a number in bytes.
 
     Arguments:

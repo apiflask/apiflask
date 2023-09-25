@@ -1,8 +1,8 @@
 import io
-import pytest
 
-from werkzeug.datastructures import FileStorage
+import pytest
 from marshmallow.exceptions import ValidationError
+from werkzeug.datastructures import FileStorage
 
 from apiflask import validators
 
@@ -50,16 +50,31 @@ def test_filesize_repr():
                 min=None, max=None, error=None, min_inclusive=True, max_inclusive=True
             )
         )
-        == "<FileSize(min=None, max=None, min_inclusive=True, max_inclusive=True, error=None)>"
+        == '<FileSize(min=None, max=None, min_inclusive=True, max_inclusive=True, error=None)>'
     )
 
     assert repr(
         validators.FileSize(
-            min="1 KiB", max="3 KiB", error="foo", min_inclusive=False, max_inclusive=False
+            min='1 KiB', max='3 KiB', error='foo', min_inclusive=False, max_inclusive=False
         )
-    ) == "<FileSize(min='1 KiB', max='3 KiB', min_inclusive=False, max_inclusive=False, error='foo')>" # noqa E501
+    ) == "<FileSize(min='1 KiB', max='3 KiB', min_inclusive=False, max_inclusive=False, error='foo')>"  # noqa: E501
 
 
 def test_filesize_wrongtype():
     with pytest.raises(TypeError, match='a FileStorage object is required, not '):
         validators.FileSize()(1)
+
+
+def test_filetype():
+    png_fs = FileStorage(io.BytesIO(b''.ljust(1024)), 'test.png')
+    assert validators.FileType(['.png'])(png_fs) == png_fs
+
+    with pytest.raises(TypeError, match='a FileStorage object is required, not '):
+        validators.FileType(['.png'])(1)
+
+    with pytest.raises(
+        ValidationError,
+        match=r'Not an allowed file type. Allowed file types: \[.*?\]'  # noqa: W605
+    ):
+        jpg_fs = FileStorage(io.BytesIO(b''.ljust(1024)), 'test.jpg')
+        validators.FileType(['.png'])(jpg_fs)
