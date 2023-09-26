@@ -116,6 +116,8 @@ def get_filestorage_size(file: FileStorage) -> int:
 
     Arguments:
         file: A FileStorage object.
+
+    *Version added: 2.0.3*
     """
     size = len(file.read())
     file.stream.seek(0)
@@ -156,6 +158,8 @@ def parse_size(size: str) -> float:  # noqa: E302
 
     Arguments:
         size: A str representing the size.
+
+    *Version added: 2.0.3*
     """
     size = size.strip()
     reg = re.compile(r'([e\+\-\.\d]+)\s*([kmgtpezy])?(i)?(b)', flags=re.I)

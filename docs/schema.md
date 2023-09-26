@@ -168,7 +168,8 @@ API documentation: <https://apiflask.com/api/fields>
 
 ## Data validators
 
-APIFlask's `aipflask.validators` contains all the validator class provided by marshmallow:
+APIFlask's `aipflask.validators` contains all the validator class provided by marshmallow
+and two extra validators `FileType` and `FileSize`:
 
 - `ContainsNoneOf`
 - `ContainsOnly`
@@ -182,8 +183,11 @@ APIFlask's `aipflask.validators` contains all the validator class provided by ma
 - `Regexp`
 - `URL`
 - `Validator`
+- `FileType`
+- `FileSize`
 
-See the [API documentation](https://marshmallow.readthedocs.io/en/stable/marshmallow.validate.html)
+See the [marshmallow API documentation](https://marshmallow.readthedocs.io/en/stable/marshmallow.validate.html)
+and the [apiflask API documentation](https://apiflask.com/api/validators)
 for the detailed usage.
 
 When specifying validators for a field, you can pass a single validator to the `validate` parameter:

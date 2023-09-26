@@ -1,6 +1,7 @@
 ## Version 2.1.0
 
 Released: -
+- Add FileType and FileSize validators.
 
 - Allow adding multiple media types for a response ([issue #494][issue_494])
 - Support adding headers to the response schema ([issue #507][issue_507])

@@ -29,14 +29,28 @@ class FileSize(Validator):
     the ``min`` bound is included in the range. If ``max_inclusive`` is not specified,
     or is specified as `True`, then the ``max`` bound is included in the range.
 
-    :param min: The minimum size (lower bound). If not provided, minimum
-        size will not be checked.
-    :param max: The maximum size (upper bound). If not provided, maximum
-        size will not be checked.
-    :param min_inclusive: Whether the `min` bound is included in the range.
-    :param max_inclusive: Whether the `max` bound is included in the range.
-    :param error: Error message to raise in case of a validation error.
-        Can be interpolated with `{input}`, `{min}` and `{max}`.
+    Examples:
+    ```python
+    from apiflask import Schema
+    from apiflask.fields import File
+    from apiflask.validators import FileSize
+
+
+    class Image(Schema):
+        image = File(required=True, validate=FileSize(min='1 MiB', max='2 MiB'))
+    ```
+
+    Arguments:
+        min: The minimum size (lower bound). If not provided, minimum
+            size will not be checked.
+        max: The maximum size (upper bound). If not provided, maximum
+            size will not be checked.
+        min_inclusive: Whether the `min` bound is included in the range.
+        max_inclusive: Whether the `max` bound is included in the range.
+        error: Error message to raise in case of a validation error.
+            Can be interpolated with `{input}`, `{min}` and `{max}`.
+
+    *Version added: 2.0.3*
     """
 
     message_min = 'Must be {min_op} {{min}}.'
@@ -109,9 +123,23 @@ class FileType(Validator):
     """Validator which succeeds if the uploaded file is allowed by a given list
         of extensions.
 
-    :param accept: A sequence of allowed extensions.
-    :param error: Error message to raise in case of a validation error.
-        Can be interpolated with `{input}` and `{extensions}`.
+    Examples:
+    ```python
+    from apiflask import Schema
+    from apiflask.fields import File
+    from apiflask.validators import FileType
+
+
+    class Image(Schema):
+        image = File(required=True, validate=FileType(['.png']))
+    ```
+
+    Arguments:
+        accept: A sequence of allowed extensions.
+        error: Error message to raise in case of a validation error.
+            Can be interpolated with `{input}` and `{extensions}`.
+
+    *Version added: 2.0.3*
     """
 
     default_message = 'Not an allowed file type. Allowed file types: [{extensions}]'
