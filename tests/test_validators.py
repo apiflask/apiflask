@@ -78,3 +78,10 @@ def test_filetype():
     ):
         jpg_fs = FileStorage(io.BytesIO(b''.ljust(1024)), 'test.jpg')
         validators.FileType(['.png'])(jpg_fs)
+
+    with pytest.raises(
+        ValidationError,
+        match=r'Not an allowed file type. Allowed file types: \[.*?\]'  # noqa: W605
+    ):
+        no_ext_fs = FileStorage(io.BytesIO(b''.ljust(1024)), 'test')
+        validators.FileType(['.png'])(no_ext_fs)

@@ -165,7 +165,7 @@ class FileType(Validator):
             )
 
         _, extension = os.path.splitext(value.filename) if value.filename else (None, None)
-        if extension and extension.lower() not in self.allowed_types:
+        if extension is None or extension.lower() not in self.allowed_types:
             raise ValidationError(self._format_error(value))
 
         return value
