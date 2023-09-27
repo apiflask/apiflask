@@ -9,11 +9,11 @@ from apiflask import validators
 
 def test_filesize_min():
     fs = FileStorage(io.BytesIO(b''.ljust(1024)))
-    assert validators.FileSize(min='1 KiB', max='2 KiB')(fs) == fs
-    assert validators.FileSize(min='0 KiB', max='1 KiB')(fs) == fs
-    assert validators.FileSize()(fs) == fs
-    assert validators.FileSize(min_inclusive=False, max_inclusive=False)(fs) == fs
-    assert validators.FileSize(min='1 KiB', max='1 KiB')(fs) == fs
+    assert validators.FileSize(min='1 KiB', max='2 KiB')(fs) is fs
+    assert validators.FileSize(min='0 KiB', max='1 KiB')(fs) is fs
+    assert validators.FileSize()(fs) is fs
+    assert validators.FileSize(min_inclusive=False, max_inclusive=False)(fs) is fs
+    assert validators.FileSize(min='1 KiB', max='1 KiB')(fs) is fs
 
     with pytest.raises(ValidationError, match='Must be greater than or equal to 2 KiB'):
         validators.FileSize(min='2 KiB', max='3 KiB')(fs)
@@ -27,11 +27,11 @@ def test_filesize_min():
 
 def test_filesize_max():
     fs = FileStorage(io.BytesIO(b''.ljust(2048)))
-    assert validators.FileSize(min='1 KiB', max='2 KiB')(fs) == fs
-    assert validators.FileSize(max='2 KiB')(fs) == fs
-    assert validators.FileSize()(fs) == fs
-    assert validators.FileSize(min_inclusive=False, max_inclusive=False)(fs) == fs
-    assert validators.FileSize(min='2 KiB', max='2 KiB')(fs) == fs
+    assert validators.FileSize(min='1 KiB', max='2 KiB')(fs) is fs
+    assert validators.FileSize(max='2 KiB')(fs) is fs
+    assert validators.FileSize()(fs) is fs
+    assert validators.FileSize(min_inclusive=False, max_inclusive=False)(fs) is fs
+    assert validators.FileSize(min='2 KiB', max='2 KiB')(fs) is fs
 
     with pytest.raises(ValidationError, match='less than or equal to 1 KiB'):
         validators.FileSize(min='0 KiB', max='1 KiB')(fs)
@@ -67,12 +67,12 @@ def test_filesize_wrongtype():
 
 def test_filetype():
     png_fs = FileStorage(io.BytesIO(b''.ljust(1024)), 'test.png')
-    assert validators.FileType(['.png'])(png_fs) == png_fs
-    assert validators.FileType(['.PNG'])(png_fs) == png_fs
+    assert validators.FileType(['.png'])(png_fs) is png_fs
+    assert validators.FileType(['.PNG'])(png_fs) is png_fs
 
     PNG_fs = FileStorage(io.BytesIO(b''.ljust(1024)), 'test.PNG')
-    assert validators.FileType(['.png'])(PNG_fs) == PNG_fs
-    assert validators.FileType(['.PNG'])(PNG_fs) == PNG_fs
+    assert validators.FileType(['.png'])(PNG_fs) is PNG_fs
+    assert validators.FileType(['.PNG'])(PNG_fs) is PNG_fs
 
     with pytest.raises(TypeError, match='a FileStorage object is required, not '):
         validators.FileType(['.png'])(1)
