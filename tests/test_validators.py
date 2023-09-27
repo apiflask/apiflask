@@ -68,6 +68,11 @@ def test_filesize_wrongtype():
 def test_filetype():
     png_fs = FileStorage(io.BytesIO(b''.ljust(1024)), 'test.png')
     assert validators.FileType(['.png'])(png_fs) == png_fs
+    assert validators.FileType(['.PNG'])(png_fs) == png_fs
+
+    PNG_fs = FileStorage(io.BytesIO(b''.ljust(1024)), 'test.PNG')
+    assert validators.FileType(['.png'])(PNG_fs) == PNG_fs
+    assert validators.FileType(['.PNG'])(PNG_fs) == PNG_fs
 
     with pytest.raises(TypeError, match='a FileStorage object is required, not '):
         validators.FileType(['.png'])(1)
