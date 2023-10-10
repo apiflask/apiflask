@@ -1086,7 +1086,11 @@ class APIFlask(APIScaffold, Flask):
                         status_code: str = str(status_code)  # type: ignore
                         # custom complete response spec
                         if isinstance(value, dict):
-                            operation['responses'][status_code] = value
+                            existing_response = operation['responses'].setdefault(status_code, {})
+                            existing_response_content = existing_response.setdefault('content', {})
+                            existing_response_content.update(value.get('content', {}))
+                            if (new_description := value.get('description')) is not None:
+                                existing_response['description'] = new_description
                             continue
                         else:
                             description = value
