@@ -4,7 +4,7 @@ flask-marshmallow==0.12.0
 webargs==8.3.0
 flask-httpauth==4.0.0
 apispec==6.0.0
-werkzeug==2.0.0
+werkzeug==3.0.1
 
 # for example applications
 flask-sqlalchemy==2.5.1
