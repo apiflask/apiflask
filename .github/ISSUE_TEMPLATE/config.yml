@@ -10,5 +10,5 @@ contact_links:
     url: https://github.com/apiflask/apiflask/discussions
     about: Discuss questions, ideas about your code or APIFlask itself on our GitHub Discussion.
   - name: 问题 & 讨论（中文）
-    url: https://discuss.helloflask.com/
-    about: 欢迎在 HelloFlask 论坛创建关于 APIFlask 的问题和讨论（提问前请阅读置顶主题了解如何正确提问）。
+    url: https://codekitchen.community
+    about: 欢迎在代码厨房社区创建关于 APIFlask 的问题和讨论。
