@@ -58,8 +58,8 @@ class File(Field):
 
     @app.post('/images')
     @app.input(Image, location='files')
-    def upload_image(files):
-        f = files['image']
+    def upload_image(files_data):
+        f = files_data['image']
         # use `secure_filename` to clean the filename, notice it will only keep ascii characters
         filename = secure_filename(f.filename)
         f.save(os.path.join(the_path_to_uploads, filename))
