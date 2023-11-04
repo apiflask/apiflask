@@ -1,4 +1,5 @@
-import flask
+import importlib
+
 import pytest
 from openapi_spec_validator import validate_spec
 
@@ -87,7 +88,7 @@ def test_auto_tag_from_blueprint(app, client):
     assert {'name': 'Foo'} in rv.json['tags']
 
 
-@pytest.mark.skipif(flask.__version__ < '2.0.1',
+@pytest.mark.skipif(importlib.metadata.version('flask') < '2.0.1',
                     reason='Depends on new behaviour introduced in Flask 2.0.1')
 def test_auto_tag_from_nesting_blueprints(app, client):
 
@@ -135,7 +136,7 @@ def test_path_tags_with_blueprint_tag(app, client, tag):
     assert rv.json['paths']['/']['get']['tags'] == ['test']
 
 
-@pytest.mark.skipif(flask.__version__ < '2.0.1',
+@pytest.mark.skipif(importlib.metadata.version('flask') < '2.0.1',
                     reason='Depends on new behaviour introduced in Flask 2.0.1')
 def test_path_tags_with_nesting_blueprints(app, client):
 
