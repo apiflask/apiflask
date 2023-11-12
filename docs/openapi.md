@@ -717,7 +717,7 @@ def new_pet():
 
 ## Request and response content type / media type
 
-For request, the content type is set automically based on the input location:
+For request, the content type is set automatically based on the input location:
 
 - `json`: `application/json`
 - `form`: `application/x-www-form-urlencoded`
@@ -881,6 +881,48 @@ You can also pass a schema class for the `schema`:
     }
 })
 ```
+
+
+### Multiple media types for a response
+
+You can add additional media types for a response and these will be added to
+the OpenAPI document. This allows you to describe situations where you may
+return a different representation of a resource, perhaps by performing
+[content negotiation][content_negotiation] based on some parameter of the
+request. This is done by supplying custom `responses` and including
+additional media types in the `content` section of each response, as
+in the following:
+
+```python
+@app.get("/pets/<int:pet_id>")
+@app.input(Accept, location="headers")
+@app.output(PetOut)
+@app.doc(responses={
+    200: {
+        'description': 'Return the resource in either JSON or HTML',
+        'content': {
+            'text/html': {}
+        }
+    }
+})
+def get_pet(pet_id, headers_data):
+    pet = pets[pet_id]
+    if "html" in headers_data.get('accept'):
+        result = render_template('pets/pet-detail.j2.html', pet=pet)
+    else:
+        result = pet
+    return result
+```
+
+The previous snippet shows how you could inspect the request's `Accept`
+header and then return either an HTML representation or a JSON representation
+of the same resource.
+
+Note that APIFlask thus allows you to complement the default `application/json`
+media type, which is automatically added by APIFlask for views that include the
+`@app.output` decorator with additional media types.
+
+[content_negotiation]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation
 
 
 ### Mark an operation as `deprecated`

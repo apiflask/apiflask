@@ -2,6 +2,10 @@
 
 Released: -
 
+- Allow adding multiple media types for a response ([issue #494][issue_494])
+
+[issue_494]: https://github.com/apiflask/apiflask/issues/494
+
 
 ## Version 2.0.2
 

@@ -291,6 +291,54 @@ def test_doc_responses_custom_spec(app, client):
     }
 
 
+def test_doc_responses_additional_content_type(app, client):
+    """Verify that it is possible to add additional media types for a response's status code."""
+    description = 'something'
+
+    @app.route('/foo')
+    @app.input(Foo)
+    @app.output(Foo)
+    @app.doc(
+        responses={
+            200: {
+                'content': {
+                    'text/html': {},
+                },
+            },
+        }
+    )
+    def foo():
+        pass
+
+    @app.route('/bar')
+    @app.input(Foo)
+    @app.output(Foo)
+    @app.doc(
+        responses={
+            200: {
+                'content': {
+                    'text/html': {},
+                },
+                'description': description,
+            },
+        }
+    )
+    def bar():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    assert '200' in rv.json['paths']['/foo']['get']['responses']
+    assert 'application/json' in rv.json['paths']['/foo']['get']['responses']['200']['content']
+    assert 'text/html' in rv.json['paths']['/foo']['get']['responses']['200']['content']
+    assert rv.json['paths']['/foo']['get']['responses']['200']['description'] == 'Successful response'  # noqa: E501
+    assert '200' in rv.json['paths']['/bar']['get']['responses']
+    assert 'application/json' in rv.json['paths']['/bar']['get']['responses']['200']['content']
+    assert 'text/html' in rv.json['paths']['/bar']['get']['responses']['200']['content']
+    assert rv.json['paths']['/bar']['get']['responses']['200']['description'] == description
+
+
 def test_doc_responses_with_methodview(app, client):
     @app.route('/foo')
     class FooAPI(MethodView):
