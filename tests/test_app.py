@@ -10,6 +10,7 @@ from .schemas import Pagination
 from apiflask import APIBlueprint
 from apiflask import APIFlask
 from apiflask import Schema
+from apiflask.exceptions import abort
 from apiflask.fields import Integer
 from apiflask.fields import String
 
@@ -313,3 +314,29 @@ def test_apispec_plugins(app):
     spec = app._get_spec('json')
 
     assert spec['paths']['/plugin_test'].get('post') == 'some_injected_test_data'
+
+
+def test_apispec_decorators(app, client):
+    def auth_decorator(f):
+        def wrapper(*args, **kwargs):
+            abort(401)
+            return f(*args, **kwargs)
+        return wrapper
+
+    app.config['APISPEC_DECORATORS'] = [auth_decorator]
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 401
+
+
+def test_docs_decorators(app, client):
+    def auth_decorator(f):
+        def wrapper(*args, **kwargs):
+            abort(401)
+            return f(*args, **kwargs)
+        return wrapper
+
+    app.config['DOCS_DECORATORS'] = [auth_decorator]
+
+    rv = client.get('/docs')
+    assert rv.status_code == 401
