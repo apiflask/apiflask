@@ -538,18 +538,8 @@ class APIFlask(APIScaffold, Flask):
         )
 
         if self.spec_path:
-            def spec_decorators(func):
-                @wraps(func)
-                def wrapper(*args, **kwargs):
-                    spec_func = func
-                    apispec_decorators = self.config.get('APISPEC_DECORATORS', [])
-                    for decorator in apispec_decorators:
-                        spec_func = decorator(spec_func)
-                    return spec_func(*args, **kwargs)
-                return wrapper
-
             @bp.route(self.spec_path)
-            @spec_decorators
+            @self._inject_decorators(config_name='APISPEC_DECORATORS')
             def spec():
                 if self.config['SPEC_FORMAT'] == 'json':
                     response = jsonify(self._get_spec('json'))
@@ -566,18 +556,8 @@ class APIFlask(APIScaffold, Flask):
                     f'got {self.docs_ui!r}.'
                 )
 
-            def docs_decorators(func):
-                @wraps(func)
-                def docs_decorators_wrapper(*args, **kwargs):
-                    docs_func = func
-                    docs_decorators = self.config.get('DOCS_DECORATORS', [])
-                    for decorator in docs_decorators:
-                        docs_func = decorator(docs_func)
-                    return docs_func(*args, **kwargs)
-                return docs_decorators_wrapper
-
             @bp.route(self.docs_path)
-            @docs_decorators
+            @self._inject_decorators(config_name='DOCS_DECORATORS')
             def docs():
                 return render_template_string(
                     ui_templates[self.docs_ui],
@@ -1216,3 +1196,16 @@ class APIFlask(APIScaffold, Flask):
             spec.path(path=path, operations=sorted_operations)
 
         return spec
+
+    # @classmethod
+    def _inject_decorators(self, config_name: str, *args):
+        def wrapper(func):
+            @wraps(func)
+            def inject_decorators(*arg, **kwargs):
+                spec_func = func
+                apispec_decorators = self.config.get(config_name, [])
+                for decorator in apispec_decorators:
+                    spec_func = decorator(spec_func)
+                return spec_func(*args, **kwargs)
+            return inject_decorators
+        return wrapper
