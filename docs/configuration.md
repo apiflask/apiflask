@@ -432,6 +432,19 @@ app.security_schemes = {
 ```
 
 
+### DOCS_DECORATORS
+
+The custom decorators of the OpenAPI document ui router(`/docs`).
+
+- Type: `List[Callable]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['DOCS_DECORATORS'] = [your_decorator]
+```
+
+
 ## OpenAPI spec
 
 Customize the generation of the OpenAPI spec.
@@ -575,6 +588,18 @@ app.config['SPEC_PROCESSOR_PASS_OBJECT'] = True
 !!! warning "Version >= 1.3.0"
 
     This configuration variable was added in the [version 1.3.0](/changelog/#version-130).
+
+### APISPEC_DECORATORS
+
+The custom decorators of the OpenAPI spec document router(`/openapi.json`).
+
+- Type: `List[Callable]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['APISPEC_DECORATORS'] = [your_decorator]
+```
 
 
 ## Automation behavior control
