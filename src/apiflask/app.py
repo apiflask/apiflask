@@ -523,6 +523,10 @@ class APIFlask(APIScaffold, Flask):
         The name of the blueprint is "openapi". This blueprint will hold the view
         functions for spec file and API docs.
 
+        *Version changed: 2.0.3*
+
+        - Inject the OpenAPI endpoints decorators.
+
         *Version changed: 1.1.0*
 
         - Deprecate the redoc view at /redoc path.
@@ -1199,6 +1203,11 @@ class APIFlask(APIScaffold, Flask):
 
     # @classmethod
     def _inject_decorators(self, config_name: str, *args):
+        """inject the decorators in runtime.
+
+        Args:
+            config_name (str): inject config name
+        """
         def wrapper(func):
             @wraps(func)
             def inject_decorators(*arg, **kwargs):
