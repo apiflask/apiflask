@@ -6,6 +6,11 @@ Released: -
 
 [issue_494]: https://github.com/apiflask/apiflask/issues/494
 
+## Version 2.0.3
+
+- Add support for adding decorators to the OpenAPI spec and documentation UI endpoints ([issue #483][issue_483]).
+
+[issue_483]: https://github.com/apiflask/apiflask/issues/483
 
 ## Version 2.0.2
 
