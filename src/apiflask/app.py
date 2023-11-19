@@ -3,6 +3,7 @@ import json
 import re
 import typing as t
 import warnings
+from functools import wraps
 
 from apispec import APISpec
 from apispec import BasePlugin
@@ -537,7 +538,18 @@ class APIFlask(APIScaffold, Flask):
         )
 
         if self.spec_path:
+            def spec_decorators(func):
+                @wraps(func)
+                def wrapper(*args, **kwargs):
+                    spec_func = func
+                    apispec_decorators = self.config.get('APISPEC_DECORATORS', [])
+                    for decorator in apispec_decorators:
+                        spec_func = decorator(spec_func)
+                    return spec_func(*args, **kwargs)
+                return wrapper
+
             @bp.route(self.spec_path)
+            @spec_decorators
             def spec():
                 if self.config['SPEC_FORMAT'] == 'json':
                     response = jsonify(self._get_spec('json'))
@@ -554,7 +566,18 @@ class APIFlask(APIScaffold, Flask):
                     f'got {self.docs_ui!r}.'
                 )
 
+            def docs_decorators(func):
+                @wraps(func)
+                def docs_decorators_wrapper(*args, **kwargs):
+                    docs_func = func
+                    docs_decorators = self.config.get('DOCS_DECORATORS', [])
+                    for decorator in docs_decorators:
+                        docs_func = decorator(docs_func)
+                    return docs_func(*args, **kwargs)
+                return docs_decorators_wrapper
+
             @bp.route(self.docs_path)
+            @docs_decorators
             def docs():
                 return render_template_string(
                     ui_templates[self.docs_ui],
