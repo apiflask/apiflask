@@ -1201,7 +1201,7 @@ class APIFlask(APIScaffold, Flask):
 
         return spec
 
-    def _inject_decorators(self, config_name: str, *args):
+    def _inject_decorators(self, config_name: str):
         """inject the decorators in runtime.
 
         Args:
@@ -1209,7 +1209,7 @@ class APIFlask(APIScaffold, Flask):
         """
         def wrapper(func):
             @wraps(func)
-            def inject_decorators(*arg, **kwargs):
+            def inject_decorators(*args, **kwargs):
                 spec_func = func
                 apispec_decorators = self.config.get(config_name, [])
                 for decorator in apispec_decorators:
