@@ -1201,7 +1201,6 @@ class APIFlask(APIScaffold, Flask):
 
         return spec
 
-    # @classmethod
     def _inject_decorators(self, config_name: str, *args):
         """inject the decorators in runtime.
 
