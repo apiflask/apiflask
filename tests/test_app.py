@@ -328,6 +328,9 @@ def test_apispec_decorators(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 401
 
+    rv = client.get('/docs')
+    assert rv.status_code == 200
+
 
 def test_docs_decorators(app, client):
     def auth_decorator(f):
@@ -337,6 +340,9 @@ def test_docs_decorators(app, client):
         return wrapper
 
     app.config['DOCS_DECORATORS'] = [auth_decorator]
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
 
     rv = client.get('/docs')
     assert rv.status_code == 401
