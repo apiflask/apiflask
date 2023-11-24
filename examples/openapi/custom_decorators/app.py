@@ -12,9 +12,11 @@ users = {
 }
 
 
-# if you wanna apply an authentication or other decorator
-# to the endpoints used to server the OpenAPI spec
-# as well as the documentation UI, you can used like this.
+# if you want to apply an authentication or other decorator
+# to the endpoints used to serve the OpenAPI spec
+# as well as the documentation UI, use the
+# `APISPEC_DECORATORS` and `DOCS_DECORATORS`
+# configuration options
 app.config['APISPEC_DECORATORS'] = [app.auth_required(auth)]
 app.config['DOCS_DECORATORS'] = [app.auth_required(auth)]
 app.config['SWAGGER_UI_OAUTH_REDIRECT_DECORATORS'] = [app.auth_required(auth)]
