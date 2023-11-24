@@ -444,6 +444,16 @@ The custom decorators of the OpenAPI document ui router(`/docs`).
 app.config['DOCS_DECORATORS'] = [your_decorator]
 ```
 
+### SWAGGER_UI_OAUTH_REDIRECT_DECORATORS
+The custom decorators of the swagger ui OAuth redirect router(`/docs/oauth2-redirect`).
+
+- Type: `List[Callable]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['SWAGGER_UI_OAUTH_REDIRECT_DECORATORS'] = [your_decorator]
+```
 
 ## OpenAPI spec
 

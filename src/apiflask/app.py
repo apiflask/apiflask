@@ -573,6 +573,7 @@ class APIFlask(APIScaffold, Flask):
             if self.docs_ui == 'swagger-ui':
                 if self.docs_oauth2_redirect_path:
                     @bp.route(self.docs_oauth2_redirect_path)
+                    @self._inject_decorators(config_name='SWAGGER_UI_OAUTH_REDIRECT_DECORATORS')
                     def swagger_ui_oauth_redirect() -> str:
                         return render_template_string(swagger_ui_oauth2_redirect_template)
 

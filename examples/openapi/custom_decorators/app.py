@@ -17,6 +17,7 @@ users = {
 # as well as the documentation UI, you can used like this.
 app.config['APISPEC_DECORATORS'] = [app.auth_required(auth)]
 app.config['DOCS_DECORATORS'] = [app.auth_required(auth)]
+app.config['SWAGGER_UI_OAUTH_REDIRECT_DECORATORS'] = [app.auth_required(auth)]
 
 
 @auth.verify_password

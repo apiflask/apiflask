@@ -346,3 +346,22 @@ def test_docs_decorators(app, client):
 
     rv = client.get('/docs')
     assert rv.status_code == 401
+
+
+def test_swagger_ui_oauth_redirect_decorators(app, client):
+    def auth_decorator(f):
+        def wrapper(*args, **kwargs):
+            abort(401)
+            return f(*args, **kwargs)
+        return wrapper
+
+    app.config['SWAGGER_UI_OAUTH_REDIRECT_DECORATORS'] = [auth_decorator]
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+
+    rv = client.get('/docs')
+    assert rv.status_code == 200
+
+    rv = client.get('/docs/oauth2-redirect')
+    assert rv.status_code == 401
