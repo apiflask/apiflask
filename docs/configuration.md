@@ -599,7 +599,7 @@ app.config['SPEC_PROCESSOR_PASS_OBJECT'] = True
 
     This configuration variable was added in the [version 1.3.0](/changelog/#version-130).
 
-### APISPEC_DECORATORS
+### SPEC_DECORATORS
 
 The custom decorators of the OpenAPI spec document router(`/openapi.json`).
 
@@ -608,7 +608,7 @@ The custom decorators of the OpenAPI spec document router(`/openapi.json`).
 - Examples:
 
 ```python
-app.config['APISPEC_DECORATORS'] = [your_decorator]
+app.config['SPEC_DECORATORS'] = [your_decorator]
 ```
 
 

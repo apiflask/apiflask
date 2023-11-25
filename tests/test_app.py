@@ -316,14 +316,14 @@ def test_apispec_plugins(app):
     assert spec['paths']['/plugin_test'].get('post') == 'some_injected_test_data'
 
 
-def test_apispec_decorators(app, client):
+def test_spec_decorators(app, client):
     def auth_decorator(f):
         def wrapper(*args, **kwargs):
             abort(401)
             return f(*args, **kwargs)
         return wrapper
 
-    app.config['APISPEC_DECORATORS'] = [auth_decorator]
+    app.config['SPEC_DECORATORS'] = [auth_decorator]
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 401

@@ -543,7 +543,7 @@ class APIFlask(APIScaffold, Flask):
 
         if self.spec_path:
             @bp.route(self.spec_path)
-            @self._inject_decorators(config_name='APISPEC_DECORATORS')
+            @self._inject_decorators(config_name='SPEC_DECORATORS')
             def spec():
                 if self.config['SPEC_FORMAT'] == 'json':
                     response = jsonify(self._get_spec('json'))
@@ -1211,10 +1211,10 @@ class APIFlask(APIScaffold, Flask):
         def wrapper(func):
             @wraps(func)
             def inject_decorators(*args, **kwargs):
-                spec_func = func
-                apispec_decorators = self.config.get(config_name, [])
-                for decorator in apispec_decorators:
-                    spec_func = decorator(spec_func)
-                return spec_func(*args, **kwargs)
+                __func = func
+                decorators = self.config.get(config_name, [])
+                for decorator in decorators:
+                    __func = decorator(__func)
+                return __func(*args, **kwargs)
             return inject_decorators
         return wrapper
