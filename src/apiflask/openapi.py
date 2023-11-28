@@ -3,6 +3,8 @@ from __future__ import annotations
 import typing as t
 
 from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
+from marshmallow.fields import Field
 
 from .exceptions import _bad_schema_message
 from .schemas import EmptySchema
@@ -34,6 +36,7 @@ default_response = {
     'examples': None,
     'links': None,
     'content_type': 'application/json',
+    'headers': None,
 }
 
 
@@ -167,6 +170,8 @@ def add_response(
     examples: t.Optional[t.Dict[str, t.Any]] = None,
     links: t.Optional[t.Dict[str, t.Any]] = None,
     content_type: t.Optional[str] = 'application/json',
+    headers: t.Optional[t.Dict[str, Field]] = None,
+    ma_plugin: t.Optional[MarshmallowPlugin] = None,
 ) -> None:
     """Add response to operation.
 
@@ -198,6 +203,14 @@ def add_response(
             content_type]['examples'] = examples
     if links is not None:
         operation['responses'][status_code]['links'] = links
+    if headers is not None:
+        operation['responses'][status_code]['headers'] = {}
+        for name, value in headers.items():
+            if isinstance(value, Field):
+                assert ma_plugin            # needed for mypy
+                assert ma_plugin.converter  # needed for mypy
+                header_obj = ma_plugin.converter.field2property(value)
+                operation['responses'][status_code]['headers'][name] = header_obj
 
 
 def add_response_with_schema(

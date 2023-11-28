@@ -10,6 +10,7 @@ from webargs.flaskparser import FlaskParser as BaseFlaskParser
 from webargs.multidictproxy import MultiDictProxy
 
 from .exceptions import _ValidationError
+from .fields import Field
 from .helpers import _sentinel
 from .schemas import EmptySchema
 from .schemas import Schema
@@ -338,6 +339,7 @@ class APIScaffold:
         examples: t.Optional[t.Dict[str, t.Any]] = None,
         links: t.Optional[t.Dict[str, t.Any]] = None,
         content_type: t.Optional[str] = 'application/json',
+        headers: t.Optional[t.Dict[str, Field]] = None,
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Add output settings for view functions.
 
@@ -456,6 +458,7 @@ class APIScaffold:
                 'examples': examples,
                 'links': links,
                 'content_type': content_type,
+                'headers': headers,
             })
 
             def _jsonify(

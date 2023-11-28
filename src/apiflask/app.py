@@ -1017,6 +1017,7 @@ class APIFlask(APIScaffold, Flask):
                     examples = view_func._spec.get('response')['examples']
                     links = view_func._spec.get('response')['links']
                     content_type = view_func._spec.get('response')['content_type']
+                    headers = view_func._spec.get('response')['headers']
                     add_response(
                         operation,
                         status_code,
@@ -1026,6 +1027,8 @@ class APIFlask(APIScaffold, Flask):
                         examples,
                         links,
                         content_type,
+                        headers,
+                        ma_plugin,
                     )
                 else:
                     # add a default 200 response for views without using @app.output

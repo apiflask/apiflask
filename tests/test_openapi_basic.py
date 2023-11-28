@@ -294,3 +294,24 @@ def test_sync_local_spec_no_path(app):
 
     with pytest.raises(TypeError):
         app.spec
+
+
+def test_spec_response_headers(app):
+    class HeaderSchema(Schema):
+        id = Integer()
+
+    @app.route('/foo')
+    @app.output(Foo(partial=True), headers={
+        'X-a': Integer(metadata={'description': 'Find more info here'}),
+    })
+    def foo():
+        pass
+
+    spec = app.spec
+    assert 'FooUpdate' in spec['components']['schemas']
+    assert spec['paths']['/foo']['get']['responses']['200']['headers'] == {
+        'X-a': {
+            'type': 'integer',
+            'description': 'Find more info here',
+        }
+    }
