@@ -10,7 +10,11 @@ from .schemas import Foo
 from apiflask import APIBlueprint
 from apiflask import Schema
 from apiflask.commands import spec_command
+from apiflask.fields import Boolean
 from apiflask.fields import Integer
+from apiflask.fields import List
+from apiflask.fields import Number
+from apiflask.fields import String
 
 
 def test_spec(app):
@@ -297,12 +301,14 @@ def test_sync_local_spec_no_path(app):
 
 
 def test_spec_response_headers(app):
-    class HeaderSchema(Schema):
-        id = Integer()
-
     @app.route('/foo')
     @app.output(Foo(partial=True), headers={
-        'X-a': Integer(metadata={'description': 'Find more info here'}),
+        'X-boolean': Boolean(metadata={'description': 'A boolean header'}),
+        'X-integer': Integer(metadata={'description': 'An integer header'}),
+        'X-array': List(String(), metadata={'description': 'An array header'}),
+        'X-number': Number(metadata={'description': 'A number header'}),
+        'X-string': String(metadata={'description': 'A string header'}),
+        'X-schema': Foo(),  # Schema type will be ignored, only Field classes work.
     })
     def foo():
         pass
@@ -310,8 +316,25 @@ def test_spec_response_headers(app):
     spec = app.spec
     assert 'FooUpdate' in spec['components']['schemas']
     assert spec['paths']['/foo']['get']['responses']['200']['headers'] == {
-        'X-a': {
+        'X-boolean': {
+            'type': 'boolean',
+            'description': 'A boolean header',
+        },
+        'X-integer': {
             'type': 'integer',
-            'description': 'Find more info here',
-        }
+            'description': 'An integer header',
+        },
+        'X-array': {
+            'type': 'array',
+            'items': {'type': 'string'},
+            'description': 'An array header',
+        },
+        'X-number': {
+            'type': 'number',
+            'description': 'A number header',
+        },
+        'X-string': {
+            'type': 'string',
+            'description': 'A string header',
+        },
     }
