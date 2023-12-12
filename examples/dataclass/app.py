@@ -10,10 +10,21 @@ app = APIFlask(__name__)
 @dataclass
 class PetIn:
     name: str = field(
-        metadata={'required': True, 'validate': Length(min=1, max=10)}
+        metadata={
+            'required': True,
+            'validate': Length(min=1, max=10),
+            'example': 'Medor',
+            'description': 'This will be printed in the generated doc. '
+                           'The "example" value "Medor" will be fed '
+                           'into the "try it"/"Send API request".',
+        }
     )
     category: str = field(
-        metadata={'required': True, 'validate': OneOf(['cat', 'dog'])}
+        default='dog',
+        metadata={
+            'required': True,
+            'validate': OneOf(['cat', 'dog'])
+        }
     )
 
 
