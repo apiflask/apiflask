@@ -715,6 +715,36 @@ def new_pet():
 ```
 
 
+## Response `headers`
+
+!!! warning "Version >= 2.0.3"
+
+    This feature was added in the [version 2.0.3](/changelog/#version-203).
+
+You can pass a schema class to `headers` in the output decorator:
+```python
+class Header(Schema):
+    x_token = String(
+        data_key='X-Token',
+        metadata={'description': 'A custom token header'}
+    )
+
+@app.post('/pets')
+@app.output(PetOut, headers=Header)
+def new_pet():
+    pass
+```
+
+When passing the schema to `headers`, you can also use a dict instead of a schema class:
+
+```python
+@app.post('/pets')
+@app.output(PetOut, headers={'X-Token': String(metadata={'description': 'A custom token header'})})
+def new_pet():
+    pass
+```
+
+
 ## Request and response content type / media type
 
 For request, the content type is set automatically based on the input location:

@@ -338,6 +338,7 @@ class APIScaffold:
         examples: t.Optional[t.Dict[str, t.Any]] = None,
         links: t.Optional[t.Dict[str, t.Any]] = None,
         content_type: t.Optional[str] = 'application/json',
+        headers: t.Optional[SchemaType] = None,
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Add output settings for view functions.
 
@@ -406,6 +407,11 @@ class APIScaffold:
                 about setting response links.
 
             content_type: The content/media type of the response. It defautls to `application/json`.
+            headers: The schemas of the headers.
+
+        *Version changed: 2.0.3*
+
+        - Add parameter `headers`.
 
         *Version changed: 2.0.0*
 
@@ -446,6 +452,14 @@ class APIScaffold:
         if isinstance(schema, type):  # pragma: no cover
             schema = schema()
 
+        if headers is not None:
+            if headers == {}:
+                headers = EmptySchema
+            if isinstance(headers, ABCMapping):
+                headers = _generate_schema_from_mapping(headers, None)
+            if isinstance(headers, type):
+                headers = headers()
+
         def decorator(f):
             f = _ensure_sync(f)
             _annotate(f, response={
@@ -456,6 +470,7 @@ class APIScaffold:
                 'examples': examples,
                 'links': links,
                 'content_type': content_type,
+                'headers': headers,
             })
 
             def _jsonify(

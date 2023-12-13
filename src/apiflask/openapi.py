@@ -3,6 +3,7 @@ from __future__ import annotations
 import typing as t
 
 from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
 
 from .exceptions import _bad_schema_message
 from .schemas import EmptySchema
@@ -34,6 +35,7 @@ default_response = {
     'examples': None,
     'links': None,
     'content_type': 'application/json',
+    'headers': None,
 }
 
 
@@ -167,8 +169,14 @@ def add_response(
     examples: t.Optional[t.Dict[str, t.Any]] = None,
     links: t.Optional[t.Dict[str, t.Any]] = None,
     content_type: t.Optional[str] = 'application/json',
+    headers_schema: t.Optional[SchemaType] = None,
+    ma_plugin: t.Optional[MarshmallowPlugin] = None,
 ) -> None:
     """Add response to operation.
+
+    *Version changed: 2.0.3*
+
+    - Add parameter `headers_schema`.
 
     *Version changed: 1.3.0*
 
@@ -198,6 +206,14 @@ def add_response(
             content_type]['examples'] = examples
     if links is not None:
         operation['responses'][status_code]['links'] = links
+    if headers_schema is not None:
+        headers = ma_plugin.converter.schema2parameters(  # type: ignore
+            headers_schema,
+            location='headers'
+        )
+        operation['responses'][status_code]['headers'] = {
+            header['name']: header for header in headers
+        }
 
 
 def add_response_with_schema(
