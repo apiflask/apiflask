@@ -3,8 +3,10 @@
 Released: -
 
 - Allow adding multiple media types for a response ([issue #494][issue_494])
+- Support adding headers to the response schema ([issue #507][issue_507])
 
 [issue_494]: https://github.com/apiflask/apiflask/issues/494
+[issue_507]: https://github.com/apiflask/apiflask/issues/507
 
 
 ## Version 2.0.2
