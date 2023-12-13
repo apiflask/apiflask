@@ -10,7 +10,6 @@ from webargs.flaskparser import FlaskParser as BaseFlaskParser
 from webargs.multidictproxy import MultiDictProxy
 
 from .exceptions import _ValidationError
-from .fields import Field
 from .helpers import _sentinel
 from .schemas import EmptySchema
 from .schemas import Schema
@@ -339,7 +338,7 @@ class APIScaffold:
         examples: t.Optional[t.Dict[str, t.Any]] = None,
         links: t.Optional[t.Dict[str, t.Any]] = None,
         content_type: t.Optional[str] = 'application/json',
-        headers: t.Optional[t.Dict[str, Field]] = None,
+        headers: t.Optional[SchemaType] = None,
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Add output settings for view functions.
 
@@ -408,6 +407,11 @@ class APIScaffold:
                 about setting response links.
 
             content_type: The content/media type of the response. It defautls to `application/json`.
+            headers: The schemas of the headers.
+
+        *Version changed: 2.0.3*
+
+        - Add parameter `headers`.
 
         *Version changed: 2.0.0*
 
@@ -447,6 +451,14 @@ class APIScaffold:
             schema = _generate_schema_from_mapping(schema, schema_name)
         if isinstance(schema, type):  # pragma: no cover
             schema = schema()
+
+        if headers is not None:
+            if headers == {}:
+                headers = EmptySchema
+            if isinstance(headers, ABCMapping):
+                headers = _generate_schema_from_mapping(headers, None)
+            if isinstance(headers, type):
+                headers = headers()
 
         def decorator(f):
             f = _ensure_sync(f)

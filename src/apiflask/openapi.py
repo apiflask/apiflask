@@ -4,7 +4,6 @@ import typing as t
 
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-from marshmallow.fields import Field
 
 from .exceptions import _bad_schema_message
 from .schemas import EmptySchema
@@ -170,10 +169,14 @@ def add_response(
     examples: t.Optional[t.Dict[str, t.Any]] = None,
     links: t.Optional[t.Dict[str, t.Any]] = None,
     content_type: t.Optional[str] = 'application/json',
-    headers: t.Optional[t.Dict[str, Field]] = None,
+    headers_schema: t.Optional[SchemaType] = None,
     ma_plugin: t.Optional[MarshmallowPlugin] = None,
 ) -> None:
     """Add response to operation.
+
+    *Version changed: 2.0.3*
+
+    - Add parameter `headers_schema`.
 
     *Version changed: 1.3.0*
 
@@ -203,14 +206,14 @@ def add_response(
             content_type]['examples'] = examples
     if links is not None:
         operation['responses'][status_code]['links'] = links
-    if headers is not None:
-        operation['responses'][status_code]['headers'] = {}
-        for name, value in headers.items():
-            if isinstance(value, Field):
-                assert ma_plugin            # needed for mypy
-                assert ma_plugin.converter  # needed for mypy
-                header_obj = ma_plugin.converter.field2property(value)
-                operation['responses'][status_code]['headers'][name] = header_obj
+    if headers_schema is not None:
+        headers = ma_plugin.converter.schema2parameters(  # type: ignore
+            headers_schema,
+            location='headers'
+        )
+        operation['responses'][status_code]['headers'] = {
+            header['name']: header for header in headers
+        }
 
 
 def add_response_with_schema(
