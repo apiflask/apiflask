@@ -989,6 +989,20 @@ auth = HTTPTokenAuth(description='some description')
 ```
 
 
+## Protect OpenAPI endpoints
+
+If you want to apply an authentication or custom handling logic
+to the OpenAPI endpoints, you can use the `SPEC_DECORATORS`,
+`DOCS_DECORATORS` and `SWAGGER_UI_OAUTH_REDIRECT_DECORATORS` configuration options:
+
+```python
+app.config['SPEC_DECORATORS'] = [app.auth_required(auth)]
+app.config['DOCS_DECORATORS'] = [app.auth_required(auth)]
+```
+
+Check out a full example at [examples/openapi/custom_decorators/app.py](https://github.com/apiflask/apiflask/tree/main/examples/openapi/custom_decorators/app.py)
+
+
 ## Disable the OpenAPI support
 
 

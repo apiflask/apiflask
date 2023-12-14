@@ -19,7 +19,6 @@ users = {
 # `SWAGGER_UI_OAUTH_REDIRECT_DECORATORS` configuration options
 app.config['SPEC_DECORATORS'] = [app.auth_required(auth)]
 app.config['DOCS_DECORATORS'] = [app.auth_required(auth)]
-app.config['SWAGGER_UI_OAUTH_REDIRECT_DECORATORS'] = [app.auth_required(auth)]
 
 
 @auth.verify_password
@@ -33,6 +32,8 @@ def verify_password(username: str, password: str) -> t.Union[str, None]:
 
 
 @app.route('/')
-@app.auth_required(auth)
 def index():
-    return f'Hello, {auth.current_user}'
+    return {
+        'spec': '/openapi.json',
+        'docs': '/docs',
+    }

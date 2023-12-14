@@ -432,29 +432,6 @@ app.security_schemes = {
 ```
 
 
-### DOCS_DECORATORS
-
-The custom decorators of the OpenAPI document ui router(`/docs`).
-
-- Type: `List[Callable]`
-- Default value: `None`
-- Examples:
-
-```python
-app.config['DOCS_DECORATORS'] = [your_decorator]
-```
-
-### SWAGGER_UI_OAUTH_REDIRECT_DECORATORS
-The custom decorators of the swagger ui OAuth redirect router(`/docs/oauth2-redirect`).
-
-- Type: `List[Callable]`
-- Default value: `None`
-- Examples:
-
-```python
-app.config['SWAGGER_UI_OAUTH_REDIRECT_DECORATORS'] = [your_decorator]
-```
-
 ## OpenAPI spec
 
 Customize the generation of the OpenAPI spec.
@@ -599,9 +576,23 @@ app.config['SPEC_PROCESSOR_PASS_OBJECT'] = True
 
     This configuration variable was added in the [version 1.3.0](/changelog/#version-130).
 
+
+### DOCS_DECORATORS
+
+The custom decorators of the OpenAPI documentation UI endpoint (`/docs`).
+
+- Type: `List[Callable]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['DOCS_DECORATORS'] = [your_decorator]
+```
+
+
 ### SPEC_DECORATORS
 
-The custom decorators of the OpenAPI spec document router(`/openapi.json`).
+The custom decorators of the OpenAPI spec endpoint (`/openapi.json`).
 
 - Type: `List[Callable]`
 - Default value: `None`
@@ -609,6 +600,19 @@ The custom decorators of the OpenAPI spec document router(`/openapi.json`).
 
 ```python
 app.config['SPEC_DECORATORS'] = [your_decorator]
+```
+
+
+### SWAGGER_UI_OAUTH_REDIRECT_DECORATORS
+
+The custom decorators of the Swagger UI OAuth redirect endpoint (`/docs/oauth2-redirect`).
+
+- Type: `List[Callable]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['SWAGGER_UI_OAUTH_REDIRECT_DECORATORS'] = [your_decorator]
 ```
 
 

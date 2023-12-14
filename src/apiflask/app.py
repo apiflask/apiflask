@@ -543,7 +543,7 @@ class APIFlask(APIScaffold, Flask):
 
         if self.spec_path:
             @bp.route(self.spec_path)
-            @self._inject_decorators(config_name='SPEC_DECORATORS')
+            @self._apply_decorators(config_name='SPEC_DECORATORS')
             def spec():
                 if self.config['SPEC_FORMAT'] == 'json':
                     response = jsonify(self._get_spec('json'))
@@ -561,7 +561,7 @@ class APIFlask(APIScaffold, Flask):
                 )
 
             @bp.route(self.docs_path)
-            @self._inject_decorators(config_name='DOCS_DECORATORS')
+            @self._apply_decorators(config_name='DOCS_DECORATORS')
             def docs():
                 return render_template_string(
                     ui_templates[self.docs_ui],
@@ -573,7 +573,7 @@ class APIFlask(APIScaffold, Flask):
             if self.docs_ui == 'swagger-ui':
                 if self.docs_oauth2_redirect_path:
                     @bp.route(self.docs_oauth2_redirect_path)
-                    @self._inject_decorators(config_name='SWAGGER_UI_OAUTH_REDIRECT_DECORATORS')
+                    @self._apply_decorators(config_name='SWAGGER_UI_OAUTH_REDIRECT_DECORATORS')
                     def swagger_ui_oauth_redirect() -> str:
                         return render_template_string(swagger_ui_oauth2_redirect_template)
 
@@ -1202,19 +1202,20 @@ class APIFlask(APIScaffold, Flask):
 
         return spec
 
-    def _inject_decorators(self, config_name: str):
-        """inject the decorators in runtime.
+    def _apply_decorators(self, config_name: str):
+        """Apply the decorators to the OpenAPI endpoints at runtime.
 
-        Args:
-            config_name (str): inject config name
+        Arguments:
+            config_name: The config name to get the list of decorators.
         """
-        def wrapper(func):
-            @wraps(func)
-            def inject_decorators(*args, **kwargs):
-                __func = func
-                decorators = self.config.get(config_name, [])
-                for decorator in decorators:
-                    __func = decorator(__func)
-                return __func(*args, **kwargs)
-            return inject_decorators
-        return wrapper
+        def decorator(f):
+            @wraps(f)
+            def wrapper(*args, **kwargs):
+                decorated_func = f
+                decorators = self.config[config_name]
+                if decorators:
+                    for decorator in decorators:
+                        decorated_func = decorator(decorated_func)
+                return decorated_func(*args, **kwargs)
+            return wrapper
+        return decorator
