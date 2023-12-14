@@ -177,6 +177,7 @@ def add_response(
     *Version changed: 2.0.3*
 
     - Add parameter `headers_schema`.
+    - Add parameter `ma_plugin`.
 
     *Version changed: 1.3.0*
 
