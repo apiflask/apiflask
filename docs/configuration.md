@@ -577,6 +577,45 @@ app.config['SPEC_PROCESSOR_PASS_OBJECT'] = True
     This configuration variable was added in the [version 1.3.0](/changelog/#version-130).
 
 
+### DOCS_DECORATORS
+
+The custom decorators of the OpenAPI documentation UI endpoint (`/docs`).
+
+- Type: `List[Callable]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['DOCS_DECORATORS'] = [your_decorator]
+```
+
+
+### SPEC_DECORATORS
+
+The custom decorators of the OpenAPI spec endpoint (`/openapi.json`).
+
+- Type: `List[Callable]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['SPEC_DECORATORS'] = [your_decorator]
+```
+
+
+### SWAGGER_UI_OAUTH_REDIRECT_DECORATORS
+
+The custom decorators of the Swagger UI OAuth redirect endpoint (`/docs/oauth2-redirect`).
+
+- Type: `List[Callable]`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['SWAGGER_UI_OAUTH_REDIRECT_DECORATORS'] = [your_decorator]
+```
+
+
 ## Automation behavior control
 
 The following configuration variables are used to control the automation behavior

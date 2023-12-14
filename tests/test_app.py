@@ -10,6 +10,7 @@ from .schemas import Pagination
 from apiflask import APIBlueprint
 from apiflask import APIFlask
 from apiflask import Schema
+from apiflask.exceptions import abort
 from apiflask.fields import Integer
 from apiflask.fields import String
 
@@ -313,3 +314,54 @@ def test_apispec_plugins(app):
     spec = app._get_spec('json')
 
     assert spec['paths']['/plugin_test'].get('post') == 'some_injected_test_data'
+
+
+def test_spec_decorators(app, client):
+    def auth_decorator(f):
+        def wrapper(*args, **kwargs):
+            abort(401)
+            return f(*args, **kwargs)
+        return wrapper
+
+    app.config['SPEC_DECORATORS'] = [auth_decorator]
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 401
+
+    rv = client.get('/docs')
+    assert rv.status_code == 200
+
+
+def test_docs_decorators(app, client):
+    def auth_decorator(f):
+        def wrapper(*args, **kwargs):
+            abort(401)
+            return f(*args, **kwargs)
+        return wrapper
+
+    app.config['DOCS_DECORATORS'] = [auth_decorator]
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+
+    rv = client.get('/docs')
+    assert rv.status_code == 401
+
+
+def test_swagger_ui_oauth_redirect_decorators(app, client):
+    def auth_decorator(f):
+        def wrapper(*args, **kwargs):
+            abort(401)
+            return f(*args, **kwargs)
+        return wrapper
+
+    app.config['SWAGGER_UI_OAUTH_REDIRECT_DECORATORS'] = [auth_decorator]
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+
+    rv = client.get('/docs')
+    assert rv.status_code == 200
+
+    rv = client.get('/docs/oauth2-redirect')
+    assert rv.status_code == 401

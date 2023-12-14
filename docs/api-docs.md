@@ -64,6 +64,11 @@ Now the paths to docs and spec will be <http://localhost:5000/openapi/docs>
 and <http://localhost:5000/openapi/openapi.json>.
 
 
+## Add authentication to API documentation
+
+See *[Protect OpenAPI endpoints](/openapi/#protect-openapi-endpoints)* for more details.
+
+
 ## Add custom API documentation
 
 You can easily add support to other API docs or serve the supported docs UI by yourself.

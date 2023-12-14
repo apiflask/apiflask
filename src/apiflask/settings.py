@@ -25,6 +25,9 @@ LOCAL_SPEC_PATH: t.Optional[str] = None
 LOCAL_SPEC_JSON_INDENT: int = 2
 SYNC_LOCAL_SPEC: t.Optional[bool] = None
 SPEC_PROCESSOR_PASS_OBJECT: bool = False
+SPEC_DECORATORS: t.Optional[t.List[t.Callable]] = None
+DOCS_DECORATORS: t.Optional[t.List[t.Callable]] = None
+SWAGGER_UI_OAUTH_REDIRECT_DECORATORS: t.Optional[t.List[t.Callable]] = None
 # Automation behavior control
 AUTO_TAGS: bool = True
 AUTO_SERVERS: bool = True

@@ -63,7 +63,8 @@ Each example application store in a sub-folder:
 - `/cbv`: Classed-based view example
 - `/orm`: ORM example (with Flask-SQLAlchemy)
 - `/pagination`: Pagination example (with Flask-SQLAlchemy)
-- `/openapi`: OpenAPI example
+- `/openapi/basic`: Basic OpenAPI example
+- `/openapi/custom_decorators`: OpenAPI example with custom decorators
 - `/base_response`: Base response example
 - `/dataclass`: Dataclass example (with marshmallow-dataclass)
 

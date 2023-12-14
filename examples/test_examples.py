@@ -9,7 +9,7 @@ full_examples = [
     'basic',
     'orm',
     'cbv',
-    'openapi',
+    'openapi/basic',
     'blueprint_tags',
     'base_response',
     'dataclass',

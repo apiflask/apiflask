@@ -3,6 +3,7 @@ import json
 import re
 import typing as t
 import warnings
+from functools import wraps
 
 from apispec import APISpec
 from apispec import BasePlugin
@@ -522,6 +523,10 @@ class APIFlask(APIScaffold, Flask):
         The name of the blueprint is "openapi". This blueprint will hold the view
         functions for spec file and API docs.
 
+        *Version changed: 2.0.3*
+
+        - Inject the OpenAPI endpoints decorators.
+
         *Version changed: 1.1.0*
 
         - Deprecate the redoc view at /redoc path.
@@ -538,6 +543,7 @@ class APIFlask(APIScaffold, Flask):
 
         if self.spec_path:
             @bp.route(self.spec_path)
+            @self._apply_decorators(config_name='SPEC_DECORATORS')
             def spec():
                 if self.config['SPEC_FORMAT'] == 'json':
                     response = jsonify(self._get_spec('json'))
@@ -555,6 +561,7 @@ class APIFlask(APIScaffold, Flask):
                 )
 
             @bp.route(self.docs_path)
+            @self._apply_decorators(config_name='DOCS_DECORATORS')
             def docs():
                 return render_template_string(
                     ui_templates[self.docs_ui],
@@ -566,6 +573,7 @@ class APIFlask(APIScaffold, Flask):
             if self.docs_ui == 'swagger-ui':
                 if self.docs_oauth2_redirect_path:
                     @bp.route(self.docs_oauth2_redirect_path)
+                    @self._apply_decorators(config_name='SWAGGER_UI_OAUTH_REDIRECT_DECORATORS')
                     def swagger_ui_oauth_redirect() -> str:
                         return render_template_string(swagger_ui_oauth2_redirect_template)
 
@@ -1196,3 +1204,21 @@ class APIFlask(APIScaffold, Flask):
             spec.path(path=path, operations=sorted_operations)
 
         return spec
+
+    def _apply_decorators(self, config_name: str):
+        """Apply the decorators to the OpenAPI endpoints at runtime.
+
+        Arguments:
+            config_name: The config name to get the list of decorators.
+        """
+        def decorator(f):
+            @wraps(f)
+            def wrapper(*args, **kwargs):
+                decorated_func = f
+                decorators = self.config[config_name]
+                if decorators:
+                    for decorator in decorators:
+                        decorated_func = decorator(decorated_func)
+                return decorated_func(*args, **kwargs)
+            return wrapper
+        return decorator
