@@ -3,6 +3,7 @@ import os
 from werkzeug.utils import secure_filename
 from apiflask import APIFlask, Schema
 from apiflask.fields import File, String
+from apiflask.validators import FileSize, FileType
 
 app = APIFlask(__name__)
 
@@ -10,12 +11,12 @@ upload_dir = './upload'
 
 
 class Image(Schema):
-    image = File()
+    image = File(validate=[FileType(['.png', '.jpg', '.jpeg', '.gif']), FileSize(max='5 MB')])
 
 
 class ProfileIn(Schema):
     name = String()
-    avatar = File()
+    avatar = File(validate=[FileType(['.png', '.jpg', '.jpeg']), FileSize(max='2 MB')])
 
 
 @app.post('/images')

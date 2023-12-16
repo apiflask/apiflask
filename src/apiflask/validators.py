@@ -50,7 +50,7 @@ class FileSize(Validator):
         error: Error message to raise in case of a validation error.
             Can be interpolated with `{input}`, `{min}` and `{max}`.
 
-    *Version added: 2.0.3*
+    *Version added: 2.1.0*
     """
 
     message_min = 'Must be {min_op} {{min}}.'
@@ -100,7 +100,7 @@ class FileSize(Validator):
     def __call__(self, value: FileStorage) -> FileStorage:
         if not isinstance(value, FileStorage):
             raise TypeError(
-                f'a FileStorage object is required, not {type(value).__name__!r}'
+                f'A FileStorage object is required, not {type(value).__name__!r}'
             )
 
         file_size = get_filestorage_size(value)
@@ -139,7 +139,7 @@ class FileType(Validator):
         error: Error message to raise in case of a validation error.
             Can be interpolated with `{input}` and `{extensions}`.
 
-    *Version added: 2.0.3*
+    *Version added: 2.1.0*
     """
 
     default_message = 'Not an allowed file type. Allowed file types: [{extensions}]'
@@ -161,7 +161,7 @@ class FileType(Validator):
     def __call__(self, value: FileStorage) -> FileStorage:
         if not isinstance(value, FileStorage):
             raise TypeError(
-                f'a FileStorage object is required, not {type(value).__name__!r}'
+                f'A FileStorage object is required, not {type(value).__name__!r}'
             )
 
         _, extension = os.path.splitext(value.filename) if value.filename else (None, None)
