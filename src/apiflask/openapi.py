@@ -2,17 +2,9 @@ from __future__ import annotations
 
 import typing as t
 
-from apispec import APISpec
-from apispec.ext.marshmallow import MarshmallowPlugin
-
-from .exceptions import _bad_schema_message
-from .schemas import EmptySchema
-from .schemas import FileSchema
 from .security import HTTPBasicAuth
 from .security import HTTPTokenAuth
 from .types import HTTPAuthType
-from .types import OpenAPISchemaType
-from .types import SchemaType
 
 if t.TYPE_CHECKING:  # pragma: no cover
     from .blueprint import APIBlueprint
@@ -158,84 +150,6 @@ def get_path_description(func: t.Callable) -> str:
         # use the remain lines of docstring as description
         return '\n'.join(docs[1:]).strip()
     return ''
-
-
-def add_response(
-    operation: dict,
-    status_code: str,
-    schema: t.Union[SchemaType, dict],
-    description: str,
-    example: t.Optional[t.Any] = None,
-    examples: t.Optional[t.Dict[str, t.Any]] = None,
-    links: t.Optional[t.Dict[str, t.Any]] = None,
-    content_type: t.Optional[str] = 'application/json',
-    headers_schema: t.Optional[SchemaType] = None,
-    ma_plugin: t.Optional[MarshmallowPlugin] = None,
-) -> None:
-    """Add response to operation.
-
-    *Version changed: 2.0.3*
-
-    - Add parameter `headers_schema`.
-    - Add parameter `ma_plugin`.
-
-    *Version changed: 1.3.0*
-
-    - Add parameter `content_type`.
-
-    *Version changed: 0.10.0*
-
-    - Add `links` parameter.
-    """
-    operation['responses'][status_code] = {}
-    if status_code != '204':
-        if isinstance(schema, FileSchema):
-            schema = {'type': schema.type, 'format': schema.format}
-        elif isinstance(schema, EmptySchema):
-            schema = {}
-        operation['responses'][status_code]['content'] = {
-            content_type: {
-                'schema': schema
-            }
-        }
-    operation['responses'][status_code]['description'] = description
-    if example is not None:
-        operation['responses'][status_code]['content'][
-            content_type]['example'] = example
-    if examples is not None:
-        operation['responses'][status_code]['content'][
-            content_type]['examples'] = examples
-    if links is not None:
-        operation['responses'][status_code]['links'] = links
-    if headers_schema is not None:
-        headers = ma_plugin.converter.schema2parameters(  # type: ignore
-            headers_schema,
-            location='headers'
-        )
-        operation['responses'][status_code]['headers'] = {
-            header['name']: header for header in headers
-        }
-
-
-def add_response_with_schema(
-    spec: APISpec,
-    operation: dict,
-    status_code: str,
-    schema: OpenAPISchemaType,
-    schema_name: str,
-    description: str
-) -> None:
-    """Add response with given schema to operation."""
-    if isinstance(schema, type):
-        schema = schema()
-        add_response(operation, status_code, schema, description)
-    elif isinstance(schema, dict):
-        if schema_name not in spec.components.schemas:
-            spec.components.schema(schema_name, schema)
-        schema_ref = {'$ref': f'#/components/schemas/{schema_name}'}
-        add_response(operation, status_code, schema_ref, description)
-    else:
-        raise TypeError(_bad_schema_message)
 
 
 def get_argument(argument_type: str, argument_name: str) -> t.Dict[str, t.Any]:

@@ -161,3 +161,38 @@ def test_base_response_many(app, client):
     assert 'data' in rv.json
     assert not isinstance(rv.json, list)
     assert isinstance(rv.json['data'], list)
+
+
+def test_bare_view_base_response_spec(app, client):
+    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
+
+    @app.get('/')
+    def foo():
+        data = {'id': '123', 'name': 'test'}
+        return {'message': 'Success.', 'status_code': '200', 'data': data}
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    schema = rv.json['paths']['/']['get']['responses']['200']['content'][
+        'application/json']['schema']
+    assert schema['properties']['status_code'] == {'type': 'integer'}
+    assert schema['properties']['message'] == {'type': 'string'}
+
+
+def test_input_with_base_response_spec(app, client):
+    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponse
+
+    @app.get('/')
+    @app.input(Foo)
+    def foo():
+        data = {'id': '123', 'name': 'test'}
+        return {'message': 'Success.', 'status_code': '200', 'data': data}
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    validate_spec(rv.json)
+    schema = rv.json['paths']['/']['get']['responses']['200']['content'][
+        'application/json']['schema']
+    assert schema['properties']['status_code'] == {'type': 'integer'}
+    assert schema['properties']['message'] == {'type': 'string'}

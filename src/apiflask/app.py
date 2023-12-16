@@ -32,6 +32,8 @@ from .exceptions import _bad_schema_message
 from .helpers import get_reason_phrase
 from .route import route_patch
 from .schemas import Schema
+from .schemas import FileSchema
+from .schemas import EmptySchema
 from .types import ResponseReturnValueType, ResponsesType
 from .types import ViewFuncType
 from .types import ErrorCallbackType
@@ -40,8 +42,6 @@ from .types import SchemaType
 from .types import HTTPAuthType
 from .types import TagsType
 from .types import OpenAPISchemaType
-from .openapi import add_response
-from .openapi import add_response_with_schema
 from .openapi import default_bypassed_endpoints
 from .openapi import default_response
 from .openapi import get_tag
@@ -523,7 +523,7 @@ class APIFlask(APIScaffold, Flask):
         The name of the blueprint is "openapi". This blueprint will hold the view
         functions for spec file and API docs.
 
-        *Version changed: 2.0.3*
+        *Version changed: 2.1.0*
 
         - Inject the OpenAPI endpoints decorators.
 
@@ -827,11 +827,11 @@ class APIFlask(APIScaffold, Flask):
         if self.external_docs:
             kwargs['externalDocs'] = self.external_docs
 
-        ma_plugin: MarshmallowPlugin = MarshmallowPlugin(
+        self._ma_plugin: MarshmallowPlugin = MarshmallowPlugin(
             schema_name_resolver=self.schema_name_resolver  # type: ignore
         )
 
-        spec_plugins: t.List[BasePlugin] = [ma_plugin, *self.spec_plugins]
+        spec_plugins: t.List[BasePlugin] = [self._ma_plugin, *self.spec_plugins]
 
         spec: APISpec = APISpec(
             title=self.title,
@@ -844,12 +844,12 @@ class APIFlask(APIScaffold, Flask):
         )
 
         # configure flask-marshmallow URL types
-        ma_plugin.converter.field_mapping[fields.URLFor] = ('string', 'url')  # type: ignore
-        ma_plugin.converter.field_mapping[fields.AbsoluteURLFor] = (  # type: ignore
+        self._ma_plugin.converter.field_mapping[fields.URLFor] = ('string', 'url')  # type: ignore
+        self._ma_plugin.converter.field_mapping[fields.AbsoluteURLFor] = (  # type: ignore
             'string', 'url'
         )
         if sqla is not None:  # pragma: no cover
-            ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = (  # type: ignore
+            self._ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = (  # type: ignore
                 'string', 'url'
             )
 
@@ -997,27 +997,6 @@ class APIFlask(APIScaffold, Flask):
                 # responses
                 if view_func._spec.get('response'):
                     schema = view_func._spec.get('response')['schema']
-                    base_schema: OpenAPISchemaType = self.config['BASE_RESPONSE_SCHEMA']
-                    if base_schema is not None:
-                        base_schema_spec: dict
-                        if isinstance(base_schema, type):
-                            base_schema_spec = \
-                                ma_plugin.converter.schema2jsonschema(  # type: ignore
-                                    base_schema()
-                                )
-                        elif isinstance(base_schema, dict):
-                            base_schema_spec = base_schema
-                        else:
-                            raise TypeError(_bad_schema_message)
-                        data_key: str = self.config['BASE_RESPONSE_DATA_KEY']
-                        if data_key not in base_schema_spec['properties']:
-                            raise RuntimeError(
-                                f'The data key {data_key!r} is not found in'
-                                ' the base response schema spec.'
-                            )
-                        base_schema_spec['properties'][data_key] = schema
-                        schema = base_schema_spec
-
                     status_code: str = str(view_func._spec.get('response')['status_code'])
                     description: str = view_func._spec.get('response')['description'] or \
                         self.config['SUCCESS_DESCRIPTION']
@@ -1026,24 +1005,26 @@ class APIFlask(APIScaffold, Flask):
                     links = view_func._spec.get('response')['links']
                     content_type = view_func._spec.get('response')['content_type']
                     headers = view_func._spec.get('response')['headers']
-                    add_response(
+                    self._add_response(
                         operation,
                         status_code,
                         schema,
                         description,
-                        example,
-                        examples,
-                        links,
-                        content_type,
-                        headers,
-                        ma_plugin,
+                        example=example,
+                        examples=examples,
+                        links=links,
+                        content_type=content_type,
+                        headers_schema=headers,
                     )
                 else:
                     # add a default 200 response for views without using @app.output
                     # or @app.doc(responses={...})
                     if not view_func._spec.get('responses') and self.config['AUTO_200_RESPONSE']:
-                        add_response(
-                            operation, '200', {}, self.config['SUCCESS_DESCRIPTION']
+                        self._add_response(
+                            operation,
+                            '200',
+                            {},
+                            self.config['SUCCESS_DESCRIPTION'],
                         )
 
                 # add validation error response
@@ -1056,7 +1037,7 @@ class APIFlask(APIScaffold, Flask):
                         'VALIDATION_ERROR_DESCRIPTION'
                     ]
                     schema: SchemaType = self.config['VALIDATION_ERROR_SCHEMA']  # type: ignore
-                    add_response_with_schema(
+                    self._add_response_with_schema(
                         spec, operation, status_code, schema, 'ValidationError', description
                     )
 
@@ -1072,7 +1053,7 @@ class APIFlask(APIScaffold, Flask):
                     )
                     description: str = self.config['AUTH_ERROR_DESCRIPTION']  # type: ignore
                     schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
-                    add_response_with_schema(
+                    self._add_response_with_schema(
                         spec, operation, status_code, schema, 'HTTPError', description
                     )
 
@@ -1080,7 +1061,7 @@ class APIFlask(APIScaffold, Flask):
                 if self.config['AUTO_404_RESPONSE'] and rule.arguments:
                     description: str = self.config['NOT_FOUND_DESCRIPTION']  # type: ignore
                     schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
-                    add_response_with_schema(
+                    self._add_response_with_schema(
                         spec, operation, '404', schema, 'HTTPError', description
                     )
 
@@ -1115,11 +1096,11 @@ class APIFlask(APIScaffold, Flask):
                         # add error response schema for error responses
                         if status_code.startswith('4') or status_code.startswith('5'):
                             schema: SchemaType = self.config['HTTP_ERROR_SCHEMA']  # type: ignore
-                            add_response_with_schema(
+                            self._add_response_with_schema(
                                 spec, operation, status_code, schema, 'HTTPError', description
                             )
                         else:  # add default response for other responses
-                            add_response(operation, status_code, {}, description)
+                            self._add_response(operation, status_code, {}, description)
 
                 # requestBody
                 if view_func._spec.get('body'):
@@ -1222,3 +1203,100 @@ class APIFlask(APIScaffold, Flask):
                 return decorated_func(*args, **kwargs)
             return wrapper
         return decorator
+
+    def _add_response(
+        self,
+        operation: dict,
+        status_code: str,
+        schema: t.Union[SchemaType, dict],
+        description: str,
+        example: t.Optional[t.Any] = None,
+        examples: t.Optional[t.Dict[str, t.Any]] = None,
+        links: t.Optional[t.Dict[str, t.Any]] = None,
+        content_type: t.Optional[str] = 'application/json',
+        headers_schema: t.Optional[SchemaType] = None,
+    ) -> None:
+        """Add response to operation.
+
+        *Version changed: 2.1.0*
+
+        - Add parameter `headers_schema`.
+
+        *Version changed: 1.3.0*
+
+        - Add parameter `content_type`.
+
+        *Version changed: 0.10.0*
+
+        - Add `links` parameter.
+        """
+        base_schema: t.Optional[OpenAPISchemaType] = self.config['BASE_RESPONSE_SCHEMA']
+        data_key: str = self.config['BASE_RESPONSE_DATA_KEY']
+        if base_schema is not None:
+            base_schema_spec: t.Dict[str, t.Any]
+            if isinstance(base_schema, type):
+                base_schema_spec = \
+                    self._ma_plugin.converter.schema2jsonschema(  # type: ignore
+                        base_schema()
+                    )
+            elif isinstance(base_schema, dict):
+                base_schema_spec = base_schema
+            else:
+                raise TypeError(_bad_schema_message)
+            if data_key not in base_schema_spec['properties']:  # type: ignore
+                raise RuntimeError(
+                    f'The data key {data_key!r} is not found in'
+                    ' the base response schema spec.'
+                )
+            base_schema_spec['properties'][data_key] = schema  # type: ignore
+            schema = base_schema_spec
+
+        operation['responses'][status_code] = {}
+        if status_code != '204':
+            if isinstance(schema, FileSchema):
+                schema = {'type': schema.type, 'format': schema.format}
+            elif isinstance(schema, EmptySchema):
+                schema = {}
+            operation['responses'][status_code]['content'] = {
+                content_type: {
+                    'schema': schema
+                }
+            }
+        operation['responses'][status_code]['description'] = description
+        if example is not None:
+            operation['responses'][status_code]['content'][
+                content_type]['example'] = example
+        if examples is not None:
+            operation['responses'][status_code]['content'][
+                content_type]['examples'] = examples
+        if links is not None:
+            operation['responses'][status_code]['links'] = links
+        if headers_schema is not None:
+            headers = self._ma_plugin.converter.schema2parameters(  # type: ignore
+                headers_schema,
+                location='headers'
+            )
+            operation['responses'][status_code]['headers'] = {
+                header['name']: header for header in headers
+            }
+
+    def _add_response_with_schema(
+        self,
+        spec: APISpec,
+        operation: dict,
+        status_code: str,
+        schema: OpenAPISchemaType,
+        schema_name: str,
+        description: str
+    ) -> None:
+        """Add response with given schema to operation."""
+        if isinstance(schema, type):
+            schema = schema()
+            self._add_response(operation, status_code, schema, description)
+        elif isinstance(schema, dict):
+            if schema_name not in spec.components.schemas:
+                spec.components.schema(schema_name, schema)
+            schema_ref = {'$ref': f'#/components/schemas/{schema_name}'}
+            self._add_response(operation, status_code, schema_ref, description)
+        else:
+            raise TypeError(_bad_schema_message)

@@ -409,7 +409,7 @@ class APIScaffold:
             content_type: The content/media type of the response. It defautls to `application/json`.
             headers: The schemas of the headers.
 
-        *Version changed: 2.0.3*
+        *Version changed: 2.1.0*
 
         - Add parameter `headers`.
 

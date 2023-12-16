@@ -1,18 +1,16 @@
-## Version 2.0.3
+## Version 2.1.0
 
 Released: -
 
 - Allow adding multiple media types for a response ([issue #494][issue_494])
 - Support adding headers to the response schema ([issue #507][issue_507])
+- Add support for adding decorators to the OpenAPI spec and documentation UI endpoints ([issue #483][issue_483]).
+- Fix the base repsonse schema inconsistency
 
 [issue_494]: https://github.com/apiflask/apiflask/issues/494
 [issue_507]: https://github.com/apiflask/apiflask/issues/507
-
-## Version 2.0.3
-
-- Add support for adding decorators to the OpenAPI spec and documentation UI endpoints ([issue #483][issue_483]).
-
 [issue_483]: https://github.com/apiflask/apiflask/issues/483
+
 
 ## Version 2.0.2
 
