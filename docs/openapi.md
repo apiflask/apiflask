@@ -717,9 +717,9 @@ def new_pet():
 
 ## Response `headers`
 
-!!! warning "Version >= 2.0.3"
+!!! warning "Version >= 2.1.0"
 
-    This feature was added in the [version 2.0.3](/changelog/#version-203).
+    This feature was added in the [version 2.1.0](/changelog/#version-210).
 
 You can pass a schema class to `headers` in the output decorator:
 ```python
