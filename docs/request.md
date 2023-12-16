@@ -223,13 +223,14 @@ the form data (equals to `form_and_files`).
 
 !!! notes
 
-    Validators for the file field will be available in the version 1.1
-    ([#253](https://github.com/apiflask/apiflask/issues/253)). For now,
-    you can manually validate the file in the view function or the schema:
+    From APIFlask 2.1.0, you can use the `FileType` and `FileSize` validators
+    to validate file type and size:
 
     ```python
+    from apiflask.validators import FileType, FileSize
+
     class Image(Schema):
-        image = File(validate=lambda f: f.mimetype in ['image/jpeg', 'image/png'])
+        image = File(validate=[FileType(['.png', '.jpg', '.jpeg', '.gif']), FileSize(max='5 MB')])
     ```
 
 

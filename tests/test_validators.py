@@ -61,7 +61,7 @@ def test_filesize_repr():
 
 
 def test_filesize_wrongtype():
-    with pytest.raises(TypeError, match='a FileStorage object is required, not '):
+    with pytest.raises(TypeError, match='A FileStorage object is required, not '):
         validators.FileSize()(1)
 
 
@@ -74,7 +74,7 @@ def test_filetype():
     assert validators.FileType(['.png'])(PNG_fs) is PNG_fs
     assert validators.FileType(['.PNG'])(PNG_fs) is PNG_fs
 
-    with pytest.raises(TypeError, match='a FileStorage object is required, not '):
+    with pytest.raises(TypeError, match='A FileStorage object is required, not '):
         validators.FileType(['.png'])(1)
 
     with pytest.raises(
