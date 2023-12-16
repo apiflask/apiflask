@@ -56,6 +56,15 @@ For Windows:
 
 If you find APIFlask useful, please consider [donating](https://opencollective.com/apiflask) today. Your donation keeps APIFlask maintained and evolving.
 
+Thank you to all our backers and sponsors!
+
+### Backers
+
+[![](https://opencollective.com/apiflask/backers.svg?width=890)](https://opencollective.com/apiflask)
+
+### Sponsors
+
+[![](https://opencollective.com/apiflask/sponsors.svg?width=890)](https://opencollective.com/apiflask)
 
 ## Example
 
