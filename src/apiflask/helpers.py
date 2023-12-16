@@ -1,7 +1,9 @@
+import re
 import typing as t
 
 from flask import request
 from flask import url_for
+from werkzeug.datastructures import FileStorage
 from werkzeug.http import HTTP_STATUS_CODES
 
 from .types import PaginationType
@@ -107,3 +109,49 @@ def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
         'last': get_page_url(pagination.pages),
         'current': get_page_url(pagination.page),
     }
+
+
+def get_filestorage_size(file: FileStorage) -> int:
+    """A helper function to get the size of the FileStorage object in bytes.
+
+    Arguments:
+        file: A FileStorage object.
+
+    *Version added: 2.1.0*
+    """
+    size = len(file.read())
+    file.stream.seek(0)
+    return size
+
+
+# This helper function is copied from loguru with few modifications.
+# https://github.com/Delgan/loguru/blob/master/loguru/_string_parsers.py#L35
+def parse_size(size: str) -> float:  # noqa: E302
+    """A helper function to parse a str representing the size into a number in bytes.
+
+    Arguments:
+        size: A str representing the size.
+
+    *Version added: 2.1.0*
+    """
+    size = size.strip()
+    reg = re.compile(r'([e\+\-\.\d]+)\s*([kmgtpezy])?(i)?(b)', flags=re.I)
+
+    match = reg.fullmatch(size)
+
+    if not match:
+        raise ValueError(f"Invalid size value: '{size!r}'")
+
+    s, u, i, b = match.groups()
+
+    try:
+        s = float(s)
+    except ValueError as e:
+        raise ValueError(f"Invalid float value while parsing size: '{s!r}'") from e
+
+    u = 'kmgtpezy'.index(u.lower()) + 1 if u else 0
+    i = 1024 if i else 1000
+    b = {'b': 8, 'B': 1}[b] if b else 1
+    size: float = s * i**u / b
+
+    return size
