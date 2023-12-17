@@ -1,6 +1,6 @@
 ## Version 2.1.0
 
-Released: -
+Released: 2023/12/16
 
 - Add `FileType` and `FileSize` validators ([issue #253][issue_253]).
 - Allow adding multiple media types for a response ([issue #494][issue_494]).

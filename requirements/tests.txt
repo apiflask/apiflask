@@ -12,36 +12,36 @@ attrs==23.1.0
     #   jsonschema
     #   pytest
     #   referencing
-certifi==2023.7.22
+certifi==2023.11.17
     # via requests
-charset-normalizer==3.2.0
+charset-normalizer==3.3.2
     # via requests
-coverage[toml]==7.3.1
+coverage[toml]==7.3.3
     # via pytest-cov
-idna==3.4
+idna==3.6
     # via requests
 iniconfig==2.0.0
     # via pytest
-jsonschema==4.19.1
+jsonschema==4.20.0
     # via
     #   openapi-schema-validator
     #   openapi-spec-validator
-jsonschema-spec==0.2.4
+jsonschema-path==0.3.2
     # via openapi-spec-validator
-jsonschema-specifications==2023.7.1
+jsonschema-specifications==2023.11.2
     # via
     #   jsonschema
     #   openapi-schema-validator
-lazy-object-proxy==1.9.0
+lazy-object-proxy==1.10.0
     # via openapi-spec-validator
-openapi-schema-validator==0.6.1
+openapi-schema-validator==0.6.2
     # via openapi-spec-validator
-openapi-spec-validator==0.6.0
+openapi-spec-validator==0.7.1
     # via -r requirements/tests.in
-packaging==23.1
+packaging==23.2
     # via pytest
 pathable==0.4.3
-    # via jsonschema-spec
+    # via jsonschema-path
 pluggy==1.3.0
     # via pytest
 py==1.11.0
@@ -53,17 +53,17 @@ pytest==6.2.5
 pytest-cov==4.1.0
     # via -r requirements/tests.in
 pyyaml==6.0.1
-    # via jsonschema-spec
-referencing==0.30.2
+    # via jsonschema-path
+referencing==0.31.1
     # via
     #   jsonschema
-    #   jsonschema-spec
+    #   jsonschema-path
     #   jsonschema-specifications
 requests==2.31.0
-    # via jsonschema-spec
+    # via jsonschema-path
 rfc3339-validator==0.1.4
     # via openapi-schema-validator
-rpds-py==0.10.3
+rpds-py==0.13.2
     # via
     #   jsonschema
     #   referencing
@@ -73,7 +73,7 @@ toml==0.10.2
     # via pytest
 tomli==2.0.1
     # via coverage
-typing-extensions==4.8.0
+typing-extensions==4.9.0
     # via asgiref
-urllib3==2.0.5
+urllib3==2.1.0
     # via requests
