@@ -845,6 +845,11 @@ def hello():
     return f'Hello, {auth.current_user}!'
 ```
 
+!!! tip
+
+    Access the current user object in [Flask-HTTPAuth](https://flask-httpauth.readthedocs.io) is with `auth.current_user()`.
+    But `auth.current_user` in APIFlask(No brackets).
+
 ### HTTP Bearer
 
 To implement an HTTP Bearer authentication, you will need to:
