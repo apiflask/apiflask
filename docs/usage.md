@@ -873,7 +873,7 @@ def verify_token(token):
 @app.auth_required(auth)  # protect the view
 def hello():
     # access the current user with auth.current_user
-    return f'Hello, {auth.current_user}'!
+    return f'Hello, {auth.current_user}!'
 ```
 
 ### API Keys (in header)
