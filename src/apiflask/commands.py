@@ -16,13 +16,13 @@ from flask.cli import with_appcontext
     '--output',
     '-o',
     type=click.Path(),
-    help='The file path to the spec file, defauts to LOCAL_SPEC_PATH config.'
+    help='The file path to the spec file, defaults to LOCAL_SPEC_PATH config.'
 )
 @click.option(
     '--indent',
     '-i',
     type=int,
-    help='The indentation for JSON spec, defauts to LOCAL_SPEC_JSON_INDENT config.'
+    help='The indentation for JSON spec, defaults to LOCAL_SPEC_JSON_INDENT config.'
 )
 @with_appcontext
 def spec_command(format, output, indent):

@@ -205,7 +205,7 @@ The decorated callback function will be called in the following situations:
 - An exception triggered with [`abort`][apiflask.exceptions.abort].
 
 You can still register a specific error handler for a specific error code or
-exception with the `app.errorhandler(code_or_exection)` decorator. In that case,
+exception with the `app.errorhandler(code_or_exception)` decorator. In that case,
 the return value of the error handler will be used as the response when the
 corresponding error or exception happens.
 
