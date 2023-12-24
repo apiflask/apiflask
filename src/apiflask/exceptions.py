@@ -50,7 +50,7 @@ class HTTPError(Exception):
                 provide the addition information such as custom error code,
                 documentation URL, etc.
             headers: A dict of headers used in the error response.
-            extra_data: A dict of additioinal fields (custom error information) that will
+            extra_data: A dict of additional fields (custom error information) that will
                 added to the error response body.
 
         *Version changed: 0.9.0*
@@ -133,7 +133,7 @@ def abort(
             provide the addition information such as custom error code,
             documentation URL, etc.
         headers: A dict of headers used in the error response.
-        extra_data: A dict of additioinal fields (custom error information) that will
+        extra_data: A dict of additional fields (custom error information) that will
             added to the error response body.
 
     *Version changed: 0.4.0*

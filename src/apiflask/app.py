@@ -189,7 +189,7 @@ class APIFlask(APIScaffold, Flask):
 
             This attribute can also be configured from the config with the
             `SECURITY_SCHEMES` configuration key. Defaults to `None`.
-        spec_callback: It stores the function object registerd by
+        spec_callback: It stores the function object registered by
             [`spec_processor`][apiflask.APIFlask.spec_processor]. You can also
             pass a callback function to it directly without using `spec_processor`.
             Example:
@@ -202,7 +202,7 @@ class APIFlask(APIScaffold, Flask):
             app.spec_callback = update_spec
             ```
 
-        error_callback: It stores the function object registerd by
+        error_callback: It stores the function object registered by
             [`error_processor`][apiflask.APIFlask.error_processor]. You can also
             pass a callback function to it directly without using `error_processor`.
             See the docstring of `error_processor` for more details.
@@ -416,7 +416,7 @@ class APIFlask(APIScaffold, Flask):
         *Version changed: 0.10.0*
 
         - Remove the `status_code` field from the response.
-        - Add `HTTPError.extra_data` to the reponse body.
+        - Add `HTTPError.extra_data` to the response body.
         """
         body = {
             'detail': error.detail,
@@ -439,7 +439,7 @@ class APIFlask(APIScaffold, Flask):
         - An exception triggered with [`abort`][apiflask.exceptions.abort].
 
         You can still register a specific error handler for a specific error code
-        or exception with the `app.errorhandler(code_or_exection)` decorator,
+        or exception with the `app.errorhandler(code_or_execution)` decorator,
         in that case, the return value of the specific error handler will be used as the
         response when the corresponding error or exception happened.
 
@@ -601,7 +601,7 @@ class APIFlask(APIScaffold, Flask):
         Arguments:
             spec_format: The format of the spec file, one of `'json'`, `'yaml'`
                 and `'yml'`, defaults to the `SPEC_FORMAT` config.
-            force_update: If ture, will generate the spec for every call instead
+            force_update: If true, will generate the spec for every call instead
                 of using the cache.
 
         *Version changed: 0.7.0*

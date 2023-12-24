@@ -251,7 +251,7 @@ a custom argument name can be set with the `arg_name` argument. See more details
 For a simple view function without `@app.output` decorator, you can return a dict or
 a list as JSON response. The returned dict and list will be converted to a JSON
 response automatically (by calling
-[`jsonify()`](https://flask.palletsprojects.com/api/#flask.json.jsonify) underly).
+[`jsonify()`](https://flask.palletsprojects.com/api/#flask.json.jsonify) underlay).
 
 !!! tip
 
