@@ -781,7 +781,7 @@ APIFlask provides automatic OpenAPI spec generating support, while also allows
 you to customize the spec:
 
 - Most of the fields of the `info` object and top-level field of `OpenAPI`
-objct are accessible with configuration variables.
+objct are ible with configuration variables.
 - The `tag` object, Operation's `summary` and `description` will generated from
 the blueprint name, the view function name and docstring.
 - You can register a spec processor function to process the spec.
@@ -847,8 +847,9 @@ def hello():
 
 !!! tip
 
-    Access the current user object in [Flask-HTTPAuth](https://flask-httpauth.readthedocs.io) is with `auth.current_user()`.
-    But `auth.current_user` in APIFlask(No brackets).
+    To access the current user object, you need to use `auth.current_user` property in the view function.
+    It's equivalent to using `auth.current_user()` method in Flask-HTTPAuth.
+
 
 ### HTTP Bearer
 
