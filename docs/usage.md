@@ -845,6 +845,12 @@ def hello():
     return f'Hello, {auth.current_user}!'
 ```
 
+!!! tip
+
+    To access the current user object, you need to use `auth.current_user` property in the view function.
+    It's equivalent to using `auth.current_user()` method in Flask-HTTPAuth.
+
+
 ### HTTP Bearer
 
 To implement an HTTP Bearer authentication, you will need to:
