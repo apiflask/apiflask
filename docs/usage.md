@@ -781,7 +781,7 @@ APIFlask provides automatic OpenAPI spec generating support, while also allows
 you to customize the spec:
 
 - Most of the fields of the `info` object and top-level field of `OpenAPI`
-objct are ible with configuration variables.
+objct are accessible with configuration variables.
 - The `tag` object, Operation's `summary` and `description` will generated from
 the blueprint name, the view function name and docstring.
 - You can register a spec processor function to process the spec.
