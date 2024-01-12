@@ -3,7 +3,6 @@ import typing as t
 from marshmallow import Schema as BaseSchema
 from marshmallow.fields import Integer
 from marshmallow.fields import URL
-from marshmallow.orderedset import OrderedSet
 
 
 # schema for the detail object of validation error response
@@ -52,16 +51,12 @@ http_error_schema: t.Dict[str, t.Any] = {
 
 
 class Schema(BaseSchema):
-    """A base schema for all schemas.
-
-    The different between marshmallow's `Schema` and APIFlask's `Schema` is that the latter
-    sets `set_class` to `OrderedSet` by default.
+    """A base schema for all schemas. Equivalent to `marshmallow.Schema`.
 
     *Version Added: 1.2.0*
     """
-    # use ordered set to keep the order of fields
-    # can be removed when https://github.com/marshmallow-code/marshmallow/pull/1896 is merged
-    set_class = OrderedSet
+
+    pass
 
 
 class EmptySchema(Schema):
