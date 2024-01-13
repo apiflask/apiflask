@@ -1,10 +1,5 @@
-import sys
 import typing as t
-
-if sys.version_info >= (3, 8):
-    from typing import Protocol
-else:  # pragma: no cover
-    from typing_extensions import Protocol
+from typing import Protocol
 
 if t.TYPE_CHECKING:  # pragma: no cover
     from flask.wrappers import Response  # noqa: F401
