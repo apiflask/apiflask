@@ -101,7 +101,7 @@ def abort(
     detail: t.Optional[t.Any] = None,
     headers: t.Optional[ResponseHeaderType] = None,
     extra_data: t.Optional[dict] = None
-) -> None:
+) -> t.NoReturn:
     """A function to raise HTTPError exception.
 
     Similar to Flask's `abort`, but returns a JSON response.
