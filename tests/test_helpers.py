@@ -65,8 +65,14 @@ def test_pagination_builder(app, client):
 
 
 def test_get_filestorage_size():
+    rv = get_filestorage_size(FileStorage(io.BytesIO(b''.ljust(0))))
+    assert rv == 0
+    rv = get_filestorage_size(FileStorage(io.BytesIO(b''.ljust(123))))
+    assert rv == 123
     rv = get_filestorage_size(FileStorage(io.BytesIO(b''.ljust(1024))))
     assert rv == 1024
+    rv = get_filestorage_size(FileStorage(io.BytesIO(b''.ljust(1234))))
+    assert rv == 1234
 
 
 @pytest.mark.parametrize(
