@@ -6,6 +6,7 @@ setup(
     install_requires=[
         'flask >= 2',
         'flask-marshmallow >= 0.12.0',
+        'marshmallow >= 3.20',
         'webargs >= 8.3',
         'flask-httpauth >= 4',
         'apispec >= 6',
