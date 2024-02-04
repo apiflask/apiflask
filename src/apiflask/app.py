@@ -23,7 +23,7 @@ with warnings.catch_warnings():
     try:
         from flask_marshmallow import sqla
     except ImportError:
-        sqla = None
+        sqla = None  # type: ignore
 
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
