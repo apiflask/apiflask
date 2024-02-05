@@ -119,8 +119,7 @@ def get_filestorage_size(file: FileStorage) -> int:
 
     *Version added: 2.1.0*
     """
-    size = len(file.read())
-    file.stream.seek(0)
+    size: int = file.stream.getbuffer().nbytes  # type: ignore
     return size
 
 
