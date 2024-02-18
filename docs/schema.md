@@ -154,12 +154,6 @@ API documentation: <https://webargs.readthedocs.io/en/latest/api.html#module-web
 - `DelimitedList`
 - `DelimitedTuple`
 
-
-API documentation: <https://apiflask.com/api/fields>
-
-- `File`: represents a file input.
-- `Config`: dump a config value from Flask's `config` object.
-
 !!! tip
 
     If the existing fields don't fit your needs, you can also create
