@@ -23,7 +23,7 @@ flask==2.0.0
     #   flask-sqlalchemy
 flask-httpauth==4.0.0
     # via -r requirements/min-versions.in
-flask-marshmallow==0.12.0
+flask-marshmallow==1.0.0
     # via -r requirements/min-versions.in
 flask-sqlalchemy==2.5.1
     # via -r requirements/min-versions.in
