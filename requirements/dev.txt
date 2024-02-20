@@ -23,23 +23,25 @@ filelock==3.13.1
     # via
     #   tox
     #   virtualenv
-identify==2.5.33
+identify==2.5.35
     # via pre-commit
 nodeenv==1.8.0
     # via pre-commit
 pip-compile-multi==2.6.3
     # via -r requirements/dev.in
-pip-tools==7.3.0
+pip-tools==7.4.0
     # via pip-compile-multi
-pre-commit==3.6.0
+pre-commit==3.6.2
     # via -r requirements/dev.in
 pyproject-api==1.6.1
     # via tox
 pyproject-hooks==1.0.0
-    # via build
+    # via
+    #   build
+    #   pip-tools
 toposort==1.10
     # via pip-compile-multi
-tox==4.11.4
+tox==4.13.0
     # via -r requirements/dev.in
 virtualenv==20.25.0
     # via
