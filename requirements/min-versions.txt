@@ -6,27 +6,27 @@
 #    pip-compile-multi
 #
 apispec==6.0.0
-    # via -r requirements/min-versions.in
+    # via -r min-versions.in
 authlib==1.2.1
-    # via -r requirements/min-versions.in
+    # via -r min-versions.in
 cffi==1.16.0
     # via cryptography
 click==8.1.7
     # via flask
-cryptography==41.0.7
+cryptography==42.0.4
     # via authlib
 flask==2.0.0
     # via
-    #   -r requirements/min-versions.in
+    #   -r min-versions.in
     #   flask-httpauth
     #   flask-marshmallow
     #   flask-sqlalchemy
 flask-httpauth==4.0.0
-    # via -r requirements/min-versions.in
+    # via -r min-versions.in
 flask-marshmallow==0.12.0
-    # via -r requirements/min-versions.in
+    # via -r min-versions.in
 flask-sqlalchemy==2.5.1
-    # via -r requirements/min-versions.in
+    # via -r min-versions.in
 greenlet==3.0.2
     # via sqlalchemy
 itsdangerous==2.1.2
@@ -41,7 +41,7 @@ marshmallow==3.20.1
     #   marshmallow-dataclass
     #   webargs
 marshmallow-dataclass==8.5.0
-    # via -r requirements/min-versions.in
+    # via -r min-versions.in
 mypy-extensions==1.0.0
     # via typing-inspect
 packaging==23.2
@@ -55,15 +55,15 @@ six==1.16.0
     # via flask-marshmallow
 sqlalchemy==1.4.49
     # via
-    #   -r requirements/min-versions.in
+    #   -r min-versions.in
     #   flask-sqlalchemy
 typing-extensions==4.9.0
     # via typing-inspect
 typing-inspect==0.9.0
     # via marshmallow-dataclass
 webargs==8.3.0
-    # via -r requirements/min-versions.in
+    # via -r min-versions.in
 werkzeug==2.0.0
     # via
-    #   -r requirements/min-versions.in
+    #   -r min-versions.in
     #   flask
