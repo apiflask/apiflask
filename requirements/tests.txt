@@ -7,28 +7,28 @@
 #
 asgiref==3.7.2
     # via -r requirements/tests.in
-attrs==23.1.0
+attrs==23.2.0
     # via
     #   jsonschema
     #   pytest
     #   referencing
-certifi==2023.11.17
+certifi==2024.2.2
     # via requests
 charset-normalizer==3.3.2
     # via requests
-coverage[toml]==7.3.3
+coverage[toml]==7.4.1
     # via pytest-cov
 idna==3.6
     # via requests
 iniconfig==2.0.0
     # via pytest
-jsonschema==4.20.0
+jsonschema==4.21.1
     # via
     #   openapi-schema-validator
     #   openapi-spec-validator
 jsonschema-path==0.3.2
     # via openapi-spec-validator
-jsonschema-specifications==2023.11.2
+jsonschema-specifications==2023.12.1
     # via
     #   jsonschema
     #   openapi-schema-validator
@@ -42,7 +42,7 @@ packaging==23.2
     # via pytest
 pathable==0.4.3
     # via jsonschema-path
-pluggy==1.3.0
+pluggy==1.4.0
     # via pytest
 py==1.11.0
     # via pytest
@@ -63,7 +63,7 @@ requests==2.31.0
     # via jsonschema-path
 rfc3339-validator==0.1.4
     # via openapi-schema-validator
-rpds-py==0.13.2
+rpds-py==0.18.0
     # via
     #   jsonschema
     #   referencing
@@ -75,5 +75,5 @@ tomli==2.0.1
     # via coverage
 typing-extensions==4.9.0
     # via asgiref
-urllib3==2.1.0
+urllib3==2.2.1
     # via requests

@@ -1,6 +1,9 @@
 ## Version 2.1.1
 
 Released: -
+- Reuse the File, Config field, and file-related validators from flask-marshmallow ([issue #540][issue_540]).
+
+[issue_540]: https://github.com/apiflask/apiflask/issues/540
 
 
 ## Version 2.1.0
