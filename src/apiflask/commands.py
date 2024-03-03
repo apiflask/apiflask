@@ -1,5 +1,3 @@
-import json
-
 import click
 from flask import current_app
 from flask.cli import with_appcontext
@@ -47,7 +45,7 @@ def spec_command(format, output, indent, quiet):
     json_indent = None if indent == 0 else indent
 
     if spec_format == 'json':
-        spec = json.dumps(spec, indent=json_indent)
+        spec = current_app.json.dumps(spec, indent=json_indent)
 
     # output to stdout
     if not quiet:

@@ -6,7 +6,9 @@
 #    pip-compile-multi
 #
 asgiref==3.7.2
-    # via -r requirements/tests.in
+    # via -r requirements\tests.in
+atomicwrites==1.4.1
+    # via pytest
 attrs==23.2.0
     # via
     #   jsonschema
@@ -16,7 +18,9 @@ certifi==2024.2.2
     # via requests
 charset-normalizer==3.3.2
     # via requests
-coverage[toml]==7.4.1
+colorama==0.4.6
+    # via pytest
+coverage[toml]==7.4.3
     # via pytest-cov
 idna==3.6
     # via requests
@@ -37,7 +41,7 @@ lazy-object-proxy==1.10.0
 openapi-schema-validator==0.6.2
     # via openapi-spec-validator
 openapi-spec-validator==0.7.1
-    # via -r requirements/tests.in
+    # via -r requirements\tests.in
 packaging==23.2
     # via pytest
 pathable==0.4.3
@@ -48,10 +52,10 @@ py==1.11.0
     # via pytest
 pytest==6.2.5
     # via
-    #   -r requirements/tests.in
+    #   -r requirements\tests.in
     #   pytest-cov
 pytest-cov==4.1.0
-    # via -r requirements/tests.in
+    # via -r requirements\tests.in
 pyyaml==6.0.1
     # via jsonschema-path
 referencing==0.31.1
@@ -71,9 +75,5 @@ six==1.16.0
     # via rfc3339-validator
 toml==0.10.2
     # via pytest
-tomli==2.0.1
-    # via coverage
-typing-extensions==4.9.0
-    # via asgiref
 urllib3==2.2.1
     # via requests

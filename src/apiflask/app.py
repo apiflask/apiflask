@@ -1,5 +1,4 @@
 import inspect
-import json
 import re
 import typing as t
 import warnings
@@ -646,7 +645,7 @@ class APIFlask(APIScaffold, Flask):
                 )
             spec: str
             if spec_format == 'json':
-                spec = json.dumps(
+                spec = self.json.dumps(
                     self._spec, indent=self.config['LOCAL_SPEC_JSON_INDENT']
                 )
             else:
