@@ -2,8 +2,10 @@
 
 Released: -
 - Reuse the File, Config field, and file-related validators from flask-marshmallow ([issue #540][issue_540]).
+- Add support for a `--quiet` option to the `flask spec` command ([issue #548][issue_548]).
 
 [issue_540]: https://github.com/apiflask/apiflask/issues/540
+[issue_548]: https://github.com/apiflask/apiflask/issues/548
 
 
 ## Version 2.1.0

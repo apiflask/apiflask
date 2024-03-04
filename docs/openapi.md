@@ -246,6 +246,19 @@ $ flask spec
 ```
 
 
+### Suppress the output
+
+!!! warning "Version >= 2.1.1"
+
+    This feature was added in the [version 2.1.1](/changelog/#version-211).
+
+If you wish to write the spec to a local file without also printing to stdout, you can specify the `--quiet/-q` option:
+
+```
+$ flask spec --output openapi.json --quiet
+```
+
+
 ## Keep the local spec in sync
 
 !!! warning "Version >= 0.7.0"

@@ -71,3 +71,8 @@ def test_flask_spec_indent(cli_runner, indent, tmp_path):
     else:
         assert f'{{\n{" " * indent}"info": {{' in stdout_result.output
         assert f'{{\n{" " * indent}"info": {{' in file_result.output
+
+
+def test_flask_spec_quiet(app, cli_runner):
+    result = cli_runner.invoke(spec_command, ['--quiet'])
+    assert result.output == ''
