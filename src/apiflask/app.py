@@ -10,6 +10,7 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Blueprint
 from flask import Flask
 from flask import has_request_context
+from flask import json
 from flask import jsonify
 from flask import render_template_string
 from flask import request
@@ -645,7 +646,7 @@ class APIFlask(APIScaffold, Flask):
                 )
             spec: str
             if spec_format == 'json':
-                spec = self.json.dumps(
+                spec = json.dumps(
                     self._spec, indent=self.config['LOCAL_SPEC_JSON_INDENT']
                 )
             else:
