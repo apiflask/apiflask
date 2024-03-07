@@ -1,5 +1,4 @@
 import inspect
-import json
 import re
 import typing as t
 import warnings
@@ -11,6 +10,7 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Blueprint
 from flask import Flask
 from flask import has_request_context
+from flask import json
 from flask import jsonify
 from flask import render_template_string
 from flask import request

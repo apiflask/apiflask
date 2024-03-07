@@ -1,6 +1,8 @@
 from marshmallow import EXCLUDE
+from marshmallow.validate import Range
 
 from apiflask import Schema
+from apiflask.fields import Decimal
 from apiflask.fields import File
 from apiflask.fields import Integer
 from apiflask.fields import List
@@ -27,6 +29,10 @@ class Bar(Schema):
 class Baz(Schema):
     id = Integer(dump_default=123)
     name = String()
+
+
+class Qux(Schema):
+    number = Decimal(validate=Range(min=0))
 
 
 class Query(Schema):
