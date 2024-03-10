@@ -1,7 +1,8 @@
 ## Version 2.1.1
 
-Released: -
-- Reuse the File, Config field, and file-related validators from flask-marshmallow ([issue #540][issue_540]).
+Released: 2024/3/10
+
+- Reuse the `File`, `Config` field, and file-related validators from flask-marshmallow ([issue #540][issue_540]).
 - Add support for a `--quiet` option to the `flask spec` command ([issue #548][issue_548]).
 - Fix the `flask spec` command for validators operating on complex data types ([issue #547][issue_547]).
 
