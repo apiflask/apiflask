@@ -4,7 +4,7 @@
 - Class-based view example: [/examples/cbv/app.py][_cbv]
 - ORM example (with Flask-SQLAlchemy): [/examples/orm/app.py][_orm]
 - Pagination example (with Flask-SQLAlchemy): [/examples/pagination/app.py][_pagination]
-- OpenAPI example: [/examples/openapi/app.py][_openapi]
+- OpenAPI example: [/examples/openapi][_openapi]
 - Base response example: [/examples/base_response/app.py][_base_response]
 - Token auth example: [/examples/auth/token_auth/app.py][_token_auth]
 - Basic auth example: [/examples/auth/basic_auth/app.py][_basic_auth]
@@ -15,7 +15,7 @@
 [_cbv]: https://github.com/apiflask/apiflask/tree/main/examples/cbv/app.py
 [_orm]: https://github.com/apiflask/apiflask/tree/main/examples/orm/app.py
 [_pagination]: https://github.com/apiflask/apiflask/tree/main/examples/pagination/app.py
-[_openapi]: https://github.com/apiflask/apiflask/tree/main/examples/openapi/app.py
+[_openapi]: https://github.com/apiflask/apiflask/tree/main/examples/openapi
 [_base_response]: https://github.com/apiflask/apiflask/tree/main/examples/base_response/app.py
 [_token_auth]: https://github.com/apiflask/apiflask/tree/main/examples/auth/token_auth/app.py
 [_basic_auth]: https://github.com/apiflask/apiflask/tree/main/examples/auth/basic_auth/app.py
