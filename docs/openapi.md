@@ -1148,5 +1148,5 @@ def update_spec(spec):
     return spec
 ```
 
-Check out [the example application](https://github.com/apiflask/apiflask/tree/main/examples/openapi/app.py)
+Check out [the example application](https://github.com/apiflask/apiflask/tree/main/examples/openapi)
 for OpenAPI support, see [the examples page](/examples) for running the example application.
