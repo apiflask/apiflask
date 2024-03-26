@@ -1,6 +1,8 @@
 import io
+from importlib.metadata import version
 
 import pytest
+from packaging.version import parse
 from werkzeug.datastructures import FileStorage
 
 from .schemas import Files
@@ -43,6 +45,28 @@ def test_file_field(app, client):
     )
     assert rv.status_code == 422
     assert rv.json['detail']['files']['image'] == ['Not a valid file.']
+
+
+@pytest.mark.skipif(parse(version('flask-marshmallow')) < parse('1.2.1'),
+                    reason='Need flask_marshmallow 1.2.1 for processing empty file field')
+def test_empty_file_field(app, client):
+    @app.post('/')
+    @app.input(Files, location='files')
+    def index(files_data):
+        data = {}
+        if 'image' in files_data and isinstance(files_data['image'], FileStorage):
+            data['image'] = True
+        return data
+
+    rv = client.post(
+        '/',
+        data={
+            'image': '',
+        },
+        content_type='multipart/form-data'
+    )
+    assert rv.status_code == 200
+    assert rv.json == {}
 
 
 def test_multiple_file_field(app, client):
