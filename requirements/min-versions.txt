@@ -13,7 +13,7 @@ cffi==1.16.0
     # via cryptography
 click==8.1.7
     # via flask
-cryptography==42.0.3
+cryptography==42.0.5
     # via authlib
 flask==2.0.0
     # via
@@ -35,7 +35,7 @@ jinja2==3.1.3
     # via flask
 markupsafe==2.1.5
     # via jinja2
-marshmallow==3.20.2
+marshmallow==3.21.1
     # via
     #   flask-marshmallow
     #   marshmallow-dataclass
@@ -44,7 +44,7 @@ marshmallow-dataclass==8.5.0
     # via -r requirements/min-versions.in
 mypy-extensions==1.0.0
     # via typing-inspect
-packaging==23.2
+packaging==24.0
     # via
     #   apispec
     #   flask-marshmallow
@@ -56,7 +56,7 @@ sqlalchemy==1.4.49
     # via
     #   -r requirements/min-versions.in
     #   flask-sqlalchemy
-typing-extensions==4.9.0
+typing-extensions==4.10.0
     # via typing-inspect
 typing-inspect==0.9.0
     # via marshmallow-dataclass
