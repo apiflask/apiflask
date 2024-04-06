@@ -1,0 +1,80 @@
+[project]
+name = "APIFlask"
+description = "A lightweight web API framework based on Flask and marshmallow-code projects."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Grey Li", email = "withlihui@gmail.com" }]
+version = "2.1.2-dev"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Framework :: Flask",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Internet :: WWW/HTTP :: WSGI",
+    "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+dependencies = [
+    "flask >= 2",
+    "flask-marshmallow >= 1.0.0",
+    "marshmallow >= 3.20",
+    "webargs >= 8.3",
+    "flask-httpauth >= 4",
+    "apispec >= 6",
+]
+
+[project.urls]
+Documentation = "https://apiflask.com/docs"
+Changes = "https://apiflask.com/changelog"
+"Source Code" = "https://github.com/apiflask/apiflask"
+"Issue Tracker" = "https://github.com/apiflask/apiflask/issues"
+Donate = "https://opencollective.com/apiflask"
+
+
+[project.optional-dependencies]
+dotenv = ["python-dotenv"]
+async = ["asgiref>=3.2"]
+yaml = ["pyyaml"]
+
+[project.scripts]
+apiflask = "flask.cli:main"
+spec = "apiflask.commands:spec_command"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.mypy]
+files = ["src/apiflask"]
+allow_redefinition = true
+warn_redundant_casts = true
+warn_unused_configs = true
+no_implicit_optional = true
+local_partial_types = true
+strict_equality = true
+warn_return_any = true
+warn_unreachable = true
+disallow_untyped_calls = true
+
+[[tool.mypy.overrides]]
+module = ["flask_marshmallow.*", "apispec.*", "flask_httpauth.*"]
+ignore_missing_imports = true
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "examples"]
+filterwarnings = ["ignore::UserWarning"]
+addopts = ["--cov=apiflask", "--cov-branch", "--cov-report=term-missing"]
+
+[tool.coverage.run]
+omit = ["src/apiflask/_decorators.py", "src/apiflask/views.py"]

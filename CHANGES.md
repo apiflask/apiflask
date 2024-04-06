@@ -2,6 +2,9 @@
 
 Released: --
 
+- Deprecate the `__version__` attribute. Use feature detection, or
+`importlib.metadata.version("apiflask")`, instead. 
+
 
 ## Version 2.1.1
 
