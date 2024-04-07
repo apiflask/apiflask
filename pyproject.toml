@@ -53,7 +53,6 @@ spec = "apiflask.commands:spec_command"
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-
 [tool.mypy]
 files = ["src/apiflask"]
 allow_redefinition = true
@@ -69,7 +68,6 @@ disallow_untyped_calls = true
 [[tool.mypy.overrides]]
 module = ["flask_marshmallow.*", "apispec.*", "flask_httpauth.*"]
 ignore_missing_imports = true
-
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "examples"]

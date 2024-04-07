@@ -25,7 +25,7 @@ repos:
           - flake8-implicit-str-concat
           - flake8-quotes
         args:
-          - --config=./setup.cfg
+          - --config=.flake8
   - repo: https://github.com/peterdemin/pip-compile-multi
     rev: v2.4.5
     hooks:
