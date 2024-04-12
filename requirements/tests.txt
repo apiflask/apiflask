@@ -6,7 +6,7 @@
 #    pip-compile-multi
 #
 asgiref==3.8.1
-    # via -r requirements/tests.in
+    # via -r tests.in
 attrs==23.2.0
     # via
     #   jsonschema
@@ -18,7 +18,7 @@ charset-normalizer==3.3.2
     # via requests
 coverage[toml]==7.4.4
     # via pytest-cov
-idna==3.6
+idna==3.7
     # via requests
 iniconfig==2.0.0
     # via pytest
@@ -37,7 +37,7 @@ lazy-object-proxy==1.10.0
 openapi-schema-validator==0.6.2
     # via openapi-spec-validator
 openapi-spec-validator==0.7.1
-    # via -r requirements/tests.in
+    # via -r tests.in
 packaging==24.0
     # via pytest
 pathable==0.4.3
@@ -48,10 +48,10 @@ py==1.11.0
     # via pytest
 pytest==6.2.5
     # via
-    #   -r requirements/tests.in
+    #   -r tests.in
     #   pytest-cov
 pytest-cov==5.0.0
-    # via -r requirements/tests.in
+    # via -r tests.in
 pyyaml==6.0.1
     # via jsonschema-path
 referencing==0.31.1
