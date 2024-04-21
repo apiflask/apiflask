@@ -29,7 +29,7 @@ flask-sqlalchemy==2.5.1
     # via -r requirements/min-versions.in
 greenlet==3.0.3
     # via sqlalchemy
-itsdangerous==2.1.2
+itsdangerous==2.2.0
     # via flask
 jinja2==3.1.3
     # via flask
@@ -50,13 +50,13 @@ packaging==24.0
     #   flask-marshmallow
     #   marshmallow
     #   webargs
-pycparser==2.21
+pycparser==2.22
     # via cffi
 sqlalchemy==1.4.49
     # via
     #   -r requirements/min-versions.in
     #   flask-sqlalchemy
-typing-extensions==4.10.0
+typing-extensions==4.11.0
     # via typing-inspect
 typing-inspect==0.9.0
     # via marshmallow-dataclass

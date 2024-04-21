@@ -1,0 +1,34 @@
+[flake8]
+# B = bugbear
+# E = pycodestyle errors
+# F = flake8 pyflakes
+# W = pycodestyle warnings
+# B9 = bugbear opinions
+# ISC = implicit-str-concat
+# Q0 = quotes
+select = B, E, F, W, B9, ISC, Q0
+# flake8-quotes
+inline-quotes = single
+multiline-quotes = double
+docstring-quotes = double
+avoid-escape = True
+
+ignore =
+    # bin op line break, invalid
+    W503
+# up to 88 allowed by bugbear B950
+max-line-length = 100
+per-file-ignores =
+    # modules export names
+    src/apiflask/__init__.py: F401
+    src/apiflask/fields.py: F401
+    src/apiflask/validators.py: F401
+    src/apiflask/views.py: F401
+    # HTML templates
+    src/apiflask/ui_templates.py: E501, B950
+exclude =
+    # only used when running flake8 manually
+    .*
+    *.txt
+    *.md
+    __pycache__
