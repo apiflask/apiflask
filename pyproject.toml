@@ -39,7 +39,6 @@ Changes = "https://apiflask.com/changelog"
 "Issue Tracker" = "https://github.com/apiflask/apiflask/issues"
 Donate = "https://opencollective.com/apiflask"
 
-
 [project.optional-dependencies]
 dotenv = ["python-dotenv"]
 async = ["asgiref>=3.2"]
