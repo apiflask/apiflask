@@ -36,10 +36,10 @@ copyright:
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
   - pymdownx.highlight
   - pymdownx.inlinehilite
-  - pymdownx.tabbed
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.superfences
   - pymdownx.snippets
   - pymdownx.progressbar
@@ -49,7 +49,9 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Documentation Index: docs.md
-  - Migrating from Flask: migrating.md
+  - Migrating to APIFlask:
+    - From Flask: migrations/flask.md
+    - From Flask-RESTPlus/Flask-RESTX: migrations/flask-restplus.md
   - Basic Usage: usage.md
   - Request Handling: request.md
   - Response Formatting: response.md
