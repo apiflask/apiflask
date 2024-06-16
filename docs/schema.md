@@ -372,7 +372,7 @@ class PetOut:
 
 
 @app.post('/pets')
-@app.input(PetIn.Schema)
+@app.input(PetIn.Schema, arg_name='pet')
 @app.output(PetOut.Schema, status_code=201)
 def create_pet(pet: PetIn):
     return {
