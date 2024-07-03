@@ -23,6 +23,8 @@ def test_file_schema(app, client):
         'type': 'string',
         'format': 'binary'
     }
+    rv = client.get('/image')
+    assert rv.status_code == 200
 
 
 def test_file_schema_repr():
