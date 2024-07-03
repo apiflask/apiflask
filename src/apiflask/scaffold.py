@@ -12,6 +12,7 @@ from webargs.multidictproxy import MultiDictProxy
 from .exceptions import _ValidationError
 from .helpers import _sentinel
 from .schemas import EmptySchema
+from .schemas import FileSchema
 from .schemas import Schema
 from .types import DecoratedType
 from .types import DictSchemaType
@@ -480,6 +481,8 @@ class APIScaffold:
                 **kwargs: t.Any
             ) -> Response:  # pragma: no cover
                 """From Flask-Marshmallow, see the NOTICE file for license information."""
+                if isinstance(schema, FileSchema):
+                    return obj  # type: ignore
                 if many is _sentinel:
                     many = schema.many  # type: ignore
                 base_schema: OpenAPISchemaType = current_app.config['BASE_RESPONSE_SCHEMA']
