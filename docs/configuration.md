@@ -967,7 +967,7 @@ app.config['BASE_RESPONSE_DATA_KEY'] = 'data'
 
     This configuration variable was added in the [version 0.9.0](/changelog/#version-090).
 
-!!! notes
+!!! note
 
     `BASE_RESPONSE_DATA_KEY` shoud be the same as `data_key` instead of the name of the property if you specify `data_key`.
 
