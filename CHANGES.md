@@ -1,6 +1,6 @@
 ## Version 2.1.2
 
-Released: --
+Released: 2024/7/6
 
 - Deprecate the `__version__` attribute. Use feature detection or `importlib.metadata.version("apiflask")` instead.
 - Explicitly skip the data serialization for response with `app.output(FileSchema)`.

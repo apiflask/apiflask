@@ -4,7 +4,7 @@ description = "A lightweight web API framework based on Flask and marshmallow-co
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Grey Li", email = "withlihui@gmail.com" }]
-version = "2.1.2-dev"
+version = "2.1.2"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Web Environment",
@@ -71,7 +71,7 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests", "examples"]
 filterwarnings = ["ignore::UserWarning"]
-addopts = ["--cov=apiflask", "--cov-branch", "--cov-report=term-missing"]
+addopts = ["--cov=src/apiflask", "--cov-branch", "--cov-report=term-missing"]
 
 [tool.coverage.run]
 omit = ["src/apiflask/_decorators.py", "src/apiflask/views.py"]
