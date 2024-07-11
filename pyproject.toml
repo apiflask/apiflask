@@ -44,8 +44,9 @@ dotenv = ["python-dotenv"]
 async = ["asgiref>=3.2"]
 yaml = ["pyyaml"]
 
-[project.scripts]
+[project.entry-points."console_scripts"]
 apiflask = "flask.cli:main"
+[project.entry-points."flask.commands"]
 spec = "apiflask.commands:spec_command"
 
 [build-system]
