@@ -4,7 +4,7 @@ description = "A lightweight web API framework based on Flask and marshmallow-co
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Grey Li", email = "withlihui@gmail.com" }]
-version = "2.1.3-dev"
+version = "2.1.3"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Web Environment",

@@ -1,6 +1,10 @@
 ## Version 2.1.3
 
-Released: -
+Released: 2024/7/14
+
+- Fix the `flask spec` command for latest Flask ([issue #582][issue_582]).
+
+[issue_582]: https://github.com/apiflask/apiflask/issues/582
 
 
 ## Version 2.1.2
