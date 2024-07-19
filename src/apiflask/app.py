@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import inspect
 import re
 import typing as t
@@ -247,15 +249,15 @@ class APIFlask(APIScaffold, Flask):
     """
 
     openapi_version: str = ConfigAttribute('OPENAPI_VERSION')  # type: ignore
-    tags: t.Optional[TagsType] = ConfigAttribute('TAGS')  # type: ignore
-    servers: t.Optional[t.List[t.Dict[str, str]]] = ConfigAttribute('SERVERS')  # type: ignore
-    info: t.Optional[t.Dict[str, t.Union[str, dict]]] = ConfigAttribute('INFO')  # type: ignore
-    description: t.Optional[str] = ConfigAttribute('DESCRIPTION')  # type: ignore
-    contact: t.Optional[t.Dict[str, str]] = ConfigAttribute('CONTACT')  # type: ignore
-    license: t.Optional[t.Dict[str, str]] = ConfigAttribute('LICENSE')  # type: ignore
-    external_docs: t.Optional[t.Dict[str, str]] = ConfigAttribute('EXTERNAL_DOCS')  # type: ignore
-    terms_of_service: t.Optional[str] = ConfigAttribute('TERMS_OF_SERVICE')  # type: ignore
-    security_schemes: t.Optional[t.Dict[str, t.Any]] = \
+    tags: TagsType | None = ConfigAttribute('TAGS')  # type: ignore
+    servers: list[dict[str, str]] | None = ConfigAttribute('SERVERS')  # type: ignore
+    info: dict[str, str | dict] | None = ConfigAttribute('INFO')  # type: ignore
+    description: str | None = ConfigAttribute('DESCRIPTION')  # type: ignore
+    contact: dict[str, str] | None = ConfigAttribute('CONTACT')  # type: ignore
+    license: dict[str, str] | None = ConfigAttribute('LICENSE')  # type: ignore
+    external_docs: dict[str, str] | None = ConfigAttribute('EXTERNAL_DOCS')  # type: ignore
+    terms_of_service: str | None = ConfigAttribute('TERMS_OF_SERVICE')  # type: ignore
+    security_schemes: dict[str, t.Any] | None = \
         ConfigAttribute('SECURITY_SCHEMES')  # type: ignore
 
     def __init__(
@@ -263,23 +265,23 @@ class APIFlask(APIScaffold, Flask):
         import_name: str,
         title: str = 'APIFlask',
         version: str = '0.1.0',
-        spec_path: t.Optional[str] = '/openapi.json',
-        docs_path: t.Optional[str] = '/docs',
-        docs_oauth2_redirect_path: t.Optional[str] = '/docs/oauth2-redirect',
+        spec_path: str | None = '/openapi.json',
+        docs_path: str | None = '/docs',
+        docs_oauth2_redirect_path: str | None = '/docs/oauth2-redirect',
         docs_ui: str = 'swagger-ui',
-        openapi_blueprint_url_prefix: t.Optional[str] = None,
+        openapi_blueprint_url_prefix: str | None = None,
         json_errors: bool = True,
         enable_openapi: bool = True,
-        spec_plugins: t.Optional[t.List[BasePlugin]] = None,
-        static_url_path: t.Optional[str] = None,
+        spec_plugins: list[BasePlugin] | None = None,
+        static_url_path: str | None = None,
         static_folder: str = 'static',
-        static_host: t.Optional[str] = None,
+        static_host: str | None = None,
         host_matching: bool = False,
         subdomain_matching: bool = False,
         template_folder: str = 'templates',
-        instance_path: t.Optional[str] = None,
+        instance_path: str | None = None,
         instance_relative_config: bool = False,
-        root_path: t.Optional[str] = None
+        root_path: str | None = None
     ) -> None:
         """Make an app instance.
 
@@ -350,13 +352,13 @@ class APIFlask(APIScaffold, Flask):
         self.enable_openapi = enable_openapi
         self.json_errors = json_errors
 
-        self.spec_callback: t.Optional[SpecCallbackType] = None
+        self.spec_callback: SpecCallbackType | None = None
         self.error_callback: ErrorCallbackType = self._error_handler
         self.schema_name_resolver = self._schema_name_resolver
 
-        self.spec_plugins: t.List[BasePlugin] = spec_plugins or []
-        self._spec: t.Optional[t.Union[dict, str]] = None
-        self._auth_blueprints: t.Dict[str, t.Dict[str, t.Any]] = {}
+        self.spec_plugins: list[BasePlugin] = spec_plugins or []
+        self._spec: dict | str | None = None
+        self._auth_blueprints: dict[str, t.Dict[str, t.Any]] = {}
 
         self._register_openapi_blueprint()
         self._register_error_handlers()
@@ -466,7 +468,7 @@ class APIFlask(APIScaffold, Flask):
           422 (default) or the value you passed in config `VALIDATION_ERROR_STATUS_CODE`.
           If the error is triggered by [`HTTPError`][apiflask.exceptions.HTTPError]
           or [`abort`][apiflask.exceptions.abort], it will be the status code
-          you passed. Otherwise, it will be the status code set by Werkzueg when
+          you passed. Otherwise, it will be the status code set by Werkzeug when
           processing the request.
         - message: The error description for this error, either you passed or grabbed from
           Werkzeug.
@@ -584,9 +586,9 @@ class APIFlask(APIScaffold, Flask):
 
     def _get_spec(
         self,
-        spec_format: t.Optional[str] = None,
+        spec_format: str | None = None,
         force_update: bool = False
-    ) -> t.Union[dict, str]:
+    ) -> dict | str:
         """Get the current OAS document file.
 
         This method will return the cached spec on the first call. If you want
@@ -685,7 +687,7 @@ class APIFlask(APIScaffold, Flask):
         return f
 
     @property
-    def spec(self) -> t.Union[dict, str]:
+    def spec(self) -> dict | str:
         """Get the current OAS document file.
 
         This property will call `app._get_spec()` method and set the
@@ -698,8 +700,8 @@ class APIFlask(APIScaffold, Flask):
         return self._get_spec(force_update=True)
 
     @staticmethod
-    def _schema_name_resolver(schema: t.Type[Schema]) -> str:
-        """Default schema name resovler."""
+    def _schema_name_resolver(schema: type[Schema]) -> str:
+        """Default schema name resolver."""
         # some schema are passed through the `doc(responses=...)`
         # we need to make sure the schema is an instance of `Schema`
         if isinstance(schema, type):  # pragma: no cover
@@ -730,16 +732,16 @@ class APIFlask(APIScaffold, Flask):
             info['description'] = self.description
         return info
 
-    def _make_tags(self) -> t.List[t.Dict[str, t.Any]]:
+    def _make_tags(self) -> list[dict[str, t.Any]]:
         """Make OpenAPI tags object."""
-        tags: t.Optional[TagsType] = self.tags
+        tags: TagsType | None = self.tags
         if tags is not None:
             # convert simple tags list into standard OpenAPI tags
             if isinstance(tags[0], str):
                 for index, tag_name in enumerate(tags):
                     tags[index] = {'name': tag_name}  # type: ignore
         else:
-            tags: t.List[t.Dict[str, t.Any]] = []  # type: ignore
+            tags: list[dict[str, t.Any]] = []  # type: ignore
             if self.config['AUTO_TAGS']:
                 # auto-generate tags from blueprints
                 for blueprint_name, blueprint in self.blueprints.items():
@@ -747,15 +749,15 @@ class APIFlask(APIScaffold, Flask):
                        not hasattr(blueprint, 'enable_openapi') or \
                        not blueprint.enable_openapi:  # type: ignore
                         continue
-                    tag: t.Dict[str, t.Any] = get_tag(blueprint, blueprint_name)  # type: ignore
+                    tag: dict[str, t.Any] = get_tag(blueprint, blueprint_name)  # type: ignore
                     tags.append(tag)  # type: ignore
         return tags  # type: ignore
 
-    def _collect_security_info(self) -> t.Tuple[t.List[str], t.List[HTTPAuthType]]:
+    def _collect_security_info(self) -> t.Tuple[list[str], list[HTTPAuthType]]:
         """Detect `auth_required` on blueprint before_request functions and view functions."""
         # security schemes
-        auth_names: t.List[str] = []
-        auth_schemes: t.List[HTTPAuthType] = []
+        auth_names: list[str] = []
+        auth_schemes: list[HTTPAuthType] = []
 
         def _update_auth_info(auth: HTTPAuthType) -> None:
             # update auth_schemes and auth_names
@@ -831,7 +833,7 @@ class APIFlask(APIScaffold, Flask):
             schema_name_resolver=self.schema_name_resolver  # type: ignore
         )
 
-        spec_plugins: t.List[BasePlugin] = [self._ma_plugin, *self.spec_plugins]
+        spec_plugins: list[BasePlugin] = [self._ma_plugin, *self.spec_plugins]
 
         spec: APISpec = APISpec(
             title=self.title,
@@ -865,17 +867,17 @@ class APIFlask(APIScaffold, Flask):
             spec.components.security_scheme(name, scheme)
 
         # paths
-        paths: t.Dict[str, t.Dict[str, t.Any]] = {}
-        rules: t.List[t.Any] = sorted(
+        paths: dict[str, dict[str, t.Any]] = {}
+        rules: list[t.Any] = sorted(
             list(self.url_map.iter_rules()), key=lambda rule: len(rule.rule)
         )
         for rule in rules:
-            operations: t.Dict[str, t.Any] = {}
+            operations: dict[str, t.Any] = {}
             view_func: ViewFuncType = self.view_functions[rule.endpoint]  # type: ignore
             # skip endpoints from openapi blueprint and the built-in static endpoint
             if rule.endpoint in default_bypassed_endpoints:
                 continue
-            blueprint_name: t.Optional[str] = None  # type: ignore
+            blueprint_name: str | None = None  # type: ignore
             if '.' in rule.endpoint:
                 blueprint_name: str = rule.endpoint.rsplit('.', 1)[0]  # type: ignore
                 blueprint = self.blueprints.get(blueprint_name)  # type: ignore
@@ -910,7 +912,7 @@ class APIFlask(APIScaffold, Flask):
                 continue
 
             # operation tags
-            operation_tags: t.Optional[t.List[str]] = None
+            operation_tags: list[str] | None = None
             if view_func._spec.get('tags'):
                 operation_tags = view_func._spec.get('tags')
             else:
@@ -950,7 +952,7 @@ class APIFlask(APIScaffold, Flask):
                             operation_tags = \
                                 get_operation_tags(blueprint, blueprint_name)  # type: ignore
 
-                operation: t.Dict[str, t.Any] = {
+                operation: dict[str, t.Any] = {
                     'parameters': [
                         {'in': location, 'schema': schema}
                         for schema, location in view_func._spec.get('args', [])
@@ -1069,7 +1071,7 @@ class APIFlask(APIScaffold, Flask):
                     responses: ResponsesType = view_func._spec.get('responses')
                     # turn status_code list to dict {status_code: reason_phrase}
                     if isinstance(responses, list):
-                        responses: t.Dict[int, str] = {}  # type: ignore
+                        responses: dict[int, str] = {}  # type: ignore
                         for status_code in view_func._spec.get('responses'):
                             responses[  # type: ignore
                                 status_code
@@ -1162,7 +1164,7 @@ class APIFlask(APIScaffold, Flask):
                     and view_func._spec.get('omit_default_path_parameters', False)
                 )
             ):
-                arguments: t.List[t.Dict[str, str]] = []
+                arguments: list[dict[str, str]] = []
                 for _, argument_type, argument_name in path_arguments:
                     argument = get_argument(argument_type, argument_name)
                     arguments.append(argument)
@@ -1178,7 +1180,7 @@ class APIFlask(APIScaffold, Flask):
 
         for path, operations in paths.items():
             # sort by method before adding them to the spec
-            sorted_operations: t.Dict[str, t.Any] = {}
+            sorted_operations: dict[str, t.Any] = {}
             for method in ['get', 'post', 'put', 'patch', 'delete']:
                 if method in operations:
                     sorted_operations[method] = operations[method]
@@ -1208,13 +1210,13 @@ class APIFlask(APIScaffold, Flask):
         self,
         operation: dict,
         status_code: str,
-        schema: t.Union[SchemaType, dict],
+        schema: SchemaType | dict,
         description: str,
-        example: t.Optional[t.Any] = None,
-        examples: t.Optional[t.Dict[str, t.Any]] = None,
-        links: t.Optional[t.Dict[str, t.Any]] = None,
-        content_type: t.Optional[str] = 'application/json',
-        headers_schema: t.Optional[SchemaType] = None,
+        example: t.Any | None = None,
+        examples: dict[str, t.Any] | None = None,
+        links: dict[str, t.Any] | None = None,
+        content_type: str | None = 'application/json',
+        headers_schema: SchemaType | None = None,
     ) -> None:
         """Add response to operation.
 
@@ -1230,10 +1232,10 @@ class APIFlask(APIScaffold, Flask):
 
         - Add `links` parameter.
         """
-        base_schema: t.Optional[OpenAPISchemaType] = self.config['BASE_RESPONSE_SCHEMA']
+        base_schema: OpenAPISchemaType | None = self.config['BASE_RESPONSE_SCHEMA']
         data_key: str = self.config['BASE_RESPONSE_DATA_KEY']
         if base_schema is not None:
-            base_schema_spec: t.Dict[str, t.Any]
+            base_schema_spec: dict[str, t.Any]
             if isinstance(base_schema, type):
                 base_schema_spec = \
                     self._ma_plugin.converter.schema2jsonschema(  # type: ignore

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as t
 from collections.abc import Mapping as ABCMapping
 from functools import wraps
@@ -93,8 +95,8 @@ def _ensure_sync(f):
 
 def _generate_schema_from_mapping(
     schema: DictSchemaType,
-    schema_name: t.Optional[str]
-) -> t.Type[Schema]:
+    schema_name: str | None
+) -> type[Schema]:
     if schema_name is None:
         schema_name = 'GeneratedSchema'
     return Schema.from_dict(schema, name=schema_name)()  # type: ignore
@@ -145,8 +147,8 @@ class APIScaffold:
     def auth_required(
         self,
         auth: HTTPAuthType,
-        roles: t.Optional[list] = None,
-        optional: t.Optional[str] = None
+        roles: list | None = None,
+        optional: str | None = None
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Protect a view with provided authentication settings.
 
@@ -204,10 +206,10 @@ class APIScaffold:
         self,
         schema: SchemaType,
         location: str = 'json',
-        arg_name: t.Optional[str] = None,
-        schema_name: t.Optional[str] = None,
-        example: t.Optional[t.Any] = None,
-        examples: t.Optional[t.Dict[str, t.Any]] = None,
+        arg_name: str | None = None,
+        schema_name: str | None = None,
+        example: t.Any | None = None,
+        examples: dict[str, t.Any] | None = None,
         **kwargs: t.Any
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Add input settings for view functions.
@@ -333,13 +335,13 @@ class APIScaffold:
         self,
         schema: SchemaType,
         status_code: int = 200,
-        description: t.Optional[str] = None,
-        schema_name: t.Optional[str] = None,
-        example: t.Optional[t.Any] = None,
-        examples: t.Optional[t.Dict[str, t.Any]] = None,
-        links: t.Optional[t.Dict[str, t.Any]] = None,
-        content_type: t.Optional[str] = 'application/json',
-        headers: t.Optional[SchemaType] = None,
+        description: str | None = None,
+        schema_name: str | None = None,
+        example: t.Any | None = None,
+        examples: dict[str, t.Any] | None = None,
+        links: dict[str, t.Any] | None = None,
+        content_type: str | None = 'application/json',
+        headers: SchemaType | None = None,
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Add output settings for view functions.
 
@@ -531,14 +533,14 @@ class APIScaffold:
 
     def doc(
         self,
-        summary: t.Optional[str] = None,
-        description: t.Optional[str] = None,
-        tags: t.Optional[t.List[str]] = None,
-        responses: t.Optional[ResponsesType] = None,
-        deprecated: t.Optional[bool] = None,
-        hide: t.Optional[bool] = None,
-        operation_id: t.Optional[str] = None,
-        security: t.Optional[t.Union[str, t.List[t.Union[str, t.Dict[str, list]]]]] = None,
+        summary: str | None = None,
+        description: str | None = None,
+        tags: list[str] | None = None,
+        responses: ResponsesType | None = None,
+        deprecated: bool | None = None,
+        hide: bool | None = None,
+        operation_id: str | None = None,
+        security: str | list[str | dict[str, list]] | None = None,
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Set up the OpenAPI Spec for view functions.
 

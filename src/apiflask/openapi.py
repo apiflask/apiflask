@@ -10,7 +10,7 @@ if t.TYPE_CHECKING:  # pragma: no cover
     from .blueprint import APIBlueprint
 
 
-default_bypassed_endpoints: t.List[str] = [
+default_bypassed_endpoints: list[str] = [
     'static',
     'openapi.spec',
     'openapi.docs',
@@ -34,9 +34,9 @@ default_response = {
 def get_tag(
     blueprint: APIBlueprint,
     blueprint_name: str
-) -> t.Dict[str, t.Any]:
+) -> dict[str, t.Any]:
     """Get tag from blueprint object."""
-    tag: t.Dict[str, t.Any]
+    tag: dict[str, t.Any]
     if blueprint.tag is not None:
         if isinstance(blueprint.tag, dict):
             tag = blueprint.tag
@@ -50,9 +50,9 @@ def get_tag(
 def get_operation_tags(
     blueprint: APIBlueprint,
     blueprint_name: str
-) -> t.List[str]:
+) -> list[str]:
     """Get operation tag from blueprint object."""
-    tags: t.List[str]
+    tags: list[str]
     if blueprint.tag is not None:
         if isinstance(blueprint.tag, dict):
             tags = [blueprint.tag['name']]
@@ -65,7 +65,7 @@ def get_operation_tags(
 
 def get_auth_name(
     auth: HTTPAuthType,
-    auth_names: t.List[str]
+    auth_names: list[str]
 ) -> str:
     """Get auth name from auth object."""
     name: str = ''
@@ -92,9 +92,9 @@ def get_auth_name(
     return name
 
 
-def get_security_scheme(auth: HTTPAuthType) -> t.Dict[str, t.Any]:
+def get_security_scheme(auth: HTTPAuthType) -> dict[str, t.Any]:
     """Get security scheme from auth object."""
-    security_scheme: t.Dict[str, t.Any]
+    security_scheme: dict[str, t.Any]
     if isinstance(auth, HTTPTokenAuth):
         if auth.scheme.lower() == 'bearer' and auth.header is None:
             security_scheme = {
@@ -116,12 +116,12 @@ def get_security_scheme(auth: HTTPAuthType) -> t.Dict[str, t.Any]:
 
 
 def get_security_and_security_schemes(
-    auth_names: t.List[str],
-    auth_schemes: t.List[HTTPAuthType]
-) -> t.Tuple[t.Dict[HTTPAuthType, str], t.Dict[str, t.Dict[str, str]]]:
+    auth_names: list[str],
+    auth_schemes: list[HTTPAuthType]
+) -> tuple[dict[HTTPAuthType, str], dict[str, dict[str, str]]]:
     """Make security and security schemes from given auth names and schemes."""
-    security: t.Dict[HTTPAuthType, str] = {}
-    security_schemes: t.Dict[str, t.Dict[str, str]] = {}
+    security: dict[HTTPAuthType, str] = {}
+    security_schemes: dict[str, dict[str, str]] = {}
     for name, auth in zip(auth_names, auth_schemes):  # noqa: B905
         security[auth] = name
         security_schemes[name] = get_security_scheme(auth)
@@ -130,7 +130,7 @@ def get_security_and_security_schemes(
     return security, security_schemes
 
 
-def get_path_summary(func: t.Callable, fallback: t.Optional[str] = None) -> str:
+def get_path_summary(func: t.Callable, fallback: str | None = None) -> str:
     """Get path summary from the name or docstring of the view function."""
     summary: str
     docs: list = (func.__doc__ or '').strip().split('\n')
@@ -152,9 +152,9 @@ def get_path_description(func: t.Callable) -> str:
     return ''
 
 
-def get_argument(argument_type: str, argument_name: str) -> t.Dict[str, t.Any]:
+def get_argument(argument_type: str, argument_name: str) -> dict[str, t.Any]:
     """Make argument from given type and name."""
-    argument: t.Dict[str, t.Any] = {
+    argument: dict[str, t.Any] = {
         'in': 'path',
         'name': argument_name,
     }

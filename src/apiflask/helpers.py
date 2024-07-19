@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as t
 
 from flask import request
@@ -84,7 +86,7 @@ def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
 
     *Version Added: 0.6.0*
     """
-    endpoint: t.Optional[str] = request.endpoint
+    endpoint: str | None = request.endpoint
     per_page: int = pagination.per_page
 
     def get_page_url(page: int) -> str:

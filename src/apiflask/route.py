@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as t
 
 from .openapi import get_path_description
@@ -63,9 +65,9 @@ def route_patch(cls):
     def add_url_rule(
         self,
         rule: str,
-        endpoint: t.Optional[str] = None,
-        view_func: t.Optional[ViewFuncOrClassType] = None,
-        provide_automatic_options: t.Optional[bool] = None,
+        endpoint: str | None = None,
+        view_func: ViewFuncOrClassType | None = None,
+        provide_automatic_options: bool | None = None,
         **options: t.Any,
     ):
         """Record the spec for view classes before calling the actual `add_url_rule` method.

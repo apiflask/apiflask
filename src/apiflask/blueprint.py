@@ -1,4 +1,4 @@
-import typing as t
+from __future__ import annotations
 
 from flask import Blueprint
 
@@ -30,16 +30,16 @@ class APIBlueprint(APIScaffold, Blueprint):
         self,
         name: str,
         import_name: str,
-        tag: t.Optional[t.Union[str, dict]] = None,
+        tag: str | dict | None = None,
         enable_openapi: bool = True,
-        static_folder: t.Optional[str] = None,
-        static_url_path: t.Optional[str] = None,
-        template_folder: t.Optional[str] = None,
-        url_prefix: t.Optional[str] = None,
-        subdomain: t.Optional[str] = None,
-        url_defaults: t.Optional[dict] = None,
-        root_path: t.Optional[str] = None,
-        cli_group: t.Union[t.Optional[str]] = _sentinel  # type: ignore
+        static_folder: str | None = None,
+        static_url_path: str | None = None,
+        template_folder: str | None = None,
+        url_prefix: str | None = None,
+        subdomain: str | None = None,
+        url_defaults: dict | None = None,
+        root_path: str | None = None,
+        cli_group: str | None = _sentinel  # type: ignore
     ) -> None:
         """Make a blueprint instance.
 
