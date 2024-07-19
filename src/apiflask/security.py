@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as t
 
 from flask import current_app
@@ -15,15 +17,15 @@ class _AuthBase:
 
     def __init__(
         self,
-        description: t.Optional[str] = None,
-        security_scheme_name: t.Optional[str] = None,
+        description: str | None = None,
+        security_scheme_name: str | None = None,
     ) -> None:
         self.description = description
         self.security_scheme_name = security_scheme_name
         self.error_handler(self._auth_error_handler)  # type: ignore
 
     @property
-    def current_user(self) -> t.Union[None, t.Any]:
+    def current_user(self) -> None | t.Any:
         return g.get('flask_httpauth_user', None)
 
     @staticmethod
@@ -102,9 +104,9 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
     def __init__(
         self,
         scheme: str = 'Basic',
-        realm: t.Optional[str] = None,
-        description: t.Optional[str] = None,
-        security_scheme_name: t.Optional[str] = None,
+        realm: str | None = None,
+        description: str | None = None,
+        security_scheme_name: str | None = None,
     ) -> None:
         """Initialize an `HTTPBasicAuth` object.
 
@@ -140,10 +142,10 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
     def __init__(
         self,
         scheme: str = 'Bearer',
-        realm: t.Optional[str] = None,
-        header: t.Optional[str] = None,
-        description: t.Optional[str] = None,
-        security_scheme_name: t.Optional[str] = None,
+        realm: str | None = None,
+        header: str | None = None,
+        description: str | None = None,
+        security_scheme_name: str | None = None,
     ) -> None:
         """Initialize a `HTTPTokenAuth` object.
 

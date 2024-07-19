@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as t
 
 from marshmallow import Schema as BaseSchema
@@ -6,7 +8,7 @@ from marshmallow.fields import URL
 
 
 # schema for the detail object of validation error response
-validation_error_detail_schema: t.Dict[str, t.Any] = {
+validation_error_detail_schema: dict[str, t.Any] = {
     'type': 'object',
     'properties': {
         '<location>': {
@@ -25,7 +27,7 @@ validation_error_detail_schema: t.Dict[str, t.Any] = {
 
 
 # schema for validation error response
-validation_error_schema: t.Dict[str, t.Any] = {
+validation_error_schema: dict[str, t.Any] = {
     'properties': {
         'detail': validation_error_detail_schema,
         'message': {
@@ -37,7 +39,7 @@ validation_error_schema: t.Dict[str, t.Any] = {
 
 
 # schema for generic error response
-http_error_schema: t.Dict[str, t.Any] = {
+http_error_schema: dict[str, t.Any] = {
     'properties': {
         'detail': {
             'type': 'object'

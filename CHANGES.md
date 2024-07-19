@@ -1,6 +1,10 @@
 ## Version 2.1.4
 
-Released: -
+Unreleased
+
+- Use postponed evaluation of annotations ([pr #585][pr_585]).
+
+[pr_585]: https://github.com/apiflask/apiflask/pull/585
 
 
 ## Version 2.1.3
