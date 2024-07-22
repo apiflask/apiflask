@@ -260,7 +260,7 @@ $ flask spec --output openapi.json --quiet
 
 ### Static HTML documentation
 If you want to serve the OpenAPI documentation as a static HTML page, you can use the
-Swagger UI. 
+Swagger UI.
 1. Download the [index.html](https://github.com/apiflask/apiflask/tree/main/examples/openapi/static_openapi_docs/index.html).
 2. Copy the index.html to your server.
 3. Copy you openapi.json to your server.
