@@ -1,0 +1,68 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>APIFlask 0.1.0 - Swagger UI</title>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
+  <link rel="icon" type="image/png"
+    href="https://apiflask.com/_assets/favicon.png">
+  <style>
+    html {
+      box-sizing: border-box;
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="swagger-ui"></div>
+
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+  <script>
+    // we can get several config items of Function type
+    // referring to https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
+    var funcConfigItems = ['operationsSorter', 'tagsSorter', 'onComplete', 'requestInterceptor', 'responseInterceptor', 'modelPropertyMacro', 'parameterMacro']
+
+    function parseFunc(funcStr) {
+        return new Function('"use strict"; return ' + funcStr)()
+    }
+
+    var baseConfig = {
+      url: "./openapi.json",
+      dom_id: "#swagger-ui",
+      deepLinking: true,
+      presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIStandalonePreset
+      ],
+      plugins: [
+        SwaggerUIBundle.plugins.DownloadUrl
+      ],
+      layout: "BaseLayout",
+             oauth2RedirectUrl: "/docs/oauth2-redirect"
+        }
+
+    window.onload = function () {
+      const ui = SwaggerUIBundle(baseConfig)
+
+    }
+  </script>
+</body>
+
+</html>
