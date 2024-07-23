@@ -14,7 +14,9 @@ Welcome to APIFlask's documentation!
 Go through the following chapters to learn how to use APIFlask:
 
 - **[Introduction](/)**: A general introduction for APIFlask.
-- **[Migrating from Flask](/migrating)**: Migratioon guide and notes.
+- **[Migrating from Flask](../migrations/flask)**: Guide to migrate from Flask.
+- **[Migrating from Flask-RESTPlus/Flask-RESTX](../migrations/flask-restplus)**: Guide to migrate from
+  Flask-RESTPlus/Flask-RESTX.
 - **[Basic Usage](/usage)**: Get started with APIFlask.
 - **[Request Handling](/request)**: The detailed introduction of the `@app.input` decorator.
 - **[Response Formatting](/response)**:  The detailed introduction of the `@app.output` decorator.
