@@ -31,7 +31,7 @@ def test_file_field(app, client):
         data={
             'image': (io.BytesIO(b'test'), 'test.jpg'),
         },
-        content_type='multipart/form-data'
+        content_type='multipart/form-data',
     )
     assert rv.status_code == 200
     assert rv.json == {'image': True}
@@ -41,14 +41,16 @@ def test_file_field(app, client):
         data={
             'image': 'test',
         },
-        content_type='multipart/form-data'
+        content_type='multipart/form-data',
     )
     assert rv.status_code == 422
     assert rv.json['detail']['files']['image'] == ['Not a valid file.']
 
 
-@pytest.mark.skipif(parse(version('flask-marshmallow')) < parse('1.2.1'),
-                    reason='Need flask_marshmallow 1.2.1 for processing empty file field')
+@pytest.mark.skipif(
+    parse(version('flask-marshmallow')) < parse('1.2.1'),
+    reason='Need flask_marshmallow 1.2.1 for processing empty file field',
+)
 def test_empty_file_field(app, client):
     @app.post('/')
     @app.input(Files, location='files')
@@ -63,7 +65,7 @@ def test_empty_file_field(app, client):
         data={
             'image': '',
         },
-        content_type='multipart/form-data'
+        content_type='multipart/form-data',
     )
     assert rv.status_code == 200
     assert rv.json == {}
@@ -88,7 +90,7 @@ def test_multiple_file_field(app, client):
                 (io.BytesIO(b'test2'), 'test2.jpg'),
             ]
         },
-        content_type='multipart/form-data'
+        content_type='multipart/form-data',
     )
     assert rv.status_code == 200
     assert rv.json == {'images': True}
@@ -102,7 +104,7 @@ def test_multiple_file_field(app, client):
                 'test2',
             ]
         },
-        content_type='multipart/form-data'
+        content_type='multipart/form-data',
     )
     assert rv.status_code == 422
     assert rv.json['detail']['files']['images']['2'] == ['Not a valid file.']

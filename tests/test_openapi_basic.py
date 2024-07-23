@@ -81,7 +81,6 @@ def test_get_spec_force_update(app):
 
 
 def test_spec_bypass_endpoints(app):
-
     bp = APIBlueprint('foo', __name__, static_folder='static', url_prefix='/foo')
     app.register_blueprint(bp)
 
@@ -94,7 +93,6 @@ def test_spec_bypass_endpoints(app):
 
 
 def test_spec_bypass_methods(app):
-
     class Foo:
         def bar(self):
             pass
@@ -162,19 +160,10 @@ def test_servers_and_externaldocs(app):
     assert app.external_docs is None
     assert app.servers is None
 
-    app.external_docs = {
-        'description': 'Find more info here',
-        'url': 'https://docs.example.com/'
-    }
+    app.external_docs = {'description': 'Find more info here', 'url': 'https://docs.example.com/'}
     app.servers = [
-        {
-            'url': 'http://localhost:5000/',
-            'description': 'Development server'
-        },
-        {
-            'url': 'https://api.example.com/',
-            'description': 'Production server'
-        }
+        {'url': 'http://localhost:5000/', 'description': 'Development server'},
+        {'url': 'https://api.example.com/', 'description': 'Production server'},
     ]
 
     rv = app.test_client().get('/openapi.json')
@@ -182,17 +171,11 @@ def test_servers_and_externaldocs(app):
     validate_spec(rv.json)
     assert rv.json['externalDocs'] == {
         'description': 'Find more info here',
-        'url': 'https://docs.example.com/'
+        'url': 'https://docs.example.com/',
     }
     assert rv.json['servers'] == [
-        {
-            'url': 'http://localhost:5000/',
-            'description': 'Development server'
-        },
-        {
-            'url': 'https://api.example.com/',
-            'description': 'Production server'
-        }
+        {'url': 'http://localhost:5000/', 'description': 'Development server'},
+        {'url': 'https://api.example.com/', 'description': 'Production server'},
     ]
 
 
@@ -249,8 +232,7 @@ def test_auto_200_response(app, client):
     assert '200' in rv.json['paths']['/baz']['get']['responses']
     assert '200' not in rv.json['paths']['/eggs']['get']['responses']
     assert '200' not in rv.json['paths']['/spam']['get']['responses']
-    assert rv.json['paths']['/spam']['get']['responses'][
-        '204']['description'] == 'empty'
+    assert rv.json['paths']['/spam']['get']['responses']['204']['description'] == 'empty'
 
 
 def test_sync_local_json_spec(app, client, tmp_path):

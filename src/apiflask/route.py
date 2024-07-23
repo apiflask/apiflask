@@ -23,9 +23,9 @@ def route_patch(cls):
 
     *Version added: 0.5.0*
     """
+
     def record_spec_for_view_class(
-        view_func: ViewFuncType,
-        view_class: ViewClassType
+        view_func: ViewFuncType, view_class: ViewClassType
     ) -> ViewFuncType:
         # when the user call add_url_rule multiple times for one view class,
         # we only need to extract info from view class once since it will
@@ -98,7 +98,7 @@ def route_patch(cls):
             endpoint,
             view_func,
             provide_automatic_options=provide_automatic_options,
-            **options
+            **options,
         )
 
     cls.add_url_rule = add_url_rule

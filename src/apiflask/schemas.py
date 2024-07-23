@@ -13,16 +13,9 @@ validation_error_detail_schema: dict[str, t.Any] = {
     'properties': {
         '<location>': {
             'type': 'object',
-            'properties': {
-                '<field_name>': {
-                    'type': 'array',
-                    'items': {
-                        'type': 'string'
-                    }
-                }
-            }
+            'properties': {'<field_name>': {'type': 'array', 'items': {'type': 'string'}}},
         }
-    }
+    },
 }
 
 
@@ -30,25 +23,19 @@ validation_error_detail_schema: dict[str, t.Any] = {
 validation_error_schema: dict[str, t.Any] = {
     'properties': {
         'detail': validation_error_detail_schema,
-        'message': {
-            'type': 'string'
-        },
+        'message': {'type': 'string'},
     },
-    'type': 'object'
+    'type': 'object',
 }
 
 
 # schema for generic error response
 http_error_schema: dict[str, t.Any] = {
     'properties': {
-        'detail': {
-            'type': 'object'
-        },
-        'message': {
-            'type': 'string'
-        },
+        'detail': {'type': 'object'},
+        'message': {'type': 'string'},
     },
-    'type': 'object'
+    'type': 'object',
 }
 
 
@@ -92,6 +79,7 @@ class EmptySchema(Schema):
 
 class PaginationSchema(Schema):
     """A schema for common pagination information."""
+
     page = Integer()
     per_page = Integer()
     pages = Integer()
@@ -146,12 +134,8 @@ class FileSchema(Schema):
 
     *Version Added: 2.0.0*
     """
-    def __init__(
-        self,
-        *,
-        type: str = 'string',
-        format: str = 'binary'
-    ) -> None:
+
+    def __init__(self, *, type: str = 'string', format: str = 'binary') -> None:
         """
         Arguments:
             type: The type of the file. Defaults to `string`.

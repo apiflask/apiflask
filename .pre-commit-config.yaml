@@ -22,6 +22,8 @@ repos:
     hooks:
       # Run the linter.
       - id: ruff
+      # Run the formatter.
+      - id: ruff-format
   - repo: https://github.com/peterdemin/pip-compile-multi
     rev: v2.4.5
     hooks:

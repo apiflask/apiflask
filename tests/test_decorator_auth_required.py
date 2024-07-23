@@ -76,7 +76,7 @@ def test_auth_required(app, client):
     assert 'BasicAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BasicAuth'] == {
         'scheme': 'basic',
-        'type': 'http'
+        'type': 'http',
     }
 
     assert 'BasicAuth' in rv.json['paths']['/foo']['get']['security'][0]
@@ -153,7 +153,7 @@ def test_auth_required_with_methodview(app, client):
     assert 'BasicAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BasicAuth'] == {
         'scheme': 'basic',
-        'type': 'http'
+        'type': 'http',
     }
 
     assert 'BasicAuth' in rv.json['paths']['/']['get']['security'][0]
@@ -214,7 +214,7 @@ def test_auth_required_at_blueprint_before_request(app, client):
     assert 'BearerAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BearerAuth'] == {
         'scheme': 'bearer',
-        'type': 'http'
+        'type': 'http',
     }
 
     assert 'BearerAuth' in rv.json['paths']['/foo']['get']['security'][0]
@@ -225,7 +225,6 @@ def test_auth_required_at_blueprint_before_request(app, client):
 
 
 def test_lowercase_token_scheme_value(app, client):
-
     auth = HTTPTokenAuth(scheme='bearer')
 
     @app.route('/')

@@ -92,9 +92,7 @@ def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
     def get_page_url(page: int) -> str:
         if endpoint is None:  # pragma: no cover
             return ''
-        return url_for(
-            endpoint, page=page, per_page=per_page, _external=True, **kwargs
-        )
+        return url_for(endpoint, page=page, per_page=per_page, _external=True, **kwargs)
 
     next: str = get_page_url(pagination.next_num) if pagination.has_next else ''
     prev: str = get_page_url(pagination.prev_num) if pagination.has_prev else ''

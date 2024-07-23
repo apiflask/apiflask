@@ -19,7 +19,7 @@ app.config['BASE_RESPONSE_DATA_KEY'] = 'data'
 pets = [
     {'id': 0, 'name': 'Kitty', 'category': 'cat'},
     {'id': 1, 'name': 'Coco', 'category': 'dog'},
-    {'id': 2, 'name': 'Flash', 'category': 'cat'}
+    {'id': 2, 'name': 'Flash', 'category': 'cat'},
 ]
 
 
@@ -37,11 +37,7 @@ class PetOut(Schema):
 @app.get('/')
 def say_hello():
     data = {'message': 'Hello!'}
-    return {
-        'data': data,
-        'message': 'Success!',
-        'code': 200
-    }
+    return {'data': data, 'message': 'Success!', 'code': 200}
 
 
 @app.get('/pets/<int:pet_id>')
@@ -73,11 +69,7 @@ def create_pet(json_data):
     pet_id = len(pets)
     json_data['id'] = pet_id
     pets.append(json_data)
-    return {
-        'data': pets[pet_id],
-        'message': 'Pet created.',
-        'code': 201
-    }
+    return {'data': pets[pet_id], 'message': 'Pet created.', 'code': 201}
 
 
 @app.patch('/pets/<int:pet_id>')
@@ -88,11 +80,7 @@ def update_pet(pet_id, json_data):
         abort(404)
     for attr, value in json_data.items():
         pets[pet_id][attr] = value
-    return {
-        'data': pets[pet_id],
-        'message': 'Pet updated.',
-        'code': 200
-    }
+    return {'data': pets[pet_id], 'message': 'Pet updated.', 'code': 200}
 
 
 @app.delete('/pets/<int:pet_id>')

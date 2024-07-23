@@ -116,10 +116,14 @@ def test_combine_security_schemes(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert rv.json['components']['securitySchemes']['BearerAuth'] == \
-        {'type': 'http', 'scheme': 'bearer'}
-    assert rv.json['components']['securitySchemes']['BasicAuth'] == \
-        app.config['SECURITY_SCHEMES']['BasicAuth']
+    assert rv.json['components']['securitySchemes']['BearerAuth'] == {
+        'type': 'http',
+        'scheme': 'bearer',
+    }
+    assert (
+        rv.json['components']['securitySchemes']['BasicAuth']
+        == app.config['SECURITY_SCHEMES']['BasicAuth']
+    )
 
 
 def test_doc_security_overwrite(app, client):

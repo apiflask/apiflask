@@ -31,10 +31,7 @@ default_response = {
 }
 
 
-def get_tag(
-    blueprint: APIBlueprint,
-    blueprint_name: str
-) -> dict[str, t.Any]:
+def get_tag(blueprint: APIBlueprint, blueprint_name: str) -> dict[str, t.Any]:
     """Get tag from blueprint object."""
     tag: dict[str, t.Any]
     if blueprint.tag is not None:
@@ -47,10 +44,7 @@ def get_tag(
     return tag
 
 
-def get_operation_tags(
-    blueprint: APIBlueprint,
-    blueprint_name: str
-) -> list[str]:
+def get_operation_tags(blueprint: APIBlueprint, blueprint_name: str) -> list[str]:
     """Get operation tag from blueprint object."""
     tags: list[str]
     if blueprint.tag is not None:
@@ -63,10 +57,7 @@ def get_operation_tags(
     return tags
 
 
-def get_auth_name(
-    auth: HTTPAuthType,
-    auth_names: list[str]
-) -> str:
+def get_auth_name(auth: HTTPAuthType, auth_names: list[str]) -> str:
     """Get auth name from auth object."""
     name: str = ''
     if hasattr(auth, 'security_scheme_name'):
@@ -116,8 +107,7 @@ def get_security_scheme(auth: HTTPAuthType) -> dict[str, t.Any]:
 
 
 def get_security_and_security_schemes(
-    auth_names: list[str],
-    auth_schemes: list[HTTPAuthType]
+    auth_names: list[str], auth_schemes: list[HTTPAuthType]
 ) -> tuple[dict[HTTPAuthType, str], dict[str, dict[str, str]]]:
     """Make security and security schemes from given auth names and schemes."""
     security: dict[HTTPAuthType, str] = {}

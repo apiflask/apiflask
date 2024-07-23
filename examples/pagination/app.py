@@ -60,15 +60,10 @@ def get_pet(pet_id):
 @app.output(PetsOut)
 def get_pets(query_data):
     pagination = db.paginate(
-        db.select(PetModel),
-        page=query_data['page'],
-        per_page=query_data['per_page']
+        db.select(PetModel), page=query_data['page'], per_page=query_data['per_page']
     )
     pets = pagination.items
-    return {
-        'pets': pets,
-        'pagination': pagination_builder(pagination)
-    }
+    return {'pets': pets, 'pagination': pagination_builder(pagination)}
 
 
 with app.app_context():

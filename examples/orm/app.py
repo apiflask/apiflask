@@ -22,7 +22,7 @@ def init_database():
     pets = [
         {'name': 'Kitty', 'category': 'cat'},
         {'name': 'Coco', 'category': 'dog'},
-        {'name': 'Flash', 'category': 'cat'}
+        {'name': 'Flash', 'category': 'cat'},
     ]
     for pet_data in pets:
         pet = PetModel(**pet_data)

@@ -36,7 +36,7 @@ ResponseHeaderType = t.Union[
     t.Dict[_HeaderName, _HeaderValue],
     t.Mapping[_HeaderName, _HeaderValue],
     t.Sequence[t.Tuple[_HeaderName, _HeaderValue]],
-    'Headers'
+    'Headers',
 ]
 ResponseReturnValueType = t.Union[
     ResponseBodyType,

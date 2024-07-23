@@ -19,7 +19,7 @@ def test_httpbasicauth_security_scheme(app, client):
     assert 'BasicAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BasicAuth'] == {
         'type': 'http',
-        'scheme': 'basic'
+        'scheme': 'basic',
     }
 
 
@@ -37,7 +37,7 @@ def test_httptokenauth_security_scheme(app, client):
     assert 'BearerAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BearerAuth'] == {
         'scheme': 'bearer',
-        'type': 'http'
+        'type': 'http',
     }
 
 
@@ -56,7 +56,7 @@ def test_apikey_auth_security_scheme(app, client):
     assert rv.json['components']['securitySchemes']['ApiKeyAuth'] == {
         'type': 'apiKey',
         'name': 'X-API-Key',
-        'in': 'header'
+        'in': 'header',
     }
 
 
@@ -81,12 +81,12 @@ def test_custom_security_scheme_name(app, client):
     assert 'myToken' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['basic_auth'] == {
         'type': 'http',
-        'scheme': 'basic'
+        'scheme': 'basic',
     }
     assert rv.json['components']['securitySchemes']['myToken'] == {
         'type': 'apiKey',
         'name': 'X-API-Key',
-        'in': 'header'
+        'in': 'header',
     }
     print(rv.json)
     assert 'basic_auth' in rv.json['paths']['/foo']['get']['security'][0]
@@ -95,6 +95,7 @@ def test_custom_security_scheme_name(app, client):
 
 def test_unknown_auth_security_scheme(app):
     from flask_httpauth import HTTPDigestAuth
+
     auth = HTTPDigestAuth()
 
     @app.get('/')
@@ -156,10 +157,10 @@ def test_security_schemes_description(app, client):
     assert rv.json['components']['securitySchemes']['BasicAuth'] == {
         'type': 'http',
         'scheme': 'basic',
-        'description': 'some description for basic auth'
+        'description': 'some description for basic auth',
     }
     assert rv.json['components']['securitySchemes']['BearerAuth'] == {
         'type': 'http',
         'scheme': 'bearer',
-        'description': 'some description for bearer auth'
+        'description': 'some description for bearer auth',
     }

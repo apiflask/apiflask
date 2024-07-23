@@ -24,7 +24,7 @@ def __getattr__(name: str) -> t.Any:  # pragma: no cover
         warnings.warn(
             "The '__version__' attribute is deprecated and will be removed in"
             ' APIFlask 3.0.0. Use feature detection or'
-            " 'importlib.metadata.version(\"apiflask\")' instead.",
+            ' \'importlib.metadata.version("apiflask")\' instead.',
             DeprecationWarning,
             stacklevel=2,
         )

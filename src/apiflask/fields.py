@@ -1,6 +1,7 @@
 # Field aliases were skipped (e.g., Str, Int, Url, etc.)
 import typing as t
 import warnings
+
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from flask_marshmallow.fields import AbsoluteURLFor as AbsoluteURLFor

@@ -115,9 +115,7 @@ def test_output_with_methodview(app, client):
 
 
 def test_output_with_dict_schema(app, client):
-    dict_schema = {
-        'name': String(dump_default='grey')
-    }
+    dict_schema = {'name': String(dump_default='grey')}
 
     @app.get('/foo')
     @app.output(dict_schema, schema_name='MyName')
@@ -155,23 +153,35 @@ def test_output_with_dict_schema(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert rv.json['paths']['/foo']['get']['responses']['200'][
-        'content']['application/json']['schema']['$ref'] == '#/components/schemas/MyName'
+    assert (
+        rv.json['paths']['/foo']['get']['responses']['200']['content']['application/json'][
+            'schema'
+        ]['$ref']
+        == '#/components/schemas/MyName'
+    )
     assert rv.json['components']['schemas']['MyName'] == {
-        'properties': {
-            'name': {
-                'type': 'string'
-            }
-        },
-        'type': 'object'
+        'properties': {'name': {'type': 'string'}},
+        'type': 'object',
     }
-    assert rv.json['paths']['/bar']['get']['responses']['200'][
-        'content']['application/json']['schema']['$ref'] == '#/components/schemas/MyName1'
+    assert (
+        rv.json['paths']['/bar']['get']['responses']['200']['content']['application/json'][
+            'schema'
+        ]['$ref']
+        == '#/components/schemas/MyName1'
+    )
     # default schema name is "Generated"
-    assert rv.json['paths']['/baz']['get']['responses']['200'][
-        'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated'
-    assert rv.json['paths']['/spam']['get']['responses']['200'][
-        'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated1'
+    assert (
+        rv.json['paths']['/baz']['get']['responses']['200']['content']['application/json'][
+            'schema'
+        ]['$ref']
+        == '#/components/schemas/Generated'
+    )
+    assert (
+        rv.json['paths']['/spam']['get']['responses']['200']['content']['application/json'][
+            'schema'
+        ]['$ref']
+        == '#/components/schemas/Generated1'
+    )
 
 
 def test_output_with_object_schema(app, client):
@@ -206,14 +216,8 @@ def test_output_with_object_schema(app, client):
 def test_output_body_example(app, client):
     example = {'name': 'foo', 'id': 2}
     examples = {
-        'example foo': {
-            'summary': 'an example of foo',
-            'value': {'name': 'foo', 'id': 1}
-        },
-        'example bar': {
-            'summary': 'an example of bar',
-            'value': {'name': 'bar', 'id': 2}
-        },
+        'example foo': {'summary': 'an example of foo', 'value': {'name': 'foo', 'id': 1}},
+        'example bar': {'summary': 'an example of bar', 'value': {'name': 'bar', 'id': 2}},
     }
 
     @app.get('/foo')
@@ -229,10 +233,18 @@ def test_output_body_example(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert rv.json['paths']['/foo']['get']['responses']['200'][
-        'content']['application/json']['example'] == example
-    assert rv.json['paths']['/bar']['get']['responses']['200'][
-        'content']['application/json']['examples'] == examples
+    assert (
+        rv.json['paths']['/foo']['get']['responses']['200']['content']['application/json'][
+            'example'
+        ]
+        == example
+    )
+    assert (
+        rv.json['paths']['/bar']['get']['responses']['200']['content']['application/json'][
+            'examples'
+        ]
+        == examples
+    )
 
 
 def test_output_with_empty_dict_as_schema(app, client):
@@ -272,14 +284,8 @@ def test_output_response_object_directly(app, client):
 
 def test_response_links(app, client):
     links = {
-        'foo': {
-            'operationId': 'getFoo',
-            'parameters': {'id': 1}
-        },
-        'bar': {
-            'operationId': 'getBar',
-            'parameters': {'id': 2}
-        },
+        'foo': {'operationId': 'getFoo', 'parameters': {'id': 1}},
+        'bar': {'operationId': 'getBar', 'parameters': {'id': 2}},
     }
 
     @app.get('/foo')
@@ -298,12 +304,7 @@ def test_response_links_ref(app, client):
 
     @app.spec_processor
     def add_links(spec):
-        spec['components']['links'] = {
-            'foo': {
-                'operationId': 'getFoo',
-                'parameters': {'id': 1}
-            }
-        }
+        spec['components']['links'] = {'foo': {'operationId': 'getFoo', 'parameters': {'id': 1}}}
         return spec
 
     @app.get('/foo')

@@ -15,9 +15,7 @@ full_examples = [
     'dataclass',
 ]
 
-examples = full_examples + [
-    'pagination'
-]
+examples = full_examples + ['pagination']
 
 
 @pytest.fixture
@@ -25,6 +23,7 @@ def client(request):
     app_path = os.path.join(os.path.dirname(__file__), f'{request.param}')
     sys.path.insert(0, app_path)
     import app
+
     app = reload(app)
     _app = app.app
     _app.testing = True
@@ -46,8 +45,9 @@ def test_say_hello(client):
     assert data['message'] == 'Hello!'
 
 
-@pytest.mark.skipif(flask_sqlalchemy.__version__ < '3',
-                    reason='Need flask_sqlalchemy 3 for get_or_404')
+@pytest.mark.skipif(
+    flask_sqlalchemy.__version__ < '3', reason='Need flask_sqlalchemy 3 for get_or_404'
+)
 @pytest.mark.parametrize('client', examples, indirect=True)
 def test_get_pet(client):
     rv = client.get('/pets/1')
@@ -88,10 +88,7 @@ def test_get_pets(client):
 
 @pytest.mark.parametrize('client', full_examples, indirect=True)
 def test_create_pet(client):
-    rv = client.post('/pets', json={
-        'name': 'Grey',
-        'category': 'cat'
-    })
+    rv = client.post('/pets', json={'name': 'Grey', 'category': 'cat'})
     assert rv.status_code == 201
     assert rv.json
     if client._example == 'base_response':
@@ -103,26 +100,27 @@ def test_create_pet(client):
 
 
 @pytest.mark.parametrize('client', full_examples, indirect=True)
-@pytest.mark.parametrize('data', [
-    {'name': 'Grey', 'category': 'human'},
-    {'name': 'Fyodor Mikhailovich Dostoevsky', 'category': 'cat'},
-    {'category': 'cat'},
-    {'name': 'Grey'}
-])
+@pytest.mark.parametrize(
+    'data',
+    [
+        {'name': 'Grey', 'category': 'human'},
+        {'name': 'Fyodor Mikhailovich Dostoevsky', 'category': 'cat'},
+        {'category': 'cat'},
+        {'name': 'Grey'},
+    ],
+)
 def test_create_pet_with_bad_data(client, data):
     rv = client.post('/pets', json=data)
     assert rv.status_code == 422
     assert rv.json
 
 
-@pytest.mark.skipif(flask_sqlalchemy.__version__ < '3',
-                    reason='Need flask_sqlalchemy 3 for get_or_404')
+@pytest.mark.skipif(
+    flask_sqlalchemy.__version__ < '3', reason='Need flask_sqlalchemy 3 for get_or_404'
+)
 @pytest.mark.parametrize('client', full_examples, indirect=True)
 def test_update_pet(client):
-    new_data = {
-        'name': 'Ghost',
-        'category': 'dog'
-    }
+    new_data = {'name': 'Ghost', 'category': 'dog'}
 
     rv = client.patch('/pets/1', json=new_data)
     assert rv.status_code == 200
@@ -143,18 +141,18 @@ def test_update_pet(client):
 
 
 @pytest.mark.parametrize('client', full_examples, indirect=True)
-@pytest.mark.parametrize('data', [
-    {'name': 'Fyodor Mikhailovich Dostoevsky'},
-    {'category': 'human'}
-])
+@pytest.mark.parametrize(
+    'data', [{'name': 'Fyodor Mikhailovich Dostoevsky'}, {'category': 'human'}]
+)
 def test_update_pet_with_bad_data(client, data):
     rv = client.patch('/pets/1', json=data)
     assert rv.status_code == 422
     assert rv.json
 
 
-@pytest.mark.skipif(flask_sqlalchemy.__version__ < '3',
-                    reason='Need flask_sqlalchemy 3 for get_or_404')
+@pytest.mark.skipif(
+    flask_sqlalchemy.__version__ < '3', reason='Need flask_sqlalchemy 3 for get_or_404'
+)
 @pytest.mark.parametrize('client', full_examples, indirect=True)
 def test_delete_pet(client):
     rv = client.delete('/pets/1')
@@ -169,8 +167,9 @@ def test_delete_pet(client):
     assert rv.json
 
 
-@pytest.mark.skipif(flask_sqlalchemy.__version__ < '3',
-                    reason='Need flask_sqlalchemy 3 for paginate')
+@pytest.mark.skipif(
+    flask_sqlalchemy.__version__ < '3', reason='Need flask_sqlalchemy 3 for paginate'
+)
 @pytest.mark.parametrize('client', ['pagination'], indirect=True)
 def test_get_pets_pagination(client):
     rv = client.get('/pets')
@@ -200,8 +199,9 @@ def test_get_pets_pagination(client):
     assert rv.json['pets'][-1]['id'] == 20
 
 
-@pytest.mark.skipif(flask_sqlalchemy.__version__ < '3',
-                    reason='Need flask_sqlalchemy 3 for paginate')
+@pytest.mark.skipif(
+    flask_sqlalchemy.__version__ < '3', reason='Need flask_sqlalchemy 3 for paginate'
+)
 @pytest.mark.parametrize('client', ['pagination'], indirect=True)
 def test_get_pets_pagination_with_bad_data(client):
     rv = client.get('/pets?per_page=100')

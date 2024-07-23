@@ -29,9 +29,7 @@ class _AuthBase:
         return g.get('flask_httpauth_user', None)
 
     @staticmethod
-    def _auth_error_handler(
-        status_code: int
-    ) -> ResponseReturnValueType:
+    def _auth_error_handler(status_code: int) -> ResponseReturnValueType:
         """The default error handler for Flask-HTTPAuth.
 
         This handler will return JSON response when setting `APIFlask(json_errors=True)` (default).
@@ -46,10 +44,7 @@ class _AuthBase:
             return current_app.error_callback(error)  # type: ignore
         return error.message, status_code  # type: ignore
 
-    def error_processor(
-        self,
-        f: ErrorCallbackType
-    ) -> None:
+    def error_processor(self, f: ErrorCallbackType) -> None:
         """A decorator to register an error callback function for auth errors (401/403).
 
         The error callback function will be called when authentication errors happened.
