@@ -32,9 +32,7 @@ def test_redoc_standalone_js(client):
     assert b'src="https://cdn.example.com/redoc.js"' in rv.data
 
 
-@pytest.mark.parametrize('config_value', [
-    {}, {'disableSearch': True, 'hideLoading': True}
-])
+@pytest.mark.parametrize('config_value', [{}, {'disableSearch': True, 'hideLoading': True}])
 def test_redoc_config(client, config_value):
     app = APIFlask(__name__, docs_ui='redoc')
     app.config['REDOC_CONFIG'] = config_value
@@ -52,8 +50,7 @@ def test_redoc_config(client, config_value):
 def test_swagger_ui_resources(app, client):
     app.config['SWAGGER_UI_CSS'] = 'https://cdn.example.com/swagger-ui.css'
     app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdn.example.com/swagger-ui.bundle.js'
-    app.config['SWAGGER_UI_STANDALONE_PRESET_JS'] = \
-        'https://cdn.example.com/swagger-ui.preset.js'
+    app.config['SWAGGER_UI_STANDALONE_PRESET_JS'] = 'https://cdn.example.com/swagger-ui.preset.js'
 
     rv = client.get('/docs')
     assert rv.status_code == 200
@@ -72,10 +69,7 @@ def test_swagger_ui_layout(app, client):
 
 
 def test_swagger_ui_config(app, client):
-    app.config['SWAGGER_UI_CONFIG'] = {
-        'deepLinking': False,
-        'layout': 'StandaloneLayout'
-    }
+    app.config['SWAGGER_UI_CONFIG'] = {'deepLinking': False, 'layout': 'StandaloneLayout'}
 
     rv = client.get('/docs')
     assert rv.status_code == 200
@@ -86,7 +80,7 @@ def test_swagger_ui_config(app, client):
 def test_swagger_ui_oauth_config(app, client):
     app.config['SWAGGER_UI_OAUTH_CONFIG'] = {
         'clientId': 'foo',
-        'usePkceWithAuthorizationCodeGrant': True
+        'usePkceWithAuthorizationCodeGrant': True,
     }
 
     rv = client.get('/docs')
@@ -104,10 +98,7 @@ def test_elements_config():
     # test default router
     assert b'router="hash"' in rv.data
 
-    app.config['ELEMENTS_CONFIG'] = {
-        'hideTryIt': False,
-        'router': 'memory'
-    }
+    app.config['ELEMENTS_CONFIG'] = {'hideTryIt': False, 'router': 'memory'}
 
     rv = app.test_client().get('/docs')
     assert rv.status_code == 200
@@ -138,10 +129,7 @@ def test_elements_resources():
 
 def test_rapidoc_config():
     app = APIFlask(__name__, docs_ui='rapidoc')
-    app.config['RAPIDOC_CONFIG'] = {
-        'update-route': False,
-        'layout': 'row'
-    }
+    app.config['RAPIDOC_CONFIG'] = {'update-route': False, 'layout': 'row'}
 
     rv = app.test_client().get('/docs')
     assert rv.status_code == 200
@@ -170,10 +158,7 @@ def test_rapidoc_resources():
 
 def test_rapipdf_config():
     app = APIFlask(__name__, docs_ui='rapipdf')
-    app.config['RAPIPDF_CONFIG'] = {
-        'include-example': True,
-        'button-label': 'Generate!'
-    }
+    app.config['RAPIPDF_CONFIG'] = {'include-example': True, 'button-label': 'Generate!'}
 
     rv = app.test_client().get('/docs')
     assert rv.status_code == 200

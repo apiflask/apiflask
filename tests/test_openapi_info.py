@@ -23,12 +23,9 @@ def test_other_info_fields(app, client):
     app.contact = {
         'name': 'API Support',
         'url': 'http://www.example.com/support',
-        'email': 'support@example.com'
+        'email': 'support@example.com',
     }
-    app.license = {
-        'name': 'Apache 2.0',
-        'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
-    }
+    app.license = {'name': 'Apache 2.0', 'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'}
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
@@ -48,12 +45,9 @@ def test_info_attribute(app, client):
         'contact': {
             'name': 'API Support',
             'url': 'http://www.example.com/support',
-            'email': 'support@example.com'
+            'email': 'support@example.com',
         },
-        'license': {
-            'name': 'Apache 2.0',
-            'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
-        }
+        'license': {'name': 'Apache 2.0', 'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'},
     }
 
     rv = client.get('/openapi.json')
@@ -75,15 +69,8 @@ def test_overwirte_info_attribute(app, client):
     app.info = {
         'description': 'Not set',
         'termsOfService': 'Not set',
-        'contact': {
-            'name': 'Not set',
-            'url': 'Not set',
-            'email': 'Not set'
-        },
-        'license': {
-            'name': 'Not set',
-            'url': 'Not set'
-        }
+        'contact': {'name': 'Not set', 'url': 'Not set', 'email': 'Not set'},
+        'license': {'name': 'Not set', 'url': 'Not set'},
     }
 
     app.description = 'My API'
@@ -91,12 +78,9 @@ def test_overwirte_info_attribute(app, client):
     app.contact = {
         'name': 'API Support',
         'url': 'http://www.example.com/support',
-        'email': 'support@example.com'
+        'email': 'support@example.com',
     }
-    app.license = {
-        'name': 'Apache 2.0',
-        'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'
-    }
+    app.license = {'name': 'Apache 2.0', 'url': 'http://www.apache.org/licenses/LICENSE-2.0.html'}
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200

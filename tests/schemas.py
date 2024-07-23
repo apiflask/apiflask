@@ -96,7 +96,5 @@ class CustomHTTPError(Schema):
 
 class ResponseHeader(Schema):
     x_token = String(
-        data_key='X-Token',
-        required=True,
-        metadata={'description': 'A custom token header'}
+        data_key='X-Token', required=True, metadata={'description': 'A custom token header'}
     )

@@ -31,14 +31,11 @@ The source can be found at [examples/blueprint_tags/app.py][_blueprint_tags].
 app.config['CONTACT'] = {
     'name': 'API Support',
     'url': 'https://greyli.com/en',
-    'email': 'withlihui@gmail.com'
+    'email': 'withlihui@gmail.com',
 }
 
 # openapi.info.license
-app.config['LICENSE'] = {
-    'name': 'MIT',
-    'url': 'https://opensource.org/licenses/MIT'
-}
+app.config['LICENSE'] = {'name': 'MIT', 'url': 'https://opensource.org/licenses/MIT'}
 
 # openapi.info.termsOfService
 app.config['TERMS_OF_SERVICE'] = 'http://example.com'
@@ -61,7 +58,7 @@ app.config['TERMS_OF_SERVICE'] = 'http://example.com'
 # openapi.tags
 app.config['TAGS'] = [
     {'name': 'Hello', 'description': 'The description of the **Hello** tag.'},
-    {'name': 'Pet', 'description': 'The description of the **Pet** tag.'}
+    {'name': 'Pet', 'description': 'The description of the **Pet** tag.'},
 ]
 
 # If you don't need to set tag "description" or tag "externalDocs", just pass a list a string:
@@ -69,30 +66,21 @@ app.config['TAGS'] = [
 
 # openapi.servers
 app.config['SERVERS'] = [
-    {
-        'name': 'Development Server',
-        'url': 'http://localhost:5000'
-    },
-    {
-        'name': 'Production Server',
-        'url': 'http://api.example.com'
-    },
-    {
-        'name': 'Testing Server',
-        'url': 'http://test.example.com'
-    }
+    {'name': 'Development Server', 'url': 'http://localhost:5000'},
+    {'name': 'Production Server', 'url': 'http://api.example.com'},
+    {'name': 'Testing Server', 'url': 'http://test.example.com'},
 ]
 
 # openapi.externalDocs
 app.config['EXTERNAL_DOCS'] = {
     'description': 'Find more info here',
-    'url': 'https://apiflask.com/docs'
+    'url': 'https://apiflask.com/docs',
 }
 
 pets = [
     {'id': 0, 'name': 'Kitty', 'category': 'cat'},
     {'id': 1, 'name': 'Coco', 'category': 'dog'},
-    {'id': 2, 'name': 'Flash', 'category': 'cat'}
+    {'id': 2, 'name': 'Flash', 'category': 'cat'},
 ]
 
 
@@ -100,12 +88,12 @@ class PetIn(Schema):
     name = String(
         required=True,
         validate=Length(0, 10),
-        metadata={'title': 'Pet Name', 'description': 'The name of the pet.'}
+        metadata={'title': 'Pet Name', 'description': 'The name of the pet.'},
     )
     category = String(
         required=True,
         validate=OneOf(['dog', 'cat']),
-        metadata={'title': 'Pet Category', 'description': 'The category of the pet.'}
+        metadata={'title': 'Pet Category', 'description': 'The category of the pet.'},
     )
 
 
@@ -158,12 +146,7 @@ def get_pets():
     PetOut,
     status_code=201,
     description='The pet you just created',
-    links={'getPetById': {
-        'operationId': 'getPet',
-        'parameters': {
-            'pet_id': '$response.body#/id'
-        }
-    }}
+    links={'getPetById': {'operationId': 'getPet', 'parameters': {'pet_id': '$response.body#/id'}}},
 )
 @app.doc(tags=['Pet'])
 def create_pet(json_data):

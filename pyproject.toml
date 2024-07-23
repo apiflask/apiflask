@@ -76,3 +76,43 @@ addopts = ["--cov=src/apiflask", "--cov-branch", "--cov-report=term-missing"]
 
 [tool.coverage.run]
 omit = ["src/apiflask/_decorators.py", "src/apiflask/views.py"]
+
+[tool.ruff]
+indent-width = 4
+line-length = 100
+exclude = [
+    ".*",
+    "*.txt",
+    "*.md",
+    "__pycache__",
+]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+
+[tool.ruff.lint]
+# B = bugbear
+# E = pycodestyle errors
+# F = flake8 pyflakes
+# W = pycodestyle warnings
+# B9 = bugbear opinions
+# ISC = implicit-str-concat
+# Q0 = quotes
+extend-select = ["B", "E", "F", "W", "B9", "ISC", "Q0"]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "double"
+docstring-quotes = "double"
+avoid-escape = true
+
+[tool.ruff.lint.per-file-ignores]
+# modules export names
+"src/apiflask/validators.py" = ["F401"]
+"src/apiflask/views.py" = ["F401"]
+"src/apiflask/__init__.py" = ["F401"]
+"src/apiflask/fields.py" = ["F401"]
+# HTML templates ignore E501 line too long
+"src/apiflask/ui_templates.py" = ["E501"]
+"tests/*" = ["B018"]

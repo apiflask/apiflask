@@ -250,9 +250,12 @@ def test_auto_validation_error_response(app, client, config_value):
     assert bool('422' in rv.json['paths']['/foo']['post']['responses']) is config_value
     if config_value:
         assert 'ValidationError' in rv.json['components']['schemas']
-        assert '#/components/schemas/ValidationError' in \
-            rv.json['paths']['/foo']['post']['responses']['422'][
-                'content']['application/json']['schema']['$ref']
+        assert (
+            '#/components/schemas/ValidationError'
+            in rv.json['paths']['/foo']['post']['responses']['422']['content']['application/json'][
+                'schema'
+            ]['$ref']
+        )
 
 
 @pytest.mark.parametrize('config_value', [True, False])
@@ -271,9 +274,12 @@ def test_auto_auth_error_response(app, client, config_value):
     assert bool('401' in rv.json['paths']['/foo']['post']['responses']) is config_value
     if config_value:
         assert 'HTTPError' in rv.json['components']['schemas']
-        assert '#/components/schemas/HTTPError' in \
-            rv.json['paths']['/foo']['post']['responses']['401'][
-                'content']['application/json']['schema']['$ref']
+        assert (
+            '#/components/schemas/HTTPError'
+            in rv.json['paths']['/foo']['post']['responses']['401']['content']['application/json'][
+                'schema'
+            ]['$ref']
+        )
 
 
 @pytest.mark.parametrize('config_value', [True, False])
@@ -316,12 +322,18 @@ def test_blueprint_level_auto_auth_error_response(app, client, config_value):
     assert '401' not in rv.json['paths']['/baz']['post']['responses']
     if config_value:
         assert 'HTTPError' in rv.json['components']['schemas']
-        assert '#/components/schemas/HTTPError' in \
-            rv.json['paths']['/foo']['post']['responses']['401'][
-                'content']['application/json']['schema']['$ref']
-        assert '#/components/schemas/HTTPError' in \
-            rv.json['paths']['/bar']['post']['responses']['401'][
-                'content']['application/json']['schema']['$ref']
+        assert (
+            '#/components/schemas/HTTPError'
+            in rv.json['paths']['/foo']['post']['responses']['401']['content']['application/json'][
+                'schema'
+            ]['$ref']
+        )
+        assert (
+            '#/components/schemas/HTTPError'
+            in rv.json['paths']['/bar']['post']['responses']['401']['content']['application/json'][
+                'schema'
+            ]['$ref']
+        )
 
 
 @pytest.mark.parametrize('config_value', [True, False])
@@ -338,9 +350,12 @@ def test_auto_404_error(app, client, config_value):
     assert bool('404' in rv.json['paths']['/foo/{id}']['get']['responses']) is config_value
     if config_value:
         assert 'HTTPError' in rv.json['components']['schemas']
-        assert '#/components/schemas/HTTPError' in \
-            rv.json['paths']['/foo/{id}']['get']['responses']['404'][
-                'content']['application/json']['schema']['$ref']
+        assert (
+            '#/components/schemas/HTTPError'
+            in rv.json['paths']['/foo/{id}']['get']['responses']['404']['content'][
+                'application/json'
+            ]['schema']['$ref']
+        )
 
 
 @pytest.mark.parametrize('config_value', [True, False])

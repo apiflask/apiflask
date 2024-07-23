@@ -52,6 +52,7 @@ def test_json_errors_reuse_werkzeug_headers(app, client):
     @app.get('/bar')
     def bar():
         from werkzeug.exceptions import MethodNotAllowed
+
         raise MethodNotAllowed(valid_methods=['GET'])
 
     rv = client.post('/foo')
@@ -65,7 +66,6 @@ def test_json_errors_reuse_werkzeug_headers(app, client):
 
 
 def test_view_function_arguments_order(app, client):
-
     class Query(Schema):
         foo = String(required=True)
         bar = String(required=True)
@@ -79,8 +79,14 @@ def test_view_function_arguments_order(app, client):
     @app.input(Pagination, location='query', arg_name='pagination')
     @app.input(Pet, location='json')
     def pets(pet_id, toy_id, query, pagination, json_data):
-        return {'pet_id': pet_id, 'toy_id': toy_id,
-                'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **json_data}
+        return {
+            'pet_id': pet_id,
+            'toy_id': toy_id,
+            'foo': query['foo'],
+            'bar': query['bar'],
+            'pagination': pagination,
+            **json_data,
+        }
 
     @app.route('/animals/<int:pet_id>/toys/<int:toy_id>')
     class Animals(MethodView):
@@ -88,11 +94,16 @@ def test_view_function_arguments_order(app, client):
         @app.input(Pagination, location='query', arg_name='pagination')
         @app.input(Pet, location='json')
         def post(self, pet_id, toy_id, query, pagination, json_data):
-            return {'pet_id': pet_id, 'toy_id': toy_id,
-                    'foo': query['foo'], 'bar': query['bar'], 'pagination': pagination, **json_data}
+            return {
+                'pet_id': pet_id,
+                'toy_id': toy_id,
+                'foo': query['foo'],
+                'bar': query['bar'],
+                'pagination': pagination,
+                **json_data,
+            }
 
-    rv = client.post('/pets/1/toys/3?foo=yes&bar=no',
-                     json={'name': 'dodge', 'age': 5})
+    rv = client.post('/pets/1/toys/3?foo=yes&bar=no', json={'name': 'dodge', 'age': 5})
     assert rv.status_code == 200
     assert rv.json['pet_id'] == 1
     assert rv.json['toy_id'] == 3
@@ -103,8 +114,7 @@ def test_view_function_arguments_order(app, client):
     assert rv.json['pagination']['page'] == 1
     assert rv.json['pagination']['per_page'] == 10
 
-    rv = client.post('/animals/1/toys/3?foo=yes&bar=no',
-                     json={'name': 'dodge', 'age': 5})
+    rv = client.post('/animals/1/toys/3?foo=yes&bar=no', json={'name': 'dodge', 'age': 5})
     assert rv.status_code == 200
     assert rv.json['pet_id'] == 1
     assert rv.json['toy_id'] == 3
@@ -231,11 +241,9 @@ def schema_name_resolver2(schema):
     return name
 
 
-@pytest.mark.parametrize('resolver', [
-    APIFlask._schema_name_resolver,
-    schema_name_resolver1,
-    schema_name_resolver2
-])
+@pytest.mark.parametrize(
+    'resolver', [APIFlask._schema_name_resolver, schema_name_resolver1, schema_name_resolver2]
+)
 def test_schema_name_resolver(app, client, resolver):
     app.schema_name_resolver = resolver
 
@@ -261,10 +269,7 @@ def test_schema_name_resolver(app, client, resolver):
         assert 'BarUpdate' in spec['components']['schemas']
 
 
-@pytest.mark.parametrize(
-    'ui_name',
-    ['swagger-ui', 'redoc', 'elements', 'rapidoc', 'rapipdf']
-)
+@pytest.mark.parametrize('ui_name', ['swagger-ui', 'redoc', 'elements', 'rapidoc', 'rapipdf'])
 def test_docs_ui(ui_name):
     app = APIFlask(__name__, docs_ui=ui_name)
     client = app.test_client()
@@ -321,6 +326,7 @@ def test_spec_decorators(app, client):
         def wrapper(*args, **kwargs):
             abort(401)
             return f(*args, **kwargs)
+
         return wrapper
 
     app.config['SPEC_DECORATORS'] = [auth_decorator]
@@ -337,6 +343,7 @@ def test_docs_decorators(app, client):
         def wrapper(*args, **kwargs):
             abort(401)
             return f(*args, **kwargs)
+
         return wrapper
 
     app.config['DOCS_DECORATORS'] = [auth_decorator]
@@ -353,6 +360,7 @@ def test_swagger_ui_oauth_redirect_decorators(app, client):
         def wrapper(*args, **kwargs):
             abort(401)
             return f(*args, **kwargs)
+
         return wrapper
 
     app.config['SWAGGER_UI_OAUTH_REDIRECT_DECORATORS'] = [auth_decorator]

@@ -26,10 +26,10 @@ def test_spec_path_summary_description_from_docs(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/users']['get']['summary'] == 'Get Users'
-    assert rv.json['paths']['/users/{id}']['put']['summary'] == \
-        'Update User'
-    assert rv.json['paths']['/users/{id}']['put']['description'] == \
-        'Update a user with specified ID.'
+    assert rv.json['paths']['/users/{id}']['put']['summary'] == 'Update User'
+    assert (
+        rv.json['paths']['/users/{id}']['put']['description'] == 'Update a user with specified ID.'
+    )
 
 
 def test_spec_path_parameters_registration(app, client):
@@ -56,20 +56,30 @@ def test_spec_path_parameters_registration(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert rv.json['paths']['/strings/{some_string}'][
-        'get']['parameters'][0]['in'] == 'path'
-    assert rv.json['paths']['/strings/{some_string}'][
-        'get']['parameters'][0]['name'] == 'some_string'
-    assert rv.json['paths']['/strings/{some_string}'][
-        'get']['parameters'][0]['schema']['type'] == 'string'
-    assert rv.json['paths']['/floats/{some_float}'][
-        'post']['parameters'][0]['schema']['type'] == 'number'
-    assert rv.json['paths']['/integers/{some_integer}'][
-        'put']['parameters'][0]['schema']['type'] == 'integer'
-    assert rv.json['paths']['/users/{user_id}/articles/{article_id}'][
-        'get']['parameters'][0]['name'] == 'user_id'
-    assert rv.json['paths']['/users/{user_id}/articles/{article_id}'][
-        'get']['parameters'][1]['name'] == 'article_id'
+    assert rv.json['paths']['/strings/{some_string}']['get']['parameters'][0]['in'] == 'path'
+    assert (
+        rv.json['paths']['/strings/{some_string}']['get']['parameters'][0]['name'] == 'some_string'
+    )
+    assert (
+        rv.json['paths']['/strings/{some_string}']['get']['parameters'][0]['schema']['type']
+        == 'string'
+    )
+    assert (
+        rv.json['paths']['/floats/{some_float}']['post']['parameters'][0]['schema']['type']
+        == 'number'
+    )
+    assert (
+        rv.json['paths']['/integers/{some_integer}']['put']['parameters'][0]['schema']['type']
+        == 'integer'
+    )
+    assert (
+        rv.json['paths']['/users/{user_id}/articles/{article_id}']['get']['parameters'][0]['name']
+        == 'user_id'
+    )
+    assert (
+        rv.json['paths']['/users/{user_id}/articles/{article_id}']['get']['parameters'][1]['name']
+        == 'article_id'
+    )
 
 
 def test_spec_path_summary_auto_generation(app, client):
@@ -96,12 +106,12 @@ def test_spec_path_summary_auto_generation(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/users']['get']['summary'] == 'Get Users'
-    assert rv.json['paths']['/users/{id}']['put']['summary'] == \
-        'Update User'
-    assert rv.json['paths']['/users/{id}']['delete']['summary'] == \
-        'Summary from Docs'
-    assert rv.json['paths']['/users/{id}']['delete']['description'] == \
-        'Delete a user with specified ID.'
+    assert rv.json['paths']['/users/{id}']['put']['summary'] == 'Update User'
+    assert rv.json['paths']['/users/{id}']['delete']['summary'] == 'Summary from Docs'
+    assert (
+        rv.json['paths']['/users/{id}']['delete']['description']
+        == 'Delete a user with specified ID.'
+    )
 
 
 def test_path_arguments_detection(app, client):
@@ -138,12 +148,16 @@ def test_path_arguments_detection(app, client):
     assert '/{foo}/{bar}/baz' in rv.json['paths']
     assert '/foo/{bar}/{baz}' in rv.json['paths']
     assert '/{foo}/{bar}/{baz}' in rv.json['paths']
-    assert rv.json['paths']['/{foo}/{bar}/{baz}']['get'][
-        'parameters'][0]['schema']['type'] == 'integer'
-    assert rv.json['paths']['/{foo}/{bar}/{baz}']['get'][
-        'parameters'][1]['schema']['type'] == 'string'
-    assert rv.json['paths']['/{foo}/{bar}/{baz}']['get'][
-        'parameters'][2]['schema']['type'] == 'number'
+    assert (
+        rv.json['paths']['/{foo}/{bar}/{baz}']['get']['parameters'][0]['schema']['type']
+        == 'integer'
+    )
+    assert (
+        rv.json['paths']['/{foo}/{bar}/{baz}']['get']['parameters'][1]['schema']['type'] == 'string'
+    )
+    assert (
+        rv.json['paths']['/{foo}/{bar}/{baz}']['get']['parameters'][2]['schema']['type'] == 'number'
+    )
 
 
 def test_path_arguments_order(app, client):
@@ -163,14 +177,10 @@ def test_path_arguments_order(app, client):
     validate_spec(rv.json)
     assert '/{foo}/bar' in rv.json['paths']
     assert '/{foo}/{bar}' in rv.json['paths']
-    assert rv.json['paths']['/{foo}/bar']['get'][
-        'parameters'][0]['name'] == 'foo'
-    assert rv.json['paths']['/{foo}/bar']['get'][
-        'parameters'][1]['name'] == 'id'
-    assert rv.json['paths']['/{foo}/{bar}']['get'][
-        'parameters'][0]['name'] == 'foo'
-    assert rv.json['paths']['/{foo}/{bar}']['get'][
-        'parameters'][1]['name'] == 'bar'
+    assert rv.json['paths']['/{foo}/bar']['get']['parameters'][0]['name'] == 'foo'
+    assert rv.json['paths']['/{foo}/bar']['get']['parameters'][1]['name'] == 'id'
+    assert rv.json['paths']['/{foo}/{bar}']['get']['parameters'][0]['name'] == 'foo'
+    assert rv.json['paths']['/{foo}/{bar}']['get']['parameters'][1]['name'] == 'bar'
 
 
 def test_parameters_registration(app, client):
@@ -185,19 +195,14 @@ def test_parameters_registration(app, client):
     @app.input(Pagination, location='query', arg_name='pagination')
     @app.input(Header, location='headers')
     def bar(query, pagination, headers_data):
-        return {
-            'query': query['id'],
-            'pagination': pagination,
-            'foo': headers_data['foo']
-        }
+        return {'query': query['id'], 'pagination': pagination, 'foo': headers_data['foo']}
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert '/foo' in rv.json['paths']
     assert '/bar' in rv.json['paths']
-    assert rv.json['paths']['/foo']['get'][
-        'parameters'][0]['name'] == 'id'
+    assert rv.json['paths']['/foo']['get']['parameters'][0]['name'] == 'id'
     assert len(rv.json['paths']['/foo']['get']['parameters']) == 1
     assert len(rv.json['paths']['/bar']['get']['parameters']) == 4
     rv = client.get('/bar')
@@ -224,14 +229,16 @@ def test_register_validation_error_response(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert rv.json['paths']['/foo']['post']['responses'][
-        error_code] is not None
-    assert rv.json['paths']['/foo']['post']['responses'][
-        error_code]['description'] == 'Validation error'
-    assert rv.json['paths']['/bar']['get']['responses'][
-        error_code] is not None
-    assert rv.json['paths']['/bar']['get']['responses'][
-        error_code]['description'] == 'Validation error'
+    assert rv.json['paths']['/foo']['post']['responses'][error_code] is not None
+    assert (
+        rv.json['paths']['/foo']['post']['responses'][error_code]['description']
+        == 'Validation error'
+    )
+    assert rv.json['paths']['/bar']['get']['responses'][error_code] is not None
+    assert (
+        rv.json['paths']['/bar']['get']['responses'][error_code]['description']
+        == 'Validation error'
+    )
 
 
 def test_auto_404_error(app, client):
@@ -253,7 +260,7 @@ def test_auto_404_error(app, client):
     validate_spec(rv.json)
     assert '404' not in rv.json['paths']['/foo']['get']['responses']
     assert '404' in rv.json['paths']['/bar/{id}']['get']['responses']
-    assert rv.json['paths']['/bar/{id}']['get']['responses'][
-        '404']['description'] == 'Not found'
-    assert rv.json['paths']['/baz/{id}']['get']['responses'][
-        '404']['description'] == 'Pet not found'
+    assert rv.json['paths']['/bar/{id}']['get']['responses']['404']['description'] == 'Not found'
+    assert (
+        rv.json['paths']['/baz/{id}']['get']['responses']['404']['description'] == 'Pet not found'
+    )

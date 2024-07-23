@@ -5,7 +5,6 @@ from apiflask import HTTPTokenAuth
 
 
 def test_async_view(app, client):
-
     @app.get('/')
     async def index():
         return {'message': 'hello'}
@@ -16,7 +15,6 @@ def test_async_view(app, client):
 
 
 def test_async_error_processor(app, client):
-
     @app.error_processor
     async def custom_error_processor(e):
         return {'foo': 'test'}, e.status_code, e.headers
@@ -27,7 +25,6 @@ def test_async_error_processor(app, client):
 
 
 def test_async_spec_processor(app, client):
-
     @app.spec_processor
     async def update_spec(spec):
         spec['info']['title'] = 'Updated Title'
@@ -52,7 +49,6 @@ def test_auth_required_on_async_view(app, client):
 
 
 def test_doc_on_async_view(app, client):
-
     @app.get('/')
     @app.doc(summary='Test Root Endpoint')
     async def index():
@@ -64,7 +60,6 @@ def test_doc_on_async_view(app, client):
 
 
 def test_input_on_async_view(app, client):
-
     @app.post('/')
     @app.input(Foo)
     async def index(json_data):
@@ -77,7 +72,6 @@ def test_input_on_async_view(app, client):
 
 
 def test_output_on_async_view(app, client):
-
     @app.get('/foo')
     @app.output(Foo)
     async def foo():
@@ -92,12 +86,15 @@ def test_output_on_async_view(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['get']['responses']['200']
-    assert rv.json['paths']['/foo']['get']['responses']['200'][
-        'content']['application/json']['schema']['$ref'] == '#/components/schemas/Foo'
+    assert (
+        rv.json['paths']['/foo']['get']['responses']['200']['content']['application/json'][
+            'schema'
+        ]['$ref']
+        == '#/components/schemas/Foo'
+    )
 
 
 def test_async_doc_input_and_output_decorator(app, client):
-
     @app.post('/')
     @app.doc(summary='Test Root Endpoint')
     @app.input(Foo)

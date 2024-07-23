@@ -113,7 +113,7 @@ def test_swagger_ui(client):
         ('elements', b'Elements'),
         ('rapidoc', b'RapiDoc'),
         ('rapipdf', b'RapiPDF'),
-    ]
+    ],
 )
 def test_other_ui(ui_name):
     app = APIFlask(__name__, docs_ui=ui_name[0])

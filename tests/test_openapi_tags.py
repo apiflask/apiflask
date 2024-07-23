@@ -14,8 +14,8 @@ def test_tags(app, client):
             'description': 'some description for foo',
             'externalDocs': {
                 'description': 'Find more info about foo here',
-                'url': 'https://docs.example.com/'
-            }
+                'url': 'https://docs.example.com/',
+            },
         },
         {'name': 'bar', 'description': 'some description for bar'},
     ]
@@ -61,8 +61,8 @@ def test_tag_from_blueprint(app, client):
         'description': 'some description for foo',
         'externalDocs': {
             'description': 'Find more info about foo here',
-            'url': 'https://docs.example.com/'
-        }
+            'url': 'https://docs.example.com/',
+        },
     }
     bp = APIBlueprint('test', __name__, tag=tag)
     app.register_blueprint(bp)
@@ -88,10 +88,11 @@ def test_auto_tag_from_blueprint(app, client):
     assert {'name': 'Foo'} in rv.json['tags']
 
 
-@pytest.mark.skipif(importlib.metadata.version('flask') < '2.0.1',
-                    reason='Depends on new behaviour introduced in Flask 2.0.1')
+@pytest.mark.skipif(
+    importlib.metadata.version('flask') < '2.0.1',
+    reason='Depends on new behaviour introduced in Flask 2.0.1',
+)
 def test_auto_tag_from_nesting_blueprints(app, client):
-
     parent_bp = APIBlueprint('parent', __name__)
     child_bp = APIBlueprint('child', __name__)
     parent_bp.register_blueprint(child_bp)
@@ -136,10 +137,11 @@ def test_path_tags_with_blueprint_tag(app, client, tag):
     assert rv.json['paths']['/']['get']['tags'] == ['test']
 
 
-@pytest.mark.skipif(importlib.metadata.version('flask') < '2.0.1',
-                    reason='Depends on new behaviour introduced in Flask 2.0.1')
+@pytest.mark.skipif(
+    importlib.metadata.version('flask') < '2.0.1',
+    reason='Depends on new behaviour introduced in Flask 2.0.1',
+)
 def test_path_tags_with_nesting_blueprints(app, client):
-
     parent_bp = APIBlueprint('parent', __name__, url_prefix='/parent')
     child_bp = APIBlueprint('child', __name__, url_prefix='/child')
 

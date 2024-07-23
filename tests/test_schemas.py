@@ -10,7 +10,7 @@ def test_file_schema(app, client):
     @app.output(
         FileSchema(type='string', format='binary'),
         content_type='image/png',
-        description='An image file'
+        description='An image file',
     )
     def get_image():
         return 'file'
@@ -19,10 +19,7 @@ def test_file_schema(app, client):
     assert rv.status_code == 200
     content = rv.json['paths']['/image']['get']['responses']['200']['content']
     assert 'image/png' in content
-    assert content['image/png']['schema'] == {
-        'type': 'string',
-        'format': 'binary'
-    }
+    assert content['image/png']['schema'] == {'type': 'string', 'format': 'binary'}
     rv = client.get('/image')
     assert rv.status_code == 200
 
@@ -50,5 +47,6 @@ def test_empty_schema(app, client, schema):
     assert 'content' not in rv.json['paths']['/foo']['get']['responses']['204']
 
     assert 'content' in rv.json['paths']['/bar']['get']['responses']['200']
-    assert rv.json['paths']['/bar']['get']['responses']['200'][
-        'content']['image/png']['schema'] == {}
+    assert (
+        rv.json['paths']['/bar']['get']['responses']['200']['content']['image/png']['schema'] == {}
+    )

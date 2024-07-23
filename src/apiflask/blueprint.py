@@ -39,7 +39,7 @@ class APIBlueprint(APIScaffold, Blueprint):
         subdomain: str | None = None,
         url_defaults: dict | None = None,
         root_path: str | None = None,
-        cli_group: str | None = _sentinel  # type: ignore
+        cli_group: str | None = _sentinel,  # type: ignore
     ) -> None:
         """Make a blueprint instance.
 

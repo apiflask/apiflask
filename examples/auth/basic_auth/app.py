@@ -14,10 +14,7 @@ users = {
 
 @auth.verify_password
 def verify_password(username: str, password: str) -> t.Union[str, None]:
-    if (
-        username in users
-        and check_password_hash(users[username], password)
-    ):
+    if username in users and check_password_hash(users[username], password):
         return username
     return None
 

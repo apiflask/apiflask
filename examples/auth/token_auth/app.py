@@ -16,12 +16,8 @@ class User:
 
     def get_token(self):
         header = {'alg': 'HS256'}
-        payload = {
-            'id': self.id
-        }
-        return jwt.encode(
-            header, payload, current_app.config['SECRET_KEY']
-        ).decode()
+        payload = {'id': self.id}
+        return jwt.encode(header, payload, current_app.config['SECRET_KEY']).decode()
 
 
 users = [
@@ -60,9 +56,7 @@ class Token(Schema):
 def get_token(id: int):
     if get_user_by_id(id) is None:
         abort(404)
-    return {
-        'token': f'Bearer {get_user_by_id(id).get_token()}'
-    }
+    return {'token': f'Bearer {get_user_by_id(id).get_token()}'}
 
 
 @app.get('/name/<int:id>')

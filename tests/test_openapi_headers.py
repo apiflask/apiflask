@@ -9,13 +9,16 @@ from apiflask.fields import String
 
 def test_spec_with_dict_headers(app, client):
     @app.route('/foo')
-    @app.output(Foo, headers={
-        'X-boolean': Boolean(metadata={'description': 'A boolean header'}),
-        'X-integer': Integer(metadata={'description': 'An integer header'}),
-        'X-number': Number(metadata={'description': 'A number header'}),
-        'X-string': String(metadata={'description': 'A string header'}),
-        'X-array': List(String(), metadata={'description': 'An array header'}),
-    })
+    @app.output(
+        Foo,
+        headers={
+            'X-boolean': Boolean(metadata={'description': 'A boolean header'}),
+            'X-integer': Integer(metadata={'description': 'An integer header'}),
+            'X-number': Number(metadata={'description': 'A number header'}),
+            'X-string': String(metadata={'description': 'A string header'}),
+            'X-array': List(String(), metadata={'description': 'An array header'}),
+        },
+    )
     def foo():
         pass
 
@@ -56,7 +59,7 @@ def test_spec_with_dict_headers(app, client):
             'required': False,
             'schema': {'items': {'type': 'string'}, 'type': 'array'},
             'style': 'form',
-            'explode': True
+            'explode': True,
         },
     }
 

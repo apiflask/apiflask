@@ -30,19 +30,15 @@ def test_input(app, client):
         rv = client.post(rule)
         assert rv.status_code == 422
         assert rv.json == {
-            'detail': {
-                'json': {'name': ['Missing data for required field.']}
-            },
-            'message': 'Validation error'
+            'detail': {'json': {'name': ['Missing data for required field.']}},
+            'message': 'Validation error',
         }
 
         rv = client.post(rule, json={'id': 1})
         assert rv.status_code == 422
         assert rv.json == {
-            'detail': {
-                'json': {'name': ['Missing data for required field.']}
-            },
-            'message': 'Validation error'
+            'detail': {'json': {'name': ['Missing data for required field.']}},
+            'message': 'Validation error',
         }
 
         rv = client.post(rule, json={'id': 1, 'name': 'bar'})
@@ -56,8 +52,12 @@ def test_input(app, client):
         rv = client.get('/openapi.json')
         assert rv.status_code == 200
         validate_spec(rv.json)
-        assert rv.json['paths'][rule]['post']['requestBody'][
-            'content']['application/json']['schema']['$ref'] == '#/components/schemas/Foo'
+        assert (
+            rv.json['paths'][rule]['post']['requestBody']['content']['application/json']['schema'][
+                '$ref'
+            ]
+            == '#/components/schemas/Foo'
+        )
 
 
 def test_input_with_query_location(app, client):
@@ -70,19 +70,15 @@ def test_input_with_query_location(app, client):
     rv = client.post('/foo')
     assert rv.status_code == 422
     assert rv.json == {
-        'detail': {
-            'query': {'name': ['Missing data for required field.']}
-        },
-        'message': 'Validation error'
+        'detail': {'query': {'name': ['Missing data for required field.']}},
+        'message': 'Validation error',
     }
 
     rv = client.post('/foo?id=1&name=bar')
     assert rv.status_code == 422
     assert rv.json == {
-        'detail': {
-            'query': {'name2': ['Missing data for required field.']}
-        },
-        'message': 'Validation error'
+        'detail': {'query': {'name2': ['Missing data for required field.']}},
+        'message': 'Validation error',
     }
 
     rv = client.post('/foo?id=1&name=bar&id2=2&name2=baz')
@@ -103,10 +99,16 @@ def test_input_with_form_location(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert 'application/x-www-form-urlencoded' in rv.json['paths']['/']['post']['requestBody'][
-        'content']
-    assert rv.json['paths']['/']['post']['requestBody']['content'][
-        'application/x-www-form-urlencoded']['schema']['$ref'] == '#/components/schemas/Form'
+    assert (
+        'application/x-www-form-urlencoded'
+        in rv.json['paths']['/']['post']['requestBody']['content']
+    )
+    assert (
+        rv.json['paths']['/']['post']['requestBody']['content'][
+            'application/x-www-form-urlencoded'
+        ]['schema']['$ref']
+        == '#/components/schemas/Form'
+    )
     assert 'Form' in rv.json['components']['schemas']
 
     rv = client.post('/', data={'name': 'foo'})
@@ -127,8 +129,12 @@ def test_input_with_files_location(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert 'multipart/form-data' in rv.json['paths']['/']['post']['requestBody']['content']
-    assert rv.json['paths']['/']['post']['requestBody'][
-        'content']['multipart/form-data']['schema']['$ref'] == '#/components/schemas/Files'
+    assert (
+        rv.json['paths']['/']['post']['requestBody']['content']['multipart/form-data']['schema'][
+            '$ref'
+        ]
+        == '#/components/schemas/Files'
+    )
     assert 'image' in rv.json['components']['schemas']['Files']['properties']
     assert rv.json['components']['schemas']['Files']['properties']['image']['type'] == 'string'
     assert rv.json['components']['schemas']['Files']['properties']['image']['format'] == 'binary'
@@ -138,7 +144,7 @@ def test_input_with_files_location(app, client):
         data={
             'image': (io.BytesIO(b'test'), 'test.jpg'),
         },
-        content_type='multipart/form-data'
+        content_type='multipart/form-data',
     )
     assert rv.status_code == 200
     assert rv.json == {'image': True}
@@ -159,19 +165,26 @@ def test_input_with_form_and_files_location(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert 'multipart/form-data' in rv.json['paths']['/']['post']['requestBody']['content']
-    assert rv.json['paths']['/']['post']['requestBody'][
-        'content']['multipart/form-data']['schema']['$ref'] == '#/components/schemas/FormAndFiles'
+    assert (
+        rv.json['paths']['/']['post']['requestBody']['content']['multipart/form-data']['schema'][
+            '$ref'
+        ]
+        == '#/components/schemas/FormAndFiles'
+    )
     assert 'name' in rv.json['components']['schemas']['FormAndFiles']['properties']
     assert 'image' in rv.json['components']['schemas']['FormAndFiles']['properties']
-    assert rv.json['components']['schemas']['FormAndFiles']['properties']['image'][
-        'type'] == 'string'
-    assert rv.json['components']['schemas']['FormAndFiles']['properties']['image'][
-        'format'] == 'binary'
+    assert (
+        rv.json['components']['schemas']['FormAndFiles']['properties']['image']['type'] == 'string'
+    )
+    assert (
+        rv.json['components']['schemas']['FormAndFiles']['properties']['image']['format']
+        == 'binary'
+    )
 
     rv = client.post(
         '/',
         data={'name': 'foo', 'image': (io.BytesIO(b'test'), 'test.jpg')},
-        content_type='multipart/form-data'
+        content_type='multipart/form-data',
     )
     assert rv.status_code == 200
     assert rv.json == {'name': True, 'image': True}
@@ -207,22 +220,26 @@ def test_input_with_path_location(app, client):
     assert rv.json['detail']['path']['image_type'] == ['Must be one of: jpg, png, tiff, webp.']
 
 
-@pytest.mark.parametrize('locations', [
-    ['files', 'form'],
-    ['files', 'json'],
-    ['form', 'json'],
-    ['form_and_files', 'json'],
-    ['form_and_files', 'form'],
-    ['form_and_files', 'files'],
-    ['json_or_form', 'json'],
-    ['json_or_form', 'files'],
-    ['json_or_form', 'form'],
-    ['json_or_form', 'form_and_files'],
-])
+@pytest.mark.parametrize(
+    'locations',
+    [
+        ['files', 'form'],
+        ['files', 'json'],
+        ['form', 'json'],
+        ['form_and_files', 'json'],
+        ['form_and_files', 'form'],
+        ['form_and_files', 'files'],
+        ['json_or_form', 'json'],
+        ['json_or_form', 'files'],
+        ['json_or_form', 'form'],
+        ['json_or_form', 'form_and_files'],
+    ],
+)
 def test_multiple_input_body_location(app, locations):
     arg_name_1 = f'{locations[0]}_data'  # noqa: F841
     arg_name_2 = f'{locations[1]}_data'  # noqa: F841
     with pytest.raises(RuntimeError):
+
         @app.route('/foo')
         @app.input(Foo, location=locations[0])
         @app.input(Bar, location=locations[1])
@@ -231,9 +248,7 @@ def test_multiple_input_body_location(app, locations):
 
 
 def test_input_with_dict_schema(app, client):
-    dict_schema = {
-        'name': String(required=True)
-    }
+    dict_schema = {'name': String(required=True)}
 
     @app.get('/foo')
     @app.input(dict_schema, location='query')
@@ -258,10 +273,8 @@ def test_input_with_dict_schema(app, client):
     rv = client.get('/foo')
     assert rv.status_code == 422
     assert rv.json == {
-        'detail': {
-            'query': {'name': ['Missing data for required field.']}
-        },
-        'message': 'Validation error'
+        'detail': {'query': {'name': ['Missing data for required field.']}},
+        'message': 'Validation error',
     }
 
     rv = client.get('/foo?name=grey')
@@ -271,10 +284,8 @@ def test_input_with_dict_schema(app, client):
     rv = client.post('/bar')
     assert rv.status_code == 422
     assert rv.json == {
-        'detail': {
-            'json': {'name': ['Missing data for required field.']}
-        },
-        'message': 'Validation error'
+        'detail': {'json': {'name': ['Missing data for required field.']}},
+        'message': 'Validation error',
     }
 
     rv = client.post('/bar', json={'name': 'grey'})
@@ -288,41 +299,41 @@ def test_input_with_dict_schema(app, client):
         'in': 'query',
         'name': 'name',
         'required': True,
-        'schema': {
-            'type': 'string'
-        }
+        'schema': {'type': 'string'},
     }
     # TODO check the excess item "'x-scope': ['']" in schema object
     # https://github.com/p1c2u/openapi-spec-validator/issues/53
-    assert rv.json['paths']['/bar']['post']['requestBody'][
-        'content']['application/json']['schema']['$ref'] == '#/components/schemas/MyName'
+    assert (
+        rv.json['paths']['/bar']['post']['requestBody']['content']['application/json']['schema'][
+            '$ref'
+        ]
+        == '#/components/schemas/MyName'
+    )
     assert rv.json['components']['schemas']['MyName'] == {
-        'properties': {
-            'name': {
-                'type': 'string'
-            }
-        },
+        'properties': {'name': {'type': 'string'}},
         'required': ['name'],
-        'type': 'object'
+        'type': 'object',
     }
     # default schema name is "Generated"
-    assert rv.json['paths']['/baz']['post']['requestBody'][
-        'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated'
-    assert rv.json['paths']['/spam']['post']['requestBody'][
-        'content']['application/json']['schema']['$ref'] == '#/components/schemas/Generated1'
+    assert (
+        rv.json['paths']['/baz']['post']['requestBody']['content']['application/json']['schema'][
+            '$ref'
+        ]
+        == '#/components/schemas/Generated'
+    )
+    assert (
+        rv.json['paths']['/spam']['post']['requestBody']['content']['application/json']['schema'][
+            '$ref'
+        ]
+        == '#/components/schemas/Generated1'
+    )
 
 
 def test_input_body_example(app, client):
     example = {'name': 'foo', 'id': 2}
     examples = {
-        'example foo': {
-            'summary': 'an example of foo',
-            'value': {'name': 'foo', 'id': 1}
-        },
-        'example bar': {
-            'summary': 'an example of bar',
-            'value': {'name': 'bar', 'id': 2}
-        },
+        'example foo': {'summary': 'an example of foo', 'value': {'name': 'foo', 'id': 1}},
+        'example bar': {'summary': 'an example of bar', 'value': {'name': 'bar', 'id': 2}},
     }
 
     @app.post('/foo')
@@ -348,12 +359,20 @@ def test_input_body_example(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert rv.json['paths']['/foo']['post']['requestBody'][
-        'content']['application/json']['example'] == example
-    assert rv.json['paths']['/bar']['post']['requestBody'][
-        'content']['application/json']['examples'] == examples
+    assert (
+        rv.json['paths']['/foo']['post']['requestBody']['content']['application/json']['example']
+        == example
+    )
+    assert (
+        rv.json['paths']['/bar']['post']['requestBody']['content']['application/json']['examples']
+        == examples
+    )
 
-    assert rv.json['paths']['/baz']['get']['requestBody'][
-        'content']['application/json']['example'] == example
-    assert rv.json['paths']['/baz']['post']['requestBody'][
-        'content']['application/json']['examples'] == examples
+    assert (
+        rv.json['paths']['/baz']['get']['requestBody']['content']['application/json']['example']
+        == example
+    )
+    assert (
+        rv.json['paths']['/baz']['post']['requestBody']['content']['application/json']['examples']
+        == examples
+    )

@@ -28,6 +28,7 @@ class HTTPError(Exception):
         return f'Hello, escape{name}'!
     ```
     """
+
     status_code: int = 500
     message: str | None = None
     detail: t.Any = {}
@@ -40,7 +41,7 @@ class HTTPError(Exception):
         message: str | None = None,
         detail: t.Any | None = None,
         headers: ResponseHeaderType | None = None,
-        extra_data: t.Mapping[str, t.Any] | None = None
+        extra_data: t.Mapping[str, t.Any] | None = None,
     ) -> None:
         """Initialize the error response.
 
@@ -102,7 +103,7 @@ def abort(
     message: str | None = None,
     detail: t.Any | None = None,
     headers: ResponseHeaderType | None = None,
-    extra_data: dict | None = None
+    extra_data: dict | None = None,
 ) -> t.NoReturn:
     """A function to raise HTTPError exception.
 

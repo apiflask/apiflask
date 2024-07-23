@@ -4,12 +4,15 @@ from apiflask.exceptions import abort
 from apiflask.exceptions import HTTPError
 
 
-@pytest.mark.parametrize('kwargs', [
-    {},
-    {'message': 'bad'},
-    {'message': 'bad', 'detail': {'location': 'json'}},
-    {'message': 'bad', 'detail': {'location': 'json'}, 'headers': {'X-FOO': 'bar'}}
-])
+@pytest.mark.parametrize(
+    'kwargs',
+    [
+        {},
+        {'message': 'bad'},
+        {'message': 'bad', 'detail': {'location': 'json'}},
+        {'message': 'bad', 'detail': {'location': 'json'}, 'headers': {'X-FOO': 'bar'}},
+    ],
+)
 def test_httperror(app, client, kwargs):
     @app.get('/foo')
     def foo():
@@ -39,13 +42,16 @@ def test_httperror(app, client, kwargs):
     assert rv.json['detail'] == {}
 
 
-@pytest.mark.parametrize('kwargs', [
-    {},
-    {'message': 'missing'},
-    {'message': 'missing', 'detail': {'location': 'query'}},
-    {'message': 'missing', 'detail': {'location': 'query'}, 'headers': {'X-BAR': 'foo'}},
-    {'message': 'missing', 'extra_data': {'code': 123, 'status': 'not_found'}}
-])
+@pytest.mark.parametrize(
+    'kwargs',
+    [
+        {},
+        {'message': 'missing'},
+        {'message': 'missing', 'detail': {'location': 'query'}},
+        {'message': 'missing', 'detail': {'location': 'query'}, 'headers': {'X-BAR': 'foo'}},
+        {'message': 'missing', 'extra_data': {'code': 123, 'status': 'not_found'}},
+    ],
+)
 def test_abort(app, client, kwargs):
     @app.get('/bar')
     def bar():
@@ -68,12 +74,15 @@ def test_abort(app, client, kwargs):
         assert rv.json['status'] == 'not_found'
 
 
-@pytest.mark.parametrize('kwargs', [
-    {},
-    {'message': 'bad'},
-    {'message': 'bad', 'detail': {'location': 'json'}},
-    {'message': 'bad', 'detail': {'location': 'json'}, 'headers': {'X-FOO': 'bar'}}
-])
+@pytest.mark.parametrize(
+    'kwargs',
+    [
+        {},
+        {'message': 'bad'},
+        {'message': 'bad', 'detail': {'location': 'json'}},
+        {'message': 'bad', 'detail': {'location': 'json'}, 'headers': {'X-FOO': 'bar'}},
+    ],
+)
 def test_default_error_handler(app, kwargs):
     error = HTTPError(400, **kwargs)
     rv = app._error_handler(error)
@@ -102,19 +111,13 @@ def test_custom_error_classes(app, client):
     class PetDown(HTTPError):
         status_code = 400
         message = 'The pet is down.'
-        extra_data = {
-            'error_code': '123',
-            'error_docs': 'https://example.com/docs/down'
-        }
+        extra_data = {'error_code': '123', 'error_docs': 'https://example.com/docs/down'}
         headers = {'X-Foo': 'bar'}
 
     class PetNotFound(HTTPError):
         status_code = 404
         message = 'The pet is gone.'
-        extra_data = {
-            'error_code': '345',
-            'error_docs': 'https://example.com/docs/gone'
-        }
+        extra_data = {'error_code': '345', 'error_docs': 'https://example.com/docs/gone'}
 
     @app.get('/foo')
     def foo():

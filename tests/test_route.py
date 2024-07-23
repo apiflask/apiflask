@@ -92,11 +92,13 @@ def test_blueprint_route_on_method_view(app, client):
 
 def test_bad_route_decorator_usages(app):
     with pytest.raises(RuntimeError):
+
         @app.get('/foo', methods=['GET'])
         def foo(self):
             pass
 
     with pytest.raises(RuntimeError):
+
         @app.get('/baz')
         class Baz(MethodView):
             def get(self):

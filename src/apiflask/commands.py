@@ -9,26 +9,22 @@ from flask.cli import with_appcontext
     '--format',
     '-f',
     type=click.Choice(['json', 'yaml', 'yml']),
-    help='The format of the spec, defaults to SPEC_FORMAT config.'
+    help='The format of the spec, defaults to SPEC_FORMAT config.',
 )
 @click.option(
     '--output',
     '-o',
     type=click.Path(),
-    help='The file path to the spec file, defaults to LOCAL_SPEC_PATH config.'
+    help='The file path to the spec file, defaults to LOCAL_SPEC_PATH config.',
 )
 @click.option(
     '--indent',
     '-i',
     type=int,
-    help='The indentation for JSON spec, defaults to LOCAL_SPEC_JSON_INDENT config.'
+    help='The indentation for JSON spec, defaults to LOCAL_SPEC_JSON_INDENT config.',
 )
 @click.option(
-    '--quiet',
-    '-q',
-    type=bool,
-    is_flag=True,
-    help='A flag to suppress printing output to stdout.'
+    '--quiet', '-q', type=bool, is_flag=True, help='A flag to suppress printing output to stdout.'
 )
 @with_appcontext
 def spec_command(format, output, indent, quiet):

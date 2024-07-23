@@ -179,29 +179,26 @@ def test_doc_responses(app, client):
     assert '200' in rv.json['paths']['/foo']['get']['responses']
     assert '400' in rv.json['paths']['/foo']['get']['responses']
     # overwrite existing error descriptions
-    assert rv.json['paths']['/foo']['get']['responses'][
-        '200']['description'] == 'success'
-    assert rv.json['paths']['/foo']['get']['responses'][
-        '400']['description'] == 'bad'
+    assert rv.json['paths']['/foo']['get']['responses']['200']['description'] == 'success'
+    assert rv.json['paths']['/foo']['get']['responses']['400']['description'] == 'bad'
     assert '404' in rv.json['paths']['/foo']['get']['responses']
-    assert rv.json['paths']['/foo']['get']['responses'][
-        '404']['description'] == 'not found'
+    assert rv.json['paths']['/foo']['get']['responses']['404']['description'] == 'not found'
     assert '500' in rv.json['paths']['/foo']['get']['responses']
-    assert rv.json['paths']['/foo']['get']['responses'][
-        '500']['description'] == 'server error'
+    assert rv.json['paths']['/foo']['get']['responses']['500']['description'] == 'server error'
 
     assert '200' in rv.json['paths']['/bar']['get']['responses']
     assert '400' in rv.json['paths']['/bar']['get']['responses']
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '200']['description'] == 'Successful response'
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '400']['description'] == 'Bad Request'
+    assert (
+        rv.json['paths']['/bar']['get']['responses']['200']['description'] == 'Successful response'
+    )
+    assert rv.json['paths']['/bar']['get']['responses']['400']['description'] == 'Bad Request'
     assert '404' in rv.json['paths']['/foo']['get']['responses']
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '404']['description'] == 'Not Found'
+    assert rv.json['paths']['/bar']['get']['responses']['404']['description'] == 'Not Found'
     assert '500' in rv.json['paths']['/bar']['get']['responses']
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '500']['description'] == 'Internal Server Error'
+    assert (
+        rv.json['paths']['/bar']['get']['responses']['500']['description']
+        == 'Internal Server Error'
+    )
 
 
 def test_doc_responses_custom_spec(app, client):
@@ -217,50 +214,35 @@ def test_doc_responses_custom_spec(app, client):
                             'properties': {
                                 'id': {'type': 'integer'},
                                 'name': {'type': 'string'},
-                            }
+                            },
                         }
-                    }
+                    },
                 }
             }
-        }
+        },
     }
 
     @app.get('/foo')
     @app.input(Foo)
     @app.output(Foo)
-    @app.doc(responses={
-        200: response_spec
-    })
+    @app.doc(responses={200: response_spec})
     def foo():
         return {'message': 'Hello!'}
 
     @app.get('/bar')
-    @app.doc(responses={
-        200: {
-            'description': 'Success',
-            'content': {
-                'application/json': {
-                    'schema': Foo
-                }
-            }
-        },
-        400: {
-            'description': 'Error',
-            'content': {
-                'application/json': {
-                    'schema': CustomHTTPError
-                }
-            }
-        },
-        404: {
-            'description': 'Error',
-            'content': {
-                'application/json': {
-                    'schema': CustomHTTPError()
-                }
-            }
+    @app.doc(
+        responses={
+            200: {'description': 'Success', 'content': {'application/json': {'schema': Foo}}},
+            400: {
+                'description': 'Error',
+                'content': {'application/json': {'schema': CustomHTTPError}},
+            },
+            404: {
+                'description': 'Error',
+                'content': {'application/json': {'schema': CustomHTTPError()}},
+            },
         }
-    })
+    )
     def say_hello():
         return {'message': 'Hello!'}
 
@@ -273,13 +255,11 @@ def test_doc_responses_custom_spec(app, client):
     assert '200' in rv.json['paths']['/bar']['get']['responses']
     assert '400' in rv.json['paths']['/bar']['get']['responses']
     assert '404' in rv.json['paths']['/bar']['get']['responses']
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '200']['description'] == 'Success'
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '400']['description'] == 'Error'
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '400']['content']['application/json']['schema'] == {
-            '$ref': '#/components/schemas/CustomHTTPError'}
+    assert rv.json['paths']['/bar']['get']['responses']['200']['description'] == 'Success'
+    assert rv.json['paths']['/bar']['get']['responses']['400']['description'] == 'Error'
+    assert rv.json['paths']['/bar']['get']['responses']['400']['content']['application/json'][
+        'schema'
+    ] == {'$ref': '#/components/schemas/CustomHTTPError'}
     assert rv.json['components']['schemas']['CustomHTTPError'] == {
         'type': 'object',
         'properties': {
@@ -332,7 +312,9 @@ def test_doc_responses_additional_content_type(app, client):
     assert '200' in rv.json['paths']['/foo']['get']['responses']
     assert 'application/json' in rv.json['paths']['/foo']['get']['responses']['200']['content']
     assert 'text/html' in rv.json['paths']['/foo']['get']['responses']['200']['content']
-    assert rv.json['paths']['/foo']['get']['responses']['200']['description'] == 'Successful response'  # noqa: E501
+    assert (
+        rv.json['paths']['/foo']['get']['responses']['200']['description'] == 'Successful response'
+    )  # noqa: E501
     assert '200' in rv.json['paths']['/bar']['get']['responses']
     assert 'application/json' in rv.json['paths']['/bar']['get']['responses']['200']['content']
     assert 'text/html' in rv.json['paths']['/bar']['get']['responses']['200']['content']
@@ -362,29 +344,26 @@ def test_doc_responses_with_methodview(app, client):
     assert '200' in rv.json['paths']['/foo']['get']['responses']
     assert '400' in rv.json['paths']['/foo']['get']['responses']
     # don't overwrite exist error description
-    assert rv.json['paths']['/foo']['get']['responses'][
-        '200']['description'] == 'success'
-    assert rv.json['paths']['/foo']['get']['responses'][
-        '400']['description'] == 'bad'
+    assert rv.json['paths']['/foo']['get']['responses']['200']['description'] == 'success'
+    assert rv.json['paths']['/foo']['get']['responses']['400']['description'] == 'bad'
     assert '404' in rv.json['paths']['/foo']['get']['responses']
-    assert rv.json['paths']['/foo']['get']['responses'][
-        '404']['description'] == 'not found'
+    assert rv.json['paths']['/foo']['get']['responses']['404']['description'] == 'not found'
     assert '500' in rv.json['paths']['/foo']['get']['responses']
-    assert rv.json['paths']['/foo']['get']['responses'][
-        '500']['description'] == 'server error'
+    assert rv.json['paths']['/foo']['get']['responses']['500']['description'] == 'server error'
 
     assert '200' in rv.json['paths']['/bar']['get']['responses']
     assert '400' in rv.json['paths']['/bar']['get']['responses']
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '200']['description'] == 'Successful response'
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '400']['description'] == 'Bad Request'
+    assert (
+        rv.json['paths']['/bar']['get']['responses']['200']['description'] == 'Successful response'
+    )
+    assert rv.json['paths']['/bar']['get']['responses']['400']['description'] == 'Bad Request'
     assert '404' in rv.json['paths']['/foo']['get']['responses']
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '404']['description'] == 'Not Found'
+    assert rv.json['paths']['/bar']['get']['responses']['404']['description'] == 'Not Found'
     assert '500' in rv.json['paths']['/bar']['get']['responses']
-    assert rv.json['paths']['/bar']['get']['responses'][
-        '500']['description'] == 'Internal Server Error'
+    assert (
+        rv.json['paths']['/bar']['get']['responses']['500']['description']
+        == 'Internal Server Error'
+    )
 
 
 def test_doc_operationid(app, client):
@@ -424,14 +403,11 @@ def test_doc_security(app, client):
     assert rv.status_code == 200
     validate_spec(rv.json)
     assert rv.json['paths']['/foo']['get']['security'] == [{'ApiKeyAuth': []}]
-    assert rv.json['paths']['/bar']['get']['security'] == [
-        {'BasicAuth': []}, {'ApiKeyAuth': []}
-    ]
+    assert rv.json['paths']['/bar']['get']['security'] == [{'BasicAuth': []}, {'ApiKeyAuth': []}]
     assert rv.json['paths']['/baz']['get']['security'] == [{'OAuth2': ['read', 'write']}]
 
 
 def test_doc_security_invalid_value(app):
-
     @app.route('/foo')
     @app.doc(security={'BasicAuth': []})
     def foo():

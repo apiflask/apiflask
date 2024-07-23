@@ -16,16 +16,14 @@ repos:
   #   rev: 21.5b1
   #   hooks:
   #     - id: black
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.0.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.5.4
     hooks:
-      - id: flake8
-        additional_dependencies:
-          - flake8-bugbear
-          - flake8-implicit-str-concat
-          - flake8-quotes
-        args:
-          - --config=.flake8
+      # Run the linter.
+      - id: ruff
+      # Run the formatter.
+      - id: ruff-format
   - repo: https://github.com/peterdemin/pip-compile-multi
     rev: v2.4.5
     hooks:

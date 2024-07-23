@@ -30,10 +30,10 @@ def test_flask_spec_fields_order(app, cli_runner):
     result = cli_runner.invoke(spec_command)
     assert 'openapi' in result.output
     assert json.loads(result.output) == app.spec
-    assert (
-        list(json.loads(result.output)['components']['schemas']['Foo']['properties'].keys())
-        == ['id', 'name']
-    )
+    assert list(json.loads(result.output)['components']['schemas']['Foo']['properties'].keys()) == [
+        'id',
+        'name',
+    ]
 
 
 @pytest.mark.parametrize('format', ['json', 'yaml', 'yml', 'foo'])

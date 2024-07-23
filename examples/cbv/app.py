@@ -8,7 +8,7 @@ app = APIFlask(__name__)
 pets = [
     {'id': 0, 'name': 'Kitty', 'category': 'cat'},
     {'id': 1, 'name': 'Coco', 'category': 'dog'},
-    {'id': 2, 'name': 'Flash', 'category': 'cat'}
+    {'id': 2, 'name': 'Flash', 'category': 'cat'},
 ]
 
 
@@ -24,13 +24,11 @@ class PetOut(Schema):
 
 
 class Hello(MethodView):
-
     def get(self):
         return {'message': 'Hello!'}
 
 
 class Pet(MethodView):
-
     @app.output(PetOut)
     def get(self, pet_id):
         """Get a pet"""
@@ -59,7 +57,6 @@ class Pet(MethodView):
 
 
 class Pets(MethodView):
-
     @app.output(PetOut(many=True))
     def get(self):
         """Get all pets"""
