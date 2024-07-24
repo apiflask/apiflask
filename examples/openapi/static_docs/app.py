@@ -3,6 +3,9 @@ from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
 app = APIFlask(__name__)
+app.config['SYNC_LOCAL_SPEC'] = True
+app.config['LOCAL_SPEC_PATH'] = 'openapi.json'
+app.config['LOCAL_SPEC_JSON_INDENT'] = 0
 
 pets = [
     {'id': 0, 'name': 'Kitty', 'category': 'cat'},
