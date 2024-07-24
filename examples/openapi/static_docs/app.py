@@ -7,10 +7,7 @@ app.config['SYNC_LOCAL_SPEC'] = True
 app.config['LOCAL_SPEC_PATH'] = 'openapi.json'
 app.config['LOCAL_SPEC_JSON_INDENT'] = 0
 
-pets = [
-    {'id': 0, 'name': 'Kitty', 'category': 'cat'},
-    {'id': 1, 'name': 'Coco', 'category': 'dog'}
-]
+pets = [{'id': 0, 'name': 'Kitty', 'category': 'cat'}, {'id': 1, 'name': 'Coco', 'category': 'dog'}]
 
 
 class PetIn(Schema):
