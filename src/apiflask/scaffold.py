@@ -596,6 +596,10 @@ class APIScaffold:
                 [Specification Extensions](https://spec.openapis.org/oas/v3.1.0#specification-extensions)
                 chapter of OpenAPI docs.
 
+        *Version changed: 2.2.0*
+
+        - Add `extensions` parameter to support setting spec extensions.
+
         *Version changed: 2.0.0*
 
         - Remove the deprecated `tag` parameter.

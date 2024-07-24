@@ -1007,6 +1007,10 @@ The auto-operationId will in the format of `{HTTP method}_{endpoint of the view}
 
 ### Operation spec extensions
 
+!!! warning "Version >= 2.2.0"
+
+    This feature was added in the [version 2.2.0](/changelog/#version-220).
+
 You can add custom fields to the operation object with the `extensions` parameter:
 
 ```python
