@@ -72,10 +72,13 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests", "examples"]
 filterwarnings = ["ignore::UserWarning"]
-addopts = ["--cov=src/apiflask", "--cov-branch", "--cov-report=term-missing"]
+addopts = ["--cov=apiflask", "--cov-branch", "--cov-report=term-missing", "--cov-report=xml"]
 
 [tool.coverage.run]
 omit = ["src/apiflask/_decorators.py", "src/apiflask/views.py"]
+
+[tool.coverage.paths]
+source = ["src"]
 
 [tool.ruff]
 indent-width = 4

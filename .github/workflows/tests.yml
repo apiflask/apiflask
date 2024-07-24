@@ -54,8 +54,9 @@ jobs:
         if: matrix.tox == 'typing'
       - run: pip install tox
       - run: tox -e ${{ matrix.tox }}
-      - name: collect coverage
-        run: |
-          pip install codecov
-          codecov
+      - uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: false
+          name: codecov-umbrella
+          token: ${{ secrets.CODECOV_TOKEN }}
         if: matrix.name == 'Linux'
