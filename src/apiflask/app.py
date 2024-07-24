@@ -1033,6 +1033,7 @@ class APIFlask(APIScaffold, Flask):
                 )
                 view_func_auth = view_func._spec.get('auth')
                 custom_security = view_func._spec.get('security')
+                operation_extensions = view_func._spec.get('extensions')
                 if self.config['AUTO_AUTH_ERROR_RESPONSE'] and (
                     has_bp_level_auth or view_func_auth or custom_security
                 ):
@@ -1136,6 +1137,10 @@ class APIFlask(APIScaffold, Flask):
                         ]
 
                 operations[method.lower()] = operation
+
+                if operation_extensions:
+                    for extension, value in operation_extensions.items():
+                        operation[extension] = value
 
             # parameters
             path_arguments: t.Iterable = re.findall(r'<(([^<:]+:)?([^>]+))>', rule.rule)

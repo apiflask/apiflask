@@ -543,6 +543,7 @@ class APIScaffold:
         hide: bool | None = None,
         operation_id: str | None = None,
         security: str | list[str | dict[str, list]] | None = None,
+        extensions: dict[str, t.Any] | None = None,
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Set up the OpenAPI Spec for view functions.
 
@@ -590,6 +591,14 @@ class APIScaffold:
                 the `SECURITY_SCHEMES` configuration. If you don't need specify the scopes, just
                 pass a security name (equals to `[{'foo': []}]`) or a list of security names (equals
                 to `[{'foo': []}, {'bar': []}]`).
+            extensions: The spec extensions of this endpoint (OpenAPI operation object). The fields
+                in this extensions dict should start with "x-" prefix. See more details in the
+                [Specification Extensions](https://spec.openapis.org/oas/v3.1.0#specification-extensions)
+                chapter of OpenAPI docs.
+
+        *Version changed: 2.2.0*
+
+        - Add `extensions` parameter to support setting spec extensions.
 
         *Version changed: 2.0.0*
 
@@ -637,6 +646,7 @@ class APIScaffold:
                 hide=hide,
                 operation_id=operation_id,
                 security=security,
+                extensions=extensions,
             )
             return f
 
