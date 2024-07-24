@@ -10,6 +10,4 @@ def test_specification_extensions(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     validate_spec(rv.json)
-    assert rv.json['paths']['/']['get']['x-foo'] == {
-        'foo': 'bar'
-    }
+    assert rv.json['paths']['/']['get']['x-foo'] == {'foo': 'bar'}

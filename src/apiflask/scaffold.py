@@ -591,8 +591,10 @@ class APIScaffold:
                 the `SECURITY_SCHEMES` configuration. If you don't need specify the scopes, just
                 pass a security name (equals to `[{'foo': []}]`) or a list of security names (equals
                 to `[{'foo': []}, {'bar': []}]`).
-            extensions: The `extensions` of this endpoint. Related to the `Specification Extensions`
-                described in OpenAPI docs.
+            extensions: The spec extensions of this endpoint (OpenAPI operation object). The fields
+                in this extensions dict should start with "x-" prefix. See more details in the
+                [Specification Extensions](https://spec.openapis.org/oas/v3.1.0#specification-extensions)
+                chapter of OpenAPI docs.
 
         *Version changed: 2.0.0*
 

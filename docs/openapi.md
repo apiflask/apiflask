@@ -1005,6 +1005,18 @@ app.config['AUTO_OPERATION_ID'] = True
 The auto-operationId will in the format of `{HTTP method}_{endpoint of the view}` (e.g. `get_hello`).
 
 
+### Operation spec extensions
+
+You can add custom fields to the operation object with the `extensions` parameter:
+
+```python
+@app.get('/')
+@app.doc(extensions={'x-foo': 'bar'})
+def hello():
+    return 'Hello'
+```
+
+
 ## Security information
 
 APIFlask will generate the `security` object and operation `security` field based on
