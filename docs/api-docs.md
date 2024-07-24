@@ -268,3 +268,42 @@ Or with npm:
     [Swagger UI releases page][_swagger_ui_releases]{target=_blank}.
 
     [_swagger_ui_releases]: https://github.com/swagger-api/swagger-ui/releases
+
+
+### Standalone Static HTML documentation
+
+For offline use, you can generate the OpenAPI docs as PDF with RapiPDF:
+
+```python
+from apiflask import APIFlask
+
+app = APIFlask(__name__, docs_ui='rapipdf')
+```
+
+If the generated PDF file is not meeting your requirements, you can also serve a static HTML file as the API documentation.
+
+Take Swagger UI as an example, you will need to:
+
+1. Create a static HTML file that loads Swagger UI JavaScript and CSS files.
+2. Generate a local OpenAPI spec file with the `flask spec` command. Set the following configuration:
+
+    ```python
+    app.config['SYNC_LOCAL_SPEC'] = True  # keep the spec file up-to-date with code
+    app.config['LOCAL_SPEC_PATH'] = 'openapi.json'  # the path to the spec file
+    app.config['LOCAL_SPEC_JSON_INDENT'] = 0  # set to 0 to remove indentation
+    ```
+
+3. Create a shell script to read the OpenAPI spec file and pass it to Swagger UI HTML file. For example:
+
+    ```sh
+    #!/bin/sh
+
+    spec_value=$(python3 -c "import json; print(open('openapi.json').read())")
+    # Replace var spec = {...} line in index.html
+    sed -i "s|var spec = {.*}|var spec = $spec_value|g" index.html
+    ```
+
+Here is [a full example](https://github.com/apiflask/apiflask/tree/main/examples/openapi/static_docs).
+
+See also the [Swagger UI documentation](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/installation.md#plain-old-htmlcssjs-standalone)
+for the standalone installation.

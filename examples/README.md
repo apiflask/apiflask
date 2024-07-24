@@ -4,7 +4,7 @@
 - Class-based view example: [/examples/cbv/app.py][_cbv]
 - ORM example (with Flask-SQLAlchemy): [/examples/orm/app.py][_orm]
 - Pagination example (with Flask-SQLAlchemy): [/examples/pagination/app.py][_pagination]
-- OpenAPI example: [/examples/openapi][_openapi]
+- OpenAPI examples: [/examples/openapi][_openapi]
 - Base response example: [/examples/base_response/app.py][_base_response]
 - Token auth example: [/examples/auth/token_auth/app.py][_token_auth]
 - Basic auth example: [/examples/auth/basic_auth/app.py][_basic_auth]
@@ -65,6 +65,7 @@ Each example application store in a sub-folder:
 - `/pagination`: Pagination example (with Flask-SQLAlchemy)
 - `/openapi/basic`: Basic OpenAPI example
 - `/openapi/custom_decorators`: OpenAPI example with custom decorators
+- `/openapi/static_docs`: OpenAPI example with standalone static HTML OpenAPI docs
 - `/base_response`: Base response example
 - `/dataclass`: Dataclass example (with marshmallow-dataclass)
 

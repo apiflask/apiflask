@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>APIFlask 0.1.0 - Swagger UI</title>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
+  <link rel="icon" type="image/png"
+    href="https://apiflask.com/_assets/favicon.png">
+  <style>
+    html {
+      box-sizing: border-box;
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="swagger-ui"></div>
+
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+  <script>
+    // we can get several config items of Function type
+    // referring to https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
+    var funcConfigItems = ['operationsSorter', 'tagsSorter', 'onComplete', 'requestInterceptor', 'responseInterceptor', 'modelPropertyMacro', 'parameterMacro']
+
+    function parseFunc(funcStr) {
+        return new Function('"use strict"; return ' + funcStr)()
+    }
+
+    var spec = {"components": {"schemas": {"HTTPError": {"properties": {"detail": {"type": "object"}, "message": {"type": "string"}}, "type": "object"}, "PetInUpdate": {"properties": {"category": {"enum": ["dog", "cat"], "type": "string"}, "name": {"maxLength": 10, "minLength": 0, "type": "string"}}, "type": "object"}, "PetOut": {"properties": {"category": {"type": "string"}, "id": {"type": "integer"}, "name": {"type": "string"}}, "type": "object"}, "ValidationError": {"properties": {"detail": {"properties": {"<location>": {"properties": {"<field_name>": {"items": {"type": "string"}, "type": "array"}}, "type": "object"}}, "type": "object"}, "message": {"type": "string"}}, "type": "object"}}}, "info": {"title": "APIFlask", "version": "0.1.0"}, "openapi": "3.0.3", "paths": {"/": {"get": {"parameters": [], "responses": {"200": {"content": {"application/json": {"schema": {}}}, "description": "Successful response"}}, "summary": "Say Hello"}}, "/pets/{pet_id}": {"get": {"parameters": [{"in": "path", "name": "pet_id", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/PetOut"}}}, "description": "Successful response"}, "404": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPError"}}}, "description": "Not found"}}, "summary": "Get Pet"}, "patch": {"parameters": [{"in": "path", "name": "pet_id", "required": true, "schema": {"type": "integer"}}], "requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/PetInUpdate"}}}}, "responses": {"200": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/PetOut"}}}, "description": "Successful response"}, "404": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPError"}}}, "description": "Not found"}, "422": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/ValidationError"}}}, "description": "Validation error"}}, "summary": "Update Pet"}}}, "tags": []}
+
+    var baseConfig = {
+      spec: spec,
+      dom_id: "#swagger-ui",
+      deepLinking: true,
+      presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIStandalonePreset
+      ],
+      plugins: [
+        SwaggerUIBundle.plugins.DownloadUrl
+      ],
+      layout: "BaseLayout",
+        oauth2RedirectUrl: "/docs/oauth2-redirect"
+    }
+
+    window.onload = function () {
+      const ui = SwaggerUIBundle(baseConfig)
+
+    }
+  </script>
+</body>
+
+</html>

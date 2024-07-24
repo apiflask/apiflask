@@ -97,9 +97,8 @@ indent-style = "space"
 # F = flake8 pyflakes
 # W = pycodestyle warnings
 # B9 = bugbear opinions
-# ISC = implicit-str-concat
 # Q0 = quotes
-extend-select = ["B", "E", "F", "W", "B9", "ISC", "Q0"]
+extend-select = ["B", "E", "F", "W", "B9", "Q0"]
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"
