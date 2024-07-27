@@ -1,12 +1,13 @@
 ## Version 2.1.4
 
 Unreleased
-
+- Fix deprecated use of Flask-SQLAlchemy __version__ attribute in tests ([issue_#594][issue_594]).
 - Use postponed evaluation of annotations ([pr #585][pr_585]).
 - Add static OpenAPI docs example ([issue #587][issue_587]).
 - Add spec extensions support with `@doc(extensions=...)` for the view function ([issue #571][issue_571]).
 
 [pr_585]: https://github.com/apiflask/apiflask/pull/585
+[issue_594]: https://github.com/apiflask/apiflask/issues/594
 [issue_587]: https://github.com/apiflask/apiflask/issues/587
 [issue_571]: https://github.com/apiflask/apiflask/issues/571
 
