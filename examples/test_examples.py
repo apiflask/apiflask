@@ -1,7 +1,6 @@
-import importlib.metadata
 import os
 import sys
-from importlib import reload
+from importlib import metadata, reload
 
 import pytest
 from packaging.version import Version
@@ -17,7 +16,7 @@ full_examples = [
 ]
 
 examples = full_examples + ['pagination']
-flask_sqlalchemy_version = Version(importlib.metadata.version('flask_sqlalchemy')).major
+flask_sqlalchemy_version = Version(metadata.version('flask_sqlalchemy')).major
 
 
 @pytest.fixture
@@ -196,7 +195,6 @@ def test_get_pets_pagination(client):
 @pytest.mark.skipif(flask_sqlalchemy_version < 3, reason='Need flask_sqlalchemy 3 for paginate')
 @pytest.mark.parametrize('client', ['pagination'], indirect=True)
 def test_get_pets_pagination_with_bad_data(client):
-    print(flask_sqlalchemy_version)
     rv = client.get('/pets?per_page=100')
     assert rv.status_code == 422
 
