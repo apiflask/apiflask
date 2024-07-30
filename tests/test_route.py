@@ -1,7 +1,7 @@
+import openapi_spec_validator as osv
 import pytest
 from flask.views import MethodView
 from flask.views import View
-from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from apiflask import APIBlueprint
@@ -22,7 +22,7 @@ def test_route_shortcuts(app, client, method):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/pet'][method]
 
 
@@ -125,7 +125,7 @@ def test_class_attribute_decorators(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '404' in rv.json['paths']['/']['get']['responses']
     assert '404' in rv.json['paths']['/']['post']['responses']
     assert 'BearerAuth' in rv.json['paths']['/']['get']['security'][0]
@@ -150,7 +150,7 @@ def test_overwrite_class_attribute_decorators(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/']['get']['deprecated']
     assert rv.json['paths']['/']['get']['tags'] == ['foo']
     assert rv.json['paths']['/']['post']['tags'] == ['foo']
@@ -176,7 +176,7 @@ def test_add_url_rule_with_method_view(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/']['get']['summary'] == 'Get Foo'
     assert rv.json['paths']['/']['post']['summary'] == 'Create foo'
 
@@ -201,7 +201,7 @@ def test_add_url_rule_with_method_view_as_view(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo/get']['get']['summary'] == 'Get Foo'
     assert rv.json['paths']['/foo/post']['post']['summary'] == 'Create foo'
 
@@ -213,7 +213,7 @@ def test_view_endpoint_contains_dot(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/']['get']
 
 

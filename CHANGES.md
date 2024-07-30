@@ -1,7 +1,8 @@
 ## Version 2.1.4
 
 Unreleased
-- Fix deprecated use of Flask-SQLAlchemy __version__ attribute in tests ([issue_#594][issue_594]).
+- Fix use of deprecated Flask-SQLAlchemy __version__ attribute in tests ([issue_#594][issue_594]).
+- Fix use of deprecated openapi validate_spec in tests ([issue_#594][issue_594]).
 - Use postponed evaluation of annotations ([pr #585][pr_585]).
 - Add static OpenAPI docs example ([issue #587][issue_587]).
 - Add spec extensions support with `@doc(extensions=...)` for the view function ([issue #571][issue_571]).

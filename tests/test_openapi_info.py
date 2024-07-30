@@ -1,4 +1,4 @@
-from openapi_spec_validator import validate_spec
+import openapi_spec_validator as osv
 
 from apiflask import APIFlask
 
@@ -29,7 +29,7 @@ def test_other_info_fields(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['info']['description'] == app.description
     assert rv.json['info']['termsOfService'] == app.terms_of_service
     assert rv.json['info']['contact'] == app.contact
@@ -52,7 +52,7 @@ def test_info_attribute(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['info']['description'] == app.info['description']
     assert rv.json['info']['termsOfService'] == app.info['termsOfService']
     assert rv.json['info']['contact'] == app.info['contact']
@@ -84,7 +84,7 @@ def test_overwirte_info_attribute(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['info']['description'] == app.description
     assert rv.json['info']['termsOfService'] == app.terms_of_service
     assert rv.json['info']['contact'] == app.contact

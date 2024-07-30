@@ -1,8 +1,8 @@
 import io
 
+import openapi_spec_validator as osv
 import pytest
 from flask.views import MethodView
-from openapi_spec_validator import validate_spec
 from werkzeug.datastructures import FileStorage
 
 from .schemas import Bar
@@ -51,7 +51,7 @@ def test_input(app, client):
 
         rv = client.get('/openapi.json')
         assert rv.status_code == 200
-        validate_spec(rv.json)
+        osv.validate(rv.json)
         assert (
             rv.json['paths'][rule]['post']['requestBody']['content']['application/json']['schema'][
                 '$ref'
@@ -98,7 +98,7 @@ def test_input_with_form_location(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert (
         'application/x-www-form-urlencoded'
         in rv.json['paths']['/']['post']['requestBody']['content']
@@ -127,7 +127,7 @@ def test_input_with_files_location(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'multipart/form-data' in rv.json['paths']['/']['post']['requestBody']['content']
     assert (
         rv.json['paths']['/']['post']['requestBody']['content']['multipart/form-data']['schema'][
@@ -163,7 +163,7 @@ def test_input_with_form_and_files_location(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'multipart/form-data' in rv.json['paths']['/']['post']['requestBody']['content']
     assert (
         rv.json['paths']['/']['post']['requestBody']['content']['multipart/form-data']['schema'][
@@ -198,7 +198,7 @@ def test_input_with_path_location(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '/{image_type}' in rv.json['paths']
     assert len(rv.json['paths']['/{image_type}']['get']['parameters']) == 1
     assert rv.json['paths']['/{image_type}']['get']['parameters'][0]['in'] == 'path'
@@ -294,7 +294,7 @@ def test_input_with_dict_schema(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['get']['parameters'][0] == {
         'in': 'query',
         'name': 'name',
@@ -358,7 +358,7 @@ def test_input_body_example(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert (
         rv.json['paths']['/foo']['post']['requestBody']['content']['application/json']['example']
         == example

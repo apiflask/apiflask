@@ -1,4 +1,4 @@
-from openapi_spec_validator import validate_spec
+import openapi_spec_validator as osv
 
 from apiflask import APIFlask
 from apiflask.security import HTTPBasicAuth
@@ -115,7 +115,7 @@ def test_combine_security_schemes(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['components']['securitySchemes']['BearerAuth'] == {
         'type': 'http',
         'scheme': 'bearer',
@@ -144,5 +144,5 @@ def test_doc_security_overwrite(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/']['get']['security'] == [{'BasicAuth': []}]

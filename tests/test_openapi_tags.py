@@ -1,7 +1,7 @@
 import importlib
 
+import openapi_spec_validator as osv
 import pytest
-from openapi_spec_validator import validate_spec
 
 from apiflask import APIBlueprint
 
@@ -22,7 +22,7 @@ def test_tags(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['tags']
     assert {'name': 'bar', 'description': 'some description for bar'} in rv.json['tags']
     assert rv.json['tags'][0]['name'] == 'foo'
@@ -37,7 +37,7 @@ def test_simple_tags(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['tags']
     assert {'name': 'foo'} in rv.json['tags']
     assert {'name': 'bar'} in rv.json['tags']
@@ -50,7 +50,7 @@ def test_simple_tag_from_blueprint(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['tags']
     assert {'name': 'foo'} in rv.json['tags']
 
@@ -69,7 +69,7 @@ def test_tag_from_blueprint(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['tags']
     assert rv.json['tags'][0]['name'] == 'foo'
     assert rv.json['tags'][0]['description'] == 'some description for foo'
@@ -83,7 +83,7 @@ def test_auto_tag_from_blueprint(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['tags']
     assert {'name': 'Foo'} in rv.json['tags']
 
@@ -100,7 +100,7 @@ def test_auto_tag_from_nesting_blueprints(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['tags']
     assert {'name': 'Parent'} in rv.json['tags']
     assert {'name': 'Parent.Child'} in rv.json['tags']
@@ -117,7 +117,7 @@ def test_path_tags(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/']['get']['tags'] == ['Foo']
 
 
@@ -133,7 +133,7 @@ def test_path_tags_with_blueprint_tag(app, client, tag):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/']['get']['tags'] == ['test']
 
 
@@ -158,6 +158,6 @@ def test_path_tags_with_nesting_blueprints(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/parent/']['get']['tags'] == ['Parent']
     assert rv.json['paths']['/parent/child/']['get']['tags'] == ['Parent.Child']

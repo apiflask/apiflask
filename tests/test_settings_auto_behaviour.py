@@ -1,6 +1,6 @@
+import openapi_spec_validator as osv
 import pytest
 from flask.views import MethodView
-from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from .schemas import Query
@@ -19,7 +19,7 @@ def test_auto_tags(app, client):
     app.register_blueprint(bp)
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['tags'] == []
     assert 'tags' not in rv.json['paths']['/']['get']
 
@@ -29,7 +29,7 @@ def test_auto_servers(app, client, config_value):
     app.config['AUTO_SERVERS'] = config_value
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert bool('servers' in rv.json) == config_value
 
 
@@ -69,7 +69,7 @@ def test_auto_path_summary(app, client, config_value):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     if config_value:
         assert rv.json['paths']['/foo']['get']['summary'] == 'Foo'
         assert rv.json['paths']['/bar']['get']['summary'] == 'Get Bar'
@@ -113,7 +113,7 @@ def test_auto_path_summary_with_methodview(app, client, config_value):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     if config_value:
         assert rv.json['paths']['/foo']['get']['summary'] == 'Get Foo'
         assert rv.json['paths']['/foo']['post']['summary'] == 'Post Summary'
@@ -165,7 +165,7 @@ def test_auto_path_description(app, client, config_value):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     if config_value:
         assert rv.json['paths']['/foo']['get']['description'] == 'some description for foo'
         assert rv.json['paths']['/baz']['get']['description'] == 'some description for baz'
@@ -203,7 +203,7 @@ def test_auto_200_response_for_bare_views(app, client, config_value):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert bool('/foo' in rv.json['paths']) is config_value
     assert bool('/bar' in rv.json['paths']) is config_value
     assert '/baz' in rv.json['paths']
@@ -228,7 +228,7 @@ def test_auto_200_response_for_no_output_views(app, client, config_value):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '/foo' in rv.json['paths']
     assert '/bar' in rv.json['paths']
     assert bool('200' in rv.json['paths']['/foo']['get']['responses']) is config_value
@@ -246,7 +246,7 @@ def test_auto_validation_error_response(app, client, config_value):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert bool('422' in rv.json['paths']['/foo']['post']['responses']) is config_value
     if config_value:
         assert 'ValidationError' in rv.json['components']['schemas']
@@ -270,7 +270,7 @@ def test_auto_auth_error_response(app, client, config_value):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert bool('401' in rv.json['paths']['/foo']['post']['responses']) is config_value
     if config_value:
         assert 'HTTPError' in rv.json['components']['schemas']
@@ -312,7 +312,7 @@ def test_blueprint_level_auto_auth_error_response(app, client, config_value):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
 
     assert 'auth' in app._auth_blueprints
     assert 'no-auth' not in app._auth_blueprints
@@ -346,7 +346,7 @@ def test_auto_404_error(app, client, config_value):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert bool('404' in rv.json['paths']['/foo/{id}']['get']['responses']) is config_value
     if config_value:
         assert 'HTTPError' in rv.json['components']['schemas']
@@ -380,7 +380,7 @@ def test_auto_operationid(app, client, config_value):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert bool('operationId' in rv.json['paths']['/foo']['get']) == config_value
     assert bool('operationId' in rv.json['paths']['/test/foo']['get']) == config_value
     if config_value:

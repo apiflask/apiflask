@@ -1,4 +1,4 @@
-from openapi_spec_validator import validate_spec
+import openapi_spec_validator as osv
 
 
 def test_specification_extensions(app, client):
@@ -9,5 +9,5 @@ def test_specification_extensions(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/']['get']['x-foo'] == {'foo': 'bar'}

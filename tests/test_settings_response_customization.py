@@ -1,5 +1,5 @@
+import openapi_spec_validator as osv
 import pytest
-from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from .schemas import HTTPError
@@ -39,7 +39,7 @@ def test_response_description_config(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['get']['responses']['200']['description'] == 'Success'
     assert rv.json['paths']['/bar']['get']['responses']['201']['description'] == 'Success'
     assert rv.json['paths']['/baz']['get']['responses']['200']['description'] == 'Success'
@@ -60,7 +60,7 @@ def test_validation_error_status_code_and_description(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['post']['responses']['400'] is not None
     assert rv.json['paths']['/foo']['post']['responses']['400']['description'] == 'Bad'
 
@@ -76,7 +76,7 @@ def test_validation_error_schema(app, client, schema):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['post']['responses']['422']
     assert rv.json['paths']['/foo']['post']['responses']['422']['description'] == 'Validation error'
     assert 'ValidationError' in rv.json['components']['schemas']
@@ -106,7 +106,7 @@ def test_auth_error_status_code_and_description(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['post']['responses']['403'] is not None
     assert rv.json['paths']['/foo']['post']['responses']['403']['description'] == 'Bad'
 
@@ -121,7 +121,7 @@ def test_auth_error_schema(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['post']['responses']['401']
     assert 'HTTPError' in rv.json['components']['schemas']
 
@@ -135,7 +135,7 @@ def test_http_auth_error_response(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'HTTPError' in rv.json['components']['schemas']
     assert (
         '#/components/schemas/HTTPError'
@@ -164,7 +164,7 @@ def test_http_error_schema(app, client, schema):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['get']['responses']['404']
     assert 'HTTPError' in rv.json['components']['schemas']
 

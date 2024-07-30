@@ -1,5 +1,5 @@
+import openapi_spec_validator as osv
 import pytest
-from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from apiflask import Schema
@@ -89,7 +89,7 @@ def test_base_response_spec(app, client, base_schema):
     else:
         rv = client.get('/openapi.json')
         assert rv.status_code == 200
-        validate_spec(rv.json)
+        osv.validate(rv.json)
         schema = rv.json['paths']['/']['get']['responses']['200']['content']['application/json'][
             'schema'
         ]
@@ -131,7 +131,7 @@ def test_base_response_204(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'content' not in rv.json['paths']['/']['get']['responses']['204']
 
 
@@ -162,7 +162,7 @@ def test_bare_view_base_response_spec(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     schema = rv.json['paths']['/']['get']['responses']['200']['content']['application/json'][
         'schema'
     ]
@@ -181,7 +181,7 @@ def test_input_with_base_response_spec(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     schema = rv.json['paths']['/']['get']['responses']['200']['content']['application/json'][
         'schema'
     ]

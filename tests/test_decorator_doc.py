@@ -1,6 +1,6 @@
+import openapi_spec_validator as osv
 import pytest
 from flask.views import MethodView
-from openapi_spec_validator import validate_spec
 
 from .schemas import CustomHTTPError
 from .schemas import Foo
@@ -19,7 +19,7 @@ def test_doc_summary_and_description(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['get']['summary'] == 'summary from doc decorator'
     assert 'description' not in rv.json['paths']['/foo']['get']
     assert rv.json['paths']['/bar']['get']['summary'] == 'summary for bar'
@@ -39,7 +39,7 @@ def test_doc_summary_and_description_with_methodview(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/baz']['get']['summary'] == 'summary from doc decorator'
     assert 'description' not in rv.json['paths']['/baz']['get']
     assert rv.json['paths']['/baz']['post']['summary'] == 'summary for baz'
@@ -61,7 +61,7 @@ def test_doc_tags(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['get']['tags'] == ['foo']
     assert rv.json['paths']['/bar']['get']['tags'] == ['foo', 'bar']
 
@@ -79,7 +79,7 @@ def test_doc_tags_with_methodview(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/baz']['get']['tags'] == ['foo']
     assert rv.json['paths']['/baz']['post']['tags'] == ['foo', 'bar']
 
@@ -101,7 +101,7 @@ def test_doc_hide(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '/foo' not in rv.json['paths']
     assert '/baz' in rv.json['paths']
     assert 'get' in rv.json['paths']['/baz']
@@ -126,7 +126,7 @@ def test_doc_hide_with_methodview(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '/bar' in rv.json['paths']
     assert 'get' in rv.json['paths']['/bar']
     assert 'post' not in rv.json['paths']['/bar']
@@ -141,7 +141,7 @@ def test_doc_deprecated(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['get']['deprecated']
 
 
@@ -154,7 +154,7 @@ def test_doc_deprecated_with_methodview(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['get']['deprecated']
 
 
@@ -175,7 +175,7 @@ def test_doc_responses(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '200' in rv.json['paths']['/foo']['get']['responses']
     assert '400' in rv.json['paths']['/foo']['get']['responses']
     # overwrite existing error descriptions
@@ -248,7 +248,7 @@ def test_doc_responses_custom_spec(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '200' in rv.json['paths']['/foo']['get']['responses']
     assert rv.json['paths']['/foo']['get']['responses']['200'] == response_spec
 
@@ -308,7 +308,7 @@ def test_doc_responses_additional_content_type(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '200' in rv.json['paths']['/foo']['get']['responses']
     assert 'application/json' in rv.json['paths']['/foo']['get']['responses']['200']['content']
     assert 'text/html' in rv.json['paths']['/foo']['get']['responses']['200']['content']
@@ -340,7 +340,7 @@ def test_doc_responses_with_methodview(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '200' in rv.json['paths']['/foo']['get']['responses']
     assert '400' in rv.json['paths']['/foo']['get']['responses']
     # don't overwrite exist error description
@@ -378,7 +378,7 @@ def test_doc_operationid(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['get']['operationId'] == 'getSomeFoo'
     assert 'operationId' not in rv.json['paths']['/bar']['get']
 
@@ -401,7 +401,7 @@ def test_doc_security(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['get']['security'] == [{'ApiKeyAuth': []}]
     assert rv.json['paths']['/bar']['get']['security'] == [{'BasicAuth': []}, {'ApiKeyAuth': []}]
     assert rv.json['paths']['/baz']['get']['security'] == [{'OAuth2': ['read', 'write']}]
