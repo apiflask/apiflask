@@ -1,5 +1,5 @@
+import openapi_spec_validator as osv
 from flask.views import MethodView
-from openapi_spec_validator import validate_spec
 
 from apiflask import APIBlueprint
 from apiflask.security import HTTPBasicAuth
@@ -45,7 +45,7 @@ def test_blueprint_enable_openapi(app, client):
     assert rv.status_code == 401
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['tags'] == []
     assert '/hello' in rv.json['paths']
     assert '/foo' not in rv.json['paths']
@@ -82,7 +82,7 @@ def test_blueprint_enable_openapi_with_methodview(app, client):
     assert rv.status_code == 401
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['tags'] == []
     assert '/hello' in rv.json['paths']
     assert '/foo' not in rv.json['paths']

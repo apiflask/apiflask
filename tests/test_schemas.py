@@ -1,5 +1,5 @@
+import openapi_spec_validator as osv
 import pytest
-from openapi_spec_validator import validate_spec
 
 from apiflask.schemas import EmptySchema
 from apiflask.schemas import FileSchema
@@ -43,7 +43,7 @@ def test_empty_schema(app, client, schema):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'content' not in rv.json['paths']['/foo']['get']['responses']['204']
 
     assert 'content' in rv.json['paths']['/bar']['get']['responses']['200']

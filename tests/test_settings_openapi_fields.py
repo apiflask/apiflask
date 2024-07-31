@@ -1,4 +1,4 @@
-from openapi_spec_validator import validate_spec
+import openapi_spec_validator as osv
 
 
 def test_openapi_fields(app, client):
@@ -38,7 +38,7 @@ def test_openapi_fields(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['openapi'] == openapi_version
     assert rv.json['tags'] == tags
     assert rv.json['servers'] == servers
@@ -63,14 +63,14 @@ def test_info(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['info']['description'] == app.config['INFO']['description']
     assert rv.json['info']['termsOfService'] == app.config['INFO']['termsOfService']
     assert rv.json['info']['contact'] == app.config['INFO']['contact']
     assert rv.json['info']['license'] == app.config['INFO']['license']
 
 
-def test_overwirte_info(app, client):
+def test_overwrite_info(app, client):
     app.config['INFO'] = {
         'description': 'Not set',
         'termsOfService': 'Not set',
@@ -92,14 +92,14 @@ def test_overwirte_info(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['info']['description'] == app.config['DESCRIPTION']
     assert rv.json['info']['termsOfService'] == app.config['TERMS_OF_SERVICE']
     assert rv.json['info']['contact'] == app.config['CONTACT']
     assert rv.json['info']['license'] == app.config['LICENSE']
 
 
-def test_security_shemes(app, client):
+def test_security_schemes(app, client):
     app.config['SECURITY_SCHEMES'] = {
         'ApiKeyAuth': {'type': 'apiKey', 'in': 'header', 'name': 'X-API-Key'},
         'BasicAuth': {
@@ -110,7 +110,7 @@ def test_security_shemes(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert len(rv.json['components']['securitySchemes']) == 2
     assert (
         rv.json['components']['securitySchemes']['ApiKeyAuth']

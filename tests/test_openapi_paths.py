@@ -1,4 +1,4 @@
-from openapi_spec_validator import validate_spec
+import openapi_spec_validator as osv
 
 from .schemas import Foo
 from .schemas import Header
@@ -24,7 +24,7 @@ def test_spec_path_summary_description_from_docs(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/users']['get']['summary'] == 'Get Users'
     assert rv.json['paths']['/users/{id}']['put']['summary'] == 'Update User'
     assert (
@@ -55,7 +55,7 @@ def test_spec_path_parameters_registration(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/strings/{some_string}']['get']['parameters'][0]['in'] == 'path'
     assert (
         rv.json['paths']['/strings/{some_string}']['get']['parameters'][0]['name'] == 'some_string'
@@ -104,7 +104,7 @@ def test_spec_path_summary_auto_generation(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/users']['get']['summary'] == 'Get Users'
     assert rv.json['paths']['/users/{id}']['put']['summary'] == 'Update User'
     assert rv.json['paths']['/users/{id}']['delete']['summary'] == 'Summary from Docs'
@@ -142,7 +142,7 @@ def test_path_arguments_detection(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '/foo/{bar}' in rv.json['paths']
     assert '/{foo}/bar' in rv.json['paths']
     assert '/{foo}/{bar}/baz' in rv.json['paths']
@@ -174,7 +174,7 @@ def test_path_arguments_order(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '/{foo}/bar' in rv.json['paths']
     assert '/{foo}/{bar}' in rv.json['paths']
     assert rv.json['paths']['/{foo}/bar']['get']['parameters'][0]['name'] == 'foo'
@@ -199,7 +199,7 @@ def test_parameters_registration(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '/foo' in rv.json['paths']
     assert '/bar' in rv.json['paths']
     assert rv.json['paths']['/foo']['get']['parameters'][0]['name'] == 'id'
@@ -228,7 +228,7 @@ def test_register_validation_error_response(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['post']['responses'][error_code] is not None
     assert (
         rv.json['paths']['/foo']['post']['responses'][error_code]['description']
@@ -257,7 +257,7 @@ def test_auto_404_error(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '404' not in rv.json['paths']['/foo']['get']['responses']
     assert '404' in rv.json['paths']['/bar/{id}']['get']['responses']
     assert rv.json['paths']['/bar/{id}']['get']['responses']['404']['description'] == 'Not found'

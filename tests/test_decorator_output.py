@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
+import openapi_spec_validator as osv
 from flask import make_response
 from flask.views import MethodView
-from openapi_spec_validator import validate_spec
 
 from .schemas import Foo
 from .schemas import Query
@@ -152,7 +152,7 @@ def test_output_with_dict_schema(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert (
         rv.json['paths']['/foo']['get']['responses']['200']['content']['application/json'][
             'schema'
@@ -232,7 +232,7 @@ def test_output_body_example(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert (
         rv.json['paths']['/foo']['get']['responses']['200']['content']['application/json'][
             'example'
@@ -261,7 +261,7 @@ def test_output_with_empty_dict_as_schema(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'content' not in rv.json['paths']['/foo']['delete']['responses']['204']
     assert 'content' not in rv.json['paths']['/bar']['delete']['responses']['204']
 
@@ -295,7 +295,7 @@ def test_response_links(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['get']['responses']['200']['links'] == links
 
 
@@ -314,7 +314,7 @@ def test_response_links_ref(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'getFoo' in rv.json['paths']['/foo']['get']['responses']['200']['links']
 
 
@@ -331,7 +331,7 @@ def test_response_content_type(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert len(rv.json['paths']['/foo']['get']['responses']['200']['content']) == 1
     assert len(rv.json['paths']['/bar']['get']['responses']['200']['content']) == 1
     assert 'application/json' in rv.json['paths']['/foo']['get']['responses']['200']['content']

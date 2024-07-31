@@ -1,8 +1,8 @@
 import json
 
+import openapi_spec_validator as osv
 import pytest
 from flask import request
-from openapi_spec_validator import validate_spec
 
 from .schemas import Bar
 from .schemas import Baz
@@ -30,7 +30,7 @@ def test_spec_processor(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['openapi'] == '3.0.2'
     assert rv.json['info']['title'] == 'Foo'
 
@@ -49,7 +49,7 @@ def test_spec_processor_pass_object(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['info']['title'] == 'Foo'
     assert 'NotUsed' in rv.json['components']['schemas']
     assert 'id' in rv.json['components']['schemas']['NotUsed']['properties']
@@ -168,7 +168,7 @@ def test_servers_and_externaldocs(app):
 
     rv = app.test_client().get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['externalDocs'] == {
         'description': 'Find more info here',
         'url': 'https://docs.example.com/',
@@ -184,7 +184,7 @@ def test_default_servers(app):
 
     rv = app.test_client().get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     with app.test_request_context():
         assert rv.json['servers'] == [
             {
@@ -226,7 +226,7 @@ def test_auto_200_response(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert '200' in rv.json['paths']['/foo']['get']['responses']
     assert '200' in rv.json['paths']['/bar']['get']['responses']
     assert '200' in rv.json['paths']['/baz']['get']['responses']
@@ -245,7 +245,7 @@ def test_sync_local_json_spec(app, client, tmp_path):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
 
     with open(local_spec_path) as f:
         spec_content = json.loads(f.read())

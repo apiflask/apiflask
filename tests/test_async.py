@@ -1,4 +1,4 @@
-from openapi_spec_validator import validate_spec
+import openapi_spec_validator as osv
 
 from .schemas import Foo
 from apiflask import HTTPTokenAuth
@@ -32,7 +32,7 @@ def test_async_spec_processor(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['info']['title'] == 'Updated Title'
 
 
@@ -84,7 +84,7 @@ def test_output_on_async_view(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['paths']['/foo']['get']['responses']['200']
     assert (
         rv.json['paths']['/foo']['get']['responses']['200']['content']['application/json'][

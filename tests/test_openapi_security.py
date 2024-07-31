@@ -1,5 +1,5 @@
+import openapi_spec_validator as osv
 import pytest
-from openapi_spec_validator import validate_spec
 
 from apiflask import HTTPBasicAuth
 from apiflask import HTTPTokenAuth
@@ -15,7 +15,7 @@ def test_httpbasicauth_security_scheme(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'BasicAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BasicAuth'] == {
         'type': 'http',
@@ -33,7 +33,7 @@ def test_httptokenauth_security_scheme(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'BearerAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BearerAuth'] == {
         'scheme': 'bearer',
@@ -51,7 +51,7 @@ def test_apikey_auth_security_scheme(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'ApiKeyAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['ApiKeyAuth'] == {
         'type': 'apiKey',
@@ -76,7 +76,7 @@ def test_custom_security_scheme_name(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'basic_auth' in rv.json['components']['securitySchemes']
     assert 'myToken' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['basic_auth'] == {
@@ -129,7 +129,7 @@ def test_multiple_auth_names(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'BasicAuth' in rv.json['components']['securitySchemes']
     assert 'BasicAuth_2' in rv.json['components']['securitySchemes']
     assert 'BasicAuth_3' in rv.json['components']['securitySchemes']
@@ -151,7 +151,7 @@ def test_security_schemes_description(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert 'BasicAuth' in rv.json['components']['securitySchemes']
     assert 'BearerAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BasicAuth'] == {

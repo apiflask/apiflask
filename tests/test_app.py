@@ -1,8 +1,8 @@
+import openapi_spec_validator as osv
 import pytest
 from apispec import BasePlugin
 from flask import Blueprint
 from flask.views import MethodView
-from openapi_spec_validator import validate_spec
 
 from .schemas import Bar
 from .schemas import Foo
@@ -192,7 +192,7 @@ def test_skip_raw_blueprint(app, client):
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
-    validate_spec(rv.json)
+    osv.validate(rv.json)
     assert rv.json['tags'] == [{'name': 'test'}]
     assert '/foo' not in rv.json['paths']
     assert '/bar' not in rv.json['paths']
