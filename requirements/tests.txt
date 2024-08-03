@@ -15,15 +15,15 @@ certifi==2024.7.4
     # via requests
 charset-normalizer==3.3.2
     # via requests
-coverage[toml]==7.5.4
+coverage[toml]==7.6.0
     # via pytest-cov
-exceptiongroup==1.2.1
+exceptiongroup==1.2.2
     # via pytest
 idna==3.7
     # via requests
 iniconfig==2.0.0
     # via pytest
-jsonschema==4.22.0
+jsonschema==4.23.0
     # via
     #   openapi-schema-validator
     #   openapi-spec-validator
@@ -45,7 +45,7 @@ pathable==0.4.3
     # via jsonschema-path
 pluggy==1.5.0
     # via pytest
-pytest==8.2.2
+pytest==8.3.2
     # via
     #   -r requirements/tests.in
     #   pytest-cov
@@ -62,7 +62,7 @@ requests==2.32.3
     # via jsonschema-path
 rfc3339-validator==0.1.4
     # via openapi-schema-validator
-rpds-py==0.18.1
+rpds-py==0.19.1
     # via
     #   jsonschema
     #   referencing

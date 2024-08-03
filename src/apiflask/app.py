@@ -868,7 +868,7 @@ class APIFlask(APIScaffold, Flask):
                         continue
             # add a default 200 response for bare views
             if not hasattr(view_func, '_spec'):
-                if not inspect.ismethod(view_func) and self.config['AUTO_200_RESPONSE']:
+                if not inspect.ismethod(view_func) and self.config['AUTO_200_RESPONSE']:  # type: ignore
                     view_func._spec = {'response': default_response}
                 else:
                     continue  # pragma: no cover
