@@ -1,7 +1,7 @@
 
 ## Version 2.2.1
 
-Released: -
+Released: 2024/9/8
 
 - Fix OpenAPI spec for multiple content types with `json_or_form` location ([issue #600][issue_600]).
 
