@@ -1093,20 +1093,20 @@ class APIFlask(APIScaffold, Flask):
 
                 # requestBody
                 if view_func._spec.get('body'):
-                    content_type = view_func._spec.get('content_type', 'application/json')
-                    operation['requestBody'] = {
-                        'content': {
-                            content_type: {
-                                'schema': view_func._spec['body'],
-                            }
+                    content_types = view_func._spec.get('content_type')
+                    if not isinstance(content_types, list):
+                        content_types = [content_types]
+                    operation['requestBody'] = {'content': {}}
+                    for content_type in content_types:
+                        operation['requestBody']['content'][content_type] = {
+                            'schema': view_func._spec['body'],
                         }
-                    }
-                    if view_func._spec.get('body_example'):
-                        example = view_func._spec.get('body_example')
-                        operation['requestBody']['content'][content_type]['example'] = example
-                    if view_func._spec.get('body_examples'):
-                        examples = view_func._spec.get('body_examples')
-                        operation['requestBody']['content'][content_type]['examples'] = examples
+                        if view_func._spec.get('body_example'):
+                            example = view_func._spec.get('body_example')
+                            operation['requestBody']['content'][content_type]['example'] = example
+                        if view_func._spec.get('body_examples'):
+                            examples = view_func._spec.get('body_examples')
+                            operation['requestBody']['content'][content_type]['examples'] = examples
 
                 # security
                 if custom_security:  # custom security

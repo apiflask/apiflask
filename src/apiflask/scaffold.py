@@ -298,7 +298,13 @@ class APIScaffold:
                     'and "json_or_form").'
                 )
             if location == 'json':
-                _annotate(f, body=schema, body_example=example, body_examples=examples)
+                _annotate(
+                    f,
+                    body=schema,
+                    body_example=example,
+                    body_examples=examples,
+                    content_type='application/json',
+                )
             elif location == 'form':
                 _annotate(
                     f,
@@ -314,6 +320,14 @@ class APIScaffold:
                     body_example=example,
                     body_examples=examples,
                     content_type='multipart/form-data',
+                )
+            elif location == 'json_or_form':
+                _annotate(
+                    f,
+                    body=schema,
+                    body_example=example,
+                    body_examples=examples,
+                    content_type=['application/x-www-form-urlencoded', 'application/json'],
                 )
             else:
                 if not hasattr(f, '_spec') or f._spec.get('args') is None:
@@ -406,7 +420,7 @@ class APIScaffold:
                 See the [docs](https://apiflask.com/openapi/#response-links) for more details
                 about setting response links.
 
-            content_type: The content/media type of the response. It defautls to `application/json`.
+            content_type: The content/media type of the response. It defaults to `application/json`.
             headers: The schemas of the headers.
 
         *Version changed: 2.1.0*

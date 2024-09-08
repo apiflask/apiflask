@@ -46,6 +46,34 @@ def hello(headers_data, query_data, json_data):
 ```
 
 
+## Request body content types
+
+In the generated OpenAPI spec, the request body content type is set based on the input location you declared.
+
+- `json`: `application/json`
+- `form`: `application/x-www-form-urlencoded`
+- `files`: `multipart/form-data`
+- `form_and_files`: `multipart/form-data`
+- `json_or_form`: `application/json` and `application/x-www-form-urlencoded`. For this location, APIFlask will
+  try to parse the request body as JSON first, if it fails, it will try to parse it as form data. The OpenAPI spec
+  will show both content types, for example:
+
+    ```yaml
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              ...
+        application/x-www-form-urlencoded:
+          schema:
+            type: object
+            properties:
+              ...
+    ```
+
+
 ## Request body validating
 
 When you declared an input with `app.input` decorator, APIFlask (webargs) will get the data
