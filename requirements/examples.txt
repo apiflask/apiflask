@@ -5,15 +5,15 @@
 #
 #    pip-compile-multi
 #
-authlib==1.3.1
+authlib==1.3.2
     # via -r requirements/examples.in
 blinker==1.8.2
     # via flask
-cffi==1.16.0
+cffi==1.17.1
     # via cryptography
 click==8.1.7
     # via flask
-cryptography==43.0.0
+cryptography==43.0.1
     # via authlib
 flask==3.0.3
     # via flask-sqlalchemy
@@ -29,7 +29,7 @@ markupsafe==2.1.5
     # via
     #   jinja2
     #   werkzeug
-marshmallow==3.21.3
+marshmallow==3.22.0
     # via marshmallow-dataclass
 marshmallow-dataclass==8.7.0
     # via -r requirements/examples.in
@@ -39,7 +39,7 @@ packaging==24.1
     # via marshmallow
 pycparser==2.22
     # via cffi
-sqlalchemy==2.0.31
+sqlalchemy==2.0.34
     # via flask-sqlalchemy
 typeguard==4.0.1
     # via marshmallow-dataclass
@@ -51,5 +51,5 @@ typing-extensions==4.12.2
     #   typing-inspect
 typing-inspect==0.9.0
     # via marshmallow-dataclass
-werkzeug==3.0.3
+werkzeug==3.0.4
     # via flask

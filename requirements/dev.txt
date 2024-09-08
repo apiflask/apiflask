@@ -9,11 +9,11 @@
 -r examples.txt
 -r tests.txt
 -r typing.txt
-build==1.2.1
+build==1.2.2
     # via
     #   -r requirements/dev.in
     #   pip-tools
-cachetools==5.4.0
+cachetools==5.5.0
     # via tox
 cfgv==3.4.0
     # via pre-commit
@@ -21,7 +21,7 @@ chardet==5.2.0
     # via tox
 distlib==0.3.8
     # via virtualenv
-filelock==3.15.4
+filelock==3.16.0
     # via
     #   tox
     #   virtualenv
@@ -43,13 +43,13 @@ pyproject-hooks==1.1.0
     #   pip-tools
 toposort==1.10
     # via pip-compile-multi
-tox==4.16.0
+tox==4.18.1
     # via -r requirements/dev.in
-virtualenv==20.26.3
+virtualenv==20.26.4
     # via
     #   pre-commit
     #   tox
-wheel==0.43.0
+wheel==0.44.0
     # via pip-tools
 
 # The following packages are considered to be unsafe in a requirements file:
