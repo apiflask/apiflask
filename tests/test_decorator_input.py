@@ -190,6 +190,43 @@ def test_input_with_form_and_files_location(app, client):
     assert rv.json == {'name': True, 'image': True}
 
 
+def test_input_with_json_or_form_location(app, client):
+    @app.post('/')
+    @app.input(Form, location='json_or_form')
+    def index(json_or_form_data):
+        return json_or_form_data
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    osv.validate(rv.json)
+    assert (
+        'application/x-www-form-urlencoded'
+        in rv.json['paths']['/']['post']['requestBody']['content']
+    )
+    assert 'application/json' in rv.json['paths']['/']['post']['requestBody']['content']
+    assert (
+        rv.json['paths']['/']['post']['requestBody']['content']['application/json']['schema'][
+            '$ref'
+        ]
+        == '#/components/schemas/Form'
+    )
+    assert (
+        rv.json['paths']['/']['post']['requestBody']['content'][
+            'application/x-www-form-urlencoded'
+        ]['schema']['$ref']
+        == '#/components/schemas/Form'
+    )
+    assert 'Form' in rv.json['components']['schemas']
+
+    rv = client.post('/', data={'name': 'foo'})
+    assert rv.status_code == 200
+    assert rv.json == {'name': 'foo'}
+
+    rv = client.post('/', json={'name': 'foo'})
+    assert rv.status_code == 200
+    assert rv.json == {'name': 'foo'}
+
+
 def test_input_with_path_location(app, client):
     @app.get('/<image_type>')
     @app.input(EnumPathParameter, location='path')

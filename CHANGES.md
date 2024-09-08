@@ -3,6 +3,10 @@
 
 Released: -
 
+- Fix OpenAPI spec for multiple content types with `json_or_form` location ([issue #600][issue_600]).
+
+[issue_600]: https://github.com/apiflask/apiflask/issues/600
+
 
 ## Version 2.2.0
 
