@@ -2,71 +2,56 @@ from apiflask import APIFlask, Schema, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 
+
+from flask import jsonify
+import logging
+import shlex
+import json
+import pytz
+
+class LogItem:
+    def __init__(self, hostname, date, requestDet, resultCode):
+        self.hostname = hostname
+        self.date = date
+        self.requestDet = requestDet
+
 app = APIFlask(__name__)
+app.logger.setLevel(logging.ERROR)
+accessLogs = []
+errorLogs = []
 
-pets = [
-    {'id': 0, 'name': 'Kitty', 'category': 'cat'},
-    {'id': 1, 'name': 'Coco', 'category': 'dog'},
-    {'id': 2, 'name': 'Flash', 'category': 'cat'},
-]
+@app.route('/hello', methods=['GET'])
+def get_hello_world():
+    app.logger.info('Entering get /api/hello')
+    return jsonify("Hello world")
 
+@app.route('/logs', methods=['GET'])
+def getLogs():
+    app.logger.info('Entering get api/logs')
+    f = open('/home/achyut_p/pythonscripts/logs/gunicorn.access.log', 'r')
+    for x in f:
+        retrieveData = x.replace('\n', '').replace('\"\"', '')
+        parseLog = retrieveData.replace('-', '').replace('\"-\"', '')
+        splitSmart = shlex.split(parseLog)
+        hostAddr = splitSmart[0]
+        date = splitSmart[1].replace('[', '')
+        req = splitSmart[3]
+        returnCode = splitSmart[4]
+        logItem = {
+            'hostname':hostAddr,
+            'date':date,
+            'requestDetails':req.replace(' HTTP/1.1', ''),
+            'responseCode':returnCode,
+            'executionTime':0
+            }
+        accessLogs.append(logItem)
+    f.close()
 
-class PetIn(Schema):
-    name = String(required=True, validate=Length(0, 10))
-    category = String(required=True, validate=OneOf(['dog', 'cat']))
+    e = open('/home/achyut_p/pythonscripts/logs/gunicorn.error.log', 'r')
 
+    for x in e:
+        errorLogs.append(x)
+    e.close()
 
-class PetOut(Schema):
-    id = Integer()
-    name = String()
-    category = String()
-
-
-@app.get('/')
-def say_hello():
-    return {'message': 'Hello!'}
-
-
-@app.get('/pets/<int:pet_id>')
-@app.output(PetOut)
-def get_pet(pet_id):
-    if pet_id > len(pets) - 1 or pets[pet_id].get('deleted'):
-        abort(404)
-    return pets[pet_id]
-
-
-@app.get('/pets')
-@app.output(PetOut(many=True))
-def get_pets():
-    return pets
-
-
-@app.post('/pets')
-@app.input(PetIn, location='json')
-@app.output(PetOut, status_code=201)
-def create_pet(json_data):
-    pet_id = len(pets)
-    json_data['id'] = pet_id
-    pets.append(json_data)
-    return pets[pet_id]
-
-
-@app.patch('/pets/<int:pet_id>')
-@app.input(PetIn(partial=True), location='json')
-@app.output(PetOut)
-def update_pet(pet_id, json_data):
-    if pet_id > len(pets) - 1:
-        abort(404)
-    for attr, value in json_data.items():
-        pets[pet_id][attr] = value
-    return pets[pet_id]
-
-
-@app.delete('/pets/<int:pet_id>')
-@app.output({}, status_code=204)
-def delete_pet(pet_id):
-    if pet_id > len(pets) - 1:
-        abort(404)
-    pets[pet_id]['deleted'] = True
-    pets[pet_id]['name'] = 'Ghost'
-    return ''
+    jsonLogsStruct = {'accessLogs':accessLogs, 'errorLogs':errorLogs}
+    return jsonify(jsonLogsStruct)
