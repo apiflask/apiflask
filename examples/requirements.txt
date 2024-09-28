@@ -4,4 +4,3 @@ authlib
 marshmallow-dataclass
 gunicorn
 pytz
-shlex
