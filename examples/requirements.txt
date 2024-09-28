@@ -2,3 +2,4 @@ apiflask
 flask-sqlalchemy
 authlib
 marshmallow-dataclass
+gunicorn
