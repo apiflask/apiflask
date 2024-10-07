@@ -296,6 +296,9 @@ class APIScaffold:
                 }
                 ```
             validation: flag to allow disabling of validation on input. default to `False` .
+        *Version changed: 2.2.2
+
+        - Add flag to allow disabling of validation on input
 
         *Version changed: 2.0.0*
 
