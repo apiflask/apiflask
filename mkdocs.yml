@@ -14,7 +14,6 @@ theme:
   language: en
   features:
     - content.code.copy
-    - content.code.select
 repo_url: https://github.com/apiflask/apiflask
 repo_name: apiflask/apiflask
 extra:
