@@ -1,4 +1,12 @@
 
+## Version 2.2.2
+
+Released: 2024/10/7
+
+- Add flag to allow disabling of validation on input([issue #573][issue_573])
+
+[issue_573]: https://github.com/apiflask/apiflask/issues/573
+
 ## Version 2.2.1
 
 Released: 2024/9/8
