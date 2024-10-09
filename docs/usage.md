@@ -538,6 +538,14 @@ def update_pet(pet_id, json_data):
 
 Read the *[Request Handling](/request)* chapter for the advanced topics on request handling.
 
+If you want to disable validation on input, you can set `validation=False` .
+
+```python
+@app.patch('/pets_without_validation/<int:pet_id>')
+    @app.input(PetIn, validation=False)
+    def pets_without_validation(pet_id, json_data):
+        return {'pet_id': pet_id, 'json_data': json_data}
+```
 
 ## Use `@app.output` to format response data
 
