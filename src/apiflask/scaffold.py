@@ -116,7 +116,10 @@ def _load_raw_data(location: str = 'json') -> dict[t.Any, t.Any]:
     """
     if location == 'json':
         if request.is_json:
-            return request.get_json()
+            _json = request.get_json()
+            if _json is None:  # pragma: no cover
+                return {}
+            return {**_json}
         return {}
     if location == 'form':
         return request.form.to_dict()
@@ -125,7 +128,10 @@ def _load_raw_data(location: str = 'json') -> dict[t.Any, t.Any]:
     if location == 'json_or_form':
         # can't provide both json and data
         if request.is_json:
-            return request.get_json()
+            _json = request.get_json()
+            if _json is None:  # pragma: no cover
+                return {}
+            return {**_json}
         return request.form.to_dict() or {}
     if location == 'query':
         return request.args.to_dict()
@@ -296,6 +302,9 @@ class APIScaffold:
                 }
                 ```
             validation: flag to allow disabling of validation on input. default to `False` .
+        *Version changed: 2.2.2
+
+        - Add flag to allow disabling of validation on input
 
         *Version changed: 2.0.0*
 
