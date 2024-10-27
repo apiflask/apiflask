@@ -104,37 +104,40 @@ def _generate_schema_from_mapping(schema: DictSchemaType, schema_name: str | Non
 def _load_raw_data(location: str = 'json') -> dict[t.Any, t.Any]:
     """
     Load raw data from the specified location in the request.
-    @param location: Specifies the source of the data to load, which can be one of the following:
-        - `json` : Load data from the request's JSON body.
-        - `form` : Load data from the request's form.
-        - `file` or `form_and_files`: Load data from both the request's form and files
-            or request's files
-        - `json_or_form` : Preferably load data from the request's JSON body or request's form.
-        - `query` : Load data from the request's query parameters
-    @return: A dictionary containing the data loaded from the specified location.
-    @raise ValueError: If the provided location argument is not one of the expected values.
+
+    Arguments:
+        location (str): Specifies the source of the data to load, which can be one of the following:
+            - `json`: Load data from the request's JSON body.
+            - `form`: Load data from the request's form.
+            - `files` or `form_and_files`: Load data from both the request's form and files.
+            - `json_or_form`: Preferably load data from the request's JSON body or request's form.
+            - `query`: Load data from the request's query parameters.
+            - `path`: Load data from the request's view arguments.
+
+            `headers` and `cookies` are not supported by this function.
+
+    Returns:
+        dict: A dictionary containing the data loaded from the specified location.
+
+    Raises:
+        ValueError: If the provided location argument is not one of the expected values.
     """
     if location == 'json':
         if request.is_json:
-            _json = request.get_json()
-            if _json is None:  # pragma: no cover
-                return {}
-            return {**_json}
+            return request.get_json() or {}
         return {}
     if location == 'form':
         return request.form.to_dict()
-    if location in ('files', 'form_and_files'):
+    if location in ['files', 'form_and_files']:
         return {**request.files.to_dict(), **request.form.to_dict()}
     if location == 'json_or_form':
-        # can't provide both json and data
         if request.is_json:
-            _json = request.get_json()
-            if _json is None:  # pragma: no cover
-                return {}
-            return {**_json}
-        return request.form.to_dict() or {}
-    if location == 'query':
+            return request.get_json() or {}
+        return request.form.to_dict()
+    if location in ['query', 'querystring']:
         return request.args.to_dict()
+    if location == 'path':
+        return request.view_args or {}
     raise ValueError(f'Invalid location argument: {location}')
 
 
@@ -301,10 +304,11 @@ class APIScaffold:
                     },
                 }
                 ```
-            validation: flag to allow disabling of validation on input. default to `False` .
+            validation: Flag to allow disabling of validation on input. Default to `True`.
+
         *Version changed: 2.2.2
 
-        - Add flag to allow disabling of validation on input
+        - Add parameter `validation` to allow disabling of validation on input.
 
         *Version changed: 2.0.0*
 
@@ -333,15 +337,17 @@ class APIScaffold:
 
         def decorator(f):
             f = _ensure_sync(f)
+
             if not validation:
 
+                @wraps(f)
                 def wrapper(*args: t.Any, **kwargs: t.Any):
                     raw_data = _load_raw_data(location)
                     kwargs[f'{location}_data'] = raw_data
                     return f(*args, **kwargs)
 
-                wrapper.__wrapped__ = f
                 return wrapper
+
             is_body_location = location in BODY_LOCATIONS
             if is_body_location and hasattr(f, '_spec') and 'body' in f._spec:
                 raise RuntimeError(

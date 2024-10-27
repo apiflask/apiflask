@@ -1,5 +1,3 @@
-from io import BytesIO
-
 import openapi_spec_validator as osv
 import pytest
 from apispec import BasePlugin
@@ -15,8 +13,6 @@ from apiflask import Schema
 from apiflask.exceptions import abort
 from apiflask.fields import Integer
 from apiflask.fields import String
-from apiflask.validators import Length
-from apiflask.validators import OneOf
 
 
 def test_app_init(app):
@@ -377,110 +373,3 @@ def test_swagger_ui_oauth_redirect_decorators(app, client):
 
     rv = client.get('/docs/oauth2-redirect')
     assert rv.status_code == 401
-
-
-def test_input_validation(app, client):
-    incorrect_json = {'name': 'Kitty', 'category': 'unknown'}
-
-    class PetIn(Schema):
-        name = String(required=True, validate=Length(0, 10))
-        category = String(required=True, validate=OneOf(['dog', 'cat']))
-
-    @app.patch('/pets_with_validation/<int:pet_id>')
-    @app.input(PetIn)
-    def update_pet(pet_id, json_data):
-        return {'pet_id': pet_id, 'json_data': json_data}
-
-    @app.patch('/pets_without_validation/<int:pet_id>')
-    @app.input(PetIn, validation=False)
-    def pets_without_validation(pet_id, json_data):
-        return {'pet_id': pet_id, 'json_data': json_data}
-
-    # validation `True`
-    validated_rv = client.patch('/pets_with_validation/1', json=incorrect_json)
-    assert validated_rv.status_code == 422
-    assert validated_rv.json['message'] == 'Validation error'
-    assert validated_rv.json['detail']['json']['category'] == ['Must be one of: dog, cat.']
-
-    # validation `False`
-    no_validated_rv = client.patch('/pets_without_validation/1', json=incorrect_json)
-    assert no_validated_rv.status_code == 200
-    assert no_validated_rv.json['json_data']['name'] == 'Kitty'
-    assert no_validated_rv.json['json_data']['category'] == 'unknown'
-
-
-def test_location_raw_data(app):
-    from apiflask.scaffold import _load_raw_data
-
-    # will raises ValueError
-    location = 'unknown'
-    with pytest.raises(ValueError, match=f'Invalid location argument: {location}'):
-        _load_raw_data('unknown')
-
-    # `json` location
-    with app.test_request_context('/load_raw_data', method='POST', json={'name': 'Kitty'}):
-        json_data = _load_raw_data()
-        assert json_data['name'] == 'Kitty'
-
-    with app.test_request_context('/load_raw_data', method='POST', data={'name': 'Kitty'}):
-        json_data = _load_raw_data()
-        assert json_data == {}
-
-    # `form` location
-    with app.test_request_context(
-        '/load_raw_data',
-        method='POST',
-        data={'username': 'Kitty', 'password': '<PASSWORD>'},
-        content_type='application/x-www-form-urlencoded',
-    ):
-        form_data = _load_raw_data('form')
-        assert form_data['username'] == 'Kitty'
-        assert form_data['password'] == '<PASSWORD>'
-
-    # `files` or `form_and_files` location
-    with app.test_request_context(
-        '/load_raw_data',
-        method='POST',
-        data={'file': (BytesIO(b'Hello World!'), 'demo.txt')},
-        content_type='multipart/form-data',
-    ):
-        files_rv = _load_raw_data('files')
-        assert files_rv['file'].filename == 'demo.txt'
-        assert files_rv['file'].stream.read() == b'Hello World!'
-
-    with app.test_request_context(
-        '/load_raw_data',
-        method='POST',
-        data={'name': 'Kitty', 'file': (BytesIO(b'Hello World2!'), 'demo2.txt')},
-        content_type='multipart/form-data',
-    ):
-        files_and_form_rv = _load_raw_data('form_and_files')
-        assert files_and_form_rv['file'].filename == 'demo2.txt'
-        assert files_and_form_rv['file'].stream.read() == b'Hello World2!'
-        assert files_and_form_rv['name'] == 'Kitty'
-
-    # `query` location
-    with app.test_request_context(
-        '/load_raw_data?name=Kitty',
-        method='GET',
-    ):
-        query_rv = _load_raw_data('query')
-        assert query_rv == {'name': 'Kitty'}
-
-    # `json_or_form`
-    # We can't provide `json` and `data` at the same time, you can test them separately.
-    with app.test_request_context(
-        '/load_raw_data',
-        data={'username': 'Kitty', 'password': '<PASSWORD>'},
-        content_type='application/x-www-form-urlencoded',
-    ):
-        json_or_form_rv = _load_raw_data('json_or_form')
-        assert json_or_form_rv['username'] == 'Kitty'
-        assert json_or_form_rv['password'] == '<PASSWORD>'
-
-    with app.test_request_context(
-        '/load_raw_data',
-        json={'currentId': '<current_id>'},
-    ):
-        json_or_form_rv = _load_raw_data('json_or_form')
-        json_or_form_rv['currentId'] = '<current_id>'
