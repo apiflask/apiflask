@@ -4,7 +4,38 @@ from apiflask import APIFlask, HTTPTokenAuth, Schema, abort
 from apiflask.fields import String
 from authlib.jose import jwt, JoseError
 
-app = APIFlask(__name__)
+# app = APIFlask(__name__)
+
+app = APIFlask(
+    'My-App',
+    docs_oauth2_redirect_path='/login/callback',
+    docs_oauth2_redirect_path_external=True,
+    docs_ui='swagger-ui',
+)
+oauth2 = {
+    'type': 'oauth2',
+    'flows': {
+        'implicit': {
+            'authorizationUrl': 'https://my-domain.okta.com/oauth2/default/v1/authorize',
+            'scopes': {},
+        }
+    },
+}
+security_schemes = {
+    'oauth2': oauth2,
+}
+app.security_schemes = security_schemes
+app.config['SWAGGER_UI_OAUTH_CONFIG'] = {
+    'clientId': '123abc',
+    'scopes': 'openid',
+    'additionalQueryStringParams': {
+        'nonce': '123',
+    },
+}
+app.config['SERVERS'] = [
+    {'name': 'Prod', 'url': 'https://my-domain.com'},
+    {'name': 'Dev', 'url': 'https://dev.my-domain.com'},
+]
 auth = HTTPTokenAuth()
 app.config['SECRET_KEY'] = 'secret-key'
 
