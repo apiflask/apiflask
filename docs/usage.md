@@ -530,6 +530,21 @@ def update_pet(pet_id, json_data):
     return pet
 ```
 
+
+If you want to disable validation on input, you can set `validation=False`. Now the
+input data will be passed to the view function without validation. If no input data,
+the view function will receive an empty dict:
+
+```python
+@app.patch('/pets_without_validation/<int:pet_id>')
+@app.input(PetIn, location='json', validation=False)
+def pets_without_validation(pet_id, json_data):
+    return {'pet_id': pet_id, 'json_data': json_data}
+```
+
+`headers` and `cookies` are special locations, they contain all the headers and cookies data, so
+you can't skip the validation for them.
+
 !!! warning
 
     Be sure to put the `@app.input` decorator under the routes decorators

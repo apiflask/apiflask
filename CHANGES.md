@@ -1,3 +1,11 @@
+## Version 2.3.0
+
+Released: -
+
+- Support skipping the validation for the request body with `@input(validation=False)` ([issue #573][issue_573]).
+
+[issue_573]: https://github.com/apiflask/apiflask/issues/573
+
 
 ## Version 2.2.1
 

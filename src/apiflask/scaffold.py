@@ -6,6 +6,7 @@ from functools import wraps
 
 from flask import current_app
 from flask import jsonify
+from flask import request
 from flask import Response
 from marshmallow import ValidationError as MarshmallowValidationError
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
@@ -98,6 +99,46 @@ def _generate_schema_from_mapping(schema: DictSchemaType, schema_name: str | Non
     if schema_name is None:
         schema_name = 'GeneratedSchema'
     return Schema.from_dict(schema, name=schema_name)()  # type: ignore
+
+
+def _load_raw_data(location: str = 'json') -> dict[t.Any, t.Any]:
+    """
+    Load raw data from the specified location in the request.
+
+    Arguments:
+        location (str): Specifies the source of the data to load, which can be one of the following:
+            - `json`: Load data from the request's JSON body.
+            - `form`: Load data from the request's form.
+            - `files` or `form_and_files`: Load data from both the request's form and files.
+            - `json_or_form`: Preferably load data from the request's JSON body or request's form.
+            - `query`: Load data from the request's query parameters.
+            - `path`: Load data from the request's view arguments.
+
+            `headers` and `cookies` are not supported by this function.
+
+    Returns:
+        dict: A dictionary containing the data loaded from the specified location.
+
+    Raises:
+        ValueError: If the provided location argument is not one of the expected values.
+    """
+    if location == 'json':
+        if request.is_json:
+            return request.get_json() or {}
+        return {}
+    if location == 'form':
+        return request.form.to_dict()
+    if location in ['files', 'form_and_files']:
+        return {**request.files.to_dict(), **request.form.to_dict()}
+    if location == 'json_or_form':
+        if request.is_json:
+            return request.get_json() or {}
+        return request.form.to_dict()
+    if location in ['query', 'querystring']:
+        return request.args.to_dict()
+    if location == 'path':
+        return request.view_args or {}
+    raise ValueError(f'Invalid location argument: {location}')
 
 
 class APIScaffold:
@@ -209,6 +250,7 @@ class APIScaffold:
         schema_name: str | None = None,
         example: t.Any | None = None,
         examples: dict[str, t.Any] | None = None,
+        validation: bool = True,
         **kwargs: t.Any,
     ) -> t.Callable[[DecoratedType], DecoratedType]:
         """Add input settings for view functions.
@@ -262,6 +304,11 @@ class APIScaffold:
                     },
                 }
                 ```
+            validation: Flag to allow disabling of validation on input. Default to `True`.
+
+        *Version changed: 2.2.2
+
+        - Add parameter `validation` to allow disabling of validation on input.
 
         *Version changed: 2.0.0*
 
@@ -290,6 +337,17 @@ class APIScaffold:
 
         def decorator(f):
             f = _ensure_sync(f)
+
+            if not validation:
+
+                @wraps(f)
+                def wrapper(*args: t.Any, **kwargs: t.Any):
+                    raw_data = _load_raw_data(location)
+                    kwargs[f'{location}_data'] = raw_data
+                    return f(*args, **kwargs)
+
+                return wrapper
+
             is_body_location = location in BODY_LOCATIONS
             if is_body_location and hasattr(f, '_spec') and 'body' in f._spec:
                 raise RuntimeError(
