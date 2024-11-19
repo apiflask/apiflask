@@ -19,7 +19,7 @@ flask==3.0.3
     # via flask-sqlalchemy
 flask-sqlalchemy==3.1.1
     # via -r requirements/examples.in
-greenlet==3.0.3
+greenlet==3.1.0
     # via sqlalchemy
 itsdangerous==2.2.0
     # via flask
