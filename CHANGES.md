@@ -1,8 +1,9 @@
 ## Version 2.3.0
 
-Released: -
+Released: 2024/11/25
 
 - Support skipping the validation for the request body with `@input(validation=False)` ([issue #573][issue_573]).
+- Enable CI test for Python 3.13.
 
 [issue_573]: https://github.com/apiflask/apiflask/issues/573
 
