@@ -1,3 +1,12 @@
+## Version 2.3.1
+
+Released: -
+
+- Include input documentation in API spec when specifying `validation=False` on `@input` decorator  ([issue #626][issue_626]).
+
+[issue_626]: https://github.com/apiflask/apiflask/issues/626
+
+
 ## Version 2.3.0
 
 Released: 2024/11/25

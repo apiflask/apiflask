@@ -338,16 +338,6 @@ class APIScaffold:
         def decorator(f):
             f = _ensure_sync(f)
 
-            if not validation:
-
-                @wraps(f)
-                def wrapper(*args: t.Any, **kwargs: t.Any):
-                    raw_data = _load_raw_data(location)
-                    kwargs[f'{location}_data'] = raw_data
-                    return f(*args, **kwargs)
-
-                return wrapper
-
             is_body_location = location in BODY_LOCATIONS
             if is_body_location and hasattr(f, '_spec') and 'body' in f._spec:
                 raise RuntimeError(
@@ -394,6 +384,17 @@ class APIScaffold:
                     _annotate(f, omit_default_path_parameters=True)
                 # TODO: Support set example for request parameters
                 f._spec['args'].append((schema, location))
+
+            if not validation:
+
+                @wraps(f)
+                def wrapper(*args: t.Any, **kwargs: t.Any):
+                    raw_data = _load_raw_data(location)
+                    kwargs[f'{location}_data'] = raw_data
+                    return f(*args, **kwargs)
+
+                return wrapper
+
             return use_args(
                 schema, location=location, arg_name=arg_name or f'{location}_data', **kwargs
             )(f)
