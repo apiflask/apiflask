@@ -1,6 +1,6 @@
 ## Version 2.3.1
 
-Released: -
+Released: 2024/12/7
 
 - Include input documentation in API spec when specifying `validation=False` on `@input` decorator  ([issue #626][issue_626]).
 
