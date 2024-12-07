@@ -435,6 +435,16 @@ def test_skip_validation(app, client):
     assert no_validated_rv.json['json_data']['name'] == 'Kitty'
     assert no_validated_rv.json['json_data']['category'] == 'unknown'
 
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    assert (
+        rv.json['paths']['/pets_without_validation/{pet_id}']['patch']['requestBody']['content'][
+            'application/json'
+        ]['schema']['$ref']
+        == '#/components/schemas/PetIn'
+    )
+    assert 'PetIn' in rv.json['components']['schemas']
+
 
 def test_location_raw_data(app):
     from apiflask.scaffold import _load_raw_data
