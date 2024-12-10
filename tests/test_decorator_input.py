@@ -446,116 +446,39 @@ def test_skip_validation(app, client):
     assert 'PetIn' in rv.json['components']['schemas']
 
 
-def test_location_raw_data(app):
-    from apiflask.scaffold import _load_raw_data
+@pytest.mark.parametrize('validation', [True, False])
+@pytest.mark.parametrize('payload', [[], [{'bar': 'baz'}], [{'qux': 'baz'}]])
+def test_skip_validation_list_input(app, client, validation, payload):
+    class FooIn(Schema):
+        bar = String(required=True)
 
-    # will raises ValueError
-    location = 'unknown'
-    with pytest.raises(ValueError, match=f'Invalid location argument: {location}'):
-        _load_raw_data('unknown')
+    @app.put('/foo/bulk')
+    @app.input(FooIn(many=True), validation=validation)
+    def bulk_put_foo(json_data):
+        return json_data
 
-    # `json` location
-    with app.test_request_context('/load_raw_data', method='POST', json={'name': 'Kitty'}):
-        json_data = _load_raw_data()
-        assert json_data['name'] == 'Kitty'
+    rv = client.put('/foo/bulk', json=payload)
+    if validation and payload and 'bar' not in payload[0]:
+        assert rv.status_code == 422
+    else:
+        assert rv.status_code == 200
+        assert rv.json == payload
 
-    with app.test_request_context('/load_raw_data', method='POST', data={'name': 'Kitty'}):
-        json_data = _load_raw_data()
-        assert json_data == {}
 
-    # `form` location
-    with app.test_request_context(
-        '/load_raw_data',
-        method='POST',
-        data={'username': 'Kitty', 'password': '<PASSWORD>'},
-        content_type='application/x-www-form-urlencoded',
-    ):
-        form_data = _load_raw_data('form')
-        assert form_data['username'] == 'Kitty'
-        assert form_data['password'] == '<PASSWORD>'
+@pytest.mark.parametrize('validation', [True, False])
+@pytest.mark.parametrize('payload', [{}, {'bar': 'qux'}])
+def test_skip_validation_arg_name(app, client, validation, payload):
+    class FooIn(Schema):
+        bar = String(required=True)
 
-    with app.test_request_context(
-        '/load_raw_data',
-        method='POST',
-        json={'username': 'Kitty', 'password': '<PASSWORD>'},
-    ):
-        form_data = _load_raw_data('form')
-        assert form_data == {}
+    @app.post('/foo')
+    @app.input(FooIn, arg_name='baz', validation=validation)
+    def post_foo(baz):
+        return baz
 
-    # `files` or `form_and_files` location
-    with app.test_request_context(
-        '/load_raw_data',
-        method='POST',
-        data={'file': (io.BytesIO(b'Hello World!'), 'demo.txt')},
-        content_type='multipart/form-data',
-    ):
-        files_data = _load_raw_data('files')
-        assert files_data['file'].filename == 'demo.txt'
-        assert files_data['file'].stream.read() == b'Hello World!'
-
-    with app.test_request_context(
-        '/load_raw_data',
-        method='POST',
-        data={'name': 'Kitty', 'file': (io.BytesIO(b'Hello World2!'), 'demo2.txt')},
-        content_type='multipart/form-data',
-    ):
-        files_and_form_rv = _load_raw_data('form_and_files')
-        assert files_and_form_rv['file'].filename == 'demo2.txt'
-        assert files_and_form_rv['file'].stream.read() == b'Hello World2!'
-        assert files_and_form_rv['name'] == 'Kitty'
-
-    with app.test_request_context(
-        '/load_raw_data',
-        method='POST',
-        json={'username': 'Kitty', 'password': '<PASSWORD>'},
-    ):
-        form_and_files_data = _load_raw_data('form_and_files')
-        assert form_and_files_data == {}
-
-    # `query` location
-    with app.test_request_context(
-        '/load_raw_data?name=Kitty',
-        method='GET',
-    ):
-        query_data = _load_raw_data('query')
-        assert query_data == {'name': 'Kitty'}
-
-    with app.test_request_context(
-        '/load_raw_data',
-        method='POST',
-    ):
-        query_data = _load_raw_data('query')
-        assert query_data == {}
-
-    # `json_or_form`
-    with app.test_request_context(
-        '/load_raw_data',
-        data={'username': 'Kitty', 'password': '<PASSWORD>'},
-        content_type='application/x-www-form-urlencoded',
-    ):
-        json_or_form_rv = _load_raw_data('json_or_form')
-        assert json_or_form_rv['username'] == 'Kitty'
-        assert json_or_form_rv['password'] == '<PASSWORD>'
-
-    with app.test_request_context(
-        '/load_raw_data',
-        json={'currentId': '<current_id>'},
-    ):
-        json_or_form_data = _load_raw_data('json_or_form')
-        json_or_form_data['currentId'] = '<current_id>'
-
-    with app.test_request_context(
-        '/load_raw_data',
-        method='POST',
-    ):
-        json_or_form_data = _load_raw_data('json_or_form')
-        assert json_or_form_data == {}
-
-    # `path` location
-    @app.get('/load_raw_data/<int:pet_id>')
-    def load_raw_data(pet_id):
-        return _load_raw_data('path')
-
-    with app.test_request_context('/load_raw_data/1', method='GET'):
-        path_data = app.dispatch_request()
-        assert path_data == {'pet_id': 1}
+    rv = client.post('/foo', json=payload)
+    if validation and not payload:
+        assert rv.status_code == 422
+    else:
+        assert rv.status_code == 200
+        assert rv.json == payload
