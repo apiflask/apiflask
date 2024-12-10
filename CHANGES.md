@@ -1,3 +1,12 @@
+## Version 2.3.2
+
+Released: -
+
+- Fix input data loading implementation when input validation is skipped ([issue #629][issue_629]).
+
+[issue_629]: https://github.com/apiflask/apiflask/issues/629
+
+
 ## Version 2.3.1
 
 Released: 2024/12/7
