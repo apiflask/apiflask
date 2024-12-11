@@ -1253,12 +1253,14 @@ class APIFlask(APIScaffold, Flask):
         if links is not None:
             operation['responses'][status_code]['links'] = links
         if headers_schema is not None:
-            headers = self._ma_plugin.converter.schema2parameters(  # type: ignore
+            header_params = self._ma_plugin.converter.schema2parameters(  # type: ignore
                 headers_schema, location='headers'
             )
-            operation['responses'][status_code]['headers'] = {
-                header['name']: header for header in headers
-            }
+            headers = {header['name']: header for header in header_params}
+            for header in headers.values():
+                header.pop('in', None)
+                header.pop('name', None)
+            operation['responses'][status_code]['headers'] = headers
 
     def _add_response_with_schema(
         self,
