@@ -1,6 +1,6 @@
 ## Version 2.3.2
 
-Released: -
+Released: 2024/12/15
 
 - Fix response headers to be compliant with the OpenAPI specification for versions 3.0.0+ ([issue #631][issue_631]).
 - Fix input data loading implementation when input validation is skipped ([issue #629][issue_629]).
