@@ -3,7 +3,9 @@
 Released: -
 
 - Fix response headers to be compliant with the OpenAPI specification for versions 3.0.0+ ([issue #631][issue_631]).
+- Fix input data loading implementation when input validation is skipped ([issue #629][issue_629]).
 
+[issue_629]: https://github.com/apiflask/apiflask/issues/629
 [issue_631]: https://github.com/apiflask/apiflask/issues/631
 
 
