@@ -2,9 +2,11 @@
 
 Released: -
 
+- Fix response headers to be compliant with the OpenAPI specification for versions 3.0.0+ ([issue #631][issue_631]).
 - Fix input data loading implementation when input validation is skipped ([issue #629][issue_629]).
 
 [issue_629]: https://github.com/apiflask/apiflask/issues/629
+[issue_631]: https://github.com/apiflask/apiflask/issues/631
 
 
 ## Version 2.3.1
@@ -88,7 +90,7 @@ Released: 2023/12/16
 - Allow adding multiple media types for a response ([issue #494][issue_494]).
 - Support adding headers to the response schema ([issue #507][issue_507]).
 - Add support for adding decorators to the OpenAPI spec and documentation UI endpoints ([issue #483][issue_483]).
-- Fix the base repsonse schema inconsistency issue.
+- Fix the base response schema inconsistency issue.
 
 [issue_494]: https://github.com/apiflask/apiflask/issues/494
 [issue_507]: https://github.com/apiflask/apiflask/issues/507
