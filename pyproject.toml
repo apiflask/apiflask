@@ -4,7 +4,7 @@ description = "A lightweight web API framework based on Flask and marshmallow-co
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Grey Li", email = "withlihui@gmail.com" }]
-version = "2.3.1"
+version = "2.3.2"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Web Environment",
@@ -16,6 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
