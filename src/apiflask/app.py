@@ -509,6 +509,10 @@ class APIFlask(APIScaffold, Flask):
         The name of the blueprint is "openapi". This blueprint will hold the view
         functions for spec file and API docs.
 
+        *Version changed: 2.3.2*
+
+        - Convert the relative redirect path of OAuth2 to an absolute redirect URL.
+
         *Version changed: 2.1.0*
 
         - Inject the OpenAPI endpoints decorators.
@@ -553,7 +557,10 @@ class APIFlask(APIScaffold, Flask):
                     ui_templates[self.docs_ui],
                     title=self.title,
                     version=self.version,
-                    oauth2_redirect_path=self.docs_oauth2_redirect_path,
+                    oauth2_redirect_path=request.url_root.rstrip('/')
+                    + self.docs_oauth2_redirect_path
+                    if self.docs_oauth2_redirect_path
+                    else None,
                 )
 
             if self.docs_ui == 'swagger-ui':
