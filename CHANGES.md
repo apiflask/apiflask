@@ -1,3 +1,12 @@
+## Version 2.3.3
+
+Released: -
+
+- Add 'docs_oauth2_redirect_path_external' parameter to support absolute redirect url ([issue #602][issue_602]).
+
+[issue_602]: https://github.com/apiflask/apiflask/issues/602
+
+
 ## Version 2.3.2
 
 Released: 2024/12/15

@@ -16,6 +16,7 @@ from flask import json
 from flask import jsonify
 from flask import render_template_string
 from flask import request
+from flask import url_for
 from flask.config import ConfigAttribute
 from flask.wrappers import Response
 
@@ -268,6 +269,7 @@ class APIFlask(APIScaffold, Flask):
         spec_path: str | None = '/openapi.json',
         docs_path: str | None = '/docs',
         docs_oauth2_redirect_path: str | None = '/docs/oauth2-redirect',
+        docs_oauth2_redirect_path_external: bool = False,
         docs_ui: str = 'swagger-ui',
         openapi_blueprint_url_prefix: str | None = None,
         json_errors: bool = True,
@@ -299,6 +301,8 @@ class APIFlask(APIScaffold, Flask):
             docs_ui: The UI of API documentation, one of `swagger-ui` (default), `redoc`,
                 `elements`, `rapidoc`, and `rapipdf`.
             docs_oauth2_redirect_path: The path to Swagger UI OAuth redirect.
+            docs_oauth2_redirect_path_external: If `True`, the `docs_oauth2_redirect_path`
+                will be an external URL.
             openapi_blueprint_url_prefix: The url prefix of the OpenAPI blueprint. This
                 prefix will append before all the OpenAPI-related paths (`sepc_path`,
                 `docs_path`, etc.), defaults to `None`.
@@ -348,6 +352,7 @@ class APIFlask(APIScaffold, Flask):
         self.docs_ui = docs_ui
         self.docs_path = docs_path
         self.docs_oauth2_redirect_path = docs_oauth2_redirect_path
+        self.docs_oauth2_redirect_path_external = docs_oauth2_redirect_path_external
         self.openapi_blueprint_url_prefix = openapi_blueprint_url_prefix
         self.enable_openapi = enable_openapi
         self.json_errors = json_errors
@@ -509,6 +514,10 @@ class APIFlask(APIScaffold, Flask):
         The name of the blueprint is "openapi". This blueprint will hold the view
         functions for spec file and API docs.
 
+        *Version changed: 2.3.3*
+
+        - Add 'docs_oauth2_redirect_path_external' parameter to support absolute redirect url.
+
         *Version changed: 2.1.0*
 
         - Inject the OpenAPI endpoints decorators.
@@ -549,11 +558,20 @@ class APIFlask(APIScaffold, Flask):
             @bp.route(self.docs_path)
             @self._apply_decorators(config_name='DOCS_DECORATORS')
             def docs():
+                docs_oauth2_redirect_path = None
+                if self.docs_ui == 'swagger-ui':
+                    if self.docs_oauth2_redirect_path_external:
+                        docs_oauth2_redirect_path = url_for(
+                            'openapi.swagger_ui_oauth_redirect', _external=True
+                        )
+                    else:
+                        docs_oauth2_redirect_path = self.docs_oauth2_redirect_path
+
                 return render_template_string(
                     ui_templates[self.docs_ui],
                     title=self.title,
                     version=self.version,
-                    oauth2_redirect_path=self.docs_oauth2_redirect_path,
+                    oauth2_redirect_path=docs_oauth2_redirect_path,
                 )
 
             if self.docs_ui == 'swagger-ui':
