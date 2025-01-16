@@ -2,7 +2,6 @@ import json
 
 import openapi_spec_validator as osv
 import pytest
-from flask import request
 
 from .schemas import Bar
 from .schemas import Baz
@@ -188,7 +187,7 @@ def test_default_servers(app):
     with app.test_request_context():
         assert rv.json['servers'] == [
             {
-                'url': f'{request.url_root}',
+                'url': '/',
             },
         ]
 
@@ -196,7 +195,11 @@ def test_default_servers(app):
 def test_default_servers_without_req_context(cli_runner):
     result = cli_runner.invoke(spec_command)
     assert 'openapi' in result.output
-    assert 'servers' not in json.loads(result.output)
+    assert json.loads(result.output)['servers'] == [
+        {
+            'url': '/',
+        },
+    ]
 
 
 def test_auto_200_response(app, client):

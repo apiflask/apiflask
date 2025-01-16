@@ -3,8 +3,10 @@
 Released: -
 
 - Add 'docs_oauth2_redirect_path_external' parameter to support absolute redirect url ([issue #602][issue_602]).
+- Change default OpenAPI server URL to `/` ([issue #638][issue_638]).
 
 [issue_602]: https://github.com/apiflask/apiflask/issues/602
+[issue_638]: https://github.com/apiflask/apiflask/issues/638
 
 
 ## Version 2.3.2

@@ -11,11 +11,9 @@ from apispec import BasePlugin
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Blueprint
 from flask import Flask
-from flask import has_request_context
 from flask import json
 from flask import jsonify
 from flask import render_template_string
-from flask import request
 from flask import url_for
 from flask.config import ConfigAttribute
 from flask.wrappers import Response
@@ -817,8 +815,8 @@ class APIFlask(APIScaffold, Flask):
         if self.servers:
             kwargs['servers'] = self.servers
         else:
-            if self.config['AUTO_SERVERS'] and has_request_context():
-                kwargs['servers'] = [{'url': request.url_root}]
+            if self.config['AUTO_SERVERS']:
+                kwargs['servers'] = [{'url': '/'}]
         if self.external_docs:
             kwargs['externalDocs'] = self.external_docs
 
