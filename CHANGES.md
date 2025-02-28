@@ -3,6 +3,7 @@
 Released: -
 
 - Add 'docs_oauth2_redirect_path_external' parameter to support absolute redirect url ([issue #602][issue_602]).
+- Replace `app.post` by `app.route` in usage documentation page
 
 [issue_602]: https://github.com/apiflask/apiflask/issues/602
 
