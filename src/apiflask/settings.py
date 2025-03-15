@@ -57,22 +57,22 @@ REDOC_USE_GOOGLE_FONT: bool = True
 REDOC_STANDALONE_JS: str = 'https://cdn.redoc.ly/redoc/latest/bundles/\
 redoc.standalone.js'  # TODO: rename to REDOC_JS
 REDOC_CONFIG: dict | None = None
-SWAGGER_UI_CSS: str = 'https://unpkg.com/swagger-ui-dist/swagger-ui.css'
-SWAGGER_UI_BUNDLE_JS: str = 'https://unpkg.com/swagger-ui-dist/\
+SWAGGER_UI_CSS: str = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui.css'
+SWAGGER_UI_BUNDLE_JS: str = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist/\
 swagger-ui-bundle.js'  # TODO: rename to SWAGGER_UI_JS
-SWAGGER_UI_STANDALONE_PRESET_JS: str = 'https://unpkg.com/swagger-ui-dist/\
+SWAGGER_UI_STANDALONE_PRESET_JS: str = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist/\
 swagger-ui-standalone-preset.js'  # TODO: rename to SWAGGER_UI_STANDALONE_JS
 SWAGGER_UI_LAYOUT: str = 'BaseLayout'
 SWAGGER_UI_CONFIG: dict | None = None
 SWAGGER_UI_OAUTH_CONFIG: dict | None = None
-ELEMENTS_JS: str = 'https://unpkg.com/@stoplight/elements/web-components.min.js'
-ELEMENTS_CSS: str = 'https://unpkg.com/@stoplight/elements/styles.min.css'
+ELEMENTS_JS: str = 'https://cdn.jsdelivr.net/npm/@stoplight/elements/web-components.min.js'
+ELEMENTS_CSS: str = 'https://cdn.jsdelivr.net/npm/@stoplight/elements/styles.min.css'
 ELEMENTS_LAYOUT: str = 'sidebar'
 ELEMENTS_CONFIG: dict | None = None
-RAPIDOC_JS: str = 'https://unpkg.com/rapidoc/dist/rapidoc-min.js'
+RAPIDOC_JS: str = 'https://cdn.jsdelivr.net/npm/rapidoc/dist/rapidoc-min.js'
 RAPIDOC_THEME: str = 'light'
 RAPIDOC_CONFIG: dict | None = None
-RAPIPDF_JS: str = 'https://unpkg.com/rapipdf/dist/rapipdf-min.js'
+RAPIPDF_JS: str = 'https://cdn.jsdelivr.net/npm/rapipdf/dist/rapipdf-min.js'
 RAPIPDF_CONFIG: dict | None = None
 
 # Version changed: 1.2.0

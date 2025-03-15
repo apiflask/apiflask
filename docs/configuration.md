@@ -1158,7 +1158,7 @@ app.config['SWAGGER_UI_OAUTH_CONFIG'] = {
 The absolute or relative URL of the Elements CSS file.
 
 - Type: `str`
-- Default value: `'https://unpkg.com/@stoplight/elements/styles.min.css'`
+- Default value: `'https://cdn.jsdelivr.net/npm/@stoplight/elements/styles.min.css'`
 - Examples:
 
 ```python
@@ -1171,7 +1171,7 @@ app.config['ELEMENTS_CSS'] = 'https://cdn.jsdelivr.net/npm/@stoplight/elements-d
 The absolute or relative URL of the Elements JavaScript file.
 
 - Type: `str`
-- Default value: `'https://unpkg.com/@stoplight/elements/web-components.min.js'`
+- Default value: `'https://cdn.jsdelivr.net/npm/@stoplight/elements/web-components.min.js'`
 - Examples:
 
 ```python
@@ -1221,7 +1221,7 @@ app.config['ELEMENTS_CONFIG'] = {
 The absolute or relative URL of the RapiDoc JavaScript file.
 
 - Type: `str`
-- Default value: `'https://unpkg.com/rapidoc/dist/rapidoc-min.js'`
+- Default value: `'https://cdn.jsdelivr.net/npm/rapidoc/dist/rapidoc-min.js'`
 - Examples:
 
 ```python
@@ -1271,7 +1271,7 @@ app.config['RAPIDOC_CONFIG'] = {
 The absolute or relative URL of the RapiPDF JavaScript file.
 
 - Type: `str`
-- Default value: `'https://unpkg.com/rapipdf/dist/rapipdf-min.js'`
+- Default value: `'https://cdn.jsdelivr.net/npm/rapipdf/dist/rapipdf-min.js'`
 - Examples:
 
 ```python
