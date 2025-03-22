@@ -324,7 +324,7 @@ Read the *[API Documentations](/api-docs)* chapter for the advanced topics on AP
 To create a view function, instead of using `app.route` and set the `methods`:
 
 ```python
-@app.post('/pets', methods=['POST'])
+@app.route('/pets', methods=['POST'])
 def create_pet():
     return {'message': 'created'}, 201
 ```
