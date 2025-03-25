@@ -1,9 +1,9 @@
-## Version 2.3.3
+## Version 2.4.0
 
-Released: -
+Released: 2025/3/25
 
-- Add 'docs_oauth2_redirect_path_external' parameter to support absolute redirect url ([issue #602][issue_602]).
-- Update the default docs CDN to jsDelivr by default instead of unpkg ([pr #650](pr_650)).
+- Add `docs_oauth2_redirect_path_external` parameter to support absolute OAuth2 redirect url ([issue #602][issue_602]).
+- Change the default docs CDN to jsDelivr by default instead of unpkg ([pr #650](pr_650)).
 
 [issue_602]: https://github.com/apiflask/apiflask/issues/602
 [pr_650]: https://github.com/apiflask/apiflask/pull/650
