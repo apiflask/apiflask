@@ -871,7 +871,7 @@ def hello():
 To implement an HTTP Bearer authentication, you will need to:
 
 - Create an `auth` object with `HTTPTokenAuth`
-- Register a callback function with `@auth.verify_password`, the function
+- Register a callback function with `@auth.verify_token`, the function
   should accept `token`, return the corresponding user object or `None`.
 - Protect the view function with `@app.auth_required(auth)`.
 - Access the current user object in your view function with `auth.current_user`.
