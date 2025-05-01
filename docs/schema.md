@@ -317,9 +317,15 @@ app.config['BASE_RESPONSE_DATA_KEY '] = 'data'
 Now you can return a dict matches the base response schema in your view functions:
 
 ```python
+class PetOut(Schema):
+    id = Integer()
+    name = String()
+    category = String()
+
 @app.get('/')
+@app.output(PetOut)
 def say_hello():
-    data = {'name': 'Grey'}
+    data = {'id': 2, 'name': 'Kitty', 'category': 'cat'}
     return {
         'data': data,
         'message': 'Success!',
