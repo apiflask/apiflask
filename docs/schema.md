@@ -324,7 +324,7 @@ class PetOut(Schema):
 
 @app.get('/')
 @app.output(PetOut)
-def say_hello():
+def get_pet():
     data = {'id': 2, 'name': 'Kitty', 'category': 'cat'}
     return {
         'data': data,
