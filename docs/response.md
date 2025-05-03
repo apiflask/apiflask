@@ -120,11 +120,11 @@ OpenAPI Generating chapter for more details.
 When passing the schema to `app.output`, you can also use a dict instead of a schema class:
 
 ```python
-from apiflask.fields import Integer
+from apiflask.fields import String
 
 
 @app.get('/')
-@app.output({'answer': Integer(dump_default=42)})
+@app.output({'answer': String(dump_default='Nothing')})
 def get_answer():
     return {'answer': 'Nothing'}
 ```
@@ -133,11 +133,11 @@ The dict schema's name will be something like `"Generated"`. To specify a schema
 name, use the `schema_name` parameter:
 
 ```python
-from apiflask.fields import Integer
+from apiflask.fields import String
 
 
 @app.get('/')
-@app.output({'answer': Integer(dump_default=42)}, schema_name='Answer')
+@app.output({'answer': String(dump_default='Nothing')}, schema_name='Answer')
 def get_answer():
     return {'answer': 'Nothing'}
 ```
