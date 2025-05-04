@@ -241,3 +241,25 @@ def test_empty_methodview_class(app, client):
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     assert '/foo' not in rv.json['paths']
+
+
+def test_methodview_class_with_subclass(app, client):
+    class Foo(MethodView):
+        text = 'You are in Foo'
+
+        def get(self):
+            return self.text
+
+    class FooSubClass(Foo):
+        text = 'You are in FooSubClass'
+
+    app.add_url_rule('/foo', view_func=FooSubClass.as_view('foo'))
+
+    rv = client.get('/foo')
+    assert rv.status_code == 200
+    assert rv.data == b'You are in FooSubClass'
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    osv.validate(rv.json)
+    assert rv.json['paths']['/foo']['get']['summary'] == 'Get FooSubClass'

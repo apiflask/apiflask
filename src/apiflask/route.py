@@ -39,7 +39,7 @@ def route_patch(cls):
             return view_func
         for method_name in view_class.methods:  # type: ignore
             # method_name: ['GET', 'POST', ...]
-            method = view_class.__dict__[method_name.lower()]
+            method = getattr(view_class, method_name.lower())
             # collect spec info from class attribute "decorators"
             if hasattr(view_func, '_spec') and view_func._spec != {}:
                 if not hasattr(method, '_spec'):
