@@ -43,11 +43,13 @@ For Windows:
 
 - Website: <https://apiflask.com>
 - Documentation: <https://apiflask.com/docs>
+- 中文文档: <https://zh.apiflask.com/docs>
 - PyPI Releases: <https://pypi.python.org/pypi/APIFlask>
 - Change Log: <https://apiflask.com/changelog>
 - Source Code: <https://github.com/apiflask/apiflask>
 - Issue Tracker: <https://github.com/apiflask/apiflask/issues>
 - Discussion: <https://github.com/apiflask/apiflask/discussions>
+- 中文论坛: <https://codekitchen.community>
 - Twitter: <https://twitter.com/apiflask>
 - Open Collective: <https://opencollective.com/apiflask>
 
