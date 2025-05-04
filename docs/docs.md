@@ -9,6 +9,12 @@ Welcome to APIFlask's documentation!
 - [V1](https://v1.apiflask.com): The docs for the latest 1.x release.
 
 
+## Translations
+
+- [简体中文](https://zh.apiflask.com/docs): The Chinese version of the documentation.
+- [Farsi](https://fa.apiflask.com/docs): The Persian version of the documentation (WIP).
+
+
 ## Contents
 
 Go through the following chapters to learn how to use APIFlask:
