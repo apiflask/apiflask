@@ -10,6 +10,7 @@ from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 from .exceptions import HTTPError
 from .types import ErrorCallbackType
 from .types import ResponseReturnValueType
+from .types import SecuritySchema
 
 
 class _AuthBase:
@@ -75,12 +76,14 @@ class _AuthBase:
         self.error_handler(lambda status_code: f(HTTPError(status_code)))  # type: ignore
 
 
-class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
+class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth, SecuritySchema):
     """Flask-HTTPAuth's HTTPBasicAuth with some modifications.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.
     - Add a `description` attribute for OpenAPI Spec.
+    - Add a `name` attribute for OpenAPI Spec.
+    - Add the `get_security_schema` method for OpenAPI Spec.
 
     Examples:
 
@@ -91,6 +94,10 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
     auth = HTTPBasicAuth()
     ```
 
+    *Version changed: 2.4.1*
+
+    - Add parameter `name`.
+
     *Version changed: 1.3.0*
 
     - Add `security_scheme_name` parameter.
@@ -98,6 +105,7 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
 
     def __init__(
         self,
+        name: str = 'BasicAuth',
         scheme: str = 'Basic',
         realm: str | None = None,
         description: str | None = None,
@@ -106,6 +114,7 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
         """Initialize an `HTTPBasicAuth` object.
 
         Arguments:
+            name: The security scheme name, default to `BasicAuth`.
             scheme: The authentication scheme used in the `WWW-Authenticate`
                 header. Defaults to `'Basic'`.
             realm: The realm used in the `WWW-Authenticate` header to indicate
@@ -115,14 +124,28 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth):
         """
         BaseHTTPBasicAuth.__init__(self, scheme=scheme, realm=realm)
         super().__init__(description=description, security_scheme_name=security_scheme_name)
+        self.name = security_scheme_name or name
+
+    def get_security_schema(self) -> dict[str, t.Any]:
+        security_schema = {
+            'type': 'http',
+            'scheme': 'basic',
+        }
+
+        if self.description is not None:
+            security_schema['description'] = self.description
+
+        return security_schema
 
 
-class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
+class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
     """Flask-HTTPAuth's HTTPTokenAuth with some modifications.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.
     - Add a `description` attribute for OpenAPI Spec.
+    - Add a `name` attribute for OpenAPI Spec.
+    - Add the `get_security_schema` method for OpenAPI Spec.
 
     Examples:
 
@@ -136,6 +159,7 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
 
     def __init__(
         self,
+        name: str = 'BearerAuth',
         scheme: str = 'Bearer',
         realm: str | None = None,
         header: str | None = None,
@@ -145,6 +169,7 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
         """Initialize a `HTTPTokenAuth` object.
 
         Arguments:
+            name: The security scheme name, default to `BearerAuth`.
             scheme: The authentication scheme used in the `WWW-Authenticate`
                 header. One of `'Bearer'` and `'ApiKey'`, defaults to `'Bearer'`.
             realm: The realm used in the `WWW-Authenticate` header to indicate
@@ -161,9 +186,98 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth):
             security_scheme_name: The name of the OpenAPI security scheme,
                 defaults to `BearerAuth` or `ApiKeyAuth`.
 
+        *Version changed: 2.4.1*
+
+        - Add parameter `name`.
+
         *Version changed: 1.3.0*
 
         - Add `security_scheme_name` parameter.
         """
         BaseHTTPTokenAuth.__init__(self, scheme=scheme, realm=realm, header=header)
         super().__init__(description=description, security_scheme_name=security_scheme_name)
+        self.name = security_scheme_name or name
+
+    def get_security_schema(self) -> dict[str, t.Any]:
+        security_schema = {
+            'type': 'http',
+            'scheme': 'bearer',
+        }
+
+        if self.description is not None:
+            security_schema['description'] = self.description
+
+        return security_schema
+
+
+class HTTPAPIKeyAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
+    """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement APIKey authentication.
+
+    - Add an authentication error handler that returns JSON response.
+    - Expose the `auth.current_user` as a property.
+    - Add a `description` attribute for OpenAPI Spec.
+    - Add a `name` attribute for OpenAPI Spec.
+    - Add the `get_security_schema` method for OpenAPI Spec.
+
+    Examples:
+
+    ```python
+    from apiflask import APIFlask, HTTPAPIKeyAuth
+
+    app = APIFlask(__name__)
+    auth = HTTPAPIKeyAuth()
+    ```
+    """
+
+    def __init__(
+        self,
+        name: str = 'ApiKeyAuth',
+        scheme: str = 'ApiKey',
+        realm: str | None = None,
+        header: str | None = 'X-API-Key',
+        description: str | None = None,
+        security_scheme_name: str | None = None,
+    ) -> None:
+        """Initialize a `HTTPAPIKeyAuth` object.
+
+        Arguments:
+            name: The security scheme name, default to `ApiKeyAuth`.
+            scheme: The authentication scheme used in the `WWW-Authenticate`
+                header. One of `'Bearer'` and `'ApiKey'`, defaults to `'Bearer'`.
+            realm: The realm used in the `WWW-Authenticate` header to indicate
+                 a scope of protection, defaults to use `'Authentication Required'`.
+            header: The custom header where to obtain the token (instead
+                of from `Authorization` header). If a custom header is used,
+                the scheme should not be included. Example:
+
+                ```
+                X-API-Key: this-is-my-token
+                ```
+
+            description: The description of the OpenAPI security scheme.
+            security_scheme_name: The name of the OpenAPI security scheme,
+                defaults to `BearerAuth` or `ApiKeyAuth`.
+
+        *Version changed: 2.4.1*
+
+        - Add parameter `name`.
+
+        *Version changed: 1.3.0*
+
+        - Add `security_scheme_name` parameter.
+        """
+        BaseHTTPTokenAuth.__init__(self, scheme=scheme, realm=realm, header=header)
+        super().__init__(description=description, security_scheme_name=security_scheme_name)
+        self.name = security_scheme_name or name
+
+    def get_security_schema(self) -> dict[str, t.Any]:
+        security_schema = {
+            'type': 'apiKey',
+            'name': self.header,
+            'in': 'header',
+        }
+
+        if self.description is not None:
+            security_schema['description'] = self.description
+
+        return security_schema

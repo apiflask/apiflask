@@ -115,7 +115,8 @@ class APIScaffold:
         Arguments:
             auth: The `auth` object, an instance of
                 [`HTTPBasicAuth`][apiflask.security.HTTPBasicAuth]
-                or [`HTTPTokenAuth`][apiflask.security.HTTPTokenAuth].
+                or [`HTTPTokenAuth`][apiflask.security.HTTPTokenAuth]
+                or [`HTTPAPIKeyAuth`][apiflask.security.HTTPAPIKeyAuth].
             roles: The selected roles to allow to visit this view, accepts a list of role names.
                 See [Flask-HTTPAuth's documentation][_role]{target:_blank} for more details.
                 [_role]: https://flask-httpauth.readthedocs.io/en/latest/#user-roles
