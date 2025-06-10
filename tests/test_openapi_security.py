@@ -1,6 +1,7 @@
 import openapi_spec_validator as osv
 import pytest
 
+from apiflask import HTTPAPIKeyAuth
 from apiflask import HTTPBasicAuth
 from apiflask import HTTPTokenAuth
 
@@ -42,7 +43,7 @@ def test_httptokenauth_security_scheme(app, client):
 
 
 def test_apikey_auth_security_scheme(app, client):
-    auth = HTTPTokenAuth('apiKey', header='X-API-Key')
+    auth = HTTPAPIKeyAuth()
 
     @app.get('/')
     @app.auth_required(auth)
@@ -62,7 +63,7 @@ def test_apikey_auth_security_scheme(app, client):
 
 def test_custom_security_scheme_name(app, client):
     basic_auth = HTTPBasicAuth(security_scheme_name='basic_auth')
-    token_auth = HTTPTokenAuth(header='X-API-Key', security_scheme_name='myToken')
+    token_auth = HTTPAPIKeyAuth(security_scheme_name='myToken')
 
     @app.get('/foo')
     @app.auth_required(basic_auth)
@@ -138,6 +139,7 @@ def test_multiple_auth_names(app, client):
 def test_security_schemes_description(app, client):
     basic_auth = HTTPBasicAuth(description='some description for basic auth')
     token_auth = HTTPTokenAuth(description='some description for bearer auth')
+    apikey_auth = HTTPAPIKeyAuth(description='some description for apikey auth')
 
     @app.get('/foo')
     @app.auth_required(basic_auth)
@@ -149,11 +151,17 @@ def test_security_schemes_description(app, client):
     def bar():
         pass
 
+    @app.get('/baz')
+    @app.auth_required(apikey_auth)
+    def baz():
+        pass
+
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
     osv.validate(rv.json)
     assert 'BasicAuth' in rv.json['components']['securitySchemes']
     assert 'BearerAuth' in rv.json['components']['securitySchemes']
+    assert 'ApiKeyAuth' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['BasicAuth'] == {
         'type': 'http',
         'scheme': 'basic',
@@ -163,4 +171,10 @@ def test_security_schemes_description(app, client):
         'type': 'http',
         'scheme': 'bearer',
         'description': 'some description for bearer auth',
+    }
+    assert rv.json['components']['securitySchemes']['ApiKeyAuth'] == {
+        'type': 'apiKey',
+        'name': 'X-API-Key',
+        'in': 'header',
+        'description': 'some description for apikey auth',
     }

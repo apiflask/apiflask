@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import typing as t
 
-from .security import HTTPBasicAuth
-from .security import HTTPTokenAuth
 from .types import HTTPAuthType
+from .types import SecuritySchema
 
 if t.TYPE_CHECKING:  # pragma: no cover
     from .blueprint import APIBlueprint
@@ -59,51 +58,17 @@ def get_operation_tags(blueprint: APIBlueprint, blueprint_name: str) -> list[str
 
 def get_auth_name(auth: HTTPAuthType, auth_names: list[str]) -> str:
     """Get auth name from auth object."""
-    name: str = ''
-    if hasattr(auth, 'security_scheme_name'):
-        name = auth.security_scheme_name  # type: ignore
-    if not name:
-        if isinstance(auth, HTTPBasicAuth):
-            name = 'BasicAuth'
-        elif isinstance(auth, HTTPTokenAuth):
-            if auth.scheme.lower() == 'bearer' and auth.header is None:
-                name = 'BearerAuth'
-            else:
-                name = 'ApiKeyAuth'
-        else:
-            raise TypeError('Unknown authentication scheme.')
+    if not isinstance(auth, SecuritySchema):
+        raise TypeError('Unknown authentication scheme.')
 
-    if name in auth_names:
+    if auth.name in auth_names:
         v = 2
-        new_name = f'{name}_{v}'
+        new_name = f'{auth.name}_{v}'
         while new_name in auth_names:
             v += 1
-            new_name = f'{name}_{v}'
-        name = new_name
-    return name
-
-
-def get_security_scheme(auth: HTTPAuthType) -> dict[str, t.Any]:
-    """Get security scheme from auth object."""
-    security_scheme: dict[str, t.Any]
-    if isinstance(auth, HTTPTokenAuth):
-        if auth.scheme.lower() == 'bearer' and auth.header is None:
-            security_scheme = {
-                'type': 'http',
-                'scheme': 'bearer',
-            }
-        else:
-            security_scheme = {
-                'type': 'apiKey',
-                'name': auth.header,
-                'in': 'header',
-            }
-    else:
-        security_scheme = {
-            'type': 'http',
-            'scheme': 'basic',
-        }
-    return security_scheme
+            new_name = f'{auth.name}_{v}'
+        auth.name = new_name
+    return auth.name
 
 
 def get_security_and_security_schemes(
@@ -114,9 +79,7 @@ def get_security_and_security_schemes(
     security_schemes: dict[str, dict[str, str]] = {}
     for name, auth in zip(auth_names, auth_schemes):  # noqa: B905
         security[auth] = name
-        security_schemes[name] = get_security_scheme(auth)
-        if hasattr(auth, 'description') and auth.description is not None:
-            security_schemes[name]['description'] = auth.description
+        security_schemes[name] = auth.get_security_schema()
     return security, security_schemes
 
 

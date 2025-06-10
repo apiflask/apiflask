@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import typing as t
+from abc import abstractmethod
 from typing import Protocol
+from typing import runtime_checkable
 
 if t.TYPE_CHECKING:  # pragma: no cover
     from flask.wrappers import Response  # noqa: F401
@@ -10,7 +12,8 @@ if t.TYPE_CHECKING:  # pragma: no cover
     from .fields import Field  # noqa: F401
     from .schemas import Schema  # noqa: F401
     from .security import HTTPBasicAuth  # noqa: F401
-    from .security import HTTPTokenAuth  # noqa: F401
+    from .security import HTTPTokenAuth  # noqa: F401\
+    from .security import HTTPAPIKeyAuth  # noqa: F401
     from .exceptions import HTTPError  # noqa: F401
     from .views import View  # noqa: F401
 
@@ -51,7 +54,7 @@ ErrorCallbackType = t.Callable[['HTTPError'], ResponseReturnValueType]
 DictSchemaType = t.Dict[str, t.Union['Field', type]]
 SchemaType = t.Union['Schema', t.Type['Schema'], DictSchemaType]
 OpenAPISchemaType = t.Union['Schema', t.Type['Schema'], dict]
-HTTPAuthType = t.Union['HTTPBasicAuth', 'HTTPTokenAuth']
+HTTPAuthType = t.Union['HTTPBasicAuth', 'HTTPTokenAuth', 'HTTPAPIKeyAuth']
 TagsType = t.Union[t.List[str], t.List[t.Dict[str, t.Any]]]
 ViewClassType = t.Type['View']
 ViewFuncOrClassType = t.Union[t.Callable, ViewClassType]
@@ -80,3 +83,14 @@ class PaginationType(Protocol):
 class ViewFuncType(Protocol):
     _spec: t.Any
     _method_spec: t.Any
+
+
+@runtime_checkable
+class SecuritySchema(Protocol):
+    name: str
+
+    @abstractmethod
+    def get_security_schema(self) -> dict[str, t.Any]:
+        """Get security scheme."""
+
+        pass  # pragma: no cover
