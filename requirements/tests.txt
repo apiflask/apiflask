@@ -6,7 +6,7 @@
 #    pip-compile-multi
 #
 asgiref==3.8.1
-    # via -r requirements/tests.in
+    # via -r tests.in
 attrs==24.2.0
     # via
     #   jsonschema
@@ -38,7 +38,7 @@ lazy-object-proxy==1.10.0
 openapi-schema-validator==0.6.2
     # via openapi-spec-validator
 openapi-spec-validator==0.7.1
-    # via -r requirements/tests.in
+    # via -r tests.in
 packaging==24.1
     # via pytest
 pathable==0.4.3
@@ -47,10 +47,10 @@ pluggy==1.5.0
     # via pytest
 pytest==8.3.2
     # via
-    #   -r requirements/tests.in
+    #   -r tests.in
     #   pytest-cov
 pytest-cov==5.0.0
-    # via -r requirements/tests.in
+    # via -r tests.in
 pyyaml==6.0.2
     # via jsonschema-path
 referencing==0.35.1
@@ -58,7 +58,7 @@ referencing==0.35.1
     #   jsonschema
     #   jsonschema-path
     #   jsonschema-specifications
-requests==2.32.3
+requests==2.32.4
     # via jsonschema-path
 rfc3339-validator==0.1.4
     # via openapi-schema-validator
