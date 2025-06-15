@@ -4,6 +4,7 @@ from flask.views import MethodView
 from apiflask import APIBlueprint
 from apiflask.security import HTTPBasicAuth
 from apiflask.security import HTTPTokenAuth
+from apiflask.security import MultiAuth
 
 
 def test_auth_required(app, client):
@@ -238,3 +239,136 @@ def test_lowercase_token_scheme_value(app, client):
 
     assert 'BearerAuth' in rv.json['components']['securitySchemes']
     assert 'BearerAuth' in rv.json['paths']['/']['get']['security'][0]
+
+
+def test_auth_required_with_multiauth(app, client):
+    basic_auth = HTTPBasicAuth()
+    token_auth = HTTPTokenAuth()
+    multi_auth = MultiAuth(basic_auth, token_auth)
+
+    @basic_auth.verify_password
+    def verify_password(username, password):
+        if username == 'foo' and password == 'bar':
+            return {'user': 'foo'}
+        elif username == 'bar' and password == 'foo':
+            return {'user': 'bar'}
+        elif username == 'baz' and password == 'baz':
+            return {'user': 'baz'}
+
+    @basic_auth.get_user_roles
+    def get_basic_roles(user):
+        if user['user'] == 'bar':
+            return 'admin'
+        elif user['user'] == 'baz':
+            return 'moderator'
+        return 'normal'
+
+    @token_auth.verify_token
+    def verify_token(token):
+        if token == 'foo_token':
+            return {'user': 'foo'}
+        elif token == 'bar_token':
+            return {'user': 'bar'}
+        elif token == 'baz_token':
+            return {'user': 'baz'}
+
+    @token_auth.get_user_roles
+    def get_bearer_roles(user):
+        if user['user'] == 'bar':
+            return 'admin'
+        elif user['user'] == 'baz':
+            return 'moderator'
+        return 'normal'
+
+    @app.route('/foo')
+    @app.auth_required(multi_auth)
+    def foo():
+        return multi_auth.current_user
+
+    @app.route('/bar')
+    @app.auth_required(multi_auth, roles=['admin'])
+    def bar():
+        return multi_auth.current_user
+
+    @app.route('/baz')
+    @app.auth_required(multi_auth, roles=['admin', 'moderator'])
+    def baz():
+        return multi_auth.current_user
+
+    rv = client.get('/foo')
+    assert rv.status_code == 401
+
+    rv = client.get('/foo', headers={'Authorization': 'Basic Zm9vOmJhcg=='})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'foo'}
+
+    rv = client.get('/bar', headers={'Authorization': 'Basic Zm9vOmJhcg=='})
+    assert rv.status_code == 403
+
+    rv = client.get('/foo', headers={'Authorization': 'Basic YmFyOmZvbw=='})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/bar', headers={'Authorization': 'Basic YmFyOmZvbw=='})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', headers={'Authorization': 'Basic Zm9vOmJhcg=='})
+    assert rv.status_code == 403
+
+    rv = client.get('/baz', headers={'Authorization': 'Basic YmFyOmZvbw=='})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', headers={'Authorization': 'Basic YmF6OmJheg=='})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'baz'}
+
+    rv = client.get('/foo', headers={'Authorization': 'Bearer foo_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'foo'}
+
+    rv = client.get('/bar', headers={'Authorization': 'Bearer foo_token'})
+    assert rv.status_code == 403
+
+    rv = client.get('/foo', headers={'Authorization': 'Bearer bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/bar', headers={'Authorization': 'Bearer bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', headers={'Authorization': 'Bearer foo_token'})
+    assert rv.status_code == 403
+
+    rv = client.get('/baz', headers={'Authorization': 'Bearer bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', headers={'Authorization': 'Bearer baz_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'baz'}
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    osv.validate(rv.json)
+    assert 'BasicAuth' in rv.json['components']['securitySchemes']
+    assert 'BearerAuth' in rv.json['components']['securitySchemes']
+
+    assert rv.json['components']['securitySchemes']['BasicAuth'] == {
+        'scheme': 'basic',
+        'type': 'http',
+    }
+    assert rv.json['components']['securitySchemes']['BearerAuth'] == {
+        'scheme': 'bearer',
+        'type': 'http',
+    }
+
+    assert 'BasicAuth' in rv.json['paths']['/foo']['get']['security'][0]
+    assert 'BasicAuth' in rv.json['paths']['/bar']['get']['security'][0]
+    assert 'BasicAuth' in rv.json['paths']['/baz']['get']['security'][0]
+
+    assert 'BearerAuth' in rv.json['paths']['/foo']['get']['security'][1]
+    assert 'BearerAuth' in rv.json['paths']['/bar']['get']['security'][1]
+    assert 'BearerAuth' in rv.json['paths']['/baz']['get']['security'][1]

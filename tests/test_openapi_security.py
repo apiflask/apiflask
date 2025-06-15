@@ -4,6 +4,7 @@ import pytest
 from apiflask import HTTPAPIKeyAuth
 from apiflask import HTTPBasicAuth
 from apiflask import HTTPTokenAuth
+from apiflask.security import MultiAuth
 
 
 def test_httpbasicauth_security_scheme(app, client):
@@ -42,6 +43,25 @@ def test_httptokenauth_security_scheme(app, client):
     }
 
 
+def test_deprecated_apikey_auth_security_scheme(app, client):
+    auth = HTTPTokenAuth('apiKey', header='X-API-Key')
+
+    @app.get('/')
+    @app.auth_required(auth)
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    osv.validate(rv.json)
+    assert 'ApiKeyAuth' in rv.json['components']['securitySchemes']
+    assert rv.json['components']['securitySchemes']['ApiKeyAuth'] == {
+        'type': 'apiKey',
+        'name': 'X-API-Key',
+        'in': 'header',
+    }
+
+
 def test_apikey_auth_security_scheme(app, client):
     auth = HTTPAPIKeyAuth()
 
@@ -63,7 +83,7 @@ def test_apikey_auth_security_scheme(app, client):
 
 def test_custom_security_scheme_name(app, client):
     basic_auth = HTTPBasicAuth(security_scheme_name='basic_auth')
-    token_auth = HTTPAPIKeyAuth(security_scheme_name='myToken')
+    apikey_auth = HTTPAPIKeyAuth(security_scheme_name='myAPIKey')
 
     @app.get('/foo')
     @app.auth_required(basic_auth)
@@ -71,7 +91,7 @@ def test_custom_security_scheme_name(app, client):
         pass
 
     @app.get('/bar')
-    @app.auth_required(token_auth)
+    @app.auth_required(apikey_auth)
     def bar():
         pass
 
@@ -79,19 +99,19 @@ def test_custom_security_scheme_name(app, client):
     assert rv.status_code == 200
     osv.validate(rv.json)
     assert 'basic_auth' in rv.json['components']['securitySchemes']
-    assert 'myToken' in rv.json['components']['securitySchemes']
+    assert 'myAPIKey' in rv.json['components']['securitySchemes']
     assert rv.json['components']['securitySchemes']['basic_auth'] == {
         'type': 'http',
         'scheme': 'basic',
     }
-    assert rv.json['components']['securitySchemes']['myToken'] == {
+    assert rv.json['components']['securitySchemes']['myAPIKey'] == {
         'type': 'apiKey',
         'name': 'X-API-Key',
         'in': 'header',
     }
     print(rv.json)
     assert 'basic_auth' in rv.json['paths']['/foo']['get']['security'][0]
-    assert 'myToken' in rv.json['paths']['/bar']['get']['security'][0]
+    assert 'myAPIKey' in rv.json['paths']['/bar']['get']['security'][0]
 
 
 def test_unknown_auth_security_scheme(app):
@@ -178,3 +198,21 @@ def test_security_schemes_description(app, client):
         'in': 'header',
         'description': 'some description for apikey auth',
     }
+
+
+def test_multi_auth(app, client):
+    basic_auth = HTTPBasicAuth()
+    token_auth = HTTPTokenAuth()
+    multi_auth = MultiAuth(basic_auth, token_auth)
+
+    @app.route('/foo')
+    @app.auth_required(multi_auth)
+    def foo():
+        pass
+
+    rv = client.get('/foo')
+    assert rv.status_code == 401
+    assert rv.headers['Content-Type'] == 'application/json'
+    assert 'message' in rv.json
+    assert rv.json['message'] == 'Unauthorized'
+    assert 'WWW-Authenticate' in rv.headers
