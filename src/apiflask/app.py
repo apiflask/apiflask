@@ -20,8 +20,6 @@ from flask import url_for
 from flask.config import ConfigAttribute
 from flask.wrappers import Response
 
-from apiflask.schema_adapters import registry
-
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from flask_marshmallow import fields
@@ -40,6 +38,9 @@ from .route import route_patch
 from .schemas import Schema
 from .schemas import FileSchema
 from .schemas import EmptySchema
+from .schema_adapters import registry
+from .security import MultiAuth
+from .types import SecuritySchema
 from .types import ResponseReturnValueType, ResponsesType
 from .types import ViewFuncType
 from .types import ErrorCallbackType
@@ -369,6 +370,7 @@ class APIFlask(APIScaffold, Flask):
         self.spec_plugins: list[BasePlugin] = spec_plugins or []
         self._spec: dict | str | None = None
         self._auth_blueprints: dict[str, t.Dict[str, t.Any]] = {}
+        self._auths: list[HTTPAuthType | MultiAuth] = []
 
         self._register_openapi_blueprint()
         self._register_error_handlers()
@@ -746,11 +748,18 @@ class APIFlask(APIScaffold, Flask):
         """Detect `auth_required` on blueprint before_request functions and view functions."""
         # security schemes
         auth_names: list[str] = []
-        auth_schemes: list[HTTPAuthType] = []
 
-        def _update_auth_info(auth: HTTPAuthType) -> None:
+        def _update_auth_info(auth: HTTPAuthType | MultiAuth) -> None:
+            if isinstance(auth, MultiAuth):
+                self._auths.append(auth)
+                for base_auth in auth._auths:
+                    self._auths.append(base_auth)
+                    base_auth_name: str = get_auth_name(base_auth, auth_names)
+                    auth_names.append(base_auth_name)
+                return
+
             # update auth_schemes and auth_names
-            auth_schemes.append(auth)
+            self._auths.append(auth)
             auth_name: str = get_auth_name(auth, auth_names)
             auth_names.append(auth_name)
 
@@ -762,7 +771,7 @@ class APIFlask(APIScaffold, Flask):
             for f in funcs:
                 if hasattr(f, '_spec'):  # pragma: no cover
                     auth = f._spec.get('auth')  # type: ignore
-                    if auth is not None and auth not in auth_schemes:
+                    if auth is not None and auth not in self._auths:
                         self._auth_blueprints[blueprint_name] = {
                             'auth': auth,
                             'roles': f._spec.get('roles'),  # type: ignore
@@ -773,16 +782,19 @@ class APIFlask(APIScaffold, Flask):
             view_func: ViewFuncType = self.view_functions[rule.endpoint]  # type: ignore
             if hasattr(view_func, '_spec'):
                 auth = view_func._spec.get('auth')
-                if auth is not None and auth not in auth_schemes:
+                if auth is not None and auth not in self._auths:
                     _update_auth_info(auth)
             # method views
             if hasattr(view_func, '_method_spec'):
                 for method_spec in view_func._method_spec.values():
                     auth = method_spec.get('auth')
-                    if auth is not None and auth not in auth_schemes:
+                    if auth is not None and auth not in self._auths:
                         _update_auth_info(auth)
 
-        return auth_names, auth_schemes
+        security_schemas = list(filter(lambda x: isinstance(x, SecuritySchema), self._auths))
+        return [security_schema.name for security_schema in security_schemas], [
+            security_schema for security_schema in security_schemas
+        ]
 
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`.
@@ -1234,9 +1246,15 @@ class APIFlask(APIScaffold, Flask):
 
                     # view-wide auth
                     if view_func_auth:
-                        operation['security'] = [
-                            {security[view_func_auth]: view_func._spec['roles']}
-                        ]
+                        if isinstance(view_func_auth, MultiAuth):
+                            operation['security'] = [
+                                {base_auth.name: view_func._spec['roles']}
+                                for base_auth in view_func_auth._auths
+                            ]
+                        else:
+                            operation['security'] = [
+                                {security[view_func_auth]: view_func._spec['roles']}
+                            ]
 
                 operations[method.lower()] = operation
 
@@ -1255,7 +1273,7 @@ class APIFlask(APIScaffold, Flask):
                     argument = get_argument(argument_type, argument_name)
                     arguments.append(argument)
 
-                for _method, operation in operations.items():
+                for _, operation in operations.items():
                     operation['parameters'] = arguments + operation['parameters']
 
             path: str = re.sub(r'<([^<:]+:)?', '{', rule.rule).replace('>', '}')

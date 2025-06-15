@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 import typing as t
+import warnings
 
 from flask import current_app
 from flask import g
 from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
+from flask_httpauth import MultiAuth as BaseMultiAuth
 
 from .exceptions import HTTPError
 from .types import ErrorCallbackType
+from .types import HTTPAuthType
 from .types import ResponseReturnValueType
 from .types import SecuritySchema
 
@@ -159,8 +162,8 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
 
     def __init__(
         self,
-        name: str = 'BearerAuth',
         scheme: str = 'Bearer',
+        name: str = 'BearerAuth',
         realm: str | None = None,
         header: str | None = None,
         description: str | None = None,
@@ -169,9 +172,9 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
         """Initialize a `HTTPTokenAuth` object.
 
         Arguments:
-            name: The security scheme name, default to `BearerAuth`.
             scheme: The authentication scheme used in the `WWW-Authenticate`
                 header. One of `'Bearer'` and `'ApiKey'`, defaults to `'Bearer'`.
+            name: The security scheme name, default to `BearerAuth`.
             realm: The realm used in the `WWW-Authenticate` header to indicate
                  a scope of protection, defaults to use `'Authentication Required'`.
             header: The custom header where to obtain the token (instead
@@ -196,13 +199,30 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
         """
         BaseHTTPTokenAuth.__init__(self, scheme=scheme, realm=realm, header=header)
         super().__init__(description=description, security_scheme_name=security_scheme_name)
+        if not self.scheme.lower() == 'bearer' or self.header is not None:
+            name = 'ApiKeyAuth'
+            warnings.warn(
+                'The API key authorization by HTTPTokenAuth is deprecated and will be removed in'
+                ' APIFlask 3.0.0. Use '
+                " 'HTTPAPIKeyAuth' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
         self.name = security_scheme_name or name
 
     def get_security_schema(self) -> dict[str, t.Any]:
-        security_schema = {
-            'type': 'http',
-            'scheme': 'bearer',
-        }
+        if not self.scheme.lower() == 'bearer' or self.header is not None:
+            security_schema = {
+                'type': 'apiKey',
+                'name': self.header,
+                'in': 'header',
+            }
+        else:
+            security_schema = {
+                'type': 'http',
+                'scheme': 'bearer',
+            }
 
         if self.description is not None:
             security_schema['description'] = self.description
@@ -281,3 +301,40 @@ class HTTPAPIKeyAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
             security_schema['description'] = self.description
 
         return security_schema
+
+
+class MultiAuth(BaseMultiAuth):
+    """Flask-HTTPAuth's HTTPMultiAuth with some modifications.
+
+    - Expose the `auth.current_user` as a property.
+
+    Examples:
+
+    ```python
+    from apiflask import APIFlask, HTTPBasicAuth, HTTPTokenAuth, MultiAuth
+
+    app = APIFlask(__name__)
+    basic_auth = HTTPBasicAuth()
+    token_auth = HTTPTokenAuth()
+    multi_auth = MultiAuth(basic_auth, token_auth)
+    ```
+
+    *Version added: 2.4.1*
+    """
+
+    def __init__(self, main_auth: HTTPAuthType, *additional_auth: tuple[HTTPAuthType]):
+        """Initialize a `HTTPMultiAuth` object.
+
+        Arguments:
+            main_auth: The main authentication object.
+            additional_auth: The additional additional objects.
+        """
+        super().__init__(main_auth, *additional_auth)
+
+    @property
+    def current_user(self) -> None | t.Any:
+        return g.get('flask_httpauth_user', None)
+
+    @property
+    def _auths(self) -> list[HTTPAuthType]:
+        return [self.main_auth] + list(self.additional_auth)
