@@ -25,6 +25,12 @@ griffe==1.2.0
     # via mkdocstrings-python
 idna==3.8
     # via requests
+importlib-metadata==8.7.0
+    # via
+    #   markdown
+    #   mkdocs
+    #   mkdocs-get-deps
+    #   mkdocstrings
 jinja2==3.1.4
     # via
     #   mkdocs
@@ -59,15 +65,15 @@ mkdocs-autorefs==1.2.0
 mkdocs-get-deps==0.2.0
     # via mkdocs
 mkdocs-material==9.5.34
-    # via -r requirements/docs.in
+    # via -r docs.in
 mkdocs-material-extensions==1.3.1
     # via mkdocs-material
 mkdocstrings==0.26.1
     # via
-    #   -r requirements/docs.in
+    #   -r docs.in
     #   mkdocstrings-python
 mkdocstrings-python==1.11.1
-    # via -r requirements/docs.in
+    # via -r docs.in
 packaging==24.1
     # via mkdocs
 paginate==0.5.7
@@ -100,7 +106,11 @@ requests==2.32.3
     # via mkdocs-material
 six==1.16.0
     # via python-dateutil
-urllib3==2.2.2
+typing-extensions==4.14.0
+    # via mkdocstrings
+urllib3==2.5.0
     # via requests
 watchdog==4.0.2
     # via mkdocs
+zipp==3.23.0
+    # via importlib-metadata
