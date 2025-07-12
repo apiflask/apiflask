@@ -86,11 +86,11 @@ class ViewFuncType(Protocol):
 
 
 @runtime_checkable
-class SecuritySchema(Protocol):
+class SecurityScheme(Protocol):
     name: str
 
     @abstractmethod
-    def get_security_schema(self) -> dict[str, t.Any]:
+    def get_security_scheme(self) -> dict[str, t.Any]:
         """Get security scheme."""
 
         pass  # pragma: no cover

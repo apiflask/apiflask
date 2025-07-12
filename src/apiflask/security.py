@@ -13,7 +13,7 @@ from .exceptions import HTTPError
 from .types import ErrorCallbackType
 from .types import HTTPAuthType
 from .types import ResponseReturnValueType
-from .types import SecuritySchema
+from .types import SecurityScheme
 
 
 class _AuthBase:
@@ -79,14 +79,14 @@ class _AuthBase:
         self.error_handler(lambda status_code: f(HTTPError(status_code)))  # type: ignore
 
 
-class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth, SecuritySchema):
+class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth, SecurityScheme):
     """Flask-HTTPAuth's HTTPBasicAuth with some modifications.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.
     - Add a `description` attribute for OpenAPI Spec.
     - Add a `name` attribute for OpenAPI Spec.
-    - Add the `get_security_schema` method for OpenAPI Spec.
+    - Add the `get_security_scheme` method for OpenAPI Spec.
 
     Examples:
 
@@ -129,26 +129,26 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth, SecuritySchema):
         super().__init__(description=description, security_scheme_name=security_scheme_name)
         self.name = security_scheme_name or name
 
-    def get_security_schema(self) -> dict[str, t.Any]:
-        security_schema = {
+    def get_security_scheme(self) -> dict[str, t.Any]:
+        security_scheme = {
             'type': 'http',
             'scheme': 'basic',
         }
 
         if self.description is not None:
-            security_schema['description'] = self.description
+            security_scheme['description'] = self.description
 
-        return security_schema
+        return security_scheme
 
 
-class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
+class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
     """Flask-HTTPAuth's HTTPTokenAuth with some modifications.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.
     - Add a `description` attribute for OpenAPI Spec.
     - Add a `name` attribute for OpenAPI Spec.
-    - Add the `get_security_schema` method for OpenAPI Spec.
+    - Add the `get_security_scheme` method for OpenAPI Spec.
 
     Examples:
 
@@ -211,33 +211,33 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
 
         self.name = security_scheme_name or name
 
-    def get_security_schema(self) -> dict[str, t.Any]:
+    def get_security_scheme(self) -> dict[str, t.Any]:
         if not self.scheme.lower() == 'bearer' or self.header is not None:
-            security_schema = {
+            security_scheme = {
                 'type': 'apiKey',
                 'name': self.header,
                 'in': 'header',
             }
         else:
-            security_schema = {
+            security_scheme = {
                 'type': 'http',
                 'scheme': 'bearer',
             }
 
         if self.description is not None:
-            security_schema['description'] = self.description
+            security_scheme['description'] = self.description
 
-        return security_schema
+        return security_scheme
 
 
-class HTTPAPIKeyAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
+class HTTPAPIKeyAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
     """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement APIKey authentication.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.
     - Add a `description` attribute for OpenAPI Spec.
     - Add a `name` attribute for OpenAPI Spec.
-    - Add the `get_security_schema` method for OpenAPI Spec.
+    - Add the `get_security_scheme` method for OpenAPI Spec.
 
     Examples:
 
@@ -284,17 +284,17 @@ class HTTPAPIKeyAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
         super().__init__(description=description, security_scheme_name=security_scheme_name)
         self.name = security_scheme_name or name
 
-    def get_security_schema(self) -> dict[str, t.Any]:
-        security_schema = {
+    def get_security_scheme(self) -> dict[str, t.Any]:
+        security_scheme = {
             'type': 'apiKey',
             'name': self.header,
             'in': 'header',
         }
 
         if self.description is not None:
-            security_schema['description'] = self.description
+            security_scheme['description'] = self.description
 
-        return security_schema
+        return security_scheme
 
 
 class MultiAuth(BaseMultiAuth):
