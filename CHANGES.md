@@ -1,3 +1,14 @@
+## Version 2.4.1
+
+Released: -
+
+- Fix subclassed MethodView resources cannot be added as URL rules ([issue #618][issue_618]).
+- Support for a runtime choice of Authentication methods ([issue #604][issue_604]).
+
+[issue_618]: https://github.com/apiflask/apiflask/issues/618
+[issue_604]: https://github.com/apiflask/apiflask/issues/604
+
+
 ## Version 2.4.0
 
 Released: 2025/3/25
