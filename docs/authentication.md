@@ -9,7 +9,11 @@ Basic concepts on the authentication support:
 - Use [`apiflask.HTTPBasicAuth`](/api/security/#apiflask.security.HTTPBasicAuth)
   for the HTTP Basic authentication.
 - Use [`apiflask.HTTPTokenAuth`](/api/security/#apiflask.security.HTTPTokenAuth)
-  for the HTTP Bearer or API Keys authentication.
+  for the HTTP Bearer authentication.
+- Use [`apiflask.HTTPAPIKeyAuth`](/api/security/#apiflask.security.HTTPAPIKeyAuth)
+  for the API Keys authentication.
+- Use [`apiflask.MultiAuth`](/api/security/#apiflask.security.MultiAuth)
+  for protecting a route with more than one authentication object.
 - Read [Flask-HTTPAuth's documentation](https://flask-httpauth.readthedocs.io/)
   for the implemention of each authentication types.
 - Make sure to import `HTTPBasicAuth` and `HTTPTokenAuth` from APIFlask and use the

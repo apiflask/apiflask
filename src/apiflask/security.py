@@ -263,7 +263,7 @@ class HTTPAPIKeyAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
         Arguments:
             name: The security scheme name, default to `ApiKeyAuth`.
             scheme: The authentication scheme used in the `WWW-Authenticate`
-                header. One of `'Bearer'` and `'ApiKey'`, defaults to `'Bearer'`.
+                header. defaults to `'ApiKey'`.
             realm: The realm used in the `WWW-Authenticate` header to indicate
                  a scope of protection, defaults to use `'Authentication Required'`.
             header: The custom header where to obtain the token (instead
@@ -276,15 +276,9 @@ class HTTPAPIKeyAuth(_AuthBase, BaseHTTPTokenAuth, SecuritySchema):
 
             description: The description of the OpenAPI security scheme.
             security_scheme_name: The name of the OpenAPI security scheme,
-                defaults to `BearerAuth` or `ApiKeyAuth`.
+                defaults to `ApiKeyAuth`.
 
-        *Version changed: 2.4.1*
-
-        - Add parameter `name`.
-
-        *Version changed: 1.3.0*
-
-        - Add `security_scheme_name` parameter.
+        *Version added: 2.4.1*
         """
         BaseHTTPTokenAuth.__init__(self, scheme=scheme, realm=realm, header=header)
         super().__init__(description=description, security_scheme_name=security_scheme_name)
