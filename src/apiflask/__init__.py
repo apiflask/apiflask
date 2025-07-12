@@ -15,6 +15,7 @@ from .schemas import Schema as Schema
 from .security import HTTPAPIKeyAuth as HTTPAPIKeyAuth
 from .security import HTTPBasicAuth as HTTPBasicAuth
 from .security import HTTPTokenAuth as HTTPTokenAuth
+from .security import MultiAuth as MultiAuth
 
 
 def __getattr__(name: str) -> t.Any:  # pragma: no cover
