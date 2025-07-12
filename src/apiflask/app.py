@@ -20,8 +20,8 @@ from flask import url_for
 from flask.config import ConfigAttribute
 from flask.wrappers import Response
 
+from .security import _AuthBase
 from .security import MultiAuth
-from .types import SecuritySchema
 
 
 with warnings.catch_warnings():
@@ -766,7 +766,7 @@ class APIFlask(APIScaffold, Flask):
                     auth_names.append(base_auth_name)
                 return
 
-            # update auth_schemes and auth_names
+            # update _auths and auth_names
             self._auths.append(auth)
             auth_name: str = get_auth_name(auth, auth_names)
             auth_names.append(auth_name)
@@ -799,9 +799,10 @@ class APIFlask(APIScaffold, Flask):
                     if auth is not None and auth not in self._auths:
                         _update_auth_info(auth)
 
-        security_schemas = list(filter(lambda x: isinstance(x, SecuritySchema), self._auths))
-        return [security_schema.name for security_schema in security_schemas], [
-            security_schema for security_schema in security_schemas
+        # only base authentications have a schema, multiple authentication consists of base authentications # noqa: E501
+        base_auths = [auth for auth in self._auths if isinstance(auth, _AuthBase)]
+        return [security_schema.name for security_schema in base_auths], [
+            security_schema for security_schema in base_auths
         ]
 
     def _generate_spec(self) -> APISpec:
