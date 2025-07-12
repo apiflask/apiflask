@@ -109,7 +109,6 @@ def test_custom_security_scheme_name(app, client):
         'name': 'X-API-Key',
         'in': 'header',
     }
-    print(rv.json)
     assert 'basic_auth' in rv.json['paths']['/foo']['get']['security'][0]
     assert 'myAPIKey' in rv.json['paths']['/bar']['get']['security'][0]
 
