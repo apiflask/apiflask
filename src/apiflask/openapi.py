@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing as t
 
 from .types import HTTPAuthType
-from .types import SecuritySchema
+from .types import SecurityScheme
 
 if t.TYPE_CHECKING:  # pragma: no cover
     from .blueprint import APIBlueprint
@@ -58,7 +58,7 @@ def get_operation_tags(blueprint: APIBlueprint, blueprint_name: str) -> list[str
 
 def get_auth_name(auth: HTTPAuthType, auth_names: list[str]) -> str:
     """Get auth name from auth object."""
-    if not isinstance(auth, SecuritySchema):
+    if not isinstance(auth, SecurityScheme):
         raise TypeError('Unknown authentication scheme.')
 
     if auth.name in auth_names:
@@ -79,7 +79,7 @@ def get_security_and_security_schemes(
     security_schemes: dict[str, dict[str, str]] = {}
     for name, auth in zip(auth_names, auth_schemes):  # noqa: B905
         security[auth] = name
-        security_schemes[name] = auth.get_security_schema()
+        security_schemes[name] = auth.get_security_scheme()
     return security, security_schemes
 
 
