@@ -230,7 +230,7 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
         return security_scheme
 
 
-class HTTPAPIKeyAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
+class APIKeyHeaderAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
     """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement APIKey authentication.
 
     - Add an authentication error handler that returns JSON response.

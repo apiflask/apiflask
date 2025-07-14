@@ -1,10 +1,10 @@
 import typing as t
 from flask import current_app
-from apiflask import APIFlask, HTTPAPIKeyAuth, abort
+from apiflask import APIFlask, APIKeyHeaderAuth, abort
 from authlib.jose import jwt, JoseError
 
 app = APIFlask(__name__)
-auth = HTTPAPIKeyAuth()
+auth = APIKeyHeaderAuth()
 app.config['SECRET_KEY'] = 'secret-key'
 
 

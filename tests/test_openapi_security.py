@@ -1,7 +1,7 @@
 import openapi_spec_validator as osv
 import pytest
 
-from apiflask import HTTPAPIKeyAuth
+from apiflask import APIKeyHeaderAuth
 from apiflask import HTTPBasicAuth
 from apiflask import HTTPTokenAuth
 from apiflask.security import MultiAuth
@@ -63,7 +63,7 @@ def test_deprecated_apikey_auth_security_scheme(app, client):
 
 
 def test_apikey_auth_security_scheme(app, client):
-    auth = HTTPAPIKeyAuth()
+    auth = APIKeyHeaderAuth()
 
     @app.get('/')
     @app.auth_required(auth)
@@ -83,7 +83,7 @@ def test_apikey_auth_security_scheme(app, client):
 
 def test_custom_security_scheme_name(app, client):
     basic_auth = HTTPBasicAuth(security_scheme_name='basic_auth')
-    apikey_auth = HTTPAPIKeyAuth(security_scheme_name='myAPIKey')
+    apikey_header_auth = APIKeyHeaderAuth(security_scheme_name='myAPIKey')
 
     @app.get('/foo')
     @app.auth_required(basic_auth)
@@ -91,7 +91,7 @@ def test_custom_security_scheme_name(app, client):
         pass
 
     @app.get('/bar')
-    @app.auth_required(apikey_auth)
+    @app.auth_required(apikey_header_auth)
     def bar():
         pass
 
@@ -158,7 +158,7 @@ def test_multiple_auth_names(app, client):
 def test_security_schemes_description(app, client):
     basic_auth = HTTPBasicAuth(description='some description for basic auth')
     token_auth = HTTPTokenAuth(description='some description for bearer auth')
-    apikey_auth = HTTPAPIKeyAuth(description='some description for apikey auth')
+    apikey_header_auth = APIKeyHeaderAuth(description='some description for apikey auth')
 
     @app.get('/foo')
     @app.auth_required(basic_auth)
@@ -171,7 +171,7 @@ def test_security_schemes_description(app, client):
         pass
 
     @app.get('/baz')
-    @app.auth_required(apikey_auth)
+    @app.auth_required(apikey_header_auth)
     def baz():
         pass
 
