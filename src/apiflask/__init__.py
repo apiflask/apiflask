@@ -12,7 +12,7 @@ from .schemas import EmptySchema as EmptySchema
 from .schemas import FileSchema as FileSchema
 from .schemas import PaginationSchema as PaginationSchema
 from .schemas import Schema as Schema
-from .security import HTTPAPIKeyAuth as HTTPAPIKeyAuth
+from .security import APIKeyHeaderAuth as APIKeyHeaderAuth
 from .security import HTTPBasicAuth as HTTPBasicAuth
 from .security import HTTPTokenAuth as HTTPTokenAuth
 from .security import MultiAuth as MultiAuth
