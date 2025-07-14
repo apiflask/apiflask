@@ -38,7 +38,7 @@ def get_user_by_id(id: int) -> t.Union[User, None]:
 
 
 @basic_auth.verify_password
-def verify_password(username: str, password: str) -> t.Union[str, None]:
+def verify_password(username: str, password: str) -> t.Union[User, None]:
     if username in username_map and check_password_hash(username_map[username].password, password):
         return username_map[username]
     return None
