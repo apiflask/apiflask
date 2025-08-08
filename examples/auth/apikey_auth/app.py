@@ -1,10 +1,10 @@
 import typing as t
 from flask import current_app
-from apiflask import APIFlask, APIKeyCookieAuth, abort
+from apiflask import APIFlask, APIKeyHeaderAuth, abort
 from authlib.jose import jwt, JoseError
 
 app = APIFlask(__name__)
-auth = APIKeyCookieAuth()
+auth = APIKeyHeaderAuth()
 app.config['SECRET_KEY'] = 'secret-key'
 
 
@@ -56,7 +56,3 @@ def get_token(id: int):
 @app.auth_required(auth)
 def get_username():
     return auth.current_user.username
-
-
-if __name__ == '__main__':
-    app.run()

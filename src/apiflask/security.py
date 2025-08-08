@@ -233,7 +233,7 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
 
 
 class _BaseAPIKeyAuth(_AuthBase, BaseHTTPTokenAuth):
-    """Base class for `HTTPBasicAuth`  `HTTPBasicAuth`."""
+    """Base class for `APIKeyHeaderAuth` `APIKeyCookieAuth` `APIKeyQueryAuth`."""
 
     def __init__(
         self,
@@ -264,7 +264,7 @@ class _BaseAPIKeyAuth(_AuthBase, BaseHTTPTokenAuth):
 
 
 class APIKeyHeaderAuth(_BaseAPIKeyAuth):
-    """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement APIKey authentication.
+    """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement header APIKey authentication.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.
@@ -276,12 +276,12 @@ class APIKeyHeaderAuth(_BaseAPIKeyAuth):
     Examples:
 
     ```python
-    from apiflask import APIFlask, HTTPAPIKeyAuth
+    from apiflask import APIFlask, APIKeyHeaderAuth
 
     app = APIFlask(__name__)
-    auth = HTTPAPIKeyAuth()
+    auth = APIKeyHeaderAuth()
     ```
-    """
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -318,7 +318,7 @@ class APIKeyHeaderAuth(_BaseAPIKeyAuth):
 
 
 class APIKeyCookieAuth(_BaseAPIKeyAuth):
-    """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement APIKey authentication.
+    """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement cookie APIKey authentication.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.
@@ -330,12 +330,12 @@ class APIKeyCookieAuth(_BaseAPIKeyAuth):
     Examples:
 
     ```python
-    from apiflask import APIFlask, HTTPAPIKeyAuth
+    from apiflask import APIFlask, APIKeyCookieAuth
 
     app = APIFlask(__name__)
-    auth = HTTPAPIKeyAuth()
+    auth = APIKeyCookieAuth()
     ```
-    """
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -381,7 +381,7 @@ class APIKeyCookieAuth(_BaseAPIKeyAuth):
 
 
 class APIKeyQueryAuth(_BaseAPIKeyAuth):
-    """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement APIKey authentication.
+    """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement query parameter APIKey authentication.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.
@@ -393,12 +393,12 @@ class APIKeyQueryAuth(_BaseAPIKeyAuth):
     Examples:
 
     ```python
-    from apiflask import APIFlask, HTTPAPIKeyAuth
+    from apiflask import APIFlask, APIKeyQueryAuth
 
     app = APIFlask(__name__)
-    auth = HTTPAPIKeyAuth()
+    auth = APIKeyQueryAuth()
     ```
-    """
+    """  # noqa: E501
 
     def __init__(
         self,

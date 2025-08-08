@@ -10,7 +10,7 @@ Basic concepts on the authentication support:
   for the HTTP Basic authentication.
 - Use [`apiflask.HTTPTokenAuth`](/api/security/#apiflask.security.HTTPTokenAuth)
   for the HTTP Bearer authentication.
-- Use [`apiflask.HTTPAPIKeyAuth`](/api/security/#apiflask.security.HTTPAPIKeyAuth)
+- Use [`apiflask.APIKeyHeaderAuth`](/api/security/#apiflask.security.APIKeyHeaderAuth)[`apiflask.APIKeyCookieAuth`](/api/security/#apiflask.security.APIKeyCookieAuth)[`apiflask.APIKeyQueryAuth`](/api/security/#apiflask.security.APIKeyQueryAuth)
   for the API Keys authentication.
 - Use [`apiflask.MultiAuth`](/api/security/#apiflask.security.MultiAuth)
   for protecting a route with more than one authentication object.
@@ -20,6 +20,9 @@ Basic concepts on the authentication support:
   `app.auth_required` decorator to protect the views.
 - `auth.current_user` works just like `auth.current_user()`, but shorter.
 
+!!! warning
+
+    Cookie authentication is currently not supported for “try it out” requests due to browser security restrictions in Swagger UI.  See this [issue](https://github.com/swagger-api/swagger-js/issues/1163) for more information.
 
 ## Use external authentication library
 
