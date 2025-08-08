@@ -5,7 +5,7 @@
 #
 #    pip-compile-multi
 #
-authlib==1.6.0
+authlib==1.6.1
     # via -r requirements/examples.in
 blinker==1.9.0
     # via flask
@@ -13,13 +13,13 @@ cffi==1.17.1
     # via cryptography
 click==8.2.1
     # via flask
-cryptography==45.0.5
+cryptography==45.0.6
     # via authlib
 flask==3.1.1
     # via flask-sqlalchemy
 flask-sqlalchemy==3.1.1
     # via -r requirements/examples.in
-greenlet==3.2.3
+greenlet==3.2.4
     # via sqlalchemy
 itsdangerous==2.2.0
     # via flask
@@ -38,7 +38,7 @@ mypy-extensions==1.1.0
     # via typing-inspect
 pycparser==2.22
     # via cffi
-sqlalchemy==2.0.41
+sqlalchemy==2.0.42
     # via flask-sqlalchemy
 typeguard==4.4.4
     # via marshmallow-dataclass

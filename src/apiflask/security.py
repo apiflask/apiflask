@@ -5,9 +5,11 @@ import warnings
 
 from flask import current_app
 from flask import g
+from flask import request
 from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 from flask_httpauth import MultiAuth as BaseMultiAuth
+from werkzeug.datastructures import Authorization
 
 from .exceptions import HTTPError
 from .types import ErrorCallbackType
@@ -230,13 +232,45 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
         return security_scheme
 
 
-class APIKeyHeaderAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
+class _BaseAPIKeyAuth(_AuthBase, BaseHTTPTokenAuth):
+    """Base class for `HTTPBasicAuth`  `HTTPBasicAuth`."""
+
+    def __init__(
+        self,
+        name: str = 'ApiKeyAuth',
+        scheme: str = 'ApiKey',
+        realm: str | None = None,
+        param_name: str | None = 'X-API-Key',
+        description: str | None = None,
+        security_scheme_name: str | None = None,
+    ) -> None:
+        BaseHTTPTokenAuth.__init__(self, scheme=scheme, realm=realm, header=param_name)
+        super().__init__(description=description, security_scheme_name=security_scheme_name)
+        self.name = security_scheme_name or name
+        self.param_name = param_name
+        self._location = 'header'
+
+    def get_security_scheme(self) -> dict[str, t.Any]:
+        security_scheme = {
+            'type': 'apiKey',
+            'name': self.param_name,
+            'in': self._location,
+        }
+
+        if self.description is not None:
+            security_scheme['description'] = self.description
+
+        return security_scheme
+
+
+class APIKeyHeaderAuth(_BaseAPIKeyAuth):
     """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement APIKey authentication.
 
     - Add an authentication error handler that returns JSON response.
     - Expose the `auth.current_user` as a property.
     - Add a `description` attribute for OpenAPI Spec.
     - Add a `name` attribute for OpenAPI Spec.
+    - Add a `param_name` attribute for API Key paramter.
     - Add the `get_security_scheme` method for OpenAPI Spec.
 
     Examples:
@@ -254,7 +288,7 @@ class APIKeyHeaderAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
         name: str = 'ApiKeyAuth',
         scheme: str = 'ApiKey',
         realm: str | None = None,
-        header: str | None = 'X-API-Key',
+        param_name: str | None = 'X-API-Key',
         description: str | None = None,
         security_scheme_name: str | None = None,
     ) -> None:
@@ -266,35 +300,147 @@ class APIKeyHeaderAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
                 header. defaults to `'ApiKey'`.
             realm: The realm used in the `WWW-Authenticate` header to indicate
                  a scope of protection, defaults to use `'Authentication Required'`.
-            header: The custom header where to obtain the token (instead
-                of from `Authorization` header). If a custom header is used,
-                the scheme should not be included. Example:
-
-                ```
-                X-API-Key: this-is-my-token
-                ```
-
+            param_name: The name of API Key paramter. defaults to `'Authorization'`.
             description: The description of the OpenAPI security scheme.
             security_scheme_name: The name of the OpenAPI security scheme,
                 defaults to `ApiKeyAuth`.
 
         *Version added: 2.4.1*
         """
-        BaseHTTPTokenAuth.__init__(self, scheme=scheme, realm=realm, header=header)
-        super().__init__(description=description, security_scheme_name=security_scheme_name)
-        self.name = security_scheme_name or name
+        super().__init__(
+            name=name,
+            scheme=scheme,
+            realm=realm,
+            param_name=param_name,
+            description=description,
+            security_scheme_name=security_scheme_name,
+        )
 
-    def get_security_scheme(self) -> dict[str, t.Any]:
-        security_scheme = {
-            'type': 'apiKey',
-            'name': self.header,
-            'in': 'header',
-        }
 
-        if self.description is not None:
-            security_scheme['description'] = self.description
+class APIKeyCookieAuth(_BaseAPIKeyAuth):
+    """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement APIKey authentication.
 
-        return security_scheme
+    - Add an authentication error handler that returns JSON response.
+    - Expose the `auth.current_user` as a property.
+    - Add a `description` attribute for OpenAPI Spec.
+    - Add a `name` attribute for OpenAPI Spec.
+    - Add a `param_name` attribute for API Key paramter.
+    - Add the `get_security_scheme` method for OpenAPI Spec.
+
+    Examples:
+
+    ```python
+    from apiflask import APIFlask, HTTPAPIKeyAuth
+
+    app = APIFlask(__name__)
+    auth = HTTPAPIKeyAuth()
+    ```
+    """
+
+    def __init__(
+        self,
+        name: str = 'ApiKeyAuth',
+        scheme: str = 'ApiKey',
+        realm: str | None = None,
+        param_name: str | None = 'X-API-Key',
+        description: str | None = None,
+        security_scheme_name: str | None = None,
+    ) -> None:
+        """Initialize a `HTTPAPIKeyAuth` object.
+
+        Arguments:
+            name: The security scheme name, default to `ApiKeyAuth`.
+            scheme: The authentication scheme used in the `WWW-Authenticate`
+                header. defaults to `'ApiKey'`.
+            realm: The realm used in the `WWW-Authenticate` header to indicate
+                 a scope of protection, defaults to use `'Authentication Required'`.
+            param_name: The name of API Key paramter. defaults to `'ApiKey'`.
+            description: The description of the OpenAPI security scheme.
+            security_scheme_name: The name of the OpenAPI security scheme,
+                defaults to `ApiKeyAuth`.
+
+        *Version added: 2.4.1*
+        """
+        super().__init__(
+            name=name,
+            scheme=scheme,
+            realm=realm,
+            param_name=param_name,
+            description=description,
+            security_scheme_name=security_scheme_name,
+        )
+        self._location = 'cookie'
+
+    def is_compatible_auth(self, headers):
+        return self.param_name in request.cookies
+
+    def get_auth(self) -> Authorization:
+        auth = Authorization('apiKey')
+        auth.token = request.cookies.get(self.param_name, '')  # type: ignore
+        return auth
+
+
+class APIKeyQueryAuth(_BaseAPIKeyAuth):
+    """Flask-HTTPAuth's HTTPTokenAuth with some modifications to implement APIKey authentication.
+
+    - Add an authentication error handler that returns JSON response.
+    - Expose the `auth.current_user` as a property.
+    - Add a `description` attribute for OpenAPI Spec.
+    - Add a `name` attribute for OpenAPI Spec.
+    - Add a `param_name` attribute for API Key paramter.
+    - Add the `get_security_scheme` method for OpenAPI Spec.
+
+    Examples:
+
+    ```python
+    from apiflask import APIFlask, HTTPAPIKeyAuth
+
+    app = APIFlask(__name__)
+    auth = HTTPAPIKeyAuth()
+    ```
+    """
+
+    def __init__(
+        self,
+        name: str = 'ApiKeyAuth',
+        scheme: str = 'ApiKey',
+        realm: str | None = None,
+        param_name: str | None = 'X-API-Key',
+        description: str | None = None,
+        security_scheme_name: str | None = None,
+    ) -> None:
+        """Initialize a `HTTPAPIKeyAuth` object.
+
+        Arguments:
+            name: The security scheme name, default to `ApiKeyAuth`.
+            scheme: The authentication scheme used in the `WWW-Authenticate`
+                header. defaults to `'ApiKey'`.
+            realm: The realm used in the `WWW-Authenticate` header to indicate
+                 a scope of protection, defaults to use `'Authentication Required'`.
+            param_name: The name of API Key paramter. defaults to `'ApiKey'`.
+            description: The description of the OpenAPI security scheme.
+            security_scheme_name: The name of the OpenAPI security scheme,
+                defaults to `ApiKeyAuth`.
+
+        *Version added: 2.4.1*
+        """
+        super().__init__(
+            name=name,
+            scheme=scheme,
+            realm=realm,
+            param_name=param_name,
+            description=description,
+            security_scheme_name=security_scheme_name,
+        )
+        self._location = 'query'
+
+    def is_compatible_auth(self, headers):
+        return self.param_name in request.args
+
+    def get_auth(self) -> Authorization:
+        auth = Authorization('apiKey')
+        auth.token = request.args.get(self.param_name, '')  # type: ignore
+        return auth
 
 
 class MultiAuth(BaseMultiAuth):
