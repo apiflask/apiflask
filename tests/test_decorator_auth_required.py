@@ -1,10 +1,20 @@
+from importlib import metadata
+
 import openapi_spec_validator as osv
+import pytest
 from flask.views import MethodView
+from packaging.version import Version
 
 from apiflask import APIBlueprint
+from apiflask.security import APIKeyCookieAuth
+from apiflask.security import APIKeyHeaderAuth
+from apiflask.security import APIKeyQueryAuth
 from apiflask.security import HTTPBasicAuth
 from apiflask.security import HTTPTokenAuth
 from apiflask.security import MultiAuth
+
+
+werkzeug_version = Version(metadata.version('werkzeug'))
 
 
 def test_auth_required(app, client):
@@ -372,3 +382,328 @@ def test_auth_required_with_multiauth(app, client):
     assert 'BearerAuth' in rv.json['paths']['/foo']['get']['security'][1]
     assert 'BearerAuth' in rv.json['paths']['/bar']['get']['security'][1]
     assert 'BearerAuth' in rv.json['paths']['/baz']['get']['security'][1]
+
+
+@pytest.mark.skipif(
+    werkzeug_version < Version('2.3.0'),
+    reason='The first positional server_name parameter to set_cookie and delete_cookie is deprecated. Use the domain parameter instead.',  # noqa: E501
+)
+def test_apikey_auth_required_with_multiauth(app, client):
+    header_auth = APIKeyHeaderAuth(name='APIKeyHeaderAuth')
+    cookie_auth = APIKeyCookieAuth(name='APIKeyCookieAuth')
+    query_auth = APIKeyQueryAuth(name='APIKeyQueryAuth')
+    multi_auth = MultiAuth(header_auth, cookie_auth, query_auth)
+
+    @header_auth.verify_token
+    @cookie_auth.verify_token
+    @query_auth.verify_token
+    def verify_token(token):
+        if token == 'foo_token':
+            return {'user': 'foo'}
+        elif token == 'bar_token':
+            return {'user': 'bar'}
+        elif token == 'baz_token':
+            return {'user': 'baz'}
+
+    @header_auth.get_user_roles
+    @cookie_auth.get_user_roles
+    @query_auth.get_user_roles
+    def get_bearer_roles(user):
+        if user['user'] == 'bar':
+            return 'admin'
+        elif user['user'] == 'baz':
+            return 'moderator'
+        return 'normal'
+
+    @app.route('/foo')
+    @app.auth_required(multi_auth)
+    def foo():
+        return multi_auth.current_user
+
+    @app.route('/bar')
+    @app.auth_required(multi_auth, roles=['admin'])
+    def bar():
+        return multi_auth.current_user
+
+    @app.route('/baz')
+    @app.auth_required(multi_auth, roles=['admin', 'moderator'])
+    def baz():
+        return multi_auth.current_user
+
+    rv = client.get('/foo')
+    assert rv.status_code == 401
+
+    rv = client.get('/bar', headers={'X-API-Key': 'foo_token'})
+    assert rv.status_code == 403
+
+    rv = client.get('/foo', headers={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/bar', headers={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', headers={'X-API-Key': 'foo_token'})
+    assert rv.status_code == 403
+
+    rv = client.get('/baz', headers={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', headers={'X-API-Key': 'baz_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'baz'}
+
+    client.set_cookie(key='X-API-Key', value='foo_token')
+    rv = client.get('/bar')
+    assert rv.status_code == 403
+    client.delete_cookie('X-API-Key')
+
+    client.set_cookie(key='X-API-Key', value='bar_token')
+    rv = client.get('/foo')
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+    client.delete_cookie('X-API-Key')
+
+    client.set_cookie(key='X-API-Key', value='bar_token')
+    rv = client.get('/bar')
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+    client.delete_cookie('X-API-Key')
+
+    client.set_cookie(key='X-API-Key', value='foo_token')
+    rv = client.get('/baz')
+    assert rv.status_code == 403
+    client.delete_cookie('X-API-Key')
+
+    client.set_cookie(key='X-API-Key', value='bar_token')
+    rv = client.get('/baz')
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+    client.delete_cookie('X-API-Key')
+
+    client.set_cookie(key='X-API-Key', value='baz_token')
+    rv = client.get('/baz')
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'baz'}
+    client.delete_cookie('X-API-Key')
+
+    rv = client.get('/bar', query_string={'X-API-Key': 'foo_token'})
+    assert rv.status_code == 403
+
+    rv = client.get('/foo', query_string={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/bar', query_string={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', query_string={'X-API-Key': 'foo_token'})
+    assert rv.status_code == 403
+
+    rv = client.get('/baz', query_string={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', query_string={'X-API-Key': 'baz_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'baz'}
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    osv.validate(rv.json)
+    assert 'APIKeyHeaderAuth' in rv.json['components']['securitySchemes']
+    assert 'APIKeyCookieAuth' in rv.json['components']['securitySchemes']
+    assert 'APIKeyQueryAuth' in rv.json['components']['securitySchemes']
+
+    assert rv.json['components']['securitySchemes']['APIKeyHeaderAuth'] == {
+        'type': 'apiKey',
+        'name': 'X-API-Key',
+        'in': 'header',
+    }
+    assert rv.json['components']['securitySchemes']['APIKeyCookieAuth'] == {
+        'type': 'apiKey',
+        'name': 'X-API-Key',
+        'in': 'cookie',
+    }
+    assert rv.json['components']['securitySchemes']['APIKeyQueryAuth'] == {
+        'type': 'apiKey',
+        'name': 'X-API-Key',
+        'in': 'query',
+    }
+
+    assert 'APIKeyHeaderAuth' in rv.json['paths']['/foo']['get']['security'][0]
+    assert 'APIKeyHeaderAuth' in rv.json['paths']['/bar']['get']['security'][0]
+    assert 'APIKeyHeaderAuth' in rv.json['paths']['/baz']['get']['security'][0]
+
+    assert 'APIKeyCookieAuth' in rv.json['paths']['/foo']['get']['security'][1]
+    assert 'APIKeyCookieAuth' in rv.json['paths']['/bar']['get']['security'][1]
+    assert 'APIKeyCookieAuth' in rv.json['paths']['/baz']['get']['security'][1]
+
+    assert 'APIKeyQueryAuth' in rv.json['paths']['/foo']['get']['security'][2]
+    assert 'APIKeyQueryAuth' in rv.json['paths']['/bar']['get']['security'][2]
+    assert 'APIKeyQueryAuth' in rv.json['paths']['/baz']['get']['security'][2]
+
+
+@pytest.mark.skipif(
+    werkzeug_version >= Version('2.3.0'), reason='Old usage of set_cookie and delete_cookie.'
+)
+def test_apikey_auth_required_with_multiauth_with_old_version_werkzeug(app, client):
+    header_auth = APIKeyHeaderAuth(name='APIKeyHeaderAuth')
+    cookie_auth = APIKeyCookieAuth(name='APIKeyCookieAuth')
+    query_auth = APIKeyQueryAuth(name='APIKeyQueryAuth')
+    multi_auth = MultiAuth(header_auth, cookie_auth, query_auth)
+
+    @header_auth.verify_token
+    @cookie_auth.verify_token
+    @query_auth.verify_token
+    def verify_token(token):
+        if token == 'foo_token':
+            return {'user': 'foo'}
+        elif token == 'bar_token':
+            return {'user': 'bar'}
+        elif token == 'baz_token':
+            return {'user': 'baz'}
+
+    @header_auth.get_user_roles
+    @cookie_auth.get_user_roles
+    @query_auth.get_user_roles
+    def get_bearer_roles(user):
+        if user['user'] == 'bar':
+            return 'admin'
+        elif user['user'] == 'baz':
+            return 'moderator'
+        return 'normal'
+
+    @app.route('/foo')
+    @app.auth_required(multi_auth)
+    def foo():
+        return multi_auth.current_user
+
+    @app.route('/bar')
+    @app.auth_required(multi_auth, roles=['admin'])
+    def bar():
+        return multi_auth.current_user
+
+    @app.route('/baz')
+    @app.auth_required(multi_auth, roles=['admin', 'moderator'])
+    def baz():
+        return multi_auth.current_user
+
+    rv = client.get('/foo')
+    assert rv.status_code == 401
+
+    rv = client.get('/bar', headers={'X-API-Key': 'foo_token'})
+    assert rv.status_code == 403
+
+    rv = client.get('/foo', headers={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/bar', headers={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', headers={'X-API-Key': 'foo_token'})
+    assert rv.status_code == 403
+
+    rv = client.get('/baz', headers={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', headers={'X-API-Key': 'baz_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'baz'}
+
+    client.set_cookie(key='X-API-Key', value='foo_token', server_name='localhost')
+    rv = client.get('/bar')
+    assert rv.status_code == 403
+    client.delete_cookie(key='X-API-Key', server_name='localhost')
+
+    client.set_cookie(key='X-API-Key', value='bar_token', server_name='localhost')
+    rv = client.get('/foo')
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+    client.delete_cookie(key='X-API-Key', server_name='localhost')
+
+    client.set_cookie(key='X-API-Key', value='bar_token', server_name='localhost')
+    rv = client.get('/bar')
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+    client.delete_cookie(key='X-API-Key', server_name='localhost')
+
+    client.set_cookie(key='X-API-Key', value='foo_token', server_name='localhost')
+    rv = client.get('/baz')
+    assert rv.status_code == 403
+    client.delete_cookie(key='X-API-Key', server_name='localhost')
+
+    client.set_cookie(key='X-API-Key', value='bar_token', server_name='localhost')
+    rv = client.get('/baz')
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+    client.delete_cookie(key='X-API-Key', server_name='localhost')
+
+    client.set_cookie(key='X-API-Key', value='baz_token', server_name='localhost')
+    rv = client.get('/baz')
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'baz'}
+    client.delete_cookie(key='X-API-Key', server_name='localhost')
+
+    rv = client.get('/bar', query_string={'X-API-Key': 'foo_token'})
+    assert rv.status_code == 403
+
+    rv = client.get('/foo', query_string={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/bar', query_string={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', query_string={'X-API-Key': 'foo_token'})
+    assert rv.status_code == 403
+
+    rv = client.get('/baz', query_string={'X-API-Key': 'bar_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'bar'}
+
+    rv = client.get('/baz', query_string={'X-API-Key': 'baz_token'})
+    assert rv.status_code == 200
+    assert rv.json == {'user': 'baz'}
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    osv.validate(rv.json)
+    assert 'APIKeyHeaderAuth' in rv.json['components']['securitySchemes']
+    assert 'APIKeyCookieAuth' in rv.json['components']['securitySchemes']
+    assert 'APIKeyQueryAuth' in rv.json['components']['securitySchemes']
+
+    assert rv.json['components']['securitySchemes']['APIKeyHeaderAuth'] == {
+        'type': 'apiKey',
+        'name': 'X-API-Key',
+        'in': 'header',
+    }
+    assert rv.json['components']['securitySchemes']['APIKeyCookieAuth'] == {
+        'type': 'apiKey',
+        'name': 'X-API-Key',
+        'in': 'cookie',
+    }
+    assert rv.json['components']['securitySchemes']['APIKeyQueryAuth'] == {
+        'type': 'apiKey',
+        'name': 'X-API-Key',
+        'in': 'query',
+    }
+
+    assert 'APIKeyHeaderAuth' in rv.json['paths']['/foo']['get']['security'][0]
+    assert 'APIKeyHeaderAuth' in rv.json['paths']['/bar']['get']['security'][0]
+    assert 'APIKeyHeaderAuth' in rv.json['paths']['/baz']['get']['security'][0]
+
+    assert 'APIKeyCookieAuth' in rv.json['paths']['/foo']['get']['security'][1]
+    assert 'APIKeyCookieAuth' in rv.json['paths']['/bar']['get']['security'][1]
+    assert 'APIKeyCookieAuth' in rv.json['paths']['/baz']['get']['security'][1]
+
+    assert 'APIKeyQueryAuth' in rv.json['paths']['/foo']['get']['security'][2]
+    assert 'APIKeyQueryAuth' in rv.json['paths']['/bar']['get']['security'][2]
+    assert 'APIKeyQueryAuth' in rv.json['paths']['/baz']['get']['security'][2]

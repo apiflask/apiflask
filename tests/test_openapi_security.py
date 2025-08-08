@@ -1,7 +1,9 @@
 import openapi_spec_validator as osv
 import pytest
 
+from apiflask import APIKeyCookieAuth
 from apiflask import APIKeyHeaderAuth
+from apiflask import APIKeyQueryAuth
 from apiflask import HTTPBasicAuth
 from apiflask import HTTPTokenAuth
 from apiflask.security import MultiAuth
@@ -62,7 +64,7 @@ def test_deprecated_apikey_auth_security_scheme(app, client):
     }
 
 
-def test_apikey_auth_security_scheme(app, client):
+def test_apikey_header_auth_security_scheme(app, client):
     auth = APIKeyHeaderAuth()
 
     @app.get('/')
@@ -78,6 +80,44 @@ def test_apikey_auth_security_scheme(app, client):
         'type': 'apiKey',
         'name': 'X-API-Key',
         'in': 'header',
+    }
+
+
+def test_apikey_cookie_auth_security_scheme(app, client):
+    auth = APIKeyCookieAuth()
+
+    @app.get('/')
+    @app.auth_required(auth)
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    osv.validate(rv.json)
+    assert 'ApiKeyAuth' in rv.json['components']['securitySchemes']
+    assert rv.json['components']['securitySchemes']['ApiKeyAuth'] == {
+        'type': 'apiKey',
+        'name': 'X-API-Key',
+        'in': 'cookie',
+    }
+
+
+def test_apikey_query_auth_security_scheme(app, client):
+    auth = APIKeyQueryAuth()
+
+    @app.get('/')
+    @app.auth_required(auth)
+    def foo():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    osv.validate(rv.json)
+    assert 'ApiKeyAuth' in rv.json['components']['securitySchemes']
+    assert rv.json['components']['securitySchemes']['ApiKeyAuth'] == {
+        'type': 'apiKey',
+        'name': 'X-API-Key',
+        'in': 'query',
     }
 
 
