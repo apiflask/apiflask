@@ -1,5 +1,103 @@
 # Migration Guide
 
+## Migrate to APIFlask 3.x
+
+### New Schema Adapter System
+
+APIFlask 3.x introduces a new pluggable schema adapter system that supports both marshmallow schemas and Pydantic models. This change is **fully backward compatible** - all existing marshmallow-based applications will continue to work without any code changes.
+
+#### What's New
+
+- **Pydantic Support**: You can now use Pydantic models alongside marshmallow schemas
+- **Mixed Usage**: Use both marshmallow and Pydantic schemas in the same application
+- **Automatic Detection**: APIFlask automatically detects the schema type and uses the appropriate adapter
+- **Full Compatibility**: All existing marshmallow functionality remains unchanged
+
+#### No Migration Required for Existing Apps
+
+If you're using marshmallow schemas, **no changes are needed**. Your existing code will continue to work exactly as before:
+
+```python
+# This continues to work unchanged
+from apiflask import APIFlask, Schema
+from apiflask.fields import String, Integer
+
+class PetIn(Schema):
+    name = String(required=True)
+    age = Integer()
+
+@app.input(PetIn)
+def create_pet(json_data):
+    return {'message': 'created'}
+```
+
+#### New: Using Pydantic Models
+
+You can now optionally use Pydantic models for modern, type-hint based validation:
+
+```python
+from pydantic import BaseModel, Field
+
+class PetIn(BaseModel):
+    name: str = Field(..., min_length=1, max_length=50)
+    age: int = Field(..., ge=0, le=30)
+
+@app.input(PetIn)  # Works with the same decorators
+def create_pet(json_data):
+    return {'message': 'created'}
+```
+
+#### Mixed Usage Example
+
+You can mix both approaches in the same application:
+
+```python
+from apiflask import APIFlask, Schema
+from apiflask.fields import String, Integer
+from pydantic import BaseModel, Field
+
+# Marshmallow for input
+class UserIn(Schema):
+    username = String(required=True)
+    email = String(required=True)
+
+# Pydantic for output
+class UserOut(BaseModel):
+    id: int
+    username: str
+    email: str
+    created_at: str
+
+@app.post('/users')
+@app.input(UserIn)      # Marshmallow
+@app.output(UserOut)    # Pydantic
+def create_user(json_data):
+    return {
+        'id': 1,
+        'username': json_data['username'],
+        'email': json_data['email'],
+        'created_at': '2023-01-01T00:00:00Z'
+    }
+```
+
+#### Installation for Pydantic
+
+To use Pydantic models, install Pydantic:
+
+```bash
+pip install pydantic
+```
+
+Marshmallow continues to work without any additional dependencies.
+
+#### Learn More
+
+- See the [Data Schema](/schema) documentation for comprehensive examples
+- Check out the [Pydantic example](/examples) for a complete working application
+- All existing marshmallow features continue to work as documented
+
+---
+
 ## Migrate to APIFlask 2.x
 
 ### Use keyword argument for the `input` data

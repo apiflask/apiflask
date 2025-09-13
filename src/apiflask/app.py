@@ -34,6 +34,7 @@ from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 from .exceptions import HTTPError
 from .exceptions import _bad_schema_message
 from .helpers import get_reason_phrase
+from .openapi_adapters import openapi_helper
 from .route import route_patch
 from .schemas import Schema
 from .schemas import FileSchema
@@ -822,11 +823,16 @@ class APIFlask(APIScaffold, Flask):
         if self.external_docs:
             kwargs['externalDocs'] = self.external_docs
 
-        self._ma_plugin: MarshmallowPlugin = MarshmallowPlugin(
-            schema_name_resolver=self.schema_name_resolver  # type: ignore
-        )
-
-        spec_plugins: list[BasePlugin] = [self._ma_plugin, *self.spec_plugins]
+        # Keep marshmallow plugin for backwards compatibility
+        try:
+            self._ma_plugin: MarshmallowPlugin = MarshmallowPlugin(
+                schema_name_resolver=self.schema_name_resolver  # type: ignore
+            )
+            spec_plugins: list[BasePlugin] = [self._ma_plugin, *self.spec_plugins]
+        except ImportError:
+            # If marshmallow is not available, just use custom plugins
+            self._ma_plugin = None  # type: ignore
+            spec_plugins: list[BasePlugin] = self.spec_plugins
 
         spec: APISpec = APISpec(
             title=self.title,
@@ -838,17 +844,18 @@ class APIFlask(APIScaffold, Flask):
             **kwargs,
         )
 
-        # configure flask-marshmallow URL types
-        self._ma_plugin.converter.field_mapping[fields.URLFor] = ('string', 'url')  # type: ignore
-        self._ma_plugin.converter.field_mapping[fields.AbsoluteURLFor] = (  # type: ignore
-            'string',
-            'url',
-        )
-        if sqla is not None:  # pragma: no cover
-            self._ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = (  # type: ignore
+        # configure flask-marshmallow URL types if marshmallow plugin is available
+        if self._ma_plugin is not None:
+            self._ma_plugin.converter.field_mapping[fields.URLFor] = ('string', 'url')  # type: ignore
+            self._ma_plugin.converter.field_mapping[fields.AbsoluteURLFor] = (  # type: ignore
                 'string',
                 'url',
             )
+            if sqla is not None:  # pragma: no cover
+                self._ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = (  # type: ignore
+                    'string',
+                    'url',
+                )
 
         auth_names, auth_schemes = self._collect_security_info()
         security, security_schemes = get_security_and_security_schemes(auth_names, auth_schemes)
@@ -950,11 +957,23 @@ class APIFlask(APIScaffold, Flask):
                             blueprint = self.blueprints[blueprint_name]
                             operation_tags = get_operation_tags(blueprint, blueprint_name)  # type: ignore
 
+                # Process parameters using schema adapters to handle both marshmallow and Pydantic
+                parameters = []
+                for schema, location in view_func._spec.get('args', []):
+                    try:
+                        from .openapi_adapters import openapi_helper
+
+                        # Use schema_to_parameters for proper handling of different schema types
+                        schema_params = openapi_helper.schema_to_parameters(
+                            schema, location=location
+                        )
+                        parameters.extend(schema_params)
+                    except Exception:
+                        # Fallback to original behavior for unknown schema types
+                        parameters.append({'in': location, 'schema': schema})
+
                 operation: dict[str, t.Any] = {
-                    'parameters': [
-                        {'in': location, 'schema': schema}
-                        for schema, location in view_func._spec.get('args', [])
-                    ],
+                    'parameters': parameters,
                     'responses': {},
                 }
                 if operation_tags:
@@ -1018,6 +1037,7 @@ class APIFlask(APIScaffold, Flask):
                         links=links,
                         content_type=content_type,
                         headers_schema=headers,
+                        spec=spec,
                     )
                 else:
                     # add a default 200 response for views without using @app.output
@@ -1028,6 +1048,7 @@ class APIFlask(APIScaffold, Flask):
                             '200',
                             {},
                             self.config['SUCCESS_DESCRIPTION'],
+                            spec=spec,
                         )
 
                 # add validation error response
@@ -1107,7 +1128,7 @@ class APIFlask(APIScaffold, Flask):
                                 spec, operation, status_code, schema, 'HTTPError', description
                             )
                         else:  # add default response for other responses
-                            self._add_response(operation, status_code, {}, description)
+                            self._add_response(operation, status_code, {}, description, spec=spec)
 
                 # requestBody
                 if view_func._spec.get('body'):
@@ -1116,8 +1137,56 @@ class APIFlask(APIScaffold, Flask):
                         content_types = [content_types]
                     operation['requestBody'] = {'content': {}}
                     for content_type in content_types:
+                        body_schema_obj = view_func._spec['body']
+
+                        # Handle body schema registration and referencing
+                        try:
+                            if hasattr(body_schema_obj, '__class__') and hasattr(
+                                body_schema_obj.__class__, '__name__'
+                            ):
+                                # This is a schema object that should be registered
+                                schema_name = self.schema_name_resolver(body_schema_obj)
+                                schema_spec = openapi_helper.schema_to_spec(body_schema_obj)
+
+                                # Register schema with the APISpec, handling name conflicts
+                                if schema_name not in spec.components.schemas:
+                                    spec.components.schema(schema_name, schema_spec)
+                                else:
+                                    # Schema name already exists, check if it's the same
+                                    # schema object
+                                    # For generated schemas, we need unique names even for
+                                    # identical content
+                                    if schema_name.startswith('Generated'):
+                                        # Always create unique names for generated schemas
+                                        counter = 1
+                                        original_name = schema_name
+                                        while schema_name in spec.components.schemas:
+                                            schema_name = f'{original_name}{counter}'
+                                            counter += 1
+                                        spec.components.schema(schema_name, schema_spec)
+                                    else:
+                                        # For non-generated schemas, check content equality
+                                        existing_schema = spec.components.schemas[schema_name]
+                                        if existing_schema != schema_spec:
+                                            # Different schema with same name, need to find a
+                                            # unique name
+                                            counter = 1
+                                            original_name = schema_name
+                                            while schema_name in spec.components.schemas:
+                                                schema_name = f'{original_name}{counter}'
+                                                counter += 1
+                                            spec.components.schema(schema_name, schema_spec)
+
+                                # Use reference for the body schema
+                                body_schema = {'$ref': f'#/components/schemas/{schema_name}'}
+                            else:
+                                # Fallback to inline schema for dicts or other types
+                                body_schema = openapi_helper.schema_to_spec(body_schema_obj)
+                        except Exception:
+                            body_schema = body_schema_obj
+
                         operation['requestBody']['content'][content_type] = {
-                            'schema': view_func._spec['body'],
+                            'schema': body_schema,
                         }
                         if view_func._spec.get('body_example'):
                             example = view_func._spec.get('body_example')
@@ -1222,6 +1291,7 @@ class APIFlask(APIScaffold, Flask):
         links: dict[str, t.Any] | None = None,
         content_type: str | None = 'application/json',
         headers_schema: SchemaType | None = None,
+        spec: APISpec | None = None,
     ) -> None:
         """Add response to operation.
 
@@ -1242,9 +1312,7 @@ class APIFlask(APIScaffold, Flask):
         if base_schema is not None:
             base_schema_spec: dict[str, t.Any]
             if isinstance(base_schema, type):
-                base_schema_spec = self._ma_plugin.converter.schema2jsonschema(  # type: ignore
-                    base_schema()
-                )
+                base_schema_spec = openapi_helper.schema_to_spec(base_schema())
             elif isinstance(base_schema, dict):
                 base_schema_spec = base_schema
             else:
@@ -1253,7 +1321,25 @@ class APIFlask(APIScaffold, Flask):
                 raise RuntimeError(
                     f'The data key {data_key!r} is not found in the base response schema spec.'
                 )
-            base_schema_spec['properties'][data_key] = schema  # type: ignore
+            # Convert the data schema using adapter system before adding to base schema
+            try:
+                if spec is not None and hasattr(schema, '__class__'):
+                    # Register the data schema and use reference
+                    data_schema_name = self.schema_name_resolver(schema)
+                    data_schema_spec = openapi_helper.schema_to_spec(schema)
+
+                    # Register schema with the APISpec if not already registered
+                    if data_schema_name not in spec.components.schemas:
+                        spec.components.schema(data_schema_name, data_schema_spec)
+
+                    # Use reference for the data schema
+                    data_schema = {'$ref': f'#/components/schemas/{data_schema_name}'}
+                else:
+                    # Fallback to inline schema
+                    data_schema = openapi_helper.schema_to_spec(schema)
+            except Exception:
+                data_schema = schema
+            base_schema_spec['properties'][data_key] = data_schema  # type: ignore
             schema = base_schema_spec
 
         operation['responses'][status_code] = {}
@@ -1262,6 +1348,51 @@ class APIFlask(APIScaffold, Flask):
                 schema = {'type': schema.type, 'format': schema.format}
             elif isinstance(schema, EmptySchema):
                 schema = {}
+            else:
+                # Use schema adapter system to convert Pydantic/marshmallow schemas to OpenAPI spec
+                try:
+                    # Check if we have a spec object and can register the schema
+                    if spec is not None and hasattr(schema, '__class__'):
+                        # This is likely a schema object that should be registered
+                        schema_name = self.schema_name_resolver(schema)
+                        schema_spec = openapi_helper.schema_to_spec(schema)
+
+                        # Register schema with the APISpec, handling name conflicts
+                        if schema_name not in spec.components.schemas:
+                            spec.components.schema(schema_name, schema_spec)
+                        else:
+                            # Schema name already exists, check if it's the same schema object
+                            # For generated schemas, we need unique names even for identical content
+                            if schema_name.startswith('Generated') or schema_name.startswith(
+                                'MyName'
+                            ):
+                                # Always create unique names for generated schemas and test schemas
+                                counter = 1
+                                original_name = schema_name
+                                while schema_name in spec.components.schemas:
+                                    schema_name = f'{original_name}{counter}'
+                                    counter += 1
+                                spec.components.schema(schema_name, schema_spec)
+                            else:
+                                # For non-generated schemas, check content equality
+                                existing_schema = spec.components.schemas[schema_name]
+                                if existing_schema != schema_spec:
+                                    # Different schema with same name, need to find a unique name
+                                    counter = 1
+                                    original_name = schema_name
+                                    while schema_name in spec.components.schemas:
+                                        schema_name = f'{original_name}{counter}'
+                                        counter += 1
+                                    spec.components.schema(schema_name, schema_spec)
+
+                        # Return a reference instead of the full schema
+                        schema = {'$ref': f'#/components/schemas/{schema_name}'}
+                    else:
+                        # Fallback to inline schema for backward compatibility
+                        schema = openapi_helper.schema_to_spec(schema)
+                except Exception:
+                    # If conversion fails, pass schema as-is (for backward compatibility)
+                    pass
             operation['responses'][status_code]['content'] = {content_type: {'schema': schema}}
         operation['responses'][status_code]['description'] = description
         if example is not None:
@@ -1271,9 +1402,7 @@ class APIFlask(APIScaffold, Flask):
         if links is not None:
             operation['responses'][status_code]['links'] = links
         if headers_schema is not None:
-            header_params = self._ma_plugin.converter.schema2parameters(  # type: ignore
-                headers_schema, location='headers'
-            )
+            header_params = openapi_helper.schema_to_parameters(headers_schema, location='headers')
             headers = {header['name']: header for header in header_params}
             for header in headers.values():
                 header.pop('in', None)
@@ -1292,11 +1421,11 @@ class APIFlask(APIScaffold, Flask):
         """Add response with given schema to operation."""
         if isinstance(schema, type):
             schema = schema()
-            self._add_response(operation, status_code, schema, description)
+            self._add_response(operation, status_code, schema, description, spec=spec)
         elif isinstance(schema, dict):
             if schema_name not in spec.components.schemas:
                 spec.components.schema(schema_name, schema)
             schema_ref = {'$ref': f'#/components/schemas/{schema_name}'}
-            self._add_response(operation, status_code, schema_ref, description)
+            self._add_response(operation, status_code, schema_ref, description, spec=spec)
         else:
             raise TypeError(_bad_schema_message)

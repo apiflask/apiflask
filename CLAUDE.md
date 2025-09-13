@@ -90,12 +90,18 @@ pytest examples/
 
 ### Key Modules
 
-- **schemas.py**: Marshmallow schema definitions and utilities
+- **schemas.py**: Marshmallow schema definitions and utilities (legacy)
+- **schema_adapters/**: New pluggable schema system supporting multiple libraries
+  - **base.py**: Abstract base class for schema adapters
+  - **marshmallow.py**: Marshmallow integration adapter
+  - **pydantic.py**: Pydantic integration adapter
+  - **registry.py**: Auto-detection and factory for schema adapters
 - **openapi.py**: OpenAPI specification generation
+- **openapi_adapters.py**: OpenAPI integration for multiple schema types
 - **exceptions.py**: Custom exception classes and error handling
 - **security.py**: Authentication utilities (HTTPBasicAuth, HTTPTokenAuth)
-- **validators.py**: Re-exports marshmallow validators
-- **fields.py**: Re-exports marshmallow and Flask-Marshmallow fields
+- **validators.py**: Re-exports marshmallow validators (legacy)
+- **fields.py**: Re-exports marshmallow and Flask-Marshmallow fields (legacy)
 
 ### Project Structure
 
@@ -119,11 +125,58 @@ Test apps in `tests/test_apps/` provide fixtures for testing framework functiona
 
 Core dependencies:
 - Flask 2.0+ (base framework)
-- marshmallow 3.20+ (serialization/validation)
-- flask-marshmallow (Flask integration for marshmallow)
-- webargs (request parsing)
+- marshmallow 3.20+ (serialization/validation) - Optional in v3.0.0+
+- flask-marshmallow (Flask integration for marshmallow) - Optional in v3.0.0+
+- webargs (request parsing) - Optional in v3.0.0+
 - apispec (OpenAPI spec generation)
 - flask-httpauth (authentication support)
+
+Optional dependencies:
+- pydantic 2.0+ (alternative serialization/validation) - Install with `pip install apiflask[pydantic]`
+
+## Schema Libraries Support
+
+APIFlask 3.0.0+ supports multiple schema libraries:
+
+### Pydantic (Recommended for new projects)
+```python
+from pydantic import BaseModel
+from apiflask import APIFlask
+
+class UserModel(BaseModel):
+    id: int
+    name: str
+    email: str
+
+app = APIFlask(__name__)
+
+@app.post('/users')
+@app.input(UserModel)
+@app.output(UserModel, status_code=201)
+def create_user(json_data: UserModel):
+    return UserModel(id=1, name=json_data.name, email=json_data.email)
+```
+
+### Marshmallow (Legacy, still supported)
+```python
+from apiflask import APIFlask, Schema
+from apiflask.fields import Integer, String
+
+class UserSchema(Schema):
+    id = Integer()
+    name = String()
+    email = String()
+
+app = APIFlask(__name__)
+
+@app.post('/users')
+@app.input(UserSchema)
+@app.output(UserSchema, status_code=201)
+def create_user(json_data):
+    return {'id': 1, 'name': json_data['name'], 'email': json_data['email']}
+```
+
+Both approaches work identically with decorators and generate the same OpenAPI documentation.
 
 ## Version Support
 

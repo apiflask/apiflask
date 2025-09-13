@@ -31,6 +31,7 @@ dependencies = [
     "webargs >= 8.3",
     "flask-httpauth >= 4",
     "apispec >= 6",
+    "pydantic[email] >= 2.0",
 ]
 
 [project.urls]

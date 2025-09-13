@@ -139,3 +139,4 @@ dmypy.json
 /app.py
 /test.py
 /scripts
+.pdm-python
