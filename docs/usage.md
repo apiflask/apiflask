@@ -394,8 +394,12 @@ def delete_pet(pet_id):
 
 To validate and deserialize a request body or request query parameters, we need to
 create a data schema class first. Think of it as a way to describe the valid
-incoming data. If you already familiar with marshmallow, then you already know
-how to write a data schema.
+incoming data. APIFlask supports two main approaches: marshmallow schemas (traditional)
+and Pydantic models (modern).
+
+### Using Marshmallow Schemas (Traditional)
+
+If you're already familiar with marshmallow, then you already know how to write a data schema.
 
 Here is a simple input schema for a Pet input resource:
 
@@ -410,16 +414,46 @@ class PetIn(Schema):
     category = String(required=True, validate=OneOf(['dog', 'cat']))
 ```
 
-!!! tip
-
-    See [Data Schema chapter](/schema) for the details of how to write a schema and
-    the examples for all the fields and validators.
-
 * A schema class should inherit the `apiflask.Schema` class.
 * Fields are represented with field classes in `apiflask.fields`.
 * To validate a field with a specific rule, you can pass a validator or a list of
 validators (import them from `apiflask.validators`) to the `validate` argument
 of the field class.
+
+### Using Pydantic Models (Modern)
+
+!!! tip "New in version 3.0.0"
+
+    Pydantic support was added in version 3.0.0. To use Pydantic, install it with `pip install pydantic`.
+
+Alternatively, you can use Pydantic models for a more modern, type-hint based approach:
+
+```python
+from typing import Optional
+from pydantic import BaseModel, Field, validator
+
+
+class PetIn(BaseModel):
+    name: str = Field(..., min_length=1, max_length=10, description="Pet name")
+    category: str = Field(..., description="Pet category")
+
+    @validator('category')
+    def validate_category(cls, v):
+        allowed = ['dog', 'cat']
+        if v not in allowed:
+            raise ValueError(f'Category must be one of {allowed}')
+        return v
+```
+
+* Pydantic models inherit from `pydantic.BaseModel`.
+* Fields are defined using Python type hints.
+* Validation is built-in based on types, with additional constraints via `Field()`.
+* Custom validation can be added with `@validator` decorators.
+
+!!! tip
+
+    See [Data Schema chapter](/schema) for complete details on both marshmallow and Pydantic,
+    including examples of all fields, validators, and advanced features.
 
 !!! tip
 
@@ -556,7 +590,9 @@ Read the *[Request Handling](/request)* chapter for the advanced topics on reque
 
 ## Use `@app.output` to format response data
 
-Similarly, we can define a schema for output data with `@app.output` decorator. Here is an example:
+Similarly, we can define a schema for output data with `@app.output` decorator. You can use either marshmallow schemas or Pydantic models.
+
+### Marshmallow Output Schema
 
 ```python
 from apiflask.fields import String, Integer
@@ -568,15 +604,34 @@ class PetOut(Schema):
     category = String()
 ```
 
-Since APIFlask will not validate the output data, we only need to list all the field for the output
-schema.
+### Pydantic Output Model
+
+```python
+from pydantic import BaseModel, Field
+
+
+class PetOut(BaseModel):
+    id: int = Field(..., description="Pet ID")
+    name: str = Field(..., description="Pet name")
+    category: str = Field(..., description="Pet category")
+```
+
+Since APIFlask will not validate the output data, we only need to list all the fields for the output
+schema. Both approaches will automatically serialize your data and generate OpenAPI documentation.
 
 !!! tip
 
-    You can set a default value for output field with the `dump_default` argument:
+    **For marshmallow schemas**: You can set a default value for output field with the `dump_default` argument:
 
     ```python
     name = String(dump_default='default name')
+    ```
+
+    **For Pydantic models**: You can set default values directly in the field definition:
+
+    ```python
+    name: str = Field("default name", description="Pet name")
+    is_active: bool = True  # Simple default value
     ```
 
 Now add it to the view function which used to get a pet resource:

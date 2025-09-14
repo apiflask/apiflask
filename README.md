@@ -7,9 +7,12 @@
 
 APIFlask is a lightweight Python web API framework based on [Flask](https://github.com/pallets/flask) and [marshmallow-code](https://github.com/marshmallow-code) projects. It's easy to use, highly customizable, ORM/ODM-agnostic, and 100% compatible with the Flask ecosystem.
 
+APIFlask supports both traditional marshmallow schemas and modern [Pydantic](https://docs.pydantic.dev/) models through a pluggable schema adapter system, giving you the flexibility to choose the validation approach that best fits your project.
+
 With APIFlask, you will have:
 
 - More sugars for view function (`@app.input()`, `@app.output()`, `@app.get()`, `@app.post()` and more)
+- **Multiple schema types**: Support for both marshmallow schemas and Pydantic models
 - Automatic request validation and deserialization
 - Automatic response formatting and serialization
 - Automatic [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) (OAS, formerly Swagger Specification) document generation
@@ -122,6 +125,64 @@ def update_pet(pet_id, json_data):
         pets[pet_id][attr] = value
     return pets[pet_id]
 ```
+
+<details>
+<summary>You can also use Pydantic models for modern type-hint based validation</summary>
+
+```python
+from apiflask import APIFlask, abort
+from pydantic import BaseModel, Field, validator
+
+app = APIFlask(__name__)
+
+pets = [
+    {'id': 0, 'name': 'Kitty', 'category': 'cat'},
+    {'id': 1, 'name': 'Coco', 'category': 'dog'}
+]
+
+
+class PetIn(BaseModel):
+    name: str = Field(..., min_length=1, max_length=10, description="Pet name")
+    category: str = Field(..., description="Pet category")
+
+    @validator('category')
+    def validate_category(cls, v):
+        if v not in ['dog', 'cat']:
+            raise ValueError('Category must be dog or cat')
+        return v
+
+
+class PetOut(BaseModel):
+    id: int = Field(..., description="Pet ID")
+    name: str = Field(..., description="Pet name")
+    category: str = Field(..., description="Pet category")
+
+
+@app.get('/')
+def say_hello():
+    return {'message': 'Hello!'}
+
+
+@app.get('/pets/<int:pet_id>')
+@app.output(PetOut)
+def get_pet(pet_id):
+    if pet_id > len(pets) - 1:
+        abort(404)
+    return pets[pet_id]
+
+
+@app.patch('/pets/<int:pet_id>')
+@app.input(PetIn)
+@app.output(PetOut)
+def update_pet(pet_id, json_data):
+    if pet_id > len(pets) - 1:
+        abort(404)
+    for attr, value in json_data.items():
+        pets[pet_id][attr] = value
+    return pets[pet_id]
+```
+
+</details>
 
 <details>
 <summary>You can also use class-based views based on <code>MethodView</code></summary>

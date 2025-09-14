@@ -15,7 +15,7 @@ differences between APIFlask and similar projects.
 - For the web part, FastAPI builds on top of Starlette, while APIFlask builts on top of
   Flask.
 - For the data part (serialization/deserialization, OpenAPI support), FastAPI relies
-  on Pydantic, while APIFlask uses marshmallow-code projects (marshmallow, webargs, apispec).
+  on Pydantic, while APIFlask supports both Pydantic models and marshmallow-code projects (marshmallow, webargs, apispec) through a pluggable adapter system.
 - APIFlask builds on top of Flask, so it's compatible with Flask extensions.
 - FastAPI supports async. APIFlask has the basic async support with Flask 2.0.
 - APIFlask provides more decorators to help organize things better.

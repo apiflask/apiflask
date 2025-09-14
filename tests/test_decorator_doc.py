@@ -260,7 +260,9 @@ def test_doc_responses_custom_spec(app, client):
     assert rv.json['paths']['/bar']['get']['responses']['400']['content']['application/json'][
         'schema'
     ] == {'$ref': '#/components/schemas/CustomHTTPError'}
-    assert rv.json['components']['schemas']['CustomHTTPError'] == {
+    # The expected schema - in apispec >= 6.8.3, additionalProperties: false
+    # is added for schemas with unknown=RAISE (the default)
+    expected_schema = {
         'type': 'object',
         'properties': {
             'status_code': {'type': 'string'},
@@ -269,6 +271,16 @@ def test_doc_responses_custom_spec(app, client):
         },
         'required': ['custom', 'message', 'status_code'],
     }
+    actual_schema = rv.json['components']['schemas']['CustomHTTPError']
+
+    # Check core properties
+    for key, value in expected_schema.items():
+        assert actual_schema[key] == value
+
+    # additionalProperties may or may not be present depending on apispec version
+    # If present, it should be False (for schemas with unknown=RAISE)
+    if 'additionalProperties' in actual_schema:
+        assert actual_schema['additionalProperties'] is False
 
 
 def test_doc_responses_additional_content_type(app, client):
