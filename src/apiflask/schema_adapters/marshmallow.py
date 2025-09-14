@@ -54,19 +54,20 @@ parser: FlaskParser = FlaskParser()
 
 
 @parser.location_loader('form_and_files')
-def load_form_and_files(request, schema):
+def load_form_and_files(request: Request, schema: t.Any) -> MultiDictProxy:
     return _get_files_and_form(request, schema)
 
 
 @parser.location_loader('files')
-def load_files(request, schema):
+def load_files(request: Request, schema: t.Any) -> MultiDictProxy:
     return _get_files_and_form(request, schema)
 
 
-def _get_files_and_form(request, schema):
+def _get_files_and_form(request: Request, schema: t.Any) -> MultiDictProxy:
     """Get files and form data and format field values with schema."""
     form_and_files_data = request.files.copy()
-    form_and_files_data.update(request.form)
+    # Type ignore needed due to MultiDict type incompatibility
+    form_and_files_data.update(request.form)  # type: ignore[arg-type]
     return MultiDictProxy(form_and_files_data, schema)
 
 
@@ -97,7 +98,7 @@ class MarshmallowAdapter(SchemaAdapter):
                     self.schema = schema()
                 else:
                     # If not a marshmallow schema, keep as class (might be Pydantic)
-                    self.schema = schema
+                    self.schema = schema  # type: ignore[unreachable]
             except TypeError:
                 # Not a class that can be checked with issubclass
                 self.schema = schema
@@ -116,7 +117,7 @@ class MarshmallowAdapter(SchemaAdapter):
             try:
                 return self.schema.load(data)
             except MarshmallowValidationError as error:
-                raise _ValidationError(400, error.messages) from error
+                raise _ValidationError(400, 'Validation error', error.messages) from error
 
         # Use webargs for other locations
         return parser.load_location_data(schema=self.schema, req=request, location=location)
@@ -141,14 +142,15 @@ class MarshmallowAdapter(SchemaAdapter):
             from apispec.ext.marshmallow import MarshmallowPlugin
 
             plugin = MarshmallowPlugin()
-            return plugin.schema_helper(self.schema, **kwargs)
+            result: dict[str, t.Any] = plugin.schema_helper(self.schema, **kwargs)  # type: ignore[no-untyped-call]
+            return result
         except (ImportError, Exception):
             # Fallback to basic schema generation if apispec not available or fails
-            schema_dict = {'type': 'object'}
+            schema_dict: dict[str, t.Any] = {'type': 'object'}
 
             if hasattr(self.schema, 'fields'):
-                properties = {}
-                required = []
+                properties: dict[str, t.Any] = {}
+                required: list[str] = []
 
                 for name, field in self.schema.fields.items():
                     # Check if field is required
@@ -203,5 +205,5 @@ class MarshmallowAdapter(SchemaAdapter):
     def get_schema_name(self) -> str:
         """Get schema name for OpenAPI documentation."""
         if hasattr(self.schema, '__class__'):
-            return self.schema.__class__.__name__
+            return str(self.schema.__class__.__name__)
         return 'Schema'

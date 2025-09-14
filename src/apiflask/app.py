@@ -832,7 +832,7 @@ class APIFlask(APIScaffold, Flask):
         except ImportError:
             # If marshmallow is not available, just use custom plugins
             self._ma_plugin = None  # type: ignore
-            spec_plugins: list[BasePlugin] = self.spec_plugins
+            spec_plugins = self.spec_plugins
 
         spec: APISpec = APISpec(
             title=self.title,
@@ -1325,7 +1325,7 @@ class APIFlask(APIScaffold, Flask):
             try:
                 if spec is not None and hasattr(schema, '__class__'):
                     # Register the data schema and use reference
-                    data_schema_name = self.schema_name_resolver(schema)
+                    data_schema_name = self.schema_name_resolver(schema)  # type: ignore[arg-type]
                     data_schema_spec = openapi_helper.schema_to_spec(schema)
 
                     # Register schema with the APISpec if not already registered
@@ -1333,7 +1333,7 @@ class APIFlask(APIScaffold, Flask):
                         spec.components.schema(data_schema_name, data_schema_spec)
 
                     # Use reference for the data schema
-                    data_schema = {'$ref': f'#/components/schemas/{data_schema_name}'}
+                    data_schema: t.Any = {'$ref': f'#/components/schemas/{data_schema_name}'}
                 else:
                     # Fallback to inline schema
                     data_schema = openapi_helper.schema_to_spec(schema)
@@ -1354,7 +1354,7 @@ class APIFlask(APIScaffold, Flask):
                     # Check if we have a spec object and can register the schema
                     if spec is not None and hasattr(schema, '__class__'):
                         # This is likely a schema object that should be registered
-                        schema_name = self.schema_name_resolver(schema)
+                        schema_name = self.schema_name_resolver(schema)  # type: ignore[arg-type]
                         schema_spec = openapi_helper.schema_to_spec(schema)
 
                         # Register schema with the APISpec, handling name conflicts

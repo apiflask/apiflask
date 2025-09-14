@@ -356,7 +356,9 @@ class APIScaffold:
                     @wraps(f)
                     def wrapper(*args: t.Any, **kwargs: t.Any):
                         location_data = parser.load_location_data(
-                            schema=schema, req=flask_request, location=location
+                            schema=schema,  # type: ignore[arg-type]
+                            req=flask_request,
+                            location=location,
                         )
                         kwargs[arg_name_val] = location_data
                         return f(*args, **kwargs)
@@ -567,7 +569,11 @@ class APIScaffold:
                         setattr(obj, data_key, serialized_data)
 
                     # Use base schema adapter for final serialization
-                    base_adapter = registry.create_adapter(base_schema())
+                    # base_schema could be a class, instance, or dict
+                    if isinstance(base_schema, type):
+                        base_adapter = registry.create_adapter(base_schema())
+                    else:
+                        base_adapter = registry.create_adapter(base_schema)
                     data = base_adapter.serialize_output(obj)
                 else:
                     data = adapter.serialize_output(obj, many=many)

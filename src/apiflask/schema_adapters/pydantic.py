@@ -12,16 +12,18 @@ if t.TYPE_CHECKING:
 try:
     from pydantic import BaseModel, ValidationError as PydanticValidationError
     from pydantic.fields import FieldInfo
+    from pydantic_core import ErrorDetails
 
     HAS_PYDANTIC = True
 except ImportError:
     BaseModel = None  # type: ignore
     PydanticValidationError = None  # type: ignore
     FieldInfo = None  # type: ignore
+    ErrorDetails = None  # type: ignore
     HAS_PYDANTIC = False
 
 
-def _format_pydantic_errors(errors: list[dict]) -> dict[str, list[str]]:
+def _format_pydantic_errors(errors: list[ErrorDetails]) -> dict[str, list[str]]:
     """Format Pydantic validation errors to match marshmallow format.
 
     Arguments:
@@ -30,7 +32,7 @@ def _format_pydantic_errors(errors: list[dict]) -> dict[str, list[str]]:
     Returns:
         Dict mapping field names to error message lists
     """
-    formatted_errors = {}
+    formatted_errors: dict[str, list[str]] = {}
 
     for error in errors:
         # Get the field path
@@ -126,7 +128,7 @@ class PydanticAdapter(SchemaAdapter):
 
         except PydanticValidationError as error:
             formatted_errors = _format_pydantic_errors(error.errors())
-            raise _ValidationError(400, formatted_errors) from error
+            raise _ValidationError(400, 'Validation error', formatted_errors) from error
 
     def serialize_output(self, data: t.Any, many: bool = False) -> t.Any:
         """Serialize output using Pydantic."""

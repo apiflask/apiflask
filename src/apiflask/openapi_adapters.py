@@ -124,7 +124,7 @@ class OpenAPIHelper:
     def _get_field_schema(self, field: t.Any) -> dict[str, t.Any]:
         """Get OpenAPI schema for a marshmallow field."""
         field_type = 'string'  # Default
-        field_schema = {'type': field_type}
+        field_schema: dict[str, t.Any] = {'type': field_type}
 
         if hasattr(field, '__class__'):
             field_class_name = field.__class__.__name__.lower()
