@@ -349,11 +349,21 @@ def test_input_with_dict_schema(app, client):
         ]
         == '#/components/schemas/MyName'
     )
-    assert rv.json['components']['schemas']['MyName'] == {
-        'properties': {'name': {'type': 'string'}},
-        'required': ['name'],
-        'type': 'object',
-    }
+    import sys
+
+    if sys.version_info >= (3, 9):
+        assert rv.json['components']['schemas']['MyName'] == {
+            'properties': {'name': {'type': 'string'}},
+            'required': ['name'],
+            'type': 'object',
+            'additionalProperties': False,
+        }
+    else:
+        assert rv.json['components']['schemas']['MyName'] == {
+            'properties': {'name': {'type': 'string'}},
+            'required': ['name'],
+            'type': 'object',
+        }
     # default schema name is "Generated"
     assert (
         rv.json['paths']['/baz']['post']['requestBody']['content']['application/json']['schema'][
