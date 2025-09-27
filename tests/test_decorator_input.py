@@ -1,8 +1,10 @@
 import io
+from importlib import metadata
 
 import openapi_spec_validator as osv
 import pytest
 from flask.views import MethodView
+from packaging.version import Version
 from werkzeug.datastructures import FileStorage
 
 from .schemas import Bar
@@ -15,6 +17,9 @@ from apiflask import Schema
 from apiflask.fields import String
 from apiflask.validators import Length
 from apiflask.validators import OneOf
+
+
+apispec_version = Version(metadata.version('apispec'))
 
 
 def test_input(app, client):
@@ -349,9 +354,8 @@ def test_input_with_dict_schema(app, client):
         ]
         == '#/components/schemas/MyName'
     )
-    import sys
 
-    if sys.version_info >= (3, 9):
+    if apispec_version >= Version('6.8.3'):
         assert rv.json['components']['schemas']['MyName'] == {
             'properties': {'name': {'type': 'string'}},
             'required': ['name'],
