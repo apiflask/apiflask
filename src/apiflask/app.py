@@ -370,7 +370,7 @@ class APIFlask(APIScaffold, Flask):
         self.spec_plugins: list[BasePlugin] = spec_plugins or []
         self._spec: dict | str | None = None
         self._auth_blueprints: dict[str, t.Dict[str, t.Any]] = {}
-        self._auths: list[HTTPAuthType | MultiAuth] = []
+        self._auths: set[HTTPAuthType | MultiAuth] = set()
 
         self._register_openapi_blueprint()
         self._register_error_handlers()
@@ -747,7 +747,7 @@ class APIFlask(APIScaffold, Flask):
     def _collect_security_info(self) -> t.Tuple[list[str], list[HTTPAuthType]]:
         """Detect `auth_required` on blueprint before_request functions and view functions."""
         # security schemes
-        auth_names: list[str] = []
+        auth_names: set[str] = set()
 
         def _register_base_auth(auth: HTTPAuthType) -> None:
             if not isinstance(auth, SecurityScheme):
@@ -755,17 +755,17 @@ class APIFlask(APIScaffold, Flask):
 
             if auth.name in auth_names:
                 warnings.warn(
-                    f"The auth schema name '{auth.name}' has existed, "
+                    f"The auth scheme name '{auth.name}' has existed, "
                     'so it will be overwritten.',
                     stacklevel=2,
                 )
 
-            self._auths.append(auth)
-            auth_names.append(auth.name)
+            self._auths.add(auth)
+            auth_names.add(auth.name)
 
         def _update_auth_info(auth: HTTPAuthType | MultiAuth) -> None:
             if isinstance(auth, MultiAuth):
-                self._auths.append(auth)
+                self._auths.add(auth)
                 for base_auth in auth._auths:
                     _register_base_auth(base_auth)
                 return

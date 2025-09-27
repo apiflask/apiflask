@@ -8,11 +8,13 @@ Released: -
 - Add support for Pydantic models as data schemas ([issue #519][issue_519]).
 - Fix subclassed MethodView resources cannot be added as URL rules ([issue #618][issue_618]).
 - Support for a runtime choice of Authentication methods ([issue #604][issue_604]).
+- Removed implicit security scheme naming rules ([pr #665](pr_665))
 
 [issue_519]: https://github.com/apiflask/apiflask/issues/519
 [pr_690]: https://github.com/apiflask/apiflask/pull/690
 [issue_618]: https://github.com/apiflask/apiflask/issues/618
 [issue_604]: https://github.com/apiflask/apiflask/issues/604
+[pr_655]: https://github.com/apiflask/apiflask/pull/655
 
 
 ## Version 2.4.0
