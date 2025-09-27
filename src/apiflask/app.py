@@ -22,6 +22,7 @@ from flask.wrappers import Response
 
 from .security import _AuthBase
 from .security import MultiAuth
+from .types import SecurityScheme
 
 
 with warnings.catch_warnings():
@@ -55,7 +56,6 @@ from .openapi import default_response
 from .openapi import get_tag
 from .openapi import get_operation_tags
 from .openapi import get_path_summary
-from .openapi import get_auth_name
 from .openapi import get_argument
 from .openapi import get_security_and_security_schemes
 from .ui_templates import ui_templates
@@ -757,19 +757,28 @@ class APIFlask(APIScaffold, Flask):
         # security schemes
         auth_names: list[str] = []
 
+        def _register_base_auth(auth: HTTPAuthType) -> None:
+            if not isinstance(auth, SecurityScheme):
+                raise TypeError('Unknown authentication scheme.')
+
+            if auth.name in auth_names:
+                warnings.warn(
+                    f"The auth schema name '{auth.name}' has existed, "
+                    'so it will be overwritten.',
+                    stacklevel=2,
+                )
+
+            self._auths.append(auth)
+            auth_names.append(auth.name)
+
         def _update_auth_info(auth: HTTPAuthType | MultiAuth) -> None:
             if isinstance(auth, MultiAuth):
                 self._auths.append(auth)
                 for base_auth in auth._auths:
-                    self._auths.append(base_auth)
-                    base_auth_name: str = get_auth_name(base_auth, auth_names)
-                    auth_names.append(base_auth_name)
+                    _register_base_auth(base_auth)
                 return
 
-            # update _auths and auth_names
-            self._auths.append(auth)
-            auth_name: str = get_auth_name(auth, auth_names)
-            auth_names.append(auth_name)
+            _register_base_auth(auth)
 
         # collect auth info on blueprint before_request functions
         for blueprint_name, funcs in self.before_request_funcs.items():

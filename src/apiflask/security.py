@@ -292,7 +292,7 @@ class APIKeyHeaderAuth(_BaseAPIKeyAuth):
         description: str | None = None,
         security_scheme_name: str | None = None,
     ) -> None:
-        """Initialize a `HTTPAPIKeyAuth` object.
+        """Initialize a `APIKeyHeaderAuth` object.
 
         Arguments:
             name: The security scheme name, default to `ApiKeyAuth`.
@@ -346,7 +346,7 @@ class APIKeyCookieAuth(_BaseAPIKeyAuth):
         description: str | None = None,
         security_scheme_name: str | None = None,
     ) -> None:
-        """Initialize a `HTTPAPIKeyAuth` object.
+        """Initialize a `APIKeyCookieAuth` object.
 
         Arguments:
             name: The security scheme name, default to `ApiKeyAuth`.
@@ -409,7 +409,7 @@ class APIKeyQueryAuth(_BaseAPIKeyAuth):
         description: str | None = None,
         security_scheme_name: str | None = None,
     ) -> None:
-        """Initialize a `HTTPAPIKeyAuth` object.
+        """Initialize a `APIKeyQueryAuth` object.
 
         Arguments:
             name: The security scheme name, default to `ApiKeyAuth`.
