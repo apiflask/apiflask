@@ -1,14 +1,19 @@
 from dataclasses import dataclass
+from importlib import metadata
 
 import openapi_spec_validator as osv
 from flask import make_response
 from flask.views import MethodView
+from packaging.version import Version
 
 from .schemas import Foo
 from .schemas import Query
 from apiflask import Schema
 from apiflask.fields import Field
 from apiflask.fields import String
+
+
+apispec_version = Version(metadata.version('apispec'))
 
 
 def test_output(app, client):
@@ -159,9 +164,8 @@ def test_output_with_dict_schema(app, client):
         ]['$ref']
         == '#/components/schemas/MyName'
     )
-    import sys
 
-    if sys.version_info >= (3, 9):
+    if apispec_version >= Version('6.8.3'):
         assert rv.json['components']['schemas']['MyName'] == {
             'properties': {'name': {'type': 'string'}},
             'type': 'object',
