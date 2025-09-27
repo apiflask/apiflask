@@ -191,8 +191,7 @@ def test_multiple_auth_names(app, client):
     assert rv.status_code == 200
     osv.validate(rv.json)
     assert 'BasicAuth' in rv.json['components']['securitySchemes']
-    assert 'BasicAuth_2' in rv.json['components']['securitySchemes']
-    assert 'BasicAuth_3' in rv.json['components']['securitySchemes']
+    assert len(rv.json['components']['securitySchemes']) == 1
 
 
 def test_security_schemes_description(app, client):
