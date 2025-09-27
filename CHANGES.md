@@ -1,12 +1,21 @@
+## Version 3.0.0
+
+Released: -
+
+- Support for a runtime choice of Authentication methods ([issue #604][issue_604]).
+- Removed implicit security scheme naming rules ([pr #665](pr_665))
+
+[issue_604]: https://github.com/apiflask/apiflask/issues/604
+[pr_655]: https://github.com/apiflask/apiflask/pull/655
+
+
 ## Version 2.4.1
 
 Released: -
 
 - Fix subclassed MethodView resources cannot be added as URL rules ([issue #618][issue_618]).
-- Support for a runtime choice of Authentication methods ([issue #604][issue_604]).
 
 [issue_618]: https://github.com/apiflask/apiflask/issues/618
-[issue_604]: https://github.com/apiflask/apiflask/issues/604
 
 
 ## Version 2.4.0
