@@ -159,10 +159,19 @@ def test_output_with_dict_schema(app, client):
         ]['$ref']
         == '#/components/schemas/MyName'
     )
-    assert rv.json['components']['schemas']['MyName'] == {
-        'properties': {'name': {'type': 'string'}},
-        'type': 'object',
-    }
+    import sys
+
+    if sys.version_info >= (3, 9):
+        assert rv.json['components']['schemas']['MyName'] == {
+            'properties': {'name': {'type': 'string'}},
+            'type': 'object',
+            'additionalProperties': False,
+        }
+    else:
+        assert rv.json['components']['schemas']['MyName'] == {
+            'properties': {'name': {'type': 'string'}},
+            'type': 'object',
+        }
     assert (
         rv.json['paths']['/bar']['get']['responses']['200']['content']['application/json'][
             'schema'

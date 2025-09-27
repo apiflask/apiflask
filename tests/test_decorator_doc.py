@@ -260,15 +260,29 @@ def test_doc_responses_custom_spec(app, client):
     assert rv.json['paths']['/bar']['get']['responses']['400']['content']['application/json'][
         'schema'
     ] == {'$ref': '#/components/schemas/CustomHTTPError'}
-    assert rv.json['components']['schemas']['CustomHTTPError'] == {
-        'type': 'object',
-        'properties': {
-            'status_code': {'type': 'string'},
-            'message': {'type': 'string'},
-            'custom': {'type': 'string'},
-        },
-        'required': ['custom', 'message', 'status_code'],
-    }
+    import sys
+
+    if sys.version_info >= (3, 9):
+        assert rv.json['components']['schemas']['CustomHTTPError'] == {
+            'type': 'object',
+            'properties': {
+                'status_code': {'type': 'string'},
+                'message': {'type': 'string'},
+                'custom': {'type': 'string'},
+            },
+            'required': ['custom', 'message', 'status_code'],
+            'additionalProperties': False,
+        }
+    else:
+        assert rv.json['components']['schemas']['CustomHTTPError'] == {
+            'type': 'object',
+            'properties': {
+                'status_code': {'type': 'string'},
+                'message': {'type': 'string'},
+                'custom': {'type': 'string'},
+            },
+            'required': ['custom', 'message', 'status_code'],
+        }
 
 
 def test_doc_responses_additional_content_type(app, client):
