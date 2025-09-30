@@ -9,6 +9,11 @@ app = APIFlask(__name__, title='apiflask-otel', version='1.0.0')
 
 
 def configure_trace(app: APIFlask):
+    """initialize OpenTelemetry based on the provided settings.
+
+    Args:
+        app (APIFlask): APIFlask instance
+    """
     resource = Resource(
         attributes={
             ResourceAttributes.SERVICE_NAME: app.title,
