@@ -27,6 +27,9 @@ from .types import ResponsesType
 from .types import SchemaType
 from .views import MethodView
 
+if t.TYPE_CHECKING:
+    from flask.sansio.scaffold import T_route  # noqa: F401
+
 BODY_LOCATIONS = ['json', 'files', 'form', 'form_and_files', 'json_or_form']
 
 
@@ -116,7 +119,9 @@ class APIScaffold:
     *Version added: 1.0*
     """
 
-    def _method_route(self, method: str, rule: str, options: t.Any):
+    def _method_route(
+        self, method: str, rule: str, options: t.Any
+    ) -> t.Callable[[T_route], T_route]:
         if 'methods' in options:
             raise RuntimeError('Use the "route" decorator to use the "methods" argument.')
 
@@ -130,23 +135,23 @@ class APIScaffold:
 
         return decorator
 
-    def get(self, rule: str, **options: t.Any):
+    def get(self, rule: str, **options: t.Any) -> t.Callable[[T_route], T_route]:
         """Shortcut for `app.route()` or `app.route(methods=['GET'])`."""
         return self._method_route('GET', rule, options)
 
-    def post(self, rule: str, **options: t.Any):
+    def post(self, rule: str, **options: t.Any) -> t.Callable[[T_route], T_route]:
         """Shortcut for `app.route(methods=['POST'])`."""
         return self._method_route('POST', rule, options)
 
-    def put(self, rule: str, **options: t.Any):
+    def put(self, rule: str, **options: t.Any) -> t.Callable[[T_route], T_route]:
         """Shortcut for `app.route(methods=['PUT'])`."""
         return self._method_route('PUT', rule, options)
 
-    def patch(self, rule: str, **options: t.Any):
+    def patch(self, rule: str, **options: t.Any) -> t.Callable[[T_route], T_route]:
         """Shortcut for `app.route(methods=['PATCH'])`."""
         return self._method_route('PATCH', rule, options)
 
-    def delete(self, rule: str, **options: t.Any):
+    def delete(self, rule: str, **options: t.Any) -> t.Callable[[T_route], T_route]:
         """Shortcut for `app.route(methods=['DELETE'])`."""
         return self._method_route('DELETE', rule, options)
 
