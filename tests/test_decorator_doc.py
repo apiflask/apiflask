@@ -1,9 +1,15 @@
+from importlib import metadata
+
 import openapi_spec_validator as osv
 import pytest
 from flask.views import MethodView
+from packaging.version import Version
 
 from .schemas import CustomHTTPError
 from .schemas import Foo
+
+
+apispec_version = Version(metadata.version('apispec'))
 
 
 def test_doc_summary_and_description(app, client):
@@ -260,9 +266,8 @@ def test_doc_responses_custom_spec(app, client):
     assert rv.json['paths']['/bar']['get']['responses']['400']['content']['application/json'][
         'schema'
     ] == {'$ref': '#/components/schemas/CustomHTTPError'}
-    import sys
 
-    if sys.version_info >= (3, 9):
+    if apispec_version >= Version('6.8.3'):
         assert rv.json['components']['schemas']['CustomHTTPError'] == {
             'type': 'object',
             'properties': {
