@@ -106,10 +106,6 @@ def _generate_schema_from_mapping(schema: DictSchemaType, schema_name: str | Non
     return Schema.from_dict(schema, name=schema_name)()  # type: ignore
 
 
-P = t.ParamSpec('P')
-R = t.TypeVar('R')
-
-
 class APIScaffold:
     """A base class for [`APIFlask`][apiflask.app.APIFlask] and
     [`APIBlueprint`][apiflask.blueprint.APIBlueprint].
@@ -122,7 +118,7 @@ class APIScaffold:
 
     def _method_route(
         self, method: str, rule: str, options: t.Any
-    ) -> t.Callable[[t.Callable[P, R]], t.Callable[P, R]]:
+    ) -> t.Callable[[DecoratedType], DecoratedType]:
         if 'methods' in options:
             raise RuntimeError('Use the "route" decorator to use the "methods" argument.')
 
@@ -136,27 +132,23 @@ class APIScaffold:
 
         return decorator
 
-    def get(self, rule: str, **options: t.Any) -> t.Callable[[t.Callable[P, R]], t.Callable[P, R]]:
+    def get(self, rule: str, **options: t.Any) -> t.Callable[[DecoratedType], DecoratedType]:
         """Shortcut for `app.route()` or `app.route(methods=['GET'])`."""
         return self._method_route('GET', rule, options)
 
-    def post(self, rule: str, **options: t.Any) -> t.Callable[[t.Callable[P, R]], t.Callable[P, R]]:
+    def post(self, rule: str, **options: t.Any) -> t.Callable[[DecoratedType], DecoratedType]:
         """Shortcut for `app.route(methods=['POST'])`."""
         return self._method_route('POST', rule, options)
 
-    def put(self, rule: str, **options: t.Any) -> t.Callable[[t.Callable[P, R]], t.Callable[P, R]]:
+    def put(self, rule: str, **options: t.Any) -> t.Callable[[DecoratedType], DecoratedType]:
         """Shortcut for `app.route(methods=['PUT'])`."""
         return self._method_route('PUT', rule, options)
 
-    def patch(
-        self, rule: str, **options: t.Any
-    ) -> t.Callable[[t.Callable[P, R]], t.Callable[P, R]]:
+    def patch(self, rule: str, **options: t.Any) -> t.Callable[[DecoratedType], DecoratedType]:
         """Shortcut for `app.route(methods=['PATCH'])`."""
         return self._method_route('PATCH', rule, options)
 
-    def delete(
-        self, rule: str, **options: t.Any
-    ) -> t.Callable[[t.Callable[P, R]], t.Callable[P, R]]:
+    def delete(self, rule: str, **options: t.Any) -> t.Callable[[DecoratedType], DecoratedType]:
         """Shortcut for `app.route(methods=['DELETE'])`."""
         return self._method_route('DELETE', rule, options)
 
