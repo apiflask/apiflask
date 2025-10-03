@@ -1,4 +1,4 @@
-# OTEL Examples
+# OpenTelemetry Examples
 
 ## Installation
 
