@@ -146,3 +146,116 @@ class TestPydanticIntegration:
             assert data['page'] == 2
             assert data['per_page'] == 20
             assert data['search'] == 'john'
+
+    def test_headers_with_pydantic(self):
+        """Test headers validation with Pydantic."""
+
+        class HeaderModel(BaseModel):
+            x_token: str = 'default'
+            x_version: str = '1.0'
+
+        app = APIFlask(__name__)
+
+        @app.get('/protected')
+        @app.input(HeaderModel, location='headers')
+        def protected_route(headers_data):
+            assert isinstance(headers_data, HeaderModel)
+            return {
+                'token': headers_data.x_token,
+                'version': headers_data.x_version,
+            }
+
+        with app.test_client() as client:
+            response = client.get(
+                '/protected', headers={'X-Token': 'secret123', 'X-Version': '2.0'}
+            )
+            assert response.status_code == 200
+            data = response.get_json()
+            assert data['token'] == 'secret123'
+            assert data['version'] == '2.0'
+
+    def test_cookies_with_pydantic(self):
+        """Test cookies validation with Pydantic."""
+
+        class CookieModel(BaseModel):
+            session_id: str = 'default'
+            theme: str = 'light'
+
+        app = APIFlask(__name__)
+
+        @app.get('/dashboard')
+        @app.input(CookieModel, location='cookies')
+        def dashboard(cookies_data):
+            assert isinstance(cookies_data, CookieModel)
+            return {
+                'session_id': cookies_data.session_id,
+                'theme': cookies_data.theme,
+            }
+
+        with app.test_client() as client:
+            # Flask 2.0-2.2 requires server_name as positional arg
+            # Flask 2.3+ uses domain parameter instead
+            import inspect
+
+            sig = inspect.signature(client.set_cookie)
+            if 'server_name' in sig.parameters and sig.parameters['server_name'].kind in (
+                inspect.Parameter.POSITIONAL_ONLY,
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
+            ):
+                # Old API (Flask 2.0-2.2)
+                client.set_cookie('localhost', 'session_id', 'abc123')
+                client.set_cookie('localhost', 'theme', 'dark')
+            else:
+                # New API (Flask 2.3+)
+                client.set_cookie(key='session_id', value='abc123', domain='localhost')
+                client.set_cookie(key='theme', value='dark', domain='localhost')
+            response = client.get('/dashboard')
+            assert response.status_code == 200
+            data = response.get_json()
+            assert data['session_id'] == 'abc123'
+            assert data['theme'] == 'dark'
+
+    def test_path_parameters_with_pydantic(self):
+        """Test path parameters validation with Pydantic."""
+
+        class PathModel(BaseModel):
+            user_id: int
+            action: str
+
+        app = APIFlask(__name__)
+
+        @app.get('/users/<int:user_id>/<action>')
+        @app.input(PathModel, location='path')
+        def user_action(user_id, action, path_data):
+            assert isinstance(path_data, PathModel)
+            return {
+                'user_id': path_data.user_id,
+                'action': path_data.action,
+            }
+
+        with app.test_client() as client:
+            response = client.get('/users/123/delete')
+            assert response.status_code == 200
+            data = response.get_json()
+            assert data['user_id'] == 123
+            assert data['action'] == 'delete'
+
+    def test_view_args_location_alias(self):
+        """Test that 'view_args' location works as alias for 'path'."""
+
+        class PathModel(BaseModel):
+            item_id: int
+
+        app = APIFlask(__name__)
+
+        @app.get('/items/<int:item_id>')
+        @app.input(PathModel, location='view_args')
+        def get_item(item_id, view_args_data):
+            assert isinstance(view_args_data, PathModel)
+            return {'item_id': view_args_data.item_id}
+
+        with app.test_client() as client:
+            response = client.get('/items/456')
+            assert response.status_code == 200
+            data = response.get_json()
+            assert data['item_id'] == 456

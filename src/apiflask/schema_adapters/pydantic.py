@@ -86,7 +86,7 @@ class PydanticAdapter(SchemaAdapter):
                     data = {}
                 return self.model_class.model_validate(data)
 
-            elif location == 'query':
+            elif location == 'query' or location == 'querystring':
                 # Handle query parameters
                 data = request.args.to_dict()
                 return self.model_class.model_validate(data)
@@ -121,6 +121,26 @@ class PydanticAdapter(SchemaAdapter):
                     data = request.get_json(force=True) or {}
                 else:
                     data = request.form.to_dict()
+                return self.model_class.model_validate(data)
+
+            elif location == 'cookies':
+                # Handle cookies
+                data = request.cookies.to_dict()
+                return self.model_class.model_validate(data)
+
+            elif location == 'headers':
+                # Handle headers - convert header names to field names
+                # HTTP headers like X-Token become x_token for Pydantic fields
+                data = {}
+                for header_name, value in request.headers:
+                    # Convert header name to field name (e.g., X-Token -> x_token)
+                    field_name = header_name.lower().replace('-', '_')
+                    data[field_name] = value
+                return self.model_class.model_validate(data)
+
+            elif location == 'path' or location == 'view_args':
+                # Handle path/view_args
+                data = request.view_args or {}
                 return self.model_class.model_validate(data)
 
             else:
