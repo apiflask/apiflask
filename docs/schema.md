@@ -3,7 +3,19 @@
 Read [this section](/usage/#use-appinput-to-validate-and-deserialize-request-data) and following
 section first in the Basic Usage chapter for the basics of writing input and output schema.
 
-Basic concepts on data schema:
+## Schema Types Support
+
+APIFlask supports multiple schema types through a pluggable adapter system:
+
+- **Marshmallow schemas** (default): Full backward compatibility with existing APIFlask applications
+- **Pydantic models**: Modern type-hint based validation and serialization
+- **Mixed usage**: You can use both marshmallow and Pydantic schemas in the same application
+
+The schema adapter system automatically detects the schema type and handles validation, serialization, and OpenAPI spec generation accordingly.
+
+## Basic concepts on data schema:
+
+### Marshmallow (Traditional)
 
 - APIFlask's `apiflask.Schema` base class is directly imported from marshmallow with some minor changes,
   see the [API documentation](https://marshmallow.readthedocs.io/en/stable/marshmallow.schema.html)
@@ -15,6 +27,14 @@ Basic concepts on data schema:
 - `apiflask.validators` includes all the validators in `marshmallow.validate`.
 - For other functions/classes, just import them from marshmallow.
 - Read [marshmallow's documentation](https://marshmallow.readthedocs.io/) when you have free time.
+
+### Pydantic (Modern)
+
+- Define data models using Python type hints and Pydantic's `BaseModel`
+- Built-in validation based on Python types with optional custom validators
+- Automatic JSON schema generation for OpenAPI documentation
+- Fast serialization and validation performance
+- Read [Pydantic's documentation](https://docs.pydantic.dev/) for comprehensive information
 
 
 ## Deserialization (load) and serialization (dump)
@@ -393,3 +413,272 @@ for more details, see [the examples page](/examples) for running the example app
 
 Read [mashmallow-dataclass's documentation](https://lovasoa.github.io/marshmallow_dataclass/html/marshmallow_dataclass.html)
 and [dataclasses](https://docs.python.org/3/library/dataclasses.html) for more information.
+
+
+## Using Pydantic Models
+
+!!! warning "Version >= 3.0.0"
+
+    Pydantic support was added in version 3.0.0 through the new schema adapter system.
+
+APIFlask now supports Pydantic models alongside marshmallow schemas. You can use Pydantic's modern type-hint based approach for defining data models.
+
+### Installation
+
+To use Pydantic with APIFlask, install Pydantic:
+
+```bash
+$ pip install pydantic
+```
+
+### Basic Pydantic Usage
+
+Here's how to define and use Pydantic models with APIFlask:
+
+```python
+from typing import List, Optional
+from pydantic import BaseModel, Field, validator
+from apiflask import APIFlask
+
+app = APIFlask(__name__)
+
+class PetIn(BaseModel):
+    name: str = Field(..., min_length=1, max_length=50, description="Pet name")
+    category: str = Field(..., description="Pet category")
+    age: Optional[int] = Field(None, ge=0, le=30, description="Pet age")
+
+    @validator('category')
+    def validate_category(cls, v):
+        allowed = ['dog', 'cat', 'bird', 'fish']
+        if v not in allowed:
+            raise ValueError(f'Category must be one of {allowed}')
+        return v
+
+class PetOut(BaseModel):
+    id: int = Field(..., description="Pet ID")
+    name: str = Field(..., description="Pet name")
+    category: str = Field(..., description="Pet category")
+    age: Optional[int] = Field(None, description="Pet age")
+
+@app.post('/pets')
+@app.input(PetIn)
+@app.output(PetOut, status_code=201)
+def create_pet(json_data):
+    # json_data is automatically validated and converted to a dict
+    pet_data = {
+        'id': 1,
+        **json_data
+    }
+    return pet_data
+```
+
+### Pydantic Model Features
+
+#### Type Hints and Validation
+
+Pydantic uses Python type hints for automatic validation:
+
+```python
+from datetime import datetime
+from typing import List, Optional
+from pydantic import BaseModel, Field, EmailStr, HttpUrl
+
+class UserIn(BaseModel):
+    username: str = Field(..., min_length=3, max_length=20)
+    email: EmailStr
+    age: int = Field(..., ge=18, le=120)
+    website: Optional[HttpUrl] = None
+    tags: List[str] = Field(default_factory=list)
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.now)
+```
+
+#### Custom Validators
+
+You can define custom validation logic:
+
+```python
+from pydantic import BaseModel, validator, Field
+
+class ProductIn(BaseModel):
+    name: str = Field(..., min_length=1)
+    price: float = Field(..., gt=0)
+    category: str
+
+    @validator('name')
+    def name_must_be_alphanumeric(cls, v):
+        assert v.replace(' ', '').isalnum(), 'Name must be alphanumeric'
+        return v.title()
+
+    @validator('category')
+    def validate_category(cls, v):
+        categories = ['electronics', 'clothing', 'books', 'home']
+        if v.lower() not in categories:
+            raise ValueError(f'Category must be one of {categories}')
+        return v.lower()
+```
+
+#### Nested Models
+
+Pydantic supports nested models:
+
+```python
+from typing import List
+from pydantic import BaseModel
+
+class Address(BaseModel):
+    street: str
+    city: str
+    country: str
+    postal_code: str
+
+class User(BaseModel):
+    name: str
+    email: str
+    address: Address
+    orders: List['Order'] = []  # Forward reference
+
+class Order(BaseModel):
+    id: int
+    total: float
+    items: List[str]
+
+# Update forward references
+User.model_rebuild()
+```
+
+### Pydantic with Query Parameters
+
+You can use Pydantic models for query parameters:
+
+```python
+from typing import Optional
+from pydantic import BaseModel, Field
+
+class SearchQuery(BaseModel):
+    q: str = Field(..., description="Search query")
+    page: int = Field(1, ge=1, description="Page number")
+    per_page: int = Field(10, ge=1, le=100, description="Items per page")
+    sort_by: Optional[str] = Field(None, description="Sort field")
+
+@app.get('/search')
+@app.input(SearchQuery, location='query')
+@app.output(SearchResultsOut)
+def search(query_data):
+    # query_data contains validated query parameters
+    return perform_search(query_data)
+```
+
+### Mixed Usage: Marshmallow and Pydantic
+
+You can use both marshmallow and Pydantic schemas in the same application:
+
+```python
+from apiflask import APIFlask, Schema
+from apiflask.fields import String, Integer
+from pydantic import BaseModel
+from typing import Optional
+
+app = APIFlask(__name__)
+
+# Marshmallow schema
+class UserIn(Schema):
+    username = String(required=True)
+    email = String(required=True)
+
+# Pydantic model
+class UserOut(BaseModel):
+    id: int
+    username: str
+    email: str
+    is_active: bool = True
+
+@app.post('/users')
+@app.input(UserIn)  # Marshmallow for input
+@app.output(UserOut)  # Pydantic for output
+def create_user(json_data):
+    user_data = {
+        'id': 1,
+        'username': json_data['username'],
+        'email': json_data['email'],
+        'is_active': True
+    }
+    return user_data
+```
+
+### OpenAPI Schema Generation
+
+Pydantic models automatically generate comprehensive OpenAPI schemas:
+
+```python
+from typing import List, Optional
+from pydantic import BaseModel, Field
+from enum import Enum
+
+class Priority(str, Enum):
+    low = "low"
+    medium = "medium"
+    high = "high"
+
+class Task(BaseModel):
+    title: str = Field(..., description="Task title", example="Complete project")
+    description: Optional[str] = Field(None, description="Task description")
+    priority: Priority = Field(Priority.medium, description="Task priority")
+    completed: bool = Field(False, description="Task completion status")
+    tags: List[str] = Field(default_factory=list, description="Task tags")
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "title": "Complete project",
+                "description": "Finish the API documentation",
+                "priority": "high",
+                "completed": False,
+                "tags": ["work", "urgent"]
+            }
+        }
+```
+
+The above model will generate detailed OpenAPI schema with proper types, descriptions, examples, and enum values.
+
+### Error Handling
+
+Pydantic validation errors are automatically converted to APIFlask's standard error format:
+
+```python
+# When validation fails, you'll get structured error responses like:
+{
+    "message": "Validation error",
+    "detail": {
+        "json": {
+            "age": ["ensure this value is greater than or equal to 0"],
+            "category": ["Category must be one of ['dog', 'cat', 'bird', 'fish']"]
+        }
+    }
+}
+```
+
+### Migration from Marshmallow
+
+If you're migrating from marshmallow to Pydantic, here's a comparison:
+
+| Marshmallow | Pydantic |
+|-------------|----------|
+| `String(required=True)` | `str` |
+| `Integer(validate=Range(min=1))` | `int = Field(..., ge=1)` |
+| `Boolean(dump_default=False)` | `bool = False` |
+| `List(String())` | `List[str]` |
+| `Nested(UserSchema)` | `User` (nested model) |
+| `validates('field_name')` | `@validator('field_name')` |
+
+### Complete Example
+
+Check out [the complete Pydantic example application](https://github.com/apiflask/apiflask/tree/main/examples/pydantic/app.py)
+for more details, see [the examples page](/examples) for running the example application.
+
+### Documentation References
+
+- [Pydantic Documentation](https://docs.pydantic.dev/)
+- [Pydantic Field Types](https://docs.pydantic.dev/usage/types/)
+- [Pydantic Validators](https://docs.pydantic.dev/usage/validators/)
+- [Pydantic Models](https://docs.pydantic.dev/usage/models/)
