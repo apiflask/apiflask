@@ -1,8 +1,13 @@
 import os
+from importlib import metadata
 
 import pytest
+from packaging.version import Version
 
 from apiflask import APIFlask
+
+# Get apispec version once for all tests
+APISPEC_VERSION = Version(metadata.version('apispec'))
 
 
 @pytest.fixture
