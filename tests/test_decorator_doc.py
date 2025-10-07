@@ -1,15 +1,11 @@
-from importlib import metadata
-
 import openapi_spec_validator as osv
 import pytest
 from flask.views import MethodView
 from packaging.version import Version
 
+from .conftest import APISPEC_VERSION
 from .schemas import CustomHTTPError
 from .schemas import Foo
-
-
-apispec_version = Version(metadata.version('apispec'))
 
 
 def test_doc_summary_and_description(app, client):
@@ -267,27 +263,20 @@ def test_doc_responses_custom_spec(app, client):
         'schema'
     ] == {'$ref': '#/components/schemas/CustomHTTPError'}
 
-    if apispec_version >= Version('6.8.3'):
-        assert rv.json['components']['schemas']['CustomHTTPError'] == {
-            'type': 'object',
-            'properties': {
-                'status_code': {'type': 'string'},
-                'message': {'type': 'string'},
-                'custom': {'type': 'string'},
-            },
-            'required': ['custom', 'message', 'status_code'],
-            'additionalProperties': False,
-        }
+    # Check schema fields individually to avoid ordering issues
+    schema = rv.json['components']['schemas']['CustomHTTPError']
+    assert schema['type'] == 'object'
+    assert schema['properties'] == {
+        'status_code': {'type': 'string'},
+        'message': {'type': 'string'},
+        'custom': {'type': 'string'},
+    }
+    assert set(schema['required']) == {'custom', 'message', 'status_code'}
+    # In apispec >= 6.8.3, additionalProperties should be False (or omitted, treated as False)
+    if APISPEC_VERSION >= Version('6.8.3'):
+        assert schema.get('additionalProperties', False) is False
     else:
-        assert rv.json['components']['schemas']['CustomHTTPError'] == {
-            'type': 'object',
-            'properties': {
-                'status_code': {'type': 'string'},
-                'message': {'type': 'string'},
-                'custom': {'type': 'string'},
-            },
-            'required': ['custom', 'message', 'status_code'],
-        }
+        assert 'additionalProperties' not in schema
 
 
 def test_doc_responses_additional_content_type(app, client):

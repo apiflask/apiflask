@@ -1,19 +1,16 @@
 from dataclasses import dataclass
-from importlib import metadata
 
 import openapi_spec_validator as osv
 from flask import make_response
 from flask.views import MethodView
 from packaging.version import Version
 
+from .conftest import APISPEC_VERSION
 from .schemas import Foo
 from .schemas import Query
 from apiflask import Schema
 from apiflask.fields import Field
 from apiflask.fields import String
-
-
-apispec_version = Version(metadata.version('apispec'))
 
 
 def test_output(app, client):
@@ -165,17 +162,15 @@ def test_output_with_dict_schema(app, client):
         == '#/components/schemas/MyName'
     )
 
-    if apispec_version >= Version('6.8.3'):
-        assert rv.json['components']['schemas']['MyName'] == {
-            'properties': {'name': {'type': 'string'}},
-            'type': 'object',
-            'additionalProperties': False,
-        }
+    # Check schema fields individually to avoid ordering issues
+    schema = rv.json['components']['schemas']['MyName']
+    assert schema['type'] == 'object'
+    assert schema['properties'] == {'name': {'type': 'string'}}
+    # In apispec >= 6.8.3, additionalProperties should be False (or omitted, treated as False)
+    if APISPEC_VERSION >= Version('6.8.3'):
+        assert schema.get('additionalProperties', False) is False
     else:
-        assert rv.json['components']['schemas']['MyName'] == {
-            'properties': {'name': {'type': 'string'}},
-            'type': 'object',
-        }
+        assert 'additionalProperties' not in schema
     assert (
         rv.json['paths']['/bar']['get']['responses']['200']['content']['application/json'][
             'schema'

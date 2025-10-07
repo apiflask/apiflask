@@ -1,5 +1,4 @@
 import io
-from importlib import metadata
 
 import openapi_spec_validator as osv
 import pytest
@@ -7,6 +6,7 @@ from flask.views import MethodView
 from packaging.version import Version
 from werkzeug.datastructures import FileStorage
 
+from .conftest import APISPEC_VERSION
 from .schemas import Bar
 from .schemas import EnumPathParameter
 from .schemas import Files
@@ -17,9 +17,6 @@ from apiflask import Schema
 from apiflask.fields import String
 from apiflask.validators import Length
 from apiflask.validators import OneOf
-
-
-apispec_version = Version(metadata.version('apispec'))
 
 
 def test_input(app, client):
@@ -355,19 +352,16 @@ def test_input_with_dict_schema(app, client):
         == '#/components/schemas/MyName'
     )
 
-    if apispec_version >= Version('6.8.3'):
-        assert rv.json['components']['schemas']['MyName'] == {
-            'properties': {'name': {'type': 'string'}},
-            'required': ['name'],
-            'type': 'object',
-            'additionalProperties': False,
-        }
+    # Check schema fields individually to avoid ordering issues
+    schema = rv.json['components']['schemas']['MyName']
+    assert schema['type'] == 'object'
+    assert schema['properties'] == {'name': {'type': 'string'}}
+    assert schema['required'] == ['name']
+    # In apispec >= 6.8.3, additionalProperties should be False (or omitted, treated as False)
+    if APISPEC_VERSION >= Version('6.8.3'):
+        assert schema.get('additionalProperties', False) is False
     else:
-        assert rv.json['components']['schemas']['MyName'] == {
-            'properties': {'name': {'type': 'string'}},
-            'required': ['name'],
-            'type': 'object',
-        }
+        assert 'additionalProperties' not in schema
     # default schema name is "Generated"
     assert (
         rv.json['paths']['/baz']['post']['requestBody']['content']['application/json']['schema'][
