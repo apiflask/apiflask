@@ -205,7 +205,7 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
             name = 'ApiKeyAuth'
             warnings.warn(
                 'The API key authorization by HTTPTokenAuth is deprecated and will be removed in'
-                ' APIFlask 3.0.0. Use '
+                ' APIFlask 4.0.0. Use '
                 " 'HTTPAPIKeyAuth' instead.",
                 DeprecationWarning,
                 stacklevel=2,
