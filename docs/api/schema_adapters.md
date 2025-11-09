@@ -12,7 +12,7 @@ The schema adapter system provides a pluggable architecture for supporting diffe
 
 ## Adapters
 
-### Marshmallow Adapter
+### marshmallow Adapter
 
 ::: apiflask.schema_adapters.marshmallow
 
@@ -33,7 +33,7 @@ from pydantic import BaseModel, Field
 
 app = APIFlask(__name__)
 
-# Marshmallow schema - automatically detected
+# marshmallow schema - automatically detected
 class PetIn(Schema):
     name = String(required=True)
     age = Integer()

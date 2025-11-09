@@ -56,7 +56,7 @@ from apiflask import APIFlask, Schema
 from apiflask.fields import String, Integer
 from pydantic import BaseModel, Field
 
-# Marshmallow for input
+# marshmallow for input
 class UserIn(Schema):
     username = String(required=True)
     email = String(required=True)
@@ -69,7 +69,7 @@ class UserOut(BaseModel):
     created_at: str
 
 @app.post('/users')
-@app.input(UserIn)      # Marshmallow
+@app.input(UserIn)      # marshmallow
 @app.output(UserOut)    # Pydantic
 def create_user(json_data):
     return {
@@ -88,7 +88,7 @@ To use Pydantic models, install Pydantic:
 pip install pydantic
 ```
 
-Marshmallow continues to work without any additional dependencies.
+marshmallow continues to work without any additional dependencies.
 
 #### Learn More
 

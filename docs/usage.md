@@ -394,10 +394,10 @@ def delete_pet(pet_id):
 
 To validate and deserialize a request body or request query parameters, we need to
 create a data schema class first. Think of it as a way to describe the valid
-incoming data. APIFlask supports two main approaches: marshmallow schemas (traditional)
-and Pydantic models (modern).
+incoming data. APIFlask supports two main approaches: marshmallow schemas
+and Pydantic models.
 
-### Using Marshmallow Schemas (Traditional)
+### Using marshmallow Schemas
 
 If you're already familiar with marshmallow, then you already know how to write a data schema.
 
@@ -420,7 +420,7 @@ class PetIn(Schema):
 validators (import them from `apiflask.validators`) to the `validate` argument
 of the field class.
 
-### Using Pydantic Models (Modern)
+### Using Pydantic Models
 
 !!! tip "New in version 3.0.0"
 
@@ -592,7 +592,7 @@ Read the *[Request Handling](/request)* chapter for the advanced topics on reque
 
 Similarly, we can define a schema for output data with `@app.output` decorator. You can use either marshmallow schemas or Pydantic models.
 
-### Marshmallow Output Schema
+### marshmallow Output Schema
 
 ```python
 from apiflask.fields import String, Integer

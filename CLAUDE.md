@@ -90,10 +90,10 @@ pytest examples/
 
 ### Key Modules
 
-- **schemas.py**: Marshmallow schema definitions and utilities (legacy)
+- **schemas.py**: marshmallow schema definitions and utilities (legacy)
 - **schema_adapters/**: New pluggable schema system supporting multiple libraries
   - **base.py**: Abstract base class for schema adapters
-  - **marshmallow.py**: Marshmallow integration adapter
+  - **marshmallow.py**: marshmallow integration adapter
   - **pydantic.py**: Pydantic integration adapter
   - **registry.py**: Auto-detection and factory for schema adapters
 - **openapi.py**: OpenAPI specification generation
@@ -138,7 +138,7 @@ Optional dependencies:
 
 APIFlask 3.0.0+ supports multiple schema libraries:
 
-### Pydantic (Recommended for new projects)
+### Pydantic (type-hint based schema)
 ```python
 from pydantic import BaseModel
 from apiflask import APIFlask
@@ -157,7 +157,7 @@ def create_user(json_data: UserModel):
     return UserModel(id=1, name=json_data.name, email=json_data.email)
 ```
 
-### Marshmallow (Legacy, still supported)
+### marshmallow (field based schema)
 ```python
 from apiflask import APIFlask, Schema
 from apiflask.fields import Integer, String

@@ -8,15 +8,15 @@ This module contains the built-in marshmallow Schema class and related helpers. 
 
 APIFlask supports multiple schema types:
 
-- **Marshmallow schemas**: Traditional field-based schemas using the `apiflask.Schema` class
-- **Pydantic models**: Modern type-hint based models using `pydantic.BaseModel`
+- **marshmallow schemas**: Field-based schemas using the `apiflask.Schema` class
+- **Pydantic models**: Type-hint based models using `pydantic.BaseModel`
 - **Mixed usage**: You can use both types in the same application
 
 The choice of schema type is automatically detected by the schema adapter system.
 
 ## External documentation
 
-### Marshmallow Documentation
+### marshmallow Documentation
 
 Check out the API docs for `Schema` class in the marshmallow docs:
 

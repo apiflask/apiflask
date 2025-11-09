@@ -9,7 +9,7 @@
 - Token auth example: [/examples/auth/token_auth/app.py][_token_auth]
 - Basic auth example: [/examples/auth/basic_auth/app.py][_basic_auth]
 - Dataclass example (with marshmallow-dataclass): [/examples/dataclass/app.py][_dataclass]
-- **Pydantic example (with Pydantic models)**: [/examples/pydantic/app.py][_pydantic]
+- Pydantic example (with Pydantic models): [/examples/pydantic/app.py][_pydantic]
 - File upload example: [/examples/file_upload/app.py][_file_upload]
 - OpenTelemetry example: [/examples/otel/app.py][_OpenTelemetry]
 

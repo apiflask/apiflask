@@ -36,11 +36,12 @@ Then visit:
 - Get all pets: http://localhost:5000/pets
 - Get specific pet: http://localhost:5000/pets/1
 
-## Key Differences from Marshmallow
+## Key Differences from marshmallow
 
 ### Model Definition
 
 **Pydantic:**
+
 ```python
 from pydantic import BaseModel
 
@@ -50,7 +51,8 @@ class Pet(BaseModel):
     category: str
 ```
 
-**Marshmallow:**
+**marshmallow:**
+
 ```python
 from apiflask import Schema
 from apiflask.fields import Integer, String
@@ -98,6 +100,7 @@ Both Pydantic and marshmallow models automatically generate OpenAPI schemas. Pyd
 ## Testing the API
 
 ### Create a new pet:
+
 ```bash
 curl -X POST http://localhost:5000/pets \
      -H "Content-Type: application/json" \
@@ -105,11 +108,13 @@ curl -X POST http://localhost:5000/pets \
 ```
 
 ### Get pets with filtering:
+
 ```bash
 curl "http://localhost:5000/pets?category=dog&limit=5"
 ```
 
 ### Create pet with form data:
+
 ```bash
 curl -X POST http://localhost:5000/pets/form \
      -d "name=Fluffy&category=cat"
