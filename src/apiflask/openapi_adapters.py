@@ -56,9 +56,22 @@ class OpenAPIHelper:
         try:
             adapter = registry.create_adapter(schema)
 
+            # Map location to OpenAPI 'in' field
+            openapi_location = location
+            if location == 'headers':
+                openapi_location = 'header'
+            elif location == 'view_args':
+                openapi_location = 'path'
+            elif location == 'querystring':
+                openapi_location = 'query'
+            elif location == 'cookies':
+                openapi_location = 'cookie'
+
             # For marshmallow schemas, extract parameters directly from fields
             if adapter.schema_type == 'marshmallow':
-                return self._extract_marshmallow_parameters(adapter.schema, location)
+                return self._extract_marshmallow_parameters(
+                    adapter.schema, location=openapi_location
+                )
 
             # For other schema types, generate basic parameters
             schema_spec = adapter.get_openapi_schema()
@@ -69,7 +82,7 @@ class OpenAPIHelper:
                 for name, prop_spec in schema_spec['properties'].items():
                     param = {
                         'name': name,
-                        'in': location,
+                        'in': openapi_location,
                         'required': name in required,
                         'schema': prop_spec,
                     }
@@ -92,14 +105,9 @@ class OpenAPIHelper:
 
                 field_schema = self._get_field_schema(field)
 
-                # Map location to OpenAPI 'in' field
-                openapi_location = location
-                if location == 'headers':
-                    openapi_location = 'header'
-
                 param = {
                     'name': param_name,
-                    'in': openapi_location,
+                    'in': location,
                     'required': getattr(field, 'required', False),
                     'schema': field_schema,
                 }

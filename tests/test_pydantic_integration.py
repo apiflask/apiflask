@@ -280,9 +280,6 @@ class TestPydanticIntegration:
             }
 
         with app.test_client() as client:
-            # Note: OpenAPI validation skipped
-            # 'headers' location should be 'header' in OpenAPI spec
-            # TODO: Fix location mapping in openapi_adapters.py
             response = client.get(
                 '/protected', headers={'X-Token': 'secret123', 'X-Version': '2.0'}
             )
@@ -290,6 +287,10 @@ class TestPydanticIntegration:
             data = response.get_json()
             assert data['token'] == 'secret123'
             assert data['version'] == '2.0'
+
+            rv = client.get('/openapi.json')
+            assert rv.status_code == 200
+            osv.validate(rv.json)
 
     def test_cookies_with_pydantic(self):
         """Test cookies validation with Pydantic."""
@@ -310,10 +311,6 @@ class TestPydanticIntegration:
             }
 
         with app.test_client() as client:
-            # Note: OpenAPI validation skipped
-            # 'cookies' location should be 'cookie' in OpenAPI spec
-            # TODO: Fix location mapping in openapi_adapters.py
-
             # Flask 2.0-2.2 requires server_name as positional arg
             # Flask 2.3+ uses domain parameter instead
             import inspect
@@ -335,6 +332,10 @@ class TestPydanticIntegration:
             data = response.get_json()
             assert data['session_id'] == 'abc123'
             assert data['theme'] == 'dark'
+
+            rv = client.get('/openapi.json')
+            assert rv.status_code == 200
+            osv.validate(rv.json)
 
     def test_path_parameters_with_pydantic(self):
         """Test path parameters validation with Pydantic."""
@@ -381,10 +382,13 @@ class TestPydanticIntegration:
             return {'item_id': view_args_data.item_id}
 
         with app.test_client() as client:
-            # Note: OpenAPI validation skipped
-            # 'view_args' location should map to 'path' in OpenAPI spec
-            # TODO: Fix location mapping in openapi_adapters.py
             response = client.get('/items/456')
             assert response.status_code == 200
             data = response.get_json()
             assert data['item_id'] == 456
+
+            # TODO: fix the duplicated parameter error
+            # rv = client.get('/openapi.json')
+            # print(rv.json)
+            # assert rv.status_code == 200
+            # osv.validate(rv.json)
