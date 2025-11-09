@@ -695,6 +695,13 @@ class APIFlask(APIScaffold, Flask):
     @staticmethod
     def _schema_name_resolver(schema: type[Schema]) -> str:
         """Default schema name resolver."""
+        # Try using the adapter system first (supports Pydantic, marshmallow, etc.)
+        try:
+            return openapi_helper.get_schema_name(schema)
+        except Exception:
+            pass
+
+        # Fallback to marshmallow-specific logic for backward compatibility
         # some schema are passed through the `doc(responses=...)`
         # we need to make sure the schema is an instance of `Schema`
         if isinstance(schema, type):  # pragma: no cover
@@ -704,7 +711,7 @@ class APIFlask(APIScaffold, Flask):
 
         if name.endswith('Schema'):
             name = name[:-6] or name
-        if schema.partial:
+        if hasattr(schema, 'partial') and schema.partial:
             name += 'Update'
         return name
 
@@ -961,8 +968,6 @@ class APIFlask(APIScaffold, Flask):
                 parameters = []
                 for schema, location in view_func._spec.get('args', []):
                     try:
-                        from .openapi_adapters import openapi_helper
-
                         # Use schema_to_parameters for proper handling of different schema types
                         schema_params = openapi_helper.schema_to_parameters(
                             schema, location=location
@@ -1351,8 +1356,11 @@ class APIFlask(APIScaffold, Flask):
             else:
                 # Use schema adapter system to convert Pydantic/marshmallow schemas to OpenAPI spec
                 try:
+                    # Skip if schema is already a reference (dict with $ref key)
+                    if isinstance(schema, dict) and '$ref' in schema:
+                        pass  # Already a reference, don't process further
                     # Check if we have a spec object and can register the schema
-                    if spec is not None and hasattr(schema, '__class__'):
+                    elif spec is not None and hasattr(schema, '__class__'):
                         # This is likely a schema object that should be registered
                         schema_name = self.schema_name_resolver(schema)  # type: ignore[arg-type]
                         schema_spec = openapi_helper.schema_to_spec(schema)
