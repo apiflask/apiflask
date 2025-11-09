@@ -5,9 +5,9 @@
 
 [![Build status](https://github.com/apiflask/apiflask/actions/workflows/tests.yml/badge.svg)](https://github.com/apiflask/apiflask/actions) [![codecov](https://codecov.io/gh/apiflask/apiflask/branch/main/graph/badge.svg?token=2CFPCZ1DMY)](https://codecov.io/gh/apiflask/apiflask)
 
-APIFlask is a lightweight Python web API framework based on [Flask](https://github.com/pallets/flask) and [marshmallow-code](https://github.com/marshmallow-code) projects. It's easy to use, highly customizable, ORM/ODM-agnostic, and 100% compatible with the Flask ecosystem.
+APIFlask is a lightweight Python web API framework based on [Flask](https://github.com/pallets/flask). It's easy to use, highly customizable, ORM/ODM-agnostic, and 100% compatible with the Flask ecosystem.
 
-APIFlask supports both traditional marshmallow schemas and modern [Pydantic](https://docs.pydantic.dev/) models through a pluggable schema adapter system, giving you the flexibility to choose the validation approach that best fits your project.
+APIFlask supports both [marshmallow](https://github.com/marshmallow-code/marshmallow) schemas and [Pydantic](https://docs.pydantic.dev/) models through a pluggable schema adapter system, giving you the flexibility to choose the validation approach that best fits your project.
 
 With APIFlask, you will have:
 
@@ -130,32 +130,34 @@ def update_pet(pet_id, json_data):
 <summary>You can also use Pydantic models for modern type-hint based validation</summary>
 
 ```python
+from enum import Enum
+
 from apiflask import APIFlask, abort
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field
 
 app = APIFlask(__name__)
+
+
+class PetCategory(str, Enum):
+    DOG = 'dog'
+    CAT = 'cat'
+
+
+class PetOut(BaseModel):
+    id: int = Field(..., description='Unique pet identifier')
+    name: str = Field(..., description='Pet name')
+    category: PetCategory = Field(..., description='Pet category')
+
+
+class PetIn(BaseModel):
+    name: str = Field(..., min_length=1, max_length=50, description='Pet name')
+    category: PetCategory = Field(..., description='Pet category')
+
 
 pets = [
     {'id': 0, 'name': 'Kitty', 'category': 'cat'},
     {'id': 1, 'name': 'Coco', 'category': 'dog'}
 ]
-
-
-class PetIn(BaseModel):
-    name: str = Field(..., min_length=1, max_length=10, description="Pet name")
-    category: str = Field(..., description="Pet category")
-
-    @validator('category')
-    def validate_category(cls, v):
-        if v not in ['dog', 'cat']:
-            raise ValueError('Category must be dog or cat')
-        return v
-
-
-class PetOut(BaseModel):
-    id: int = Field(..., description="Pet ID")
-    name: str = Field(..., description="Pet name")
-    category: str = Field(..., description="Pet category")
 
 
 @app.get('/')
