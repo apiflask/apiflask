@@ -695,25 +695,7 @@ class APIFlask(APIScaffold, Flask):
     @staticmethod
     def _schema_name_resolver(schema: type[Schema]) -> str:
         """Default schema name resolver."""
-        # Try using the adapter system first (supports Pydantic, marshmallow, etc.)
-        try:
-            return openapi_helper.get_schema_name(schema)
-        except Exception:
-            pass
-
-        # Fallback to marshmallow-specific logic for backward compatibility
-        # some schema are passed through the `doc(responses=...)`
-        # we need to make sure the schema is an instance of `Schema`
-        if isinstance(schema, type):  # pragma: no cover
-            schema = schema()  # type: ignore
-
-        name = schema.__class__.__name__
-
-        if name.endswith('Schema'):
-            name = name[:-6] or name
-        if hasattr(schema, 'partial') and schema.partial:
-            name += 'Update'
-        return name
+        return openapi_helper.get_schema_name(schema)
 
     def _make_info(self) -> dict:
         """Make OpenAPI info object."""
