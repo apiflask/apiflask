@@ -387,8 +387,6 @@ class TestPydanticIntegration:
             data = response.get_json()
             assert data['item_id'] == 456
 
-            # TODO: fix the duplicated parameter error
-            # rv = client.get('/openapi.json')
-            # print(rv.json)
-            # assert rv.status_code == 200
-            # osv.validate(rv.json)
+            rv = client.get('/openapi.json')
+            assert rv.status_code == 200
+            osv.validate(rv.json)

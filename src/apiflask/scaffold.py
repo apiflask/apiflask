@@ -305,7 +305,8 @@ class APIScaffold:
             else:
                 if not hasattr(f, '_spec') or f._spec.get('args') is None:
                     _annotate(f, args=[])
-                if location == 'path':
+                # view_args is an alias for path parameters
+                if location in ['path', 'view_args']:
                     _annotate(f, omit_default_path_parameters=True)
                 # TODO: Support set example for request parameters
                 f._spec['args'].append((annotation_schema, location))
