@@ -1,3 +1,10 @@
+## Version 3.0.0
+
+Released: -
+
+- Decouple from marshmallow and add an adapter system to support different serialization/deserialization libraries.
+
+
 ## Version 2.4.0
 
 Released: 2025/3/25
