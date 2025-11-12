@@ -1,27 +1,19 @@
 from __future__ import annotations
 
 import typing as t
-from collections.abc import Mapping as ABCMapping
 from functools import wraps
 
 from flask import current_app
 from flask import jsonify
 from flask import request as flask_request
 from flask import Response
-from marshmallow import ValidationError as MarshmallowValidationError
-from webargs.flaskparser import FlaskParser as BaseFlaskParser
-from webargs.multidictproxy import MultiDictProxy
 
-from .exceptions import _ValidationError
 from .helpers import _sentinel
-from .schemas import EmptySchema
+from .schema_adapters import registry
 from .schemas import FileSchema
-from .schemas import Schema
 from .types import DecoratedType
-from .types import DictSchemaType
 from .types import HTTPAuthType
 from .types import OpenAPISchemaType
-from .types import RequestType
 from .types import ResponseReturnValueType
 from .types import ResponsesType
 from .types import SchemaType
@@ -31,57 +23,6 @@ if t.TYPE_CHECKING:
     from flask.sansio.scaffold import T_route  # noqa: F401
 
 BODY_LOCATIONS = ['json', 'files', 'form', 'form_and_files', 'json_or_form']
-
-
-class FlaskParser(BaseFlaskParser):
-    """Overwrite the default `webargs.FlaskParser.handle_error`.
-
-    Update the default status code and the error description from related
-    configuration variables.
-    """
-
-    USE_ARGS_POSITIONAL = False
-
-    def handle_error(  # type: ignore
-        self,
-        error: MarshmallowValidationError,
-        req: RequestType,
-        schema: Schema,
-        *,
-        error_status_code: int,
-        error_headers: t.Mapping[str, str],
-    ) -> None:
-        raise _ValidationError(
-            error_status_code or current_app.config['VALIDATION_ERROR_STATUS_CODE'],
-            current_app.config['VALIDATION_ERROR_DESCRIPTION'],
-            error.messages,
-            error_headers,
-        )
-
-    def load_location_data(self, schema: Schema, location: str) -> t.Any:
-        """
-        Expose the internal `_load_location_data` method to support loading data without validation
-        """
-        return self._load_location_data(schema=schema, req=flask_request, location=location)
-
-
-parser: FlaskParser = FlaskParser()
-
-
-def _get_files_and_form(request, schema):
-    form_and_files_data = request.files.copy()
-    form_and_files_data.update(request.form)
-    return MultiDictProxy(form_and_files_data, schema)
-
-
-@parser.location_loader('form_and_files')
-def load_form_and_files(request, schema):
-    return _get_files_and_form(request, schema)
-
-
-@parser.location_loader('files')
-def load_files(request, schema):
-    return _get_files_and_form(request, schema)
 
 
 def _annotate(f: t.Any, **kwargs: t.Any) -> None:
@@ -101,12 +42,6 @@ def _ensure_sync(f):
 
     wrapper._sync_ensured = True
     return wrapper
-
-
-def _generate_schema_from_mapping(schema: DictSchemaType, schema_name: str | None) -> type[Schema]:
-    if schema_name is None:
-        schema_name = 'GeneratedSchema'
-    return Schema.from_dict(schema, name=schema_name)()  # type: ignore
 
 
 class APIScaffold:
@@ -255,7 +190,7 @@ class APIScaffold:
             arg_name: The name of the argument passed to the view function,
                 defaults to `{location}_data`.
             schema_name: The schema name for dict schema, only needed when you pass
-                a schema dict (e.g., `{'name': String(required=True)}`) for `json`
+                a marshmallow schema dict (e.g., `{'name': String(required=True)}`) for `json`
                 location.
             example: The example data in dict for request body, you should use either
                 `example` or `examples`, not both.
@@ -300,10 +235,6 @@ class APIScaffold:
 
         - Add parameter `examples`.
         """
-        if isinstance(schema, ABCMapping):
-            schema = _generate_schema_from_mapping(schema, schema_name)
-        if isinstance(schema, type):  # pragma: no cover
-            schema = schema()
 
         def decorator(f):
             f = _ensure_sync(f)
@@ -315,10 +246,16 @@ class APIScaffold:
                     'body location (one of "json", "form", "files", "form_and_files", '
                     'and "json_or_form").'
                 )
+
+            # Create schema adapter and use the instantiated schema for spec annotation
+            # This ensures the marshmallow plugin receives schema instances
+            adapter = registry.create_adapter(schema, schema_name=schema_name)
+            annotation_schema = adapter.schema
+
             if location == 'json':
                 _annotate(
                     f,
-                    body=schema,
+                    body=annotation_schema,
                     body_example=example,
                     body_examples=examples,
                     content_type='application/json',
@@ -326,7 +263,7 @@ class APIScaffold:
             elif location == 'form':
                 _annotate(
                     f,
-                    body=schema,
+                    body=annotation_schema,
                     body_example=example,
                     body_examples=examples,
                     content_type='application/x-www-form-urlencoded',
@@ -334,7 +271,7 @@ class APIScaffold:
             elif location in ['files', 'form_and_files']:
                 _annotate(
                     f,
-                    body=schema,
+                    body=annotation_schema,
                     body_example=example,
                     body_examples=examples,
                     content_type='multipart/form-data',
@@ -342,7 +279,7 @@ class APIScaffold:
             elif location == 'json_or_form':
                 _annotate(
                     f,
-                    body=schema,
+                    body=annotation_schema,
                     body_example=example,
                     body_examples=examples,
                     content_type=['application/x-www-form-urlencoded', 'application/json'],
@@ -350,24 +287,43 @@ class APIScaffold:
             else:
                 if not hasattr(f, '_spec') or f._spec.get('args') is None:
                     _annotate(f, args=[])
-                if location == 'path':
+                if location in ['path', 'view_args']:
                     _annotate(f, omit_default_path_parameters=True)
                 # TODO: Support set example for request parameters
-                f._spec['args'].append((schema, location))
+                f._spec['args'].append((annotation_schema, location))
 
             arg_name_val = arg_name or f'{location}_data'
 
-            if not validation:
+            # For marshmallow schemas, use the original webargs approach for compatibility
+            if adapter.schema_type == 'marshmallow':
+                from .schema_adapters.marshmallow import parser
+
+                if not validation:
+
+                    @wraps(f)
+                    def wrapper(*args: t.Any, **kwargs: t.Any):
+                        location_data = parser.load_location_data(
+                            schema=annotation_schema, req=flask_request, location=location
+                        )
+                        kwargs[arg_name_val] = location_data
+                        return f(*args, **kwargs)
+
+                    return wrapper
+
+                return parser.use_args(
+                    annotation_schema, location=location, arg_name=arg_name_val, **kwargs
+                )(f)
+
+            # For other schema types (Pydantic, etc.), use the adapter system
+            else:
 
                 @wraps(f)
                 def wrapper(*args: t.Any, **kwargs: t.Any):
-                    location_data = parser.load_location_data(schema=schema, location=location)
+                    location_data = adapter.validate_input(flask_request, location, **kwargs)
                     kwargs[arg_name_val] = location_data
                     return f(*args, **kwargs)
 
                 return wrapper
-
-            return parser.use_args(schema, location=location, arg_name=arg_name_val, **kwargs)(f)
 
         return decorator
 
@@ -488,34 +444,27 @@ class APIScaffold:
 
         - Add parameter `examples`.
         """
-        if schema == {}:
-            schema = EmptySchema
-        if isinstance(schema, ABCMapping):
-            schema = _generate_schema_from_mapping(schema, schema_name)
-        if isinstance(schema, type):  # pragma: no cover
-            schema = schema()
+        body_schema_adapter = registry.create_adapter(schema, schema_name=schema_name)
+        body_schema = body_schema_adapter.schema
 
+        headers_schema = None
         if headers is not None:
-            if headers == {}:
-                headers = EmptySchema
-            if isinstance(headers, ABCMapping):
-                headers = _generate_schema_from_mapping(headers, None)
-            if isinstance(headers, type):
-                headers = headers()
+            headers_schema_adapter = registry.create_adapter(headers, schema_name=None)
+            headers_schema = headers_schema_adapter.schema
 
         def decorator(f):
             f = _ensure_sync(f)
             _annotate(
                 f,
                 response={
-                    'schema': schema,
+                    'schema': body_schema,
                     'status_code': status_code,
                     'description': description,
                     'example': example,
                     'examples': examples,
                     'links': links,
                     'content_type': content_type,
-                    'headers': headers,
+                    'headers': headers_schema,
                 },
             )
 
@@ -525,11 +474,13 @@ class APIScaffold:
                 *args: t.Any,
                 **kwargs: t.Any,
             ) -> Response:  # pragma: no cover
-                """From Flask-Marshmallow, see the NOTICE file for license information."""
-                if isinstance(schema, FileSchema):
+                """Serialize output using schema adapters."""
+                if isinstance(body_schema, FileSchema):
                     return obj  # type: ignore
+                # Handle many parameter for marshmallow compatibility
                 if many is _sentinel:
-                    many = schema.many  # type: ignore
+                    many = getattr(schema, 'many', False)  # type: ignore
+
                 base_schema: OpenAPISchemaType = current_app.config['BASE_RESPONSE_SCHEMA']
                 if base_schema is not None and status_code != 204:
                     data_key: str = current_app.config['BASE_RESPONSE_DATA_KEY']
@@ -539,21 +490,26 @@ class APIScaffold:
                             raise RuntimeError(
                                 f'The data key {data_key!r} is not found in the returned dict.'
                             )
-                        obj[data_key] = schema.dump(obj[data_key], many=many)  # type: ignore
+                        # Serialize the data part
+                        obj[data_key] = body_schema_adapter.serialize_output(
+                            obj[data_key], many=many
+                        )
                     else:
                         if not hasattr(obj, data_key):
                             raise RuntimeError(
                                 f'The data key {data_key!r} is not found in the returned object.'
                             )
-                        setattr(
-                            obj,
-                            data_key,
-                            schema.dump(getattr(obj, data_key), many=many),  # type: ignore
+                        # Serialize the data part
+                        data_value = getattr(obj, data_key)
+                        serialized_data = body_schema_adapter.serialize_output(
+                            data_value, many=many
                         )
+                        setattr(obj, data_key, serialized_data)
 
-                    data = base_schema().dump(obj)  # type: ignore
+                    base_schema_adapter = registry.create_adapter(base_schema)
+                    data = base_schema_adapter.serialize_output(obj)  # type: ignore
                 else:
-                    data = schema.dump(obj, many=many)  # type: ignore
+                    data = body_schema_adapter.serialize_output(obj, many=many)  # type: ignore
                 return jsonify(data, *args, **kwargs)
 
             @wraps(f)

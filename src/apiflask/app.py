@@ -20,6 +20,8 @@ from flask import url_for
 from flask.config import ConfigAttribute
 from flask.wrappers import Response
 
+from apiflask.schema_adapters import registry
+
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from flask_marshmallow import fields
@@ -694,18 +696,8 @@ class APIFlask(APIScaffold, Flask):
     @staticmethod
     def _schema_name_resolver(schema: type[Schema]) -> str:
         """Default schema name resolver."""
-        # some schema are passed through the `doc(responses=...)`
-        # we need to make sure the schema is an instance of `Schema`
-        if isinstance(schema, type):  # pragma: no cover
-            schema = schema()  # type: ignore
-
-        name = schema.__class__.__name__
-
-        if name.endswith('Schema'):
-            name = name[:-6] or name
-        if schema.partial:
-            name += 'Update'
-        return name
+        adapter = registry.create_adapter(schema)
+        return adapter.get_schema_name()
 
     def _make_info(self) -> dict:
         """Make OpenAPI info object."""
@@ -822,11 +814,16 @@ class APIFlask(APIScaffold, Flask):
         if self.external_docs:
             kwargs['externalDocs'] = self.external_docs
 
-        self._ma_plugin: MarshmallowPlugin = MarshmallowPlugin(
-            schema_name_resolver=self.schema_name_resolver  # type: ignore
-        )
-
-        spec_plugins: list[BasePlugin] = [self._ma_plugin, *self.spec_plugins]
+        # Keep marshmallow plugin for backwards compatibility
+        try:
+            self._ma_plugin: MarshmallowPlugin = MarshmallowPlugin(
+                schema_name_resolver=self.schema_name_resolver  # type: ignore
+            )
+            spec_plugins: list[BasePlugin] = [self._ma_plugin, *self.spec_plugins]
+        except ImportError:
+            # If marshmallow is not available, just use custom plugins
+            self._ma_plugin = None  # type: ignore
+            spec_plugins = self.spec_plugins
 
         spec: APISpec = APISpec(
             title=self.title,
@@ -838,17 +835,19 @@ class APIFlask(APIScaffold, Flask):
             **kwargs,
         )
 
-        # configure flask-marshmallow URL types
-        self._ma_plugin.converter.field_mapping[fields.URLFor] = ('string', 'url')  # type: ignore
-        self._ma_plugin.converter.field_mapping[fields.AbsoluteURLFor] = (  # type: ignore
-            'string',
-            'url',
-        )
-        if sqla is not None:  # pragma: no cover
-            self._ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = (  # type: ignore
+        # configure flask-marshmallow URL types if marshmallow plugin is available
+        if self._ma_plugin is not None:
+            # configure flask-marshmallow URL types
+            self._ma_plugin.converter.field_mapping[fields.URLFor] = ('string', 'url')  # type: ignore
+            self._ma_plugin.converter.field_mapping[fields.AbsoluteURLFor] = (  # type: ignore
                 'string',
                 'url',
             )
+            if sqla is not None:  # pragma: no cover
+                self._ma_plugin.converter.field_mapping[sqla.HyperlinkRelated] = (  # type: ignore
+                    'string',
+                    'url',
+                )
 
         auth_names, auth_schemes = self._collect_security_info()
         security, security_schemes = get_security_and_security_schemes(auth_names, auth_schemes)
@@ -950,11 +949,26 @@ class APIFlask(APIScaffold, Flask):
                             blueprint = self.blueprints[blueprint_name]
                             operation_tags = get_operation_tags(blueprint, blueprint_name)  # type: ignore
 
+                # operation parameters
+                # Process parameters using schema adapters to handle both marshmallow and Pydantic
+                parameters = []
+                for schema, location in view_func._spec.get('args', []):
+                    try:
+                        from .openapi_adapters import openapi_helper
+
+                        # Use schema_to_parameters for proper handling of different schema types
+                        schema_params = openapi_helper.schema_to_parameters(
+                            schema, location=location
+                        )
+                        parameters.extend(schema_params)
+                    except Exception:
+                        # Fallback to original behavior for unknown schema types
+                        parameters.append({'in': location, 'schema': schema})
+
+                from .openapi_adapters import get_unique_schema_name
+
                 operation: dict[str, t.Any] = {
-                    'parameters': [
-                        {'in': location, 'schema': schema}
-                        for schema, location in view_func._spec.get('args', [])
-                    ],
+                    'parameters': parameters,
                     'responses': {},
                 }
                 if operation_tags:
@@ -1116,8 +1130,51 @@ class APIFlask(APIScaffold, Flask):
                         content_types = [content_types]
                     operation['requestBody'] = {'content': {}}
                     for content_type in content_types:
+                        body_schema_obj = view_func._spec['body']
+
+                        # Handle body schema registration and referencing
+                        try:
+                            # Check if this is a schema object (marshmallow/pydantic schema)
+                            # Plain dicts have __class__.__name__ == 'dict'
+                            is_schema_obj = (
+                                hasattr(body_schema_obj, '__class__')
+                                and hasattr(body_schema_obj.__class__, '__name__')
+                                and body_schema_obj.__class__.__name__ != 'dict'
+                            )
+
+                            if is_schema_obj:
+                                # Get the schema name for registration
+                                schema_name = self.schema_name_resolver(body_schema_obj)
+
+                                # Handle name conflicts by finding unique name if needed
+                                if schema_name in spec.components.schemas:
+                                    # For generated schemas, always create unique names
+                                    if schema_name.startswith('Generated'):
+                                        schema_name = get_unique_schema_name(spec, schema_name)
+                                    else:
+                                        # For named schemas, check if content differs
+                                        schema_spec = openapi_helper.schema_to_spec(body_schema_obj)
+                                        existing_schema = spec.components.schemas[schema_name]
+                                        if existing_schema != schema_spec:
+                                            schema_name = get_unique_schema_name(spec, schema_name)
+                                        # If content is same, reuse existing schema name
+
+                                # Register schema if not already registered
+                                if schema_name not in spec.components.schemas:
+                                    # Pass schema object - let the MarshmallowPlugin resolve it
+                                    spec.components.schema(schema_name, schema=body_schema_obj)
+
+                                # Use reference for the body schema
+                                body_schema = {'$ref': f'#/components/schemas/{schema_name}'}
+                            else:
+                                # Fallback to inline schema for plain dicts or other types
+                                body_schema = body_schema_obj
+                        except Exception:
+                            # If anything fails, fall back to passing schema as-is
+                            body_schema = body_schema_obj
+
                         operation['requestBody']['content'][content_type] = {
-                            'schema': view_func._spec['body'],
+                            'schema': body_schema,
                         }
                         if view_func._spec.get('body_example'):
                             example = view_func._spec.get('body_example')
@@ -1237,14 +1294,16 @@ class APIFlask(APIScaffold, Flask):
 
         - Add `links` parameter.
         """
+        from .openapi_adapters import openapi_helper
+
         base_schema: OpenAPISchemaType | None = self.config['BASE_RESPONSE_SCHEMA']
         data_key: str = self.config['BASE_RESPONSE_DATA_KEY']
         if base_schema is not None:
             base_schema_spec: dict[str, t.Any]
             if isinstance(base_schema, type):
-                base_schema_spec = self._ma_plugin.converter.schema2jsonschema(  # type: ignore
-                    base_schema()
-                )
+                # Convert schema class to instance, then to full JSON schema
+                # Use schema_to_json_schema to get complete schema with properties
+                base_schema_spec = openapi_helper.schema_to_json_schema(base_schema())
             elif isinstance(base_schema, dict):
                 base_schema_spec = base_schema
             else:
@@ -1271,9 +1330,8 @@ class APIFlask(APIScaffold, Flask):
         if links is not None:
             operation['responses'][status_code]['links'] = links
         if headers_schema is not None:
-            header_params = self._ma_plugin.converter.schema2parameters(  # type: ignore
-                headers_schema, location='headers'
-            )
+            # Use openapi_helper to convert headers schema to parameters
+            header_params = openapi_helper.schema_to_parameters(headers_schema, location='headers')
             headers = {header['name']: header for header in header_params}
             for header in headers.values():
                 header.pop('in', None)
