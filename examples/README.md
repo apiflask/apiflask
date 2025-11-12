@@ -9,6 +9,7 @@
 - Token auth example: [/examples/auth/token_auth/app.py][_token_auth]
 - Basic auth example: [/examples/auth/basic_auth/app.py][_basic_auth]
 - Dataclass example (with marshmallow-dataclass): [/examples/dataclass/app.py][_dataclass]
+- Pydantic example (with Pydantic models): [/examples/pydantic/app.py][_pydantic]
 - File upload example: [/examples/file_upload/app.py][_file_upload]
 - OpenTelemetry example: [/examples/otel/app.py][_OpenTelemetry]
 
@@ -21,6 +22,7 @@
 [_token_auth]: https://github.com/apiflask/apiflask/tree/main/examples/auth/token_auth/app.py
 [_basic_auth]: https://github.com/apiflask/apiflask/tree/main/examples/auth/basic_auth/app.py
 [_dataclass]: https://github.com/apiflask/apiflask/tree/main/examples/dataclass/app.py
+[_pydantic]: https://github.com/apiflask/apiflask/tree/main/examples/pydantic/app.py
 [_file_upload]: https://github.com/apiflask/apiflask/tree/main/examples/file_upload/app.py
 [_OpenTelemetry]: https://github.com/apiflask/apiflask/tree/main/examples/otel/app.py
 
@@ -70,6 +72,7 @@ Each example application store in a sub-folder:
 - `/openapi/static_docs`: OpenAPI example with standalone static HTML OpenAPI docs
 - `/base_response`: Base response example
 - `/dataclass`: Dataclass example (with marshmallow-dataclass)
+- `/pydantic`: Pydantic example (with Pydantic models)
 
 To run a specific example, you have to change into the corresponding folder.
 For example, if you want to run the basic example:

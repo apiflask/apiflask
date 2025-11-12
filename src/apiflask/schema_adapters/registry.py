@@ -42,10 +42,9 @@ class SchemaRegistry:
             self.register('marshmallow', MarshmallowAdapter)
 
         if HAS_PYDANTIC:
-            # from .pydantic import PydanticAdapter
+            from .pydantic import PydanticAdapter
 
-            # self.register('pydantic', PydanticAdapter)
-            pass
+            self.register('pydantic', PydanticAdapter)
 
     def register(self, name: str, adapter_class: type[SchemaAdapter]) -> None:
         """Register a schema adapter.
