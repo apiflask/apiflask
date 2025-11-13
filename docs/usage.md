@@ -394,8 +394,12 @@ def delete_pet(pet_id):
 
 To validate and deserialize a request body or request query parameters, we need to
 create a data schema class first. Think of it as a way to describe the valid
-incoming data. If you already familiar with marshmallow, then you already know
-how to write a data schema.
+ncoming data. APIFlask supports two main approaches: marshmallow schemas
+and Pydantic models.
+
+### Using marshmallow Schemas
+
+If you're familiar with marshmallow, then you already know how to write a data schema.
 
 Here is a simple input schema for a Pet input resource:
 
@@ -415,7 +419,7 @@ class PetIn(Schema):
     See [Data Schema chapter](/schema) for the details of how to write a schema and
     the examples for all the fields and validators.
 
-* A schema class should inherit the `apiflask.Schema` class.
+* A marshmallow schema class should inherit the `apiflask.Schema` class.
 * Fields are represented with field classes in `apiflask.fields`.
 * To validate a field with a specific rule, you can pass a validator or a list of
 validators (import them from `apiflask.validators`) to the `validate` argument
@@ -431,6 +435,41 @@ of the field class.
     name = String(load_default='default name')
     ```
 
+### Using Pydantic Models
+
+!!! tip "New in version 3.0.0"
+
+    Pydantic support was added in version 3.0.0. To use Pydantic, install it with `pip install pydantic`.
+
+Alternatively, you can use Pydantic models for a more modern, type-hint based approach:
+
+```python
+from enum import Enum
+from typing import Optional
+from pydantic import BaseModel, Field
+
+
+class PetCategory(str, Enum):
+    DOG = 'dog'
+    CAT = 'cat'
+
+
+class PetIn(BaseModel):
+    name: str = Field(min_length=1, max_length=50)
+    category: PetCategory
+```
+
+* Pydantic models inherit from `pydantic.BaseModel`.
+* Fields are defined using Python type hints.
+* Validation is built-in based on types, with additional constraints via `Field()` or custom validation.
+
+!!! tip
+
+    See [Data Schema chapter](/schema) for complete details on both marshmallow and Pydantic,
+    including examples of all fields, validators, and advanced features.
+
+### Add input schema to the view function
+
 With this schema, we declare that the input request body should appear in the
 following format:
 
@@ -444,24 +483,36 @@ following format:
 
     Read the *[Data Schema](/schema)* chapter for the advanced topics on data schema.
 
-Now let's add it to the view function which is used to create a new pet:
+Now let's add it to the view function which is used to create a new pet.
 
-```python hl_lines="14"
-from apiflask import APIFlask, Schema
-from apiflask.fields import Integer, String
-from apiflask.validators import Length, OneOf
+For marshmallow schema:
+
+```python hl_lines="8"
+from apiflask import APIFlask
 
 app = APIFlask(__name__)
 
-
-class PetIn(Schema):
-    name = String(required=True, validate=Length(0, 10))
-    category = String(required=True, validate=OneOf(['dog', 'cat']))
-
+# ... PetIn schema definition here ...
 
 @app.post('/pets')
 @app.input(PetIn)
-def create_pet(json_data):
+def create_pet(json_data):  # the json_data is a dict
+    print(json_data)
+    return {'message': 'created'}, 201
+```
+
+For Pydantic model:
+
+```python hl_lines="8"
+from apiflask import APIFlask
+
+app = APIFlask(__name__)
+
+# ... PetIn schema definition here ...
+
+@app.post('/pets')
+@app.input(PetIn)
+def create_pet(json_data: PetIn):  # the json_data is a PetIn instance
     print(json_data)
     return {'message': 'created'}, 201
 ```
@@ -482,9 +533,13 @@ argument for `@app.input()` decorator, the value can be:
 - Path variable (URL variable): `'path'` (same as `'view_args'`, added in APIFlask 1.0.2)
 
 If the validation passed, the data will inject into the view function as
-a keyword argument named `{location}_data` (e.g. `json_data`) in the form
-of `dict`. Otherwise, an error response with the detail of the validation
+a keyword argument named `{location}_data` (e.g. `json_data`). Otherwise, an error response with the detail of the validation
 result will be returned.
+
+The form of the injected data depends on the schema type:
+
+- For marshmallow schema, the data will be a dict.
+- For Pydantic model, the data will be an instance of the model.
 
 You can set a custom argument name with `arg_name`:
 
@@ -506,7 +561,7 @@ def foo(json_data, query_data):
     return {'message': 'success'}
 ```
 
-Since the parsed data will be a dict, you can do something like this to create an ORM model instance:
+For marshmallow, since the parsed data will be a dict, you can do something like this to create an ORM model instance:
 
 ```python hl_lines="5"
 @app.post('/pets')
@@ -556,7 +611,9 @@ Read the *[Request Handling](/request)* chapter for the advanced topics on reque
 
 ## Use `@app.output` to format response data
 
-Similarly, we can define a schema for output data with `@app.output` decorator. Here is an example:
+Similarly, we can define a schema for output data with `@app.output` decorator. You can use either marshmallow schemas or Pydantic models.
+
+### marshmallow Output Schema
 
 ```python
 from apiflask.fields import String, Integer
@@ -568,31 +625,44 @@ class PetOut(Schema):
     category = String()
 ```
 
-Since APIFlask will not validate the output data, we only need to list all the field for the output
-schema.
+### Pydantic Output Model
+
+```python
+from pydantic import BaseModel, Field
+
+
+class PetOut(BaseModel):
+    id: int = Field(..., description="Pet ID")
+    name: str = Field(..., description="Pet name")
+    category: str = Field(..., description="Pet category")
+```
+
+Since APIFlask will not validate the output data, we only need to list all the fields for the output
+schema. Both approaches will automatically serialize your data and generate OpenAPI documentation.
 
 !!! tip
 
-    You can set a default value for output field with the `dump_default` argument:
+    **For marshmallow schemas**: You can set a default value for output field with the `dump_default` argument:
 
     ```python
     name = String(dump_default='default name')
     ```
 
+    **For Pydantic models**: You can set default values directly in the field definition:
+
+    ```python
+    name: str = Field("default name", description="Pet name")
+    is_active: bool = True  # Simple default value
+    ```
+
 Now add it to the view function which used to get a pet resource:
 
-```python hl_lines="14"
+```python hl_lines="8"
 from apiflask import APIFlask
-from apiflask.fields import String, Integer
 
 app = APIFlask(__name__)
 
-
-class PetOut(Schema):
-    id = Integer()
-    name = String()
-    category = String()
-
+# ... PetOut schema definition here ...
 
 @app.get('/pets/<int:pet_id>')
 @app.output(PetOut)
@@ -611,26 +681,10 @@ status code with the `status_code` argument:
 @app.input(PetIn)
 @app.output(PetOut, status_code=201)
 def create_pet(json_data):
-    pet = Pet(**json_data)
-    return pet
+    # ...
 ```
 
-If you want to return a 204 response, you can use the `EmptySchema` from `apiflask.schemas`:
-
-```python
-from apiflask.schemas import EmptySchema
-
-
-@app.delete('/pets/<int:pet_id>')
-@app.output(EmptySchema, status_code=204)
-def delete_pet(pet_id):
-    return ''
-```
-
-`EmptySchema` represents an empty schema. For 204 response, it represents an empty
-response body.
-
-From version 0.4.0, you can use an empty dict as a shortcut:
+If you want to return a 204 response, you can use an empty dict as an empty schema:
 
 ```python
 @app.delete('/pets/<int:pet_id>')

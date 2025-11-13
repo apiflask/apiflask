@@ -3,7 +3,7 @@
 Released: -
 
 - Decouple from marshmallow and add an adapter system to support different serialization/deserialization libraries.
-
+- Add support for Pydantic models as data schemas.
 
 ## Version 2.4.0
 

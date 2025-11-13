@@ -1,21 +1,4 @@
-# Data Schema
-
-Read [this section](/usage/#use-appinput-to-validate-and-deserialize-request-data) and following
-section first in the Basic Usage chapter for the basics of writing input and output schema.
-
-Basic concepts on data schema:
-
-- APIFlask's `apiflask.Schema` base class is directly imported from marshmallow with some minor changes,
-  see the [API documentation](https://marshmallow.readthedocs.io/en/stable/marshmallow.schema.html)
-  for the details.
-- We recommend separating input and output schema. Since the output data is not
-  validated, you don't need to define validators on output fields.
-- `apiflask.fields` includes all the fields provided by marshmallow, webargs, and
-  flask-marshmallow (while some aliases were removed).
-- `apiflask.validators` includes all the validators in `marshmallow.validate`.
-- For other functions/classes, just import them from marshmallow.
-- Read [marshmallow's documentation](https://marshmallow.readthedocs.io/) when you have free time.
-
+# Data Schema with marshmallow
 
 ## Deserialization (load) and serialization (dump)
 

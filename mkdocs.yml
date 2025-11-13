@@ -71,6 +71,7 @@ nav:
     - Exceptions: api/exceptions.md
     - OpenAPI: api/openapi.md
     - Schemas: api/schemas.md
+    - Schema Adapters: api/schema_adapters.md
     - Fields: api/fields.md
     - Validators: api/validators.md
     - Route: api/route.md
