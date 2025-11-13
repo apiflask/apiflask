@@ -153,7 +153,10 @@ class PetIn(BaseModel):
     category: PetCategory
 
 
-pets = [{'id': 0, 'name': 'Kitty', 'category': 'cat'}, {'id': 1, 'name': 'Coco', 'category': 'dog'}]
+pets = [
+    {'id': 0, 'name': 'Kitty', 'category': 'cat'},
+    {'id': 1, 'name': 'Coco', 'category': 'dog'}
+]
 
 
 @app.get('/')
@@ -162,7 +165,7 @@ def say_hello():
 
 
 @app.get('/pets')
-@app.output(PetOut)
+@app.output(list[PetOut])
 def get_pets():
     return pets
 

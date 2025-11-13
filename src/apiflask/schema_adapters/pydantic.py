@@ -53,11 +53,18 @@ def _format_pydantic_errors(errors: list[ErrorDetails]) -> dict[str, list[str]]:
 class PydanticAdapter(SchemaAdapter):
     """Schema adapter for Pydantic models."""
 
-    def __init__(self, schema: type[BaseModel] | BaseModel, schema_name: str | None = None) -> None:
+    def __init__(
+        self,
+        schema: type[BaseModel] | BaseModel,
+        schema_name: str | None = None,
+        many: bool = False,
+    ) -> None:
         """Initialize the Pydantic adapter.
 
         Arguments:
             schema: Pydantic model class or instance
+            schema_name: Optional schema name (not used for Pydantic)
+            many: Whether this schema represents a list/array of items
         """
         if not HAS_PYDANTIC:
             raise ImportError(
@@ -72,6 +79,8 @@ class PydanticAdapter(SchemaAdapter):
             self.schema = schema.__class__
         else:
             raise TypeError(f'Expected Pydantic model, got {type(schema)}')
+
+        self.many = many
 
     @property
     def schema_type(self) -> str:

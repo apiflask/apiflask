@@ -17,14 +17,16 @@ class SchemaAdapter(ABC):
     *Version added: 3.0.0*
     """
 
-    def __init__(self, schema: t.Any, schema_name: str | None = None) -> None:
+    def __init__(self, schema: t.Any, schema_name: str | None = None, many: bool = False) -> None:
         """Initialize the adapter with a schema.
 
         Arguments:
             schema: The schema object (marshmallow Schema, Pydantic model, etc.)
             schema_name: Optional schema name (used by some adapters like marshmallow)
+            many: Whether this schema represents a list/array of items
         """
         self.schema = schema
+        self.many = many
 
     @abstractmethod
     def validate_input(self, request: Request, location: str, **kwargs: t.Any) -> t.Any:

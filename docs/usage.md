@@ -628,13 +628,13 @@ class PetOut(Schema):
 ### Pydantic Output Model
 
 ```python
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class PetOut(BaseModel):
-    id: int = Field(..., description="Pet ID")
-    name: str = Field(..., description="Pet name")
-    category: str = Field(..., description="Pet category")
+    id: int
+    name: str
+    category: str
 ```
 
 Since APIFlask will not validate the output data, we only need to list all the fields for the output

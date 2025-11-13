@@ -390,3 +390,162 @@ class TestPydanticIntegration:
             rv = client.get('/openapi.json')
             assert rv.status_code == 200
             osv.validate(rv.json)
+
+    def test_list_type_with_typing_List(self):
+        """Test list type support with typing.List[Model]."""
+        from typing import List
+
+        app = APIFlask(__name__)
+
+        @app.get('/users')
+        @app.output(List[UserModel])
+        def get_users():
+            return [
+                UserModel(id=1, name='Alice', email='alice@example.com'),
+                UserModel(id=2, name='Bob', email='bob@example.com'),
+            ]
+
+        with app.test_client() as client:
+            # Test response
+            response = client.get('/users')
+            assert response.status_code == 200
+            data = response.get_json()
+            assert isinstance(data, list)
+            assert len(data) == 2
+            assert data[0]['id'] == 1
+            assert data[0]['name'] == 'Alice'
+            assert data[1]['id'] == 2
+            assert data[1]['name'] == 'Bob'
+
+            # Test OpenAPI spec
+            rv = client.get('/openapi.json')
+            assert rv.status_code == 200
+            osv.validate(rv.json)
+
+            spec = rv.get_json()
+            response_schema = spec['paths']['/users']['get']['responses']['200']['content'][
+                'application/json'
+            ]['schema']
+            # Should be array type with items referencing UserModel
+            assert response_schema['type'] == 'array'
+            assert 'items' in response_schema
+            assert response_schema['items']['$ref'] == '#/components/schemas/UserModel'
+
+    def test_list_type_with_native_list(self):
+        """Test list type support with native list[Model] (Python 3.9+)."""
+        app = APIFlask(__name__)
+
+        @app.get('/users')
+        @app.output(list[UserModel])
+        def get_users():
+            return [
+                {'id': 1, 'name': 'Alice', 'email': 'alice@example.com'},
+                {'id': 2, 'name': 'Bob', 'email': 'bob@example.com'},
+            ]
+
+        with app.test_client() as client:
+            # Test response
+            response = client.get('/users')
+            assert response.status_code == 200
+            data = response.get_json()
+            assert isinstance(data, list)
+            assert len(data) == 2
+            assert data[0]['id'] == 1
+            assert data[1]['id'] == 2
+
+            # Test OpenAPI spec
+            rv = client.get('/openapi.json')
+            assert rv.status_code == 200
+            osv.validate(rv.json)
+
+            spec = rv.get_json()
+            response_schema = spec['paths']['/users']['get']['responses']['200']['content'][
+                'application/json'
+            ]['schema']
+            # Should be array type
+            assert response_schema['type'] == 'array'
+            assert 'items' in response_schema
+            assert response_schema['items']['$ref'] == '#/components/schemas/UserModel'
+
+    def test_list_type_with_dict_response(self):
+        """Test list type with dict responses instead of model instances."""
+        app = APIFlask(__name__)
+
+        @app.get('/users')
+        @app.output(list[UserModel])
+        def get_users():
+            # Return list of dicts - should be validated and serialized
+            return [
+                {'id': 1, 'name': 'Alice', 'email': 'alice@example.com'},
+                {'id': 2, 'name': 'Bob', 'email': 'bob@example.com'},
+            ]
+
+        with app.test_client() as client:
+            response = client.get('/users')
+            assert response.status_code == 200
+            data = response.get_json()
+            assert isinstance(data, list)
+            assert len(data) == 2
+            assert all('id' in item and 'name' in item and 'email' in item for item in data)
+
+    def test_mixed_list_and_single_endpoints(self):
+        """Test that list and single endpoints work correctly together."""
+        from typing import List
+
+        app = APIFlask(__name__)
+
+        @app.get('/users')
+        @app.output(List[UserModel])
+        def list_users():
+            return [
+                UserModel(id=1, name='Alice', email='alice@example.com'),
+                UserModel(id=2, name='Bob', email='bob@example.com'),
+            ]
+
+        @app.get('/users/<int:user_id>')
+        @app.output(UserModel)
+        def get_user(user_id):
+            return UserModel(id=user_id, name='Alice', email='alice@example.com')
+
+        @app.post('/users')
+        @app.input(UserCreateModel, location='json')
+        @app.output(UserModel, status_code=201)
+        def create_user(json_data):
+            return UserModel(id=1, name=json_data.name, email=json_data.email)
+
+        with app.test_client() as client:
+            # Test list endpoint
+            response = client.get('/users')
+            assert response.status_code == 200
+            data = response.get_json()
+            assert isinstance(data, list)
+            assert len(data) == 2
+
+            # Test single endpoint
+            response = client.get('/users/1')
+            assert response.status_code == 200
+            data = response.get_json()
+            assert isinstance(data, dict)
+            assert data['id'] == 1
+
+            # Test OpenAPI spec
+            rv = client.get('/openapi.json')
+            assert rv.status_code == 200
+            osv.validate(rv.json)
+
+            spec = rv.get_json()
+
+            # List endpoint should have array schema
+            list_schema = spec['paths']['/users']['get']['responses']['200']['content'][
+                'application/json'
+            ]['schema']
+            assert list_schema['type'] == 'array'
+            assert list_schema['items']['$ref'] == '#/components/schemas/UserModel'
+
+            # Single endpoint should have object schema
+            single_schema = spec['paths']['/users/{user_id}']['get']['responses']['200']['content'][
+                'application/json'
+            ]['schema']
+            assert '$ref' in single_schema
+            assert single_schema['$ref'] == '#/components/schemas/UserModel'
+            assert 'type' not in single_schema  # Should not be wrapped in array

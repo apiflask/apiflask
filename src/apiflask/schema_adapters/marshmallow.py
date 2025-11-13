@@ -77,13 +77,17 @@ class MarshmallowAdapter(SchemaAdapter):
     """Schema adapter for marshmallow schemas."""
 
     def __init__(
-        self, schema: Schema | dict | type[Schema], schema_name: str | None = None
+        self,
+        schema: Schema | dict | type[Schema],
+        schema_name: str | None = None,
+        many: bool = False,
     ) -> None:
         """Initialize the marshmallow adapter.
 
         Arguments:
             schema: Marshmallow schema instance, dict, or schema class
             schema_name: Optional schema name for dict schemas
+            many: Whether this schema represents a list/array of items
         """
         if isinstance(schema, dict):
             # Convert dict schema to marshmallow schema
@@ -106,6 +110,8 @@ class MarshmallowAdapter(SchemaAdapter):
                 self.schema = schema
         else:
             self.schema = schema
+
+        self.many = many
 
     @property
     def schema_type(self) -> str:

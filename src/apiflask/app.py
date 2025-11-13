@@ -1015,6 +1015,11 @@ class APIFlask(APIScaffold, Flask):
                 # responses
                 if view_func._spec.get('response'):
                     schema = view_func._spec.get('response')['schema']
+                    # Check if the adapter was created with many=True (for list types)
+                    schema_adapter_many = view_func._spec.get('response').get(
+                        'schema_adapter_many', False
+                    )
+
                     status_code: str = str(view_func._spec.get('response')['status_code'])
                     description: str = (
                         view_func._spec.get('response')['description']
@@ -1037,6 +1042,7 @@ class APIFlask(APIScaffold, Flask):
                         links=links,
                         content_type=content_type,
                         headers_schema=headers,
+                        schema_adapter_many=schema_adapter_many,
                     )
                 else:
                     # add a default 200 response for views without using @app.output
@@ -1370,6 +1376,7 @@ class APIFlask(APIScaffold, Flask):
         links: dict[str, t.Any] | None = None,
         content_type: str | None = 'application/json',
         headers_schema: SchemaType | None = None,
+        schema_adapter_many: bool = False,
     ) -> None:
         """Add response to operation.
 
@@ -1398,6 +1405,10 @@ class APIFlask(APIScaffold, Flask):
             if is_schema_obj:
                 # Register schema and get reference
                 schema = self._register_schema_and_get_ref(spec, registered_schema_classes, schema)
+
+            # Wrap schema in array type if many=True
+            if schema_adapter_many and isinstance(schema, dict) and '$ref' in schema:
+                schema = {'type': 'array', 'items': schema}
 
         base_schema: OpenAPISchemaType | None = self.config['BASE_RESPONSE_SCHEMA']
         data_key: str = self.config['BASE_RESPONSE_DATA_KEY']
