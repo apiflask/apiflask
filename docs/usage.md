@@ -637,8 +637,11 @@ class PetOut(BaseModel):
     category: str
 ```
 
-Since APIFlask will not validate the output data, we only need to list all the fields for the output
-schema. Both approaches will automatically serialize your data and generate OpenAPI documentation.
+Both approaches will automatically serialize your data and generate OpenAPI documentation.
+
+!!! important "Output Validation Behavior"
+
+    Unlike marshmallow, **Pydantic validates output data** before sending responses. This means that if your view function returns data that does not conform to the output model schema, a 500 Internal Server Error will be raised.
 
 !!! tip
 

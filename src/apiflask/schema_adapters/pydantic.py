@@ -160,51 +160,37 @@ class PydanticAdapter(SchemaAdapter):
             raise _ValidationError(400, 'Validation error', formatted_errors) from error
 
     def serialize_output(self, data: t.Any, many: bool = False) -> t.Any:
-        """Serialize output using Pydantic."""
+        """Serialize output using Pydantic with validation."""
         if many and isinstance(data, (list, tuple)):
             # Handle lists of data
             result = []
             for item in data:
                 if isinstance(item, BaseModel):
-                    result.append(item.model_dump())
-                elif isinstance(item, dict):
-                    try:
-                        instance = self.model_class.model_validate(item)
-                        result.append(instance.model_dump())
-                    except PydanticValidationError:
-                        result.append(item)
+                    # Already validated, just serialize
+                    result.append(item.model_dump(mode='json'))
                 else:
-                    result.append(item)
+                    # Validate and serialize
+                    validated = self.model_class.model_validate(item)
+                    result.append(validated.model_dump(mode='json'))
             return result
         elif isinstance(data, BaseModel):
-            # Pydantic model instance
-            return data.model_dump()
-        elif isinstance(data, dict):
-            # Try to create model instance and serialize
-            try:
-                instance = self.model_class.model_validate(data)
-                return instance.model_dump()
-            except PydanticValidationError:
-                # If validation fails, return as-is
-                return data
+            # Pydantic model instance - already validated, just serialize
+            return data.model_dump(mode='json')
         elif isinstance(data, (list, tuple)) and not many:
-            # Handle lists when many=False (should serialize individual items)
+            # Handle lists when many=False
             result = []
             for item in data:
                 if isinstance(item, BaseModel):
-                    result.append(item.model_dump())
-                elif isinstance(item, dict):
-                    try:
-                        instance = self.model_class.model_validate(item)
-                        result.append(instance.model_dump())
-                    except PydanticValidationError:
-                        result.append(item)
+                    result.append(item.model_dump(mode='json'))
                 else:
-                    result.append(item)
+                    # Validate and serialize
+                    validated = self.model_class.model_validate(item)
+                    result.append(validated.model_dump(mode='json'))
             return result
         else:
-            # Return as-is for other types
-            return data
+            # Validate and serialize (dicts, primitives)
+            validated = self.model_class.model_validate(data)
+            return validated.model_dump(mode='json')
 
     def get_openapi_schema(self, **kwargs: t.Any) -> dict[str, t.Any]:
         """Get OpenAPI schema from Pydantic model.

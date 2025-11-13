@@ -19,7 +19,7 @@ differences between APIFlask and similar projects.
 - APIFlask builds on top of Flask, so it's compatible with Flask extensions.
 - FastAPI supports async. APIFlask has the basic async support with Flask 2.0.
 - APIFlask provides more decorators to help organize things better.
-- FastAPI injects the input data as an object, while APIFlask passes it as a dict.
+- FastAPI injects the input data as a Pydantic object, while APIFlask passes it as a Pydantic object (for Pydantic models) or dict (for marshmallow schemas).
 - APIFlask has built-in class-based views support based on Flask's `MethodView`.
 - On top of Swagger UI and Redoc, APIFlask supports more API documentation tools:
   Elements, RapiDoc, and RapiPDF.

@@ -22,7 +22,10 @@ class PetIn(BaseModel):
     category: PetCategory
 
 
-pets = [{'id': 0, 'name': 'Kitty', 'category': 'cat'}, {'id': '1', 'name': 123, 'category': 'dog'}]
+pets = [
+    {'id': 0, 'name': 'Kitty', 'category': 'cat'},
+    {'id': 1, 'name': 'Buddy', 'category': 'dog'},
+]
 
 
 @app.get('/')

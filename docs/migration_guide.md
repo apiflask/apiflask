@@ -22,6 +22,10 @@ def create_pet(json_data):
 
 See the [Data Schema](/schema) documentation for comprehensive examples or check out the [Pydantic example](/examples) for a complete working application.
 
+!!! important "Output Validation Behavior"
+
+    Unlike marshmallow, **Pydantic validates output data** before sending responses. This means that if your view function returns data that does not conform to the output model schema, a 500 Internal Server Error will be raised.
+
 
 ## Migrate to APIFlask 2.x
 

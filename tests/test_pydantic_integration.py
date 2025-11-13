@@ -1,3 +1,5 @@
+import sys
+
 import openapi_spec_validator as osv
 import pytest
 
@@ -431,6 +433,7 @@ class TestPydanticIntegration:
             assert 'items' in response_schema
             assert response_schema['items']['$ref'] == '#/components/schemas/UserModel'
 
+    @pytest.mark.skipif(sys.version_info < (3, 9), reason='Native list syntax requires Python 3.9+')
     def test_list_type_with_native_list(self):
         """Test list type support with native list[Model] (Python 3.9+)."""
         app = APIFlask(__name__)
@@ -467,6 +470,7 @@ class TestPydanticIntegration:
             assert 'items' in response_schema
             assert response_schema['items']['$ref'] == '#/components/schemas/UserModel'
 
+    @pytest.mark.skipif(sys.version_info < (3, 9), reason='Native list syntax requires Python 3.9+')
     def test_list_type_with_dict_response(self):
         """Test list type with dict responses instead of model instances."""
         app = APIFlask(__name__)
