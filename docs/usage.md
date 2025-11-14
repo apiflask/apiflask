@@ -770,6 +770,20 @@ class Pet(Model):
     category = String()
 ```
 
+For Pydantic models, you can also return an instance of the output model class:
+
+```python
+@app.get('/pets/<int:pet_id>')
+@app.output(PetOut)
+def get_pet(pet_id):
+    pet = PetOut(
+        id=1,
+        name='Coco',
+        category='dog'
+    )
+    return pet
+```
+
 !!! tip "What if I want to use a different external field name?"
 
     For example, in your ORM model class, you have a `phone` field that

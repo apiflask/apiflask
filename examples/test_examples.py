@@ -11,7 +11,9 @@ full_examples = [
     'cbv',
     'openapi/basic',
     'blueprint_tags',
-    'base_response',
+    'base_response/marshmallow',
+    'base_response/pydantic',
+    'pydantic',
     'dataclass',
 ]
 
@@ -39,7 +41,7 @@ def test_say_hello(client):
     rv = client.get('/')
     assert rv.status_code == 200
     assert rv.json
-    if client._example == 'base_response':
+    if client._example.startswith('base_response'):
         data = rv.json['data']
     else:
         data = rv.json
@@ -52,7 +54,7 @@ def test_get_pet(client):
     rv = client.get('/pets/1')
     assert rv.status_code == 200
     assert rv.json
-    if client._example == 'base_response':
+    if client._example.startswith('base_response'):
         data = rv.json['data']
     else:
         data = rv.json
@@ -76,7 +78,7 @@ def test_get_pets(client):
     rv = client.get('/pets')
     assert rv.status_code == 200
     assert rv.json
-    if client._example == 'base_response':
+    if client._example.startswith('base_response'):
         data = rv.json['data']
     else:
         data = rv.json
@@ -90,7 +92,7 @@ def test_create_pet(client):
     rv = client.post('/pets', json={'name': 'Grey', 'category': 'cat'})
     assert rv.status_code == 201
     assert rv.json
-    if client._example == 'base_response':
+    if client._example.startswith('base_response'):
         data = rv.json['data']
     else:
         data = rv.json
@@ -125,7 +127,7 @@ def test_update_pet(client):
 
     rv = client.get('/pets/1')
     assert rv.status_code == 200
-    if client._example == 'base_response':
+    if client._example.startswith('base_response'):
         data = rv.json['data']
     else:
         data = rv.json
