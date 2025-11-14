@@ -11,6 +11,7 @@ classifiers = [
     "Framework :: Flask",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -29,7 +30,7 @@ dependencies = [
     "marshmallow >= 3.20",
     "webargs >= 8.3",
     "flask-httpauth >= 4.4.0",
-    "apispec >= 8.3.0",
+    "apispec >= 6.0.0",
     "pydantic[email] >= 2.0",
 ]
 

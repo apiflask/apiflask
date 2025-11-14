@@ -22,8 +22,8 @@ With APIFlask, you will have:
 
 ## Requirements
 
-- Python 3.8+
-- Flask 2.0+
+- Python 3.9+
+- Flask 2.1+
 
 
 ## Installation
