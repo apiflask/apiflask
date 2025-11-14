@@ -1417,7 +1417,7 @@ class APIFlask(APIScaffold, Flask):
             if isinstance(base_schema, type):
                 # Convert schema class to instance, then to full JSON schema
                 # Use schema_to_json_schema to get complete schema with properties
-                base_schema_spec = openapi_helper.schema_to_json_schema(base_schema())
+                base_schema_spec = openapi_helper.schema_to_json_schema(base_schema)
             elif isinstance(base_schema, dict):
                 base_schema_spec = base_schema
             else:

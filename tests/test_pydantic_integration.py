@@ -69,7 +69,7 @@ class TestPydanticIntegration:
         with app.test_client() as client:
             # Missing required field
             response = client.post('/users', json={'name': 'John Doe'})
-            assert response.status_code == 400
+            assert response.status_code == app.config['VALIDATION_ERROR_STATUS_CODE']
             data = response.get_json()
             assert 'message' in data
             assert 'detail' in data

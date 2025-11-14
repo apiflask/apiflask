@@ -3,6 +3,8 @@ from __future__ import annotations
 import typing as t
 from io import IOBase
 
+from flask import current_app
+
 from ..exceptions import _ValidationError
 from .base import SchemaAdapter
 
@@ -157,7 +159,11 @@ class PydanticAdapter(SchemaAdapter):
 
         except PydanticValidationError as error:
             formatted_errors = _format_pydantic_errors(error.errors())
-            raise _ValidationError(400, 'Validation error', formatted_errors) from error
+            raise _ValidationError(
+                current_app.config['VALIDATION_ERROR_STATUS_CODE'],
+                current_app.config['VALIDATION_ERROR_DESCRIPTION'],
+                {location: formatted_errors},
+            ) from error
 
     def serialize_output(self, data: t.Any, many: bool = False) -> t.Any:
         """Serialize output using Pydantic with validation."""
