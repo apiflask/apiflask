@@ -2,8 +2,12 @@
 
 Released: -
 
-- Decouple from marshmallow and add an adapter system to support different serialization/deserialization libraries.
-- Add support for Pydantic models as data schemas.
+- Decouple from marshmallow and add an adapter system to support different serialization/deserialization libraries ([pr #690](pr_690)).
+- Add support for Pydantic models as data schemas ([issue #519][issue_519]).
+
+[issue_519]: https://github.com/apiflask/apiflask/issues/519
+[pr_690]: https://github.com/apiflask/apiflask/pull/690
+
 
 ## Version 2.4.0
 

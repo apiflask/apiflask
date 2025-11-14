@@ -1,6 +1,6 @@
 [project]
 name = "APIFlask"
-description = "A lightweight web API framework based on Flask and marshmallow-code projects."
+description = "A lightweight web API framework based on Flask."
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Grey Li", email = "withlihui@gmail.com" }]
