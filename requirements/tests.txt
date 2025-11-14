@@ -5,74 +5,81 @@
 #
 #    pip-compile-multi
 #
-asgiref==3.8.1
+asgiref==3.10.0
     # via -r requirements/tests.in
-attrs==24.2.0
+attrs==25.4.0
     # via
     #   jsonschema
     #   referencing
-certifi==2024.8.30
+certifi==2025.11.12
     # via requests
-charset-normalizer==3.3.2
+charset-normalizer==3.4.4
     # via requests
-coverage[toml]==7.6.1
+coverage[toml]==7.10.7
     # via pytest-cov
-exceptiongroup==1.2.2
+exceptiongroup==1.3.0
     # via pytest
-idna==3.8
+idna==3.11
     # via requests
-iniconfig==2.0.0
+iniconfig==2.1.0
     # via pytest
-jsonschema==4.23.0
+jsonschema==4.25.1
     # via
     #   openapi-schema-validator
     #   openapi-spec-validator
-jsonschema-path==0.3.3
+jsonschema-path==0.3.4
     # via openapi-spec-validator
-jsonschema-specifications==2023.12.1
+jsonschema-specifications==2025.9.1
     # via
     #   jsonschema
     #   openapi-schema-validator
-lazy-object-proxy==1.10.0
+lazy-object-proxy==1.12.0
     # via openapi-spec-validator
-openapi-schema-validator==0.6.2
+openapi-schema-validator==0.6.3
     # via openapi-spec-validator
-openapi-spec-validator==0.7.1
+openapi-spec-validator==0.7.2
     # via -r requirements/tests.in
-packaging==24.1
+packaging==25.0
     # via pytest
-pathable==0.4.3
+pathable==0.4.4
     # via jsonschema-path
-pluggy==1.5.0
+pluggy==1.6.0
+    # via
+    #   pytest
+    #   pytest-cov
+pygments==2.19.2
     # via pytest
-pytest==8.3.2
+pytest==8.4.2
     # via
     #   -r requirements/tests.in
     #   pytest-cov
-pytest-cov==5.0.0
+pytest-cov==7.0.0
     # via -r requirements/tests.in
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via jsonschema-path
-referencing==0.35.1
+referencing==0.36.2
     # via
     #   jsonschema
     #   jsonschema-path
     #   jsonschema-specifications
-requests==2.32.3
+requests==2.32.5
     # via jsonschema-path
 rfc3339-validator==0.1.4
     # via openapi-schema-validator
-rpds-py==0.20.0
+rpds-py==0.27.1
     # via
     #   jsonschema
     #   referencing
-six==1.16.0
+six==1.17.0
     # via rfc3339-validator
-tomli==2.0.1
+tomli==2.3.0
     # via
     #   coverage
     #   pytest
-typing-extensions==4.12.2
-    # via asgiref
-urllib3==2.2.2
+typing-extensions==4.15.0
+    # via
+    #   asgiref
+    #   exceptiongroup
+    #   referencing
+urllib3==2.5.0
     # via requests

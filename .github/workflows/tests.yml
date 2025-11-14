@@ -22,16 +22,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {name: '3.13 on Linux', python: '3.13', os: ubuntu-latest, tox: py313}
-          - {name: '3.13 on Windows', python: '3.13', os: windows-latest, tox: py313}
-          - {name: '3.13 on Mac', python: '3.13', os: macos-latest, tox: py313}
+          - {name: '3.14 on Linux', python: '3.14', os: ubuntu-latest, tox: py314}
+          - {name: '3.14 on Windows', python: '3.14', os: windows-latest, tox: py314}
+          - {name: '3.14 on Mac', python: '3.14', os: macos-latest, tox: py314}
+          - {name: '3.13', python: '3.13', os: ubuntu-latest, tox: py313}
           - {name: '3.12', python: '3.12', os: ubuntu-latest, tox: py312}
           - {name: '3.11', python: '3.11', os: ubuntu-latest, tox: py311}
           - {name: '3.10', python: '3.10', os: ubuntu-latest, tox: py310}
           - {name: '3.9', python: '3.9', os: ubuntu-latest, tox: py39}
-          - {name: '3.8', python: '3.8', os: ubuntu-latest, tox: py38}
-          - {name: 'PyPy', python: 'pypy-3.10', os: ubuntu-latest, tox: pypy310}
-          - {name: 'Minimum Versions', python: '3.8', os: ubuntu-latest, tox: 'min-versions'}
+          - {name: 'PyPy', python: 'pypy-3.11', os: ubuntu-latest, tox: pypy311}
+          - {name: 'Minimum Versions', python: '3.10', os: ubuntu-latest, tox: 'min-versions'}
           - {name: Style, python: '3.10', os: ubuntu-latest, tox: style}
           - {name: Docs, python: '3.10', os: ubuntu-latest, tox: docs}
           - {name: Typing, python: '3.10', os: ubuntu-latest, tox: typing}

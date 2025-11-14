@@ -123,7 +123,7 @@ class PydanticAdapter(SchemaAdapter):
                 # Combine form and files
                 data = request.form.to_dict()
                 for key, file in request.files.items():
-                    data[key] = file
+                    data[key] = file  # type: ignore
                 return self.model_class.model_validate(data)
 
             elif location == 'json_or_form':

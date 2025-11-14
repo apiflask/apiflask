@@ -2,6 +2,8 @@
 
 Released: -
 
+- Add support for Python 3.14.
+- Drop support for Python 3.8 and PyPy 3.10.
 - Decouple from marshmallow and add an adapter system to support different serialization/deserialization libraries ([pr #690](pr_690)).
 - Add support for Pydantic models as data schemas ([issue #519][issue_519]).
 
