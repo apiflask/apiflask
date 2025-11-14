@@ -1,5 +1,32 @@
 # Migration Guide
 
+## Migrate to APIFlask 3.x
+
+### Use Pydantic Models
+
+APIFlask 3.x introduces a new schema adapter system that supports both marshmallow schemas and Pydantic models. This change is **fully backward compatible**.
+
+You can now optionally use Pydantic models for type-hint based validation:
+
+```python
+from pydantic import BaseModel, Field
+
+class PetIn(BaseModel):
+    name: str = Field(..., min_length=1, max_length=50)
+    age: int = Field(..., ge=0, le=30)
+
+@app.input(PetIn)  # Works with the same decorators
+def create_pet(json_data):
+    return {'message': 'created'}
+```
+
+See the [Data Schema](/schema) documentation for comprehensive examples or check out the [Pydantic example](/examples) for a complete working application.
+
+!!! important "Output Validation Behavior"
+
+    Unlike marshmallow, **Pydantic validates output data** before sending responses. This means that if your view function returns data that does not conform to the output model schema, a 500 Internal Server Error will be raised.
+
+
 ## Migrate to APIFlask 2.x
 
 ### Use keyword argument for the `input` data

@@ -27,6 +27,29 @@ def get_unique_schema_name(spec: APISpec, base_name: str) -> str:
     return schema_name
 
 
+def extract_pydantic_defs(schema_dict: dict[str, t.Any], parent_name: str) -> dict[str, t.Any]:
+    """Extract $defs from Pydantic schema and return them with composed keys.
+
+    Arguments:
+        schema_dict: Schema dictionary from Pydantic model_json_schema()
+        parent_name: Parent schema name for composing nested schema names
+
+    Returns:
+        Dictionary of extracted definitions with composed keys like "ParentName.ChildName"
+    """
+    definitions = {}
+
+    if '$defs' in schema_dict:
+        for def_name, def_schema in schema_dict['$defs'].items():
+            composed_key = f'{parent_name}.{def_name}'
+            definitions[composed_key] = def_schema
+
+        # Remove $defs from the original schema
+        del schema_dict['$defs']
+
+    return definitions
+
+
 class OpenAPIHelper:
     """Helper class for generating OpenAPI schemas from different schema types.
 

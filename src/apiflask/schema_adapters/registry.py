@@ -42,10 +42,9 @@ class SchemaRegistry:
             self.register('marshmallow', MarshmallowAdapter)
 
         if HAS_PYDANTIC:
-            # from .pydantic import PydanticAdapter
+            from .pydantic import PydanticAdapter
 
-            # self.register('pydantic', PydanticAdapter)
-            pass
+            self.register('pydantic', PydanticAdapter)
 
     def register(self, name: str, adapter_class: type[SchemaAdapter]) -> None:
         """Register a schema adapter.
@@ -112,7 +111,7 @@ class SchemaRegistry:
         """Create a schema adapter for the given schema.
 
         Arguments:
-            schema: Schema object
+            schema: Schema object (can be a model or list[Model]/List[Model])
             schema_type: Optional schema type override
             schema_name: Optional schema name for dict schemas
 
@@ -122,8 +121,19 @@ class SchemaRegistry:
         Raises:
             ValueError: If schema type is not supported
         """
+        # Check if schema is a list type (list[Model] or List[Model])
+        many = False
+        inner_schema = schema
+
+        if hasattr(schema, '__origin__') and hasattr(schema, '__args__'):
+            if schema.__origin__ is list and len(schema.__args__) == 1:
+                # Extract the inner model from list[Model] or List[Model]
+                inner_schema = schema.__args__[0]
+                many = True
+
+        # Detect schema type from the inner schema
         if schema_type is None:
-            schema_type = self.detect_schema_type(schema)
+            schema_type = self.detect_schema_type(inner_schema)
 
         if schema_type not in self._adapters:
             available = ', '.join(self._adapters.keys())
@@ -132,7 +142,7 @@ class SchemaRegistry:
             )
 
         adapter_class = self._adapters[schema_type]
-        return adapter_class(schema, schema_name=schema_name)
+        return adapter_class(inner_schema, schema_name=schema_name, many=many)
 
     def get_available_types(self) -> list[str]:
         """Get list of available schema types.

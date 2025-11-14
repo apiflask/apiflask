@@ -7,10 +7,13 @@ Read the following sections in the Basic Usage chapter first for the basics on r
 
 Basic concepts on response formatting:
 
-- APIFlask uses [marshmallow](https://github.com/marshmallow-code/marshmallow) to handle
-  the response formatting.
-- The response data returned by the view function will only be formatting against your
+- APIFlask uses [marshmallow](https://github.com/marshmallow-code/marshmallow) or [Pydantic](https://pydantic.dev/) to handle
+  the response serialization.
+- For marshamllow, the response data returned by the view function will only be formatting against your
   schema, not validating.
+- For Pydantic, the response data returned by the view function will be validated
+  against your model schema before formatting. If the data is invalid, a 500 Internal Server Error
+  will be raised.
 - You can only declare one output (use one `app.output` decorator) for the JSON response body.
 - The error responses of your view can be declared with `app.doc(response=...)`.
 

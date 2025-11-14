@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import typing as t
 
+from flask import current_app
 from marshmallow import Schema
 from marshmallow import ValidationError as MarshmallowValidationError
 from webargs.flaskparser import FlaskParser as BaseFlaskParser
@@ -39,8 +40,6 @@ class FlaskParser(BaseFlaskParser):
         error_status_code: int,
         error_headers: t.Mapping[str, str],
     ) -> None:
-        from flask import current_app
-
         raise _ValidationError(
             error_status_code or current_app.config['VALIDATION_ERROR_STATUS_CODE'],
             current_app.config['VALIDATION_ERROR_DESCRIPTION'],
@@ -77,13 +76,17 @@ class MarshmallowAdapter(SchemaAdapter):
     """Schema adapter for marshmallow schemas."""
 
     def __init__(
-        self, schema: Schema | dict | type[Schema], schema_name: str | None = None
+        self,
+        schema: Schema | dict | type[Schema],
+        schema_name: str | None = None,
+        many: bool = False,
     ) -> None:
         """Initialize the marshmallow adapter.
 
         Arguments:
             schema: Marshmallow schema instance, dict, or schema class
             schema_name: Optional schema name for dict schemas
+            many: Whether this schema represents a list/array of items
         """
         if isinstance(schema, dict):
             # Convert dict schema to marshmallow schema
@@ -107,6 +110,8 @@ class MarshmallowAdapter(SchemaAdapter):
         else:
             self.schema = schema
 
+        self.many = many
+
     @property
     def schema_type(self) -> str:
         return 'marshmallow'
@@ -119,7 +124,11 @@ class MarshmallowAdapter(SchemaAdapter):
             try:
                 return self.schema.load(data)
             except MarshmallowValidationError as error:
-                raise _ValidationError(400, 'Validation error', error.messages) from error
+                raise _ValidationError(
+                    current_app.config['VALIDATION_ERROR_STATUS_CODE'],
+                    current_app.config['VALIDATION_ERROR_DESCRIPTION'],
+                    error.messages,
+                ) from error
 
         # Use webargs for other locations
         return parser.load_location_data(schema=self.schema, req=request, location=location)

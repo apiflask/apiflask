@@ -458,6 +458,7 @@ class APIScaffold:
                 f,
                 response={
                     'schema': body_schema,
+                    'schema_adapter_many': body_schema_adapter.many,  # Store the many flag
                     'status_code': status_code,
                     'description': description,
                     'example': example,
@@ -477,9 +478,13 @@ class APIScaffold:
                 """Serialize output using schema adapters."""
                 if isinstance(body_schema, FileSchema):
                     return obj  # type: ignore
-                # Handle many parameter for marshmallow compatibility
+                # Handle many parameter
                 if many is _sentinel:
-                    many = getattr(schema, 'many', False)  # type: ignore
+                    # Check adapter's many flag first (for list[Model] syntax)
+                    # Then check schema's many attribute (for marshmallow compatibility)
+                    many = getattr(body_schema_adapter, 'many', False) or getattr(
+                        schema, 'many', False
+                    )  # type: ignore
 
                 base_schema: OpenAPISchemaType = current_app.config['BASE_RESPONSE_SCHEMA']
                 if base_schema is not None and status_code != 204:

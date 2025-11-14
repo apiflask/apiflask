@@ -5,7 +5,9 @@
 
 [![Build status](https://github.com/apiflask/apiflask/actions/workflows/tests.yml/badge.svg)](https://github.com/apiflask/apiflask/actions) [![codecov](https://codecov.io/gh/apiflask/apiflask/branch/main/graph/badge.svg?token=2CFPCZ1DMY)](https://codecov.io/gh/apiflask/apiflask)
 
-APIFlask is a lightweight Python web API framework based on [Flask](https://github.com/pallets/flask) and [marshmallow-code](https://github.com/marshmallow-code) projects. It's easy to use, highly customizable, ORM/ODM-agnostic, and 100% compatible with the Flask ecosystem.
+APIFlask is a lightweight Python web API framework based on [Flask](https://github.com/pallets/flask). It's easy to use, highly customizable, ORM/ODM-agnostic, and 100% compatible with the Flask ecosystem.
+
+APIFlask supports both [marshmallow](https://github.com/marshmallow-code/marshmallow) schemas and [Pydantic](https://docs.pydantic.dev/) models through a pluggable schema adapter system, giving you the flexibility to choose the validation approach that best fits your project.
 
 With APIFlask, you will have:
 
@@ -122,6 +124,79 @@ def update_pet(pet_id, json_data):
         pets[pet_id][attr] = value
     return pets[pet_id]
 ```
+
+<details>
+<summary>You can use Pydantic models for type-hint based validation</summary>
+
+Install APIFlask with Pydantic support:
+
+```bash
+$ pip install "apiflask[pydantic]"
+```
+
+```python
+from enum import Enum
+
+from apiflask import APIFlask, abort
+from pydantic import BaseModel, Field
+
+app = APIFlask(__name__)
+
+
+class PetCategory(str, Enum):
+    DOG = 'dog'
+    CAT = 'cat'
+
+
+class PetOut(BaseModel):
+    id: int
+    name: str
+    category: PetCategory
+
+
+class PetIn(BaseModel):
+    name: str = Field(min_length=1, max_length=50)
+    category: PetCategory
+
+
+pets = [
+    {'id': 0, 'name': 'Kitty', 'category': 'cat'},
+    {'id': 1, 'name': 'Coco', 'category': 'dog'}
+]
+
+
+@app.get('/')
+def say_hello():
+    return {'message': 'Hello, Pydantic!'}
+
+
+@app.get('/pets')
+@app.output(list[PetOut])
+def get_pets():
+    return pets
+
+
+@app.get('/pets/<int:pet_id>')
+@app.output(PetOut)
+def get_pet(pet_id: int):
+    if pet_id > len(pets) or pet_id < 1:
+        abort(404)
+    return pets[pet_id - 1]
+
+
+@app.post('/pets')
+@app.input(PetIn, location='json')
+@app.output(PetOut, status_code=201)
+def create_pet(json_data: PetIn):
+    # the validated and parsed input data will
+    # be injected into the view function as a Pydantic model instance
+    new_id = len(pets) + 1
+    new_pet = PetOut(id=new_id, name=json_data.name, category=json_data.category)
+    pets.append(new_pet)
+    return new_pet
+```
+
+</details>
 
 <details>
 <summary>You can also use class-based views based on <code>MethodView</code></summary>
@@ -288,23 +363,6 @@ def hello():
 
 In a word, to make Web API development in Flask more easily, APIFlask provides `APIFlask` and `APIBlueprint` to extend Flask's `Flask` and `Blueprint` objects and it also ships with some helpful utilities. Other than that, you are actually using Flask.
 
-
-## Relationship with marshmallow
-
-APIFlask accepts marshmallow schema as data schema, uses webargs to validate the request data against the schema, and uses apispec to generate the OpenAPI representation from the schema.
-
-You can build marshmallow schemas just like before, but APIFlask also exposes some marshmallow APIs for convenience:
-
-- `apiflask.Schema`: The base marshmallow schema class.
-- `apiflask.fields`: The marshmallow fields, contain the fields from both marshmallow and Flask-Marshmallow. Beware that the aliases (`Url`, `Str`, `Int`, `Bool`, etc.) were removed.
-- `apiflask.validators`: The marshmallow validators.
-
-```python
-from apiflask import Schema
-from apiflask.fields import Integer, String
-from apiflask.validators import Length, OneOf
-from marshmallow import pre_load, post_dump, ValidationError
-```
 
 ## Credits
 
