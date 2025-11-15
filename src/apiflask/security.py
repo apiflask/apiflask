@@ -204,9 +204,9 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
         if not self.scheme.lower() == 'bearer' or self.header is not None:
             name = 'ApiKeyAuth'
             warnings.warn(
-                'The API key authorization by HTTPTokenAuth is deprecated and will be removed in'
-                ' APIFlask 4.0.0. Use '
-                " 'HTTPAPIKeyAuth' instead.",
+                'The API key authorization by HTTPTokenAuth is deprecated and will be removed in '
+                'APIFlask 4.0.0. Use '
+                'APIKeyHeaderAuth, APIKeyCookieAuth, or APIKeyQueryAuth instead.',
                 DeprecationWarning,
                 stacklevel=2,
             )
