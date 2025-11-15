@@ -21,6 +21,7 @@ jobs:
       - run: python -m build
       - uses: actions/upload-artifact@v5
         with:
+          name: dist
           path: ./dist
   create-release:
     # Upload the sdist, wheels to a GitHub release. They remain
@@ -47,6 +48,9 @@ jobs:
       id-token: write
     steps:
       - uses: actions/download-artifact@v6
+        with:
+          name: dist
+          path: dist
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
