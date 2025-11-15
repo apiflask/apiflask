@@ -99,7 +99,7 @@ class HTTPBasicAuth(_AuthBase, BaseHTTPBasicAuth, SecurityScheme):
     auth = HTTPBasicAuth()
     ```
 
-    *Version changed: 2.4.1*
+    *Version changed: 3.0.0*
 
     - Add parameter `name`.
 
@@ -191,7 +191,7 @@ class HTTPTokenAuth(_AuthBase, BaseHTTPTokenAuth, SecurityScheme):
             security_scheme_name: The name of the OpenAPI security scheme,
                 defaults to `BearerAuth` or `ApiKeyAuth`.
 
-        *Version changed: 2.4.1*
+        *Version changed: 3.0.0*
 
         - Add parameter `name`.
 
@@ -305,7 +305,7 @@ class APIKeyHeaderAuth(_BaseAPIKeyAuth):
             security_scheme_name: The name of the OpenAPI security scheme,
                 defaults to `ApiKeyAuth`.
 
-        *Version added: 2.4.1*
+        *Version added: 3.0.0*
         """
         super().__init__(
             name=name,
@@ -359,7 +359,7 @@ class APIKeyCookieAuth(_BaseAPIKeyAuth):
             security_scheme_name: The name of the OpenAPI security scheme,
                 defaults to `ApiKeyAuth`.
 
-        *Version added: 2.4.1*
+        *Version added: 3.0.0*
         """
         super().__init__(
             name=name,
@@ -422,7 +422,7 @@ class APIKeyQueryAuth(_BaseAPIKeyAuth):
             security_scheme_name: The name of the OpenAPI security scheme,
                 defaults to `ApiKeyAuth`.
 
-        *Version added: 2.4.1*
+        *Version added: 3.0.0*
         """
         super().__init__(
             name=name,
@@ -459,7 +459,7 @@ class MultiAuth(BaseMultiAuth):
     multi_auth = MultiAuth(basic_auth, token_auth)
     ```
 
-    *Version added: 2.4.1*
+    *Version added: 3.0.0*
     """
 
     def __init__(self, main_auth: HTTPAuthType, *additional_auth: tuple[HTTPAuthType]):
