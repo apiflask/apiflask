@@ -209,8 +209,6 @@ the default schema name resolver used in APIFlask:
 ```python
 def schema_name_resolver(schema):
     name = schema.__class__.__name__  # get schema class name
-    if name.endswith('Schema'):  # remove the "Schema" suffix
-        name = name[:-6] or name
     if schema.partial:  # add a "Update" suffix for partial schema
         name += 'Update'
     return name
@@ -225,7 +223,7 @@ from apiflask import APIFlask
 
 def my_schema_name_resolver(schema):
     name = schema.__class__.__name__
-    if name.endswith('Schema'):
+    if name.endswith('Schema'):  # remove the "Schema" suffix
         name = name[:-6] or name
     if schema.partial:
         name += 'Partial'

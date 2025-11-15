@@ -238,8 +238,6 @@ class APIFlask(APIScaffold, Flask):
             # this is the default schema name resolver used in APIFlask
             def schema_name_resolver(schema):
                 name = schema.__class__.__name__  # get schema class name
-                if name.endswith('Schema'):  # remove the "Schema" suffix
-                    name = name[:-6] or name
                 if schema.partial:  # add a "Update" suffix for partial schema
                     name += 'Update'
                 return name
@@ -1346,7 +1344,9 @@ class APIFlask(APIScaffold, Flask):
         else:
             schema_class_id = id(schema_obj.__class__)
 
-        if schema_class_id in registered_schema_classes:
+        if schema_class_id in registered_schema_classes and not (
+            hasattr(schema_obj, 'partial') and schema_obj.partial
+        ):  # type: ignore
             # Reuse the name from the first registration
             schema_name = registered_schema_classes[schema_class_id]
         else:
@@ -1355,12 +1355,7 @@ class APIFlask(APIScaffold, Flask):
 
             # Handle name conflicts with different schema classes
             if schema_name in spec.components.schemas:
-                # For generated schemas, always create unique names
-                if schema_name.startswith('Generated'):
-                    schema_name = get_unique_schema_name(spec, schema_name)
-                else:
-                    # For named schemas, create unique name for different class
-                    schema_name = get_unique_schema_name(spec, schema_name)
+                schema_name = get_unique_schema_name(spec, schema_name)
 
             # Register schema - convert to OpenAPI dict for non-marshmallow schemas
             try:

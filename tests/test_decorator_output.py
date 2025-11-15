@@ -182,13 +182,13 @@ def test_output_with_dict_schema(app, client):
         rv.json['paths']['/baz']['get']['responses']['200']['content']['application/json'][
             'schema'
         ]['$ref']
-        == '#/components/schemas/Generated'
+        == '#/components/schemas/GeneratedSchema'
     )
     assert (
         rv.json['paths']['/spam']['get']['responses']['200']['content']['application/json'][
             'schema'
         ]['$ref']
-        == '#/components/schemas/Generated1'
+        == '#/components/schemas/GeneratedSchema1'
     )
 
 

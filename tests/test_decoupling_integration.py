@@ -156,8 +156,8 @@ def test_body_schema_registration_generated_schemas(app, client):
     generated_schemas = [name for name in schemas if name.startswith('Generated')]
 
     assert len(generated_schemas) == 2
-    assert 'Generated' in generated_schemas
-    assert 'Generated1' in generated_schemas
+    assert 'GeneratedSchema' in generated_schemas
+    assert 'GeneratedSchema1' in generated_schemas
 
 
 def test_parameters_use_openapi_helper(app, client):
@@ -356,7 +356,7 @@ def test_unique_schema_names_for_different_schemas(app, client):
     osv.validate(rv.json)
 
     # Same schema class should be registered once and reused
-    assert 'Item' in rv.json['components']['schemas']
+    assert 'ItemSchema' in rv.json['components']['schemas']
 
     post1_schema = rv.json['paths']['/items1']['post']['requestBody']['content'][
         'application/json'
