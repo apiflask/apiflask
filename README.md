@@ -128,12 +128,6 @@ def update_pet(pet_id, json_data):
 <details>
 <summary>You can use Pydantic models for type-hint based validation</summary>
 
-Install APIFlask with Pydantic support:
-
-```bash
-$ pip install "apiflask[pydantic]"
-```
-
 ```python
 from enum import Enum
 
@@ -199,66 +193,6 @@ def create_pet(json_data: PetIn):
 </details>
 
 <details>
-<summary>You can also use class-based views based on <code>MethodView</code></summary>
-
-```python
-from apiflask import APIFlask, Schema, abort
-from apiflask.fields import Integer, String
-from apiflask.validators import Length, OneOf
-from flask.views import MethodView
-
-app = APIFlask(__name__)
-
-pets = [
-    {'id': 0, 'name': 'Kitty', 'category': 'cat'},
-    {'id': 1, 'name': 'Coco', 'category': 'dog'}
-]
-
-
-class PetIn(Schema):
-    name = String(required=True, validate=Length(0, 10))
-    category = String(required=True, validate=OneOf(['dog', 'cat']))
-
-
-class PetOut(Schema):
-    id = Integer()
-    name = String()
-    category = String()
-
-
-class Hello(MethodView):
-
-    # use HTTP method name as class method name
-    def get(self):
-        return {'message': 'Hello!'}
-
-
-class Pet(MethodView):
-
-    @app.output(PetOut)
-    def get(self, pet_id):
-        """Get a pet"""
-        if pet_id > len(pets) - 1:
-            abort(404)
-        return pets[pet_id]
-
-    @app.input(PetIn(partial=True))
-    @app.output(PetOut)
-    def patch(self, pet_id, json_data):
-        """Update a pet"""
-        if pet_id > len(pets) - 1:
-            abort(404)
-        for attr, value in json_data.items():
-            pets[pet_id][attr] = value
-        return pets[pet_id]
-
-
-app.add_url_rule('/', view_func=Hello.as_view('hello'))
-app.add_url_rule('/pets/<int:pet_id>', view_func=Pet.as_view('pet'))
-```
-</details>
-
-<details>
 <summary>Or use <code>async def</code></summary>
 
 ```bash
@@ -284,12 +218,6 @@ See <em><a href="https://flask.palletsprojects.com/async-await">Using async and 
 </details>
 
 Save this as `app.py`, then run it with:
-
-```bash
-$ flask run --reload
-```
-
-Or run in debug mode:
 
 ```bash
 $ flask run --debug
