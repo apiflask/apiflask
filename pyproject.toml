@@ -4,9 +4,9 @@ description = "A lightweight web API framework based on Flask."
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Grey Li", email = "withlihui@gmail.com" }]
-version = "2.4.0"
+version = "3.0.0"
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Web Environment",
     "Framework :: Flask",
     "Intended Audience :: Developers",
