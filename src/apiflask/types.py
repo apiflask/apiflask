@@ -12,8 +12,10 @@ if t.TYPE_CHECKING:  # pragma: no cover
     from .fields import Field  # noqa: F401
     from .schemas import Schema  # noqa: F401
     from .security import HTTPBasicAuth  # noqa: F401
-    from .security import HTTPTokenAuth  # noqa: F401\
+    from .security import HTTPTokenAuth  # noqa: F401
     from .security import APIKeyHeaderAuth  # noqa: F401
+    from .security import APIKeyCookieAuth  # noqa: F401
+    from .security import APIKeyQueryAuth  # noqa: F401
     from .exceptions import HTTPError  # noqa: F401
     from .views import View  # noqa: F401
 
@@ -54,7 +56,9 @@ ErrorCallbackType = t.Callable[['HTTPError'], ResponseReturnValueType]
 DictSchemaType = t.Dict[str, t.Union['Field', type]]
 SchemaType = t.Union['Schema', t.Type['Schema'], DictSchemaType]
 OpenAPISchemaType = t.Union['Schema', t.Type['Schema'], dict]
-HTTPAuthType = t.Union['HTTPBasicAuth', 'HTTPTokenAuth', 'APIKeyHeaderAuth']
+HTTPAuthType = t.Union[
+    'HTTPBasicAuth', 'HTTPTokenAuth', 'APIKeyHeaderAuth', 'APIKeyCookieAuth', 'APIKeyQueryAuth'
+]
 TagsType = t.Union[t.List[str], t.List[t.Dict[str, t.Any]]]
 ViewClassType = t.Type['View']
 ViewFuncOrClassType = t.Union[t.Callable, ViewClassType]
