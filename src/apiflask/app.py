@@ -20,8 +20,6 @@ from flask import url_for
 from flask.config import ConfigAttribute
 from flask.wrappers import Response
 
-from apiflask.schema_adapters import registry
-
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from flask_marshmallow import fields
@@ -40,6 +38,10 @@ from .route import route_patch
 from .schemas import Schema
 from .schemas import FileSchema
 from .schemas import EmptySchema
+from .schema_adapters import registry
+from .security import MultiAuth
+from .security import _AuthBase
+from .types import SecurityScheme
 from .types import ResponseReturnValueType, ResponsesType
 from .types import ViewFuncType
 from .types import ErrorCallbackType
@@ -53,7 +55,6 @@ from .openapi import default_response
 from .openapi import get_tag
 from .openapi import get_operation_tags
 from .openapi import get_path_summary
-from .openapi import get_auth_name
 from .openapi import get_argument
 from .openapi import get_security_and_security_schemes
 from .openapi_adapters import get_unique_schema_name
@@ -369,6 +370,7 @@ class APIFlask(APIScaffold, Flask):
         self.spec_plugins: list[BasePlugin] = spec_plugins or []
         self._spec: dict | str | None = None
         self._auth_blueprints: dict[str, t.Dict[str, t.Any]] = {}
+        self._auths: set[HTTPAuthType | MultiAuth] = set()
 
         self._register_openapi_blueprint()
         self._register_error_handlers()
@@ -745,14 +747,30 @@ class APIFlask(APIScaffold, Flask):
     def _collect_security_info(self) -> t.Tuple[list[str], list[HTTPAuthType]]:
         """Detect `auth_required` on blueprint before_request functions and view functions."""
         # security schemes
-        auth_names: list[str] = []
-        auth_schemes: list[HTTPAuthType] = []
+        auth_names: set[str] = set()
 
-        def _update_auth_info(auth: HTTPAuthType) -> None:
-            # update auth_schemes and auth_names
-            auth_schemes.append(auth)
-            auth_name: str = get_auth_name(auth, auth_names)
-            auth_names.append(auth_name)
+        def _register_base_auth(auth: HTTPAuthType) -> None:
+            if not isinstance(auth, SecurityScheme):
+                raise TypeError('Unknown authentication scheme.')
+
+            if auth.name in auth_names:
+                warnings.warn(
+                    f"The auth scheme name '{auth.name}' has existed, "
+                    'so it will be overwritten.',
+                    stacklevel=2,
+                )
+
+            self._auths.add(auth)
+            auth_names.add(auth.name)
+
+        def _update_auth_info(auth: HTTPAuthType | MultiAuth) -> None:
+            if isinstance(auth, MultiAuth):
+                self._auths.add(auth)
+                for base_auth in auth._auths:
+                    _register_base_auth(base_auth)
+                return
+
+            _register_base_auth(auth)
 
         # collect auth info on blueprint before_request functions
         for blueprint_name, funcs in self.before_request_funcs.items():
@@ -762,7 +780,7 @@ class APIFlask(APIScaffold, Flask):
             for f in funcs:
                 if hasattr(f, '_spec'):  # pragma: no cover
                     auth = f._spec.get('auth')  # type: ignore
-                    if auth is not None and auth not in auth_schemes:
+                    if auth is not None and auth not in self._auths:
                         self._auth_blueprints[blueprint_name] = {
                             'auth': auth,
                             'roles': f._spec.get('roles'),  # type: ignore
@@ -773,16 +791,20 @@ class APIFlask(APIScaffold, Flask):
             view_func: ViewFuncType = self.view_functions[rule.endpoint]  # type: ignore
             if hasattr(view_func, '_spec'):
                 auth = view_func._spec.get('auth')
-                if auth is not None and auth not in auth_schemes:
+                if auth is not None and auth not in self._auths:
                     _update_auth_info(auth)
             # method views
             if hasattr(view_func, '_method_spec'):
                 for method_spec in view_func._method_spec.values():
                     auth = method_spec.get('auth')
-                    if auth is not None and auth not in auth_schemes:
+                    if auth is not None and auth not in self._auths:
                         _update_auth_info(auth)
 
-        return auth_names, auth_schemes
+        # only base authentications have a schema, multiple authentication consists of base authentications # noqa: E501
+        base_auths = [auth for auth in self._auths if isinstance(auth, _AuthBase)]
+        return [security_schema.name for security_schema in base_auths], [
+            security_schema for security_schema in base_auths
+        ]
 
     def _generate_spec(self) -> APISpec:
         """Generate the spec, return an instance of `apispec.APISpec`.
@@ -1234,9 +1256,15 @@ class APIFlask(APIScaffold, Flask):
 
                     # view-wide auth
                     if view_func_auth:
-                        operation['security'] = [
-                            {security[view_func_auth]: view_func._spec['roles']}
-                        ]
+                        if isinstance(view_func_auth, MultiAuth):
+                            operation['security'] = [
+                                {base_auth.name: view_func._spec['roles']}
+                                for base_auth in view_func_auth._auths
+                            ]
+                        else:
+                            operation['security'] = [
+                                {security[view_func_auth]: view_func._spec['roles']}
+                            ]
 
                 operations[method.lower()] = operation
 
@@ -1255,7 +1283,7 @@ class APIFlask(APIScaffold, Flask):
                     argument = get_argument(argument_type, argument_name)
                     arguments.append(argument)
 
-                for _method, operation in operations.items():
+                for _, operation in operations.items():
                     operation['parameters'] = arguments + operation['parameters']
 
             path: str = re.sub(r'<([^<:]+:)?', '{', rule.rule).replace('>', '}')

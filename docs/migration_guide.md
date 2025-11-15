@@ -20,11 +20,22 @@ def create_pet(json_data):
     return {'message': 'created'}
 ```
 
-See the [Data Schema](/schema) documentation for comprehensive examples or check out the [Pydantic example](/examples) for a complete working application.
+See the [Data Schema](/schema) documentation for comprehensive examples or check out the [Pydantic example](https://github.com/apiflask/apiflask/blob/main/examples/pydantic/app.py) for a complete working application.
 
 !!! important "Output Validation Behavior"
 
     Unlike marshmallow, **Pydantic validates output data** before sending responses. This means that if your view function returns data that does not conform to the output model schema, a 500 Internal Server Error will be raised.
+
+
+### Use `security.APIKey*Auth` for API Key Authentication
+
+In APIFlask 3.x, the API key authentication classes have been refactored for better clarity. Instead of using `HTTPTokenAuth` for API key authentication, you should now use one of the following classes based on where the API key is expected:
+
+- `APIKeyHeaderAuth` for API keys in request headers.
+- `APIKeyCookieAuth` for API keys in cookies.
+- `APIKeyQueryAuth` for API keys in query parameters.
+
+See the [API documentation](/api/security) and the [full example](https://github.com/apiflask/apiflask/blob/main/examples/auth/apikey_auth/app.py) for more details.
 
 
 ## Migrate to APIFlask 2.x

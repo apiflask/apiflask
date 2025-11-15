@@ -1,20 +1,19 @@
 import typing as t
 from flask import current_app
-from apiflask import APIFlask, HTTPTokenAuth, Schema, abort
-from apiflask.fields import String
+from apiflask import APIFlask, APIKeyHeaderAuth, abort
 from authlib.jose import jwt, JoseError
 
 app = APIFlask(__name__)
-auth = HTTPTokenAuth()
+auth = APIKeyHeaderAuth()
 app.config['SECRET_KEY'] = 'secret-key'
 
 
 class User:
-    def __init__(self, id: int, secret: str):
+    def __init__(self, id: int, username: str):
         self.id = id
-        self.secret = secret
+        self.username = username
 
-    def get_token(self):
+    def get_apikey(self):
         header = {'alg': 'HS256'}
         payload = {'id': self.id}
         return jwt.encode(header, payload, current_app.config['SECRET_KEY']).decode()
@@ -23,7 +22,6 @@ class User:
 users = [
     User(1, 'lorem'),
     User(2, 'ipsum'),
-    User(3, 'test'),
 ]
 
 
@@ -32,10 +30,10 @@ def get_user_by_id(id: int) -> t.Union[User, None]:
 
 
 @auth.verify_token
-def verify_token(token: str) -> t.Union[User, None]:
+def verify_apikey(apikey: str) -> t.Union[User, None]:
     try:
         data = jwt.decode(
-            token.encode('ascii'),
+            apikey.encode('ascii'),
             current_app.config['SECRET_KEY'],
         )
         id = data['id']
@@ -47,19 +45,14 @@ def verify_token(token: str) -> t.Union[User, None]:
     return user
 
 
-class Token(Schema):
-    token = String()
-
-
-@app.post('/token/<int:id>')
-@app.output(Token)
+@app.post('/apikey/<int:id>')
 def get_token(id: int):
     if get_user_by_id(id) is None:
         abort(404)
-    return {'token': f'Bearer {get_user_by_id(id).get_token()}'}
+    return {'api_key': f'{get_user_by_id(id).get_apikey()}'}
 
 
 @app.get('/name')
 @app.auth_required(auth)
-def get_secret():
-    return auth.current_user.secret
+def get_username():
+    return auth.current_user.username

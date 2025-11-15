@@ -12,8 +12,12 @@ from .schemas import EmptySchema as EmptySchema
 from .schemas import FileSchema as FileSchema
 from .schemas import PaginationSchema as PaginationSchema
 from .schemas import Schema as Schema
+from .security import APIKeyCookieAuth as APIKeyCookieAuth
+from .security import APIKeyHeaderAuth as APIKeyHeaderAuth
+from .security import APIKeyQueryAuth as APIKeyQueryAuth
 from .security import HTTPBasicAuth as HTTPBasicAuth
 from .security import HTTPTokenAuth as HTTPTokenAuth
+from .security import MultiAuth as MultiAuth
 
 
 def __getattr__(name: str) -> t.Any:  # pragma: no cover

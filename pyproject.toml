@@ -29,7 +29,7 @@ dependencies = [
     "flask-marshmallow >= 1.0.0",
     "marshmallow >= 3.20",
     "webargs >= 8.3",
-    "flask-httpauth >= 4.4.0",
+    "flask-httpauth >= 4.8.0",
     "apispec >= 6.0.0",
     "pydantic[email] >= 2.0",
 ]
