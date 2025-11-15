@@ -3,6 +3,7 @@ from marshmallow.validate import Range
 
 from apiflask import Schema
 from apiflask.fields import Decimal
+from apiflask.fields import DelimitedList
 from apiflask.fields import File
 from apiflask.fields import Integer
 from apiflask.fields import List
@@ -98,3 +99,7 @@ class ResponseHeader(Schema):
     x_token = String(
         data_key='X-Token', required=True, metadata={'description': 'A custom token header'}
     )
+
+
+class DelimitedListQuery(Schema):
+    tags = DelimitedList(String)

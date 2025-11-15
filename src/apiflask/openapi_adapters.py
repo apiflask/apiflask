@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import typing as t
 
+from .fields import DelimitedList
 from .schema_adapters import registry
 
 if t.TYPE_CHECKING:
@@ -79,6 +80,10 @@ class OpenAPIHelper:
                     openapi_version='3.0.3',
                     plugins=[self._marshmallow_plugin],
                 )
+                self._marshmallow_plugin.converter.add_parameter_attribute_function(  # type: ignore
+                    self.delimited_list2param
+                )
+
             except ImportError:
                 self._marshmallow_plugin = None
             finally:
@@ -181,6 +186,14 @@ class OpenAPIHelper:
             return parameters
         except Exception:
             return []
+
+    def delimited_list2param(self, field, **kwargs) -> dict:  # type: ignore[no-untyped-def]
+        """Set correct OpenAPI parameter attributes for DelimitedList fields."""
+        ret: dict = {}
+        if isinstance(field, DelimitedList):
+            ret['explode'] = False
+            ret['style'] = 'form'
+        return ret
 
     def _extract_marshmallow_parameters(
         self, schema: t.Any, location: str

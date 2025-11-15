@@ -12,6 +12,7 @@ Released: -
 - Remove implicit schema naming change (i.e. 'Schema' suffix stripping) ([pr #693](pr_693)).
 - Deprecate the `EmptySchema` class. Use empty dict `{}` instead ([pr #694][pr_694]).
 - Remove the deprecated `__version__` attribute. Use feature detection or `importlib.metadata.version("apiflask")` instead.
+- Fix the support for marshmallow DelimitedList field in OpenAPI spec generation ([issue #416][issue_416]).
 
 [issue_519]: https://github.com/apiflask/apiflask/issues/519
 [pr_690]: https://github.com/apiflask/apiflask/pull/690
@@ -20,6 +21,7 @@ Released: -
 [pr_655]: https://github.com/apiflask/apiflask/pull/655
 [pr_693]: https://github.com/apiflask/apiflask/pull/693
 [pr_694]: https://github.com/apiflask/apiflask/pull/694
+[issue_416]: https://github.com/apiflask/apiflask/issues/416
 
 
 ## Version 2.4.0
