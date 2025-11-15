@@ -1,6 +1,6 @@
 ## Version 3.0.0
 
-Released: 2025/11/15<br>Codename: Yixian 逸仙
+Released: 2025/11/15<br>Codename: Yixian | 逸仙
 
 - Add support for Python 3.14.
 - Drop support for Python 3.8 and PyPy 3.10.
@@ -162,7 +162,7 @@ Released: 2023/8/15
 
 ## Version 2.0.0
 
-Released: 2023/7/26<br>Codename: Gongqing 共青
+Released: 2023/7/26<br>Codename: Gongqing ｜ 共青
 
 Please see the [migration guide](/migration_guide/#migrate-to-apiflask-2x) for APIFlask 1.x -> 2.0.0.
 
@@ -358,7 +358,7 @@ Released: 2022/5/17
 
 ## Version 1.0.0
 
-Released: 2022/5/4<br>Codename: Wujiaochang 五角场
+Released: 2022/5/4<br>Codename: Wujiaochang ｜ 五角场
 
 - Remove the deprecated standalone decorators: `input`, `output`, `doc`, and `auth_required`.
   Use app/blueprint decorators instead (e.g. `input()` -> `app.input()`/`bp.input()`).
