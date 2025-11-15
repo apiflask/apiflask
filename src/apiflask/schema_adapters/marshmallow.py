@@ -157,16 +157,18 @@ class MarshmallowAdapter(SchemaAdapter):
         return result
 
     def get_schema_name(self) -> str:
-        """Get schema name for OpenAPI documentation."""
+        """Get schema name for OpenAPI documentation.
+
+        *Version changed: 3.0.0*
+
+        - Remove "Schema" suffix stripping from schema names.
+
+        """
         schema = self.schema
         if isinstance(schema, type):  # pragma: no cover
             schema = schema()  # type: ignore
 
         name: str = schema.__class__.__name__
-
-        if name.endswith('Schema'):
-            # TODO: consider keeping the original name
-            name = name[:-6] or name
         if hasattr(schema, 'partial') and schema.partial:
             name += 'Update'
         return name

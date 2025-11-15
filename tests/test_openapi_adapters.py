@@ -171,16 +171,6 @@ class TestOpenAPIHelper:
             params = helper.schema_to_parameters(schema, location=input_loc)
             assert all(p['in'] == expected_loc for p in params)
 
-    def test_get_schema_name_marshmallow(self):
-        """Test get_schema_name with marshmallow schema."""
-        helper = OpenAPIHelper()
-        schema = SimpleSchema()
-
-        name = helper.get_schema_name(schema)
-
-        # Schema name should strip 'Schema' suffix
-        assert name == 'Simple'
-
     def test_get_schema_name_dict(self):
         """Test get_schema_name with dict schema."""
         helper = OpenAPIHelper()
@@ -189,7 +179,7 @@ class TestOpenAPIHelper:
         name = helper.get_schema_name(schema)
 
         # Dict schemas get 'Generated' prefix
-        assert name == 'Generated'
+        assert name == 'GeneratedSchema'
 
     def test_schema_to_spec_unknown_type(self):
         """Test schema_to_spec with unknown schema type."""

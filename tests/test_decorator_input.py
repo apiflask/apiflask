@@ -367,13 +367,13 @@ def test_input_with_dict_schema(app, client):
         rv.json['paths']['/baz']['post']['requestBody']['content']['application/json']['schema'][
             '$ref'
         ]
-        == '#/components/schemas/Generated'
+        == '#/components/schemas/GeneratedSchema'
     )
     assert (
         rv.json['paths']['/spam']['post']['requestBody']['content']['application/json']['schema'][
             '$ref'
         ]
-        == '#/components/schemas/Generated1'
+        == '#/components/schemas/GeneratedSchema1'
     )
 
 

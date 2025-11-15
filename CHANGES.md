@@ -8,7 +8,8 @@ Released: -
 - Add support for Pydantic models as data schemas ([issue #519][issue_519]).
 - Fix subclassed MethodView resources cannot be added as URL rules ([issue #618][issue_618]).
 - Add support for API key auth with `APIKeyHeaderAuth`, `APIKeyCookieAuth`, and `APIKeyQueryAuth`. Add support for runtime selection of authentication methods with `MultiAuth`. Deprecate the API key auth with HTTPTokenAuth ([issue #604][issue_604]).
-- Removed implicit security scheme naming rules ([pr #665](pr_665)).
+- Remove implicit security scheme naming rules ([pr #665](pr_665)).
+- Remove implicit schema naming change (i.e. 'Schema' suffix stripping).
 
 [issue_519]: https://github.com/apiflask/apiflask/issues/519
 [pr_690]: https://github.com/apiflask/apiflask/pull/690

@@ -113,15 +113,6 @@ class TestMarshmallowAdapter:
 
         assert isinstance(adapter.schema, EmptySchema)
 
-    def test_get_schema_name_regular(self):
-        """Test get_schema_name with regular schema."""
-        adapter = MarshmallowAdapter(PetSchema())
-
-        name = adapter.get_schema_name()
-
-        # Should strip 'Schema' suffix
-        assert name == 'Pet'
-
     def test_get_schema_name_partial(self):
         """Test get_schema_name with partial schema."""
         schema = PetSchema(partial=True)
@@ -130,18 +121,7 @@ class TestMarshmallowAdapter:
         name = adapter.get_schema_name()
 
         # Partial schemas should append 'Update'
-        assert name == 'PetUpdate'
-
-    def test_get_schema_name_no_suffix(self):
-        """Test get_schema_name when name doesn't end with Schema."""
-
-        class Pet(Schema):
-            name = fields.String()
-
-        adapter = MarshmallowAdapter(Pet())
-        name = adapter.get_schema_name()
-
-        assert name == 'Pet'
+        assert name == 'PetSchemaUpdate'
 
     # Note: get_openapi_schema is tested via openapi_helper in integration tests
     # Direct adapter usage is internal and may vary
