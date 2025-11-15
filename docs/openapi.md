@@ -787,7 +787,7 @@ def get_foo():
 
     This feature was added in the [version 2.0.0](/changelog/#version-0200).
 
-When you create an endpoint to return a file, the `FileSchema` should be used:
+When you create an endpoint to return a file, the `FileSchema` should be used (only marshmallow is supported for now):
 
 ```python
 from apiflask.schemas import FileSchema
@@ -800,16 +800,7 @@ def get_image(filename):
 ```
 
 Acoording the OpenAPI spec, the schema may be omit if the file format is binary, so you
-can also use `EmptySchema`:
-
-```python
-from apiflask.schemas import EmptySchema
-
-@app.get('/images/<filename>')
-@app.output(EmptySchema, content_type='image/png')
-```
-
-Or:
+can also use an empty dict `{}` as the schema:
 
 ```python
 @app.get('/images/<filename>')

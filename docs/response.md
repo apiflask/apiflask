@@ -20,7 +20,7 @@ Basic concepts on response formatting:
 
 ## Pagination support
 
-APIFlask provides two utilies for pagination:
+For marshmallow, APIFlask provides two utilies for pagination:
 
 - [apiflask.PaginationSchema](/api/schemas/#apiflask.schemas.PaginationSchema)
 - [apiflask.pagination_builder](/api/helpers/#apiflask.helpers.pagination_builder)
