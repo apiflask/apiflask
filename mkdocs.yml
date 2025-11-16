@@ -57,7 +57,10 @@ nav:
   - Basic Usage: usage.md
   - Request Handling: request.md
   - Response Formatting: response.md
-  - Data Schema: schema.md
+  - Data Schema:
+    - Data Schema: schema/index.md
+    - With marshmallow: schema/marshmallow.md
+    - With Pydantic: schema/pydantic.md
   - Authentication: authentication.md
   - OpenAPI Generating: openapi.md
   - API Documentations: api-docs.md
