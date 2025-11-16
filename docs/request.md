@@ -29,7 +29,7 @@ The following location are supported:
 
 !!! tip
 
-    Cookie parameters don't work well with OpenAPI, please read [this issue](https://github.com/apiflask/apiflask/issues/705) for more details.
+    Cookie parameters don't work well with OpenAPI, see this [issue](https://github.com/apiflask/apiflask/issues/705) for more details.
 
 You can declare multiple input data with multiple `app.input` decorators. However,
 you can only declare one body location for your view function, one of:
