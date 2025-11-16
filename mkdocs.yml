@@ -58,12 +58,12 @@ nav:
   - Request Handling: request.md
   - Response Formatting: response.md
   - Data Schema:
-    - Data Schema: schema/index.md
-    - With marshmallow: schema/marshmallow.md
-    - With Pydantic: schema/pydantic.md
+    - Overview: schema/index.md
+    - marshmallow: schema/marshmallow.md
+    - Pydantic: schema/pydantic.md
   - Authentication: authentication.md
   - OpenAPI Generating: openapi.md
-  - API Documentations: api-docs.md
+  - API Documentation: api-docs.md
   - Configuration: configuration.md
   - Error Handling: error-handling.md
   - Examples: examples.md
