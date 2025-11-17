@@ -8,6 +8,7 @@ from apiflask import APIFlask
 # Skip all tests in this module if pydantic is not available
 pydantic = pytest.importorskip('pydantic')
 BaseModel = pydantic.BaseModel
+Field = pydantic.Field
 
 
 class UserModel(BaseModel):
@@ -553,3 +554,48 @@ class TestPydanticIntegration:
             assert '$ref' in single_schema
             assert single_schema['$ref'] == '#/components/schemas/UserModel'
             assert 'type' not in single_schema  # Should not be wrapped in array
+
+    def test_response_alias_with_pydantic(self):
+        """Test response model Field alias with Pydantic."""
+
+        class AliasUserModel(BaseModel):
+            id: int = Field(alias='user_id')
+            name: str = Field(alias='username')
+
+        app = APIFlask(__name__)
+
+        @app.get('/users/<int:user_id>')
+        @app.output(AliasUserModel)
+        def get_user(user_id):
+            return AliasUserModel(user_id=user_id, username='John Doe')
+
+        with app.test_client() as client:
+            # Validate OpenAPI spec
+            rv = client.get('/openapi.json')
+            assert rv.status_code == 200
+            osv.validate(rv.json)
+
+            spec = rv.get_json()
+
+            # Check that both Pydantic models are in components/schemas
+            assert 'components' in spec
+            assert 'schemas' in spec['components']
+            schemas = spec['components']['schemas']
+
+            # UserModel and UserCreateModel should be registered
+            assert 'AliasUserModel' in schemas
+
+            # Check UserModel schema structure
+            user_model_schema = schemas['AliasUserModel']
+            assert 'properties' in user_model_schema
+            assert 'user_id' in user_model_schema['properties']
+            assert 'username' in user_model_schema['properties']
+            assert user_model_schema['properties']['user_id']['type'] == 'integer'
+            assert user_model_schema['properties']['username']['type'] == 'string'
+
+            response = client.get('/users/1')
+            assert response.status_code == 200
+            data = response.get_json()
+            assert isinstance(data, dict)
+            assert data['user_id'] == 1
+            assert data['username'] == 'John Doe'
