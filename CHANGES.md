@@ -1,6 +1,6 @@
 ## Version 3.0.1
 
-Released: -
+Released: 2025/11/19
 
 - Fix Pydantic response model `Field` alias ([issue #707][issue_707]).
 
