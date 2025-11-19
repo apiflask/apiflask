@@ -813,6 +813,13 @@ def get_pet(pet_id):
 
     This schema expects the user input is something like `{'phone_number': ...}`.
 
+    For Pydantic models, you can use `alias` to declare the actual key name to dump to:
+
+    ```python
+    class User(BaseModel):
+        phone: str = Field(alias='phone_number')
+    ```
+
 The default status code is `200`, if you want to use a different status code,
 you can pass a `status_code` argument in the `@app.output` decorator:
 

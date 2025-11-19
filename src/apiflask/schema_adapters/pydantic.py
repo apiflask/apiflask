@@ -173,30 +173,30 @@ class PydanticAdapter(SchemaAdapter):
             for item in data:
                 if isinstance(item, BaseModel):
                     # Already validated, just serialize
-                    result.append(item.model_dump(mode='json'))
+                    result.append(item.model_dump(mode='json', by_alias=True))
                 else:
                     # Validate and serialize
                     validated = self.model_class.model_validate(item)
-                    result.append(validated.model_dump(mode='json'))
+                    result.append(validated.model_dump(mode='json', by_alias=True))
             return result
         elif isinstance(data, BaseModel):
             # Pydantic model instance - already validated, just serialize
-            return data.model_dump(mode='json')
+            return data.model_dump(mode='json', by_alias=True)
         elif isinstance(data, (list, tuple)) and not many:
             # Handle lists when many=False
             result = []
             for item in data:
                 if isinstance(item, BaseModel):
-                    result.append(item.model_dump(mode='json'))
+                    result.append(item.model_dump(mode='json', by_alias=True))
                 else:
                     # Validate and serialize
                     validated = self.model_class.model_validate(item)
-                    result.append(validated.model_dump(mode='json'))
+                    result.append(validated.model_dump(mode='json', by_alias=True))
             return result
         else:
             # Validate and serialize (dicts, primitives)
             validated = self.model_class.model_validate(data)
-            return validated.model_dump(mode='json')
+            return validated.model_dump(mode='json', by_alias=True)
 
     def get_openapi_schema(self, **kwargs: t.Any) -> dict[str, t.Any]:
         """Get OpenAPI schema from Pydantic model.
