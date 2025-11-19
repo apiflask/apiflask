@@ -2,8 +2,9 @@
 
 Released: -
 
-- Fix Pydantic response model Field alias ([issue #707][issue_707]).
+- Fix Pydantic response model `Field` alias ([issue #707][issue_707]).
 
+[issue_707]: https://github.com/apiflask/apiflask/issues/707
 
 ## Version 3.0.0
 
