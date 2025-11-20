@@ -184,7 +184,7 @@ class APIScaffold:
         ```
 
         Arguments:
-            schema: The marshmallow schema of the input data.
+            schema: The marshmallow schema or Pydantic model of the input data.
             location: The location of the input data, one of `'json'` (default),
                 `'files'`, `'form'`, `'cookies'`, `'headers'`, `'query'`
                 (same as `'querystring'`).
@@ -367,7 +367,7 @@ class APIScaffold:
         ```
 
         Arguments:
-            schema: The schemas of the output data.
+            schema: The marshmallow schema or Pydantic model of the output data.
             status_code: The status code of the response, defaults to `200`.
             description: The description of the response.
             schema_name: The schema name for dict schema, only needed when you pass
