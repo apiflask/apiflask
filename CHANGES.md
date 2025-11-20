@@ -1,3 +1,11 @@
+## Version 3.0.2
+
+Released: 2025/11/20
+
+- Fix Pydantic model typing error for `@input` and `@output` ([issue #711][issue_711]).
+
+[issue_711]: https://github.com/apiflask/apiflask/issues/711
+
 ## Version 3.0.1
 
 Released: 2025/11/19
