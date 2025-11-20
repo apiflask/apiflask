@@ -19,6 +19,11 @@ if t.TYPE_CHECKING:  # pragma: no cover
     from .exceptions import HTTPError  # noqa: F401
     from .views import View  # noqa: F401
 
+    try:
+        from pydantic import BaseModel  # noqa: F401
+    except ImportError:
+        BaseModel = None  # type: ignore
+
 
 DecoratedType = t.TypeVar('DecoratedType', bound=t.Callable[..., t.Any])
 RequestType = t.TypeVar('RequestType')
@@ -54,7 +59,7 @@ SpecCallbackType = t.Callable[[t.Union[dict, str]], t.Union[dict, str]]
 ErrorCallbackType = t.Callable[['HTTPError'], ResponseReturnValueType]
 
 DictSchemaType = t.Dict[str, t.Union['Field', type]]
-SchemaType = t.Union['Schema', t.Type['Schema'], DictSchemaType]
+SchemaType = t.Union['Schema', t.Type['Schema'], DictSchemaType, t.Type['BaseModel']]
 OpenAPISchemaType = t.Union['Schema', t.Type['Schema'], dict]
 HTTPAuthType = t.Union[
     'HTTPBasicAuth', 'HTTPTokenAuth', 'APIKeyHeaderAuth', 'APIKeyCookieAuth', 'APIKeyQueryAuth'
