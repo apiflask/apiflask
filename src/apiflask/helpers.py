@@ -154,10 +154,9 @@ def pagination_builder(
         'last': get_page_url(pagination.pages),
         'current': get_page_url(pagination.page),
     }
-    match schema_type:
-        case 'marshmallow':
-            return pagination_dict
-        case 'pydantic':
-            return PaginationModel(**pagination_dict)  # type: ignore
-        case _:
-            raise ValueError('Invalid schema_type parameter, should be "marshmallow" or "pydantic"')
+    if schema_type == 'marshmallow':
+        return pagination_dict
+    elif schema_type == 'pydantic':
+        return PaginationModel(**pagination_dict)  # type: ignore
+    else:
+        raise ValueError('Invalid schema_type parameter, should be "marshmallow" or "pydantic"')
