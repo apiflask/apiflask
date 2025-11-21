@@ -82,11 +82,11 @@ class PaginationModel(BaseModel):
     per_page: int
     pages: int
     total: int
-    current: AnyUrl | t.Literal['']
-    next: AnyUrl | t.Literal['']
-    prev: AnyUrl | t.Literal['']
-    first: AnyUrl | t.Literal['']
-    last: AnyUrl | t.Literal['']
+    current: t.Union[AnyUrl, t.Literal['']]
+    next: t.Union[AnyUrl, t.Literal['']]
+    prev: t.Union[AnyUrl, t.Literal['']]
+    first: t.Union[AnyUrl, t.Literal['']]
+    last: t.Union[AnyUrl, t.Literal['']]
 
 
 class FileSchema(Schema):
