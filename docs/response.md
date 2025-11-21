@@ -75,10 +75,10 @@ from apiflask import APIFlask, pagination_builder
 @app.get('/pets')
 @app.input(PetQuery, location='query')
 @app.output(PetsOut)
-def get_pets(query):
+def get_pets(query_data):
     pagination = PetModel.query.paginate(
-        page=query['page'],
-        per_page=query['per_page']
+        page=query_data['page'],
+        per_page=query_data['per_page']
     )
     pets = pagination.items
     return {

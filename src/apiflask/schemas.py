@@ -5,6 +5,8 @@ import typing as t
 from marshmallow import Schema as BaseSchema
 from marshmallow.fields import Integer
 from marshmallow.fields import URL
+from pydantic import AnyUrl
+from pydantic import BaseModel
 
 
 # schema for the detail object of validation error response
@@ -71,6 +73,20 @@ class PaginationSchema(Schema):
     prev = URL()
     first = URL()
     last = URL()
+
+
+class PaginationModel(BaseModel):
+    """A model for common pagination information."""
+
+    page: int
+    per_page: int
+    pages: int
+    total: int
+    current: AnyUrl | t.Literal['']
+    next: AnyUrl | t.Literal['']
+    prev: AnyUrl | t.Literal['']
+    first: AnyUrl | t.Literal['']
+    last: AnyUrl | t.Literal['']
 
 
 class FileSchema(Schema):
