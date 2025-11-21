@@ -107,7 +107,8 @@ passed pagination object has the following attributes:
 You can also write a custom builder function and pagination schema
 to build your custom pagination data.
 
-See the [full example](https://github.com/apiflask/apiflask/blob/main/examples/pagination/app.py)
+See the [marshmallow example](https://github.com/apiflask/apiflask/blob/main/examples/pagination/app.py)
+See the [Pydantic example](https://github.com/apiflask/apiflask/blob/main/examples/pagination/pydantic/app.py)
 for more details.
 
 
