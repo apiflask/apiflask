@@ -2,6 +2,7 @@ import pytest
 
 from apiflask import get_reason_phrase
 from apiflask import pagination_builder
+from apiflask import PaginationModel
 from apiflask import PaginationSchema
 
 
@@ -71,7 +72,7 @@ def test_pagination_builder_with_pydantic(app, client):
         has_prev = False
 
     @app.get('/pets')
-    @app.output(PaginationSchema)
+    @app.output(PaginationModel)
     def get_pets():
         pagination = Pagination()
         return pagination_builder(pagination, schema_type='pydantic')
@@ -90,3 +91,28 @@ def test_pagination_builder_with_pydantic(app, client):
     assert 'next_num' not in rv.json
     assert 'has_prev' not in rv.json
     assert 'prev_num' not in rv.json
+
+
+def test_pagination_builder_exception_case(app, client):
+    class Pagination:
+        page = 1
+        per_page = 20
+        pages = 100
+        total = 2000
+        next_num = 2
+        has_next = True
+        prev_num = 0
+        has_prev = False
+
+    @app.get('/pets')
+    @app.output(PaginationModel)
+    def get_pets():
+        pagination = Pagination()
+        with pytest.raises(
+            ValueError, match='Invalid schema_type parameter, should be "marshmallow" or "pydantic"'
+        ):
+            pagination_model = pagination_builder(pagination, schema_type='unknow')
+        return pagination_model
+
+    rv = client.get('/pets')
+    assert rv.status_code == 500
