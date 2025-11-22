@@ -1,3 +1,12 @@
+## Version: 3.1.0
+
+Released: -
+
+- Support pagination with Pydantic ([issue #702][issue_702]).
+
+[issue_702]: https://github.com/apiflask/apiflask/issues/702
+
+
 ## Version 3.0.2
 
 Released: 2025/11/20

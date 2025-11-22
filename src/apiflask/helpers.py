@@ -6,6 +6,7 @@ from flask import request
 from flask import url_for
 from werkzeug.http import HTTP_STATUS_CODES
 
+from .schemas import PaginationModel
 from .types import PaginationType
 
 
@@ -26,7 +27,11 @@ def get_reason_phrase(status_code: int, default: str = 'Unknown') -> str:
     return HTTP_STATUS_CODES.get(status_code, default)
 
 
-def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
+def pagination_builder(
+    pagination: PaginationType,
+    schema_type: t.Literal['marshmallow', 'pydantic'] = 'marshmallow',
+    **kwargs: t.Any,
+) -> dict | PaginationModel:
     """A helper function to make pagination data.
 
     This function is designed based on Flask-SQLAlchemy's `Pagination` class.
@@ -46,6 +51,7 @@ def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
 
     Examples:
 
+    With marshmallow
     ```python
     from apiflask import PaginationSchema, pagination_builder
 
@@ -64,10 +70,10 @@ def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
     @app.get('/pets')
     @app.input(PetQuery, location='query')
     @app.output(PetsOut)
-    def get_pets(query):
+    def get_pets(query_data):
         pagination = PetModel.query.paginate(
-            page=query['page'],
-            per_page=query['per_page']
+            page=query_data['page'],
+            per_page=query_data['per_page']
         )
         pets = pagination.items
         return {
@@ -76,15 +82,56 @@ def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
         }
     ```
 
+    With Pydantic:
+    ```python
+    from apiflask import pagination_builder, PaginationModel
+    from pydantic import BaseModel, Field, ConfigDict
+
+    ...
+
+    class PetQuery(BaseModel):
+        page: int = Field(default=1)
+        per_page: int = Field(default=20, le=30)
+
+
+    class PetOut(BaseModel):
+        model_config = ConfigDict(from_attributes=True)
+
+        id: int
+        name: str
+        category: str
+
+
+    class PetsOut(BaseModel):
+        pets: List[PetOut] = []
+        pagination: PaginationModel
+
+
+    @app.get('/pets')
+    @app.input(PetQuery, location='query')
+    @app.output(PetsOut)
+    def get_pets(query_data: PetQuery):
+        pagination = PetModel.query.paginate(
+            page=query_data.page,
+            per_page=query_data.per_page
+        )
+        pets = pagination.items
+        return PetsOut(
+            pets=pets,
+            pagination=pagination_builder(pagination, schema_type='pydantic')
+        )
+    ```
+
     See <https://github.com/apiflask/apiflask/blob/main/examples/pagination/app.py>
     for the complete example.
 
     Arguments:
         pagination: The pagination object.
+        schema_type: The pagination data type. One of `'marshmallow'`, `'pydantic'`.
         **kwargs: Additional keyword arguments that passed to the
             `url_for` function when generate the page-related URLs.
 
-    *Version Added: 0.6.0*
+    *Version Changed: 3.1.0*
     """
     endpoint: str | None = request.endpoint
     per_page: int = pagination.per_page
@@ -96,7 +143,7 @@ def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
 
     next: str = get_page_url(pagination.next_num) if pagination.has_next else ''
     prev: str = get_page_url(pagination.prev_num) if pagination.has_prev else ''
-    return {
+    pagination_dict = {
         'total': pagination.total,
         'pages': pagination.pages,
         'per_page': per_page,
@@ -107,3 +154,9 @@ def pagination_builder(pagination: PaginationType, **kwargs: t.Any) -> dict:
         'last': get_page_url(pagination.pages),
         'current': get_page_url(pagination.page),
     }
+    if schema_type == 'marshmallow':
+        return pagination_dict
+    elif schema_type == 'pydantic':
+        return PaginationModel(**pagination_dict)  # type: ignore
+    else:
+        raise ValueError('Invalid schema_type parameter, should be "marshmallow" or "pydantic"')

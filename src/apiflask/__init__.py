@@ -8,6 +8,7 @@ from .helpers import get_reason_phrase as get_reason_phrase
 from .helpers import pagination_builder as pagination_builder
 from .schemas import EmptySchema as EmptySchema
 from .schemas import FileSchema as FileSchema
+from .schemas import PaginationModel as PaginationModel
 from .schemas import PaginationSchema as PaginationSchema
 from .schemas import Schema as Schema
 from .security import APIKeyCookieAuth as APIKeyCookieAuth

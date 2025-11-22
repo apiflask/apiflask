@@ -75,10 +75,10 @@ from apiflask import APIFlask, pagination_builder
 @app.get('/pets')
 @app.input(PetQuery, location='query')
 @app.output(PetsOut)
-def get_pets(query):
+def get_pets(query_data):
     pagination = PetModel.query.paginate(
-        page=query['page'],
-        per_page=query['per_page']
+        page=query_data['page'],
+        per_page=query_data['per_page']
     )
     pets = pagination.items
     return {
@@ -107,7 +107,8 @@ passed pagination object has the following attributes:
 You can also write a custom builder function and pagination schema
 to build your custom pagination data.
 
-See the [full example](https://github.com/apiflask/apiflask/blob/main/examples/pagination/app.py)
+See the [marshmallow example](https://github.com/apiflask/apiflask/blob/main/examples/pagination/app.py)
+See the [Pydantic example](https://github.com/apiflask/apiflask/blob/main/examples/pagination/pydantic/app.py)
 for more details.
 
 
