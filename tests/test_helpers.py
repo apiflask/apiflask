@@ -111,7 +111,7 @@ def test_pagination_builder_exception_case(app, client):
         with pytest.raises(
             ValueError, match='Invalid schema_type parameter, should be "marshmallow" or "pydantic"'
         ):
-            pagination_model = pagination_builder(pagination, schema_type='unknow')
+            pagination_model = pagination_builder(pagination, schema_type='unknown')
         return pagination_model
 
     rv = client.get('/pets')
