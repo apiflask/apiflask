@@ -65,7 +65,7 @@ def get_pets(query_data: PetQuery):
         db.select(PetModel), page=query_data.page, per_page=query_data.per_page
     )
     pets = pagination.items
-    return {'pets': pets, 'pagination': pagination_builder(pagination)}
+    return {'pets': pets, 'pagination': pagination_builder(pagination, schema_type='pydantic')}
 
 
 with app.app_context():

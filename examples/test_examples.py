@@ -1,6 +1,7 @@
 import os
 import sys
 from importlib import metadata, reload
+import re
 
 import pytest
 from packaging.version import Version
@@ -17,8 +18,9 @@ full_examples = [
     'dataclass',
 ]
 
-examples = full_examples + ['pagination']
+examples = full_examples + ['pagination/marshmallow', 'pagination/pydantic']
 flask_sqlalchemy_version = Version(metadata.version('flask_sqlalchemy')).major
+pagination_examples_pattern = r'^pagination/'
 
 
 @pytest.fixture
@@ -61,14 +63,14 @@ def test_get_pet(client):
     if client._example == 'orm':
         assert data['name'] == 'Kitty'
         assert data['category'] == 'cat'
-    elif client._example == 'pagination':
+    elif re.match(pagination_examples_pattern, client._example):
         assert data['name'] == 'Pet 1'
     else:
         assert data['name'] == 'Coco'
         assert data['category'] == 'dog'
 
     rv = client.get('/pets/13')
-    if client._example != 'pagination':
+    if not re.match(pagination_examples_pattern, client._example):
         assert rv.status_code == 404
         assert rv.json
 
@@ -165,7 +167,7 @@ def test_delete_pet(client):
 
 
 @pytest.mark.skipif(flask_sqlalchemy_version < 3, reason='Need flask_sqlalchemy 3 for paginate')
-@pytest.mark.parametrize('client', ['pagination'], indirect=True)
+@pytest.mark.parametrize('client', ['pagination/marshmallow', 'pagination/pydantic'], indirect=True)
 def test_get_pets_pagination(client):
     rv = client.get('/pets')
     assert rv.status_code == 200
@@ -195,7 +197,7 @@ def test_get_pets_pagination(client):
 
 
 @pytest.mark.skipif(flask_sqlalchemy_version < 3, reason='Need flask_sqlalchemy 3 for paginate')
-@pytest.mark.parametrize('client', ['pagination'], indirect=True)
+@pytest.mark.parametrize('client', ['pagination/marshmallow', 'pagination/pydantic'], indirect=True)
 def test_get_pets_pagination_with_bad_data(client):
     rv = client.get('/pets?per_page=100')
     assert rv.status_code == 422
