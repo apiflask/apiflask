@@ -75,10 +75,10 @@ from apiflask import APIFlask, pagination_builder
 @app.get('/pets')
 @app.input(PetQuery, location='query')
 @app.output(PetsOut)
-def get_pets(query):
+def get_pets(query_data):
     pagination = PetModel.query.paginate(
-        page=query['page'],
-        per_page=query['per_page']
+        page=query_data['page'],
+        per_page=query_data['per_page']
     )
     pets = pagination.items
     return {
@@ -107,7 +107,54 @@ passed pagination object has the following attributes:
 You can also write a custom builder function and pagination schema
 to build your custom pagination data.
 
-See the [full example](https://github.com/apiflask/apiflask/blob/main/examples/pagination/app.py)
+With Pydantic:
+```python
+from apiflask import pagination_builder, PaginationModel
+from pydantic import BaseModel, Field, ConfigDict
+
+...
+
+class PetQuery(BaseModel):
+    page: int = Field(default=1)
+    per_page: int = Field(default=20, le=30)
+
+
+class PetOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)  # important!
+
+    id: int
+    name: str
+    category: str
+
+
+class PetsOut(BaseModel):
+    pets: List[PetOut] = []
+    pagination: PaginationModel
+
+
+@app.get('/pets')
+@app.input(PetQuery, location='query')
+@app.output(PetsOut)
+def get_pets(query_data: PetQuery):
+    pagination = PetModel.query.paginate(
+        page=query_data.page,
+        per_page=query_data.per_page
+    )
+    pets = pagination.items
+    return PetsOut(
+        pets=pets,
+        pagination=pagination_builder(pagination, schema_type='pydantic')
+    )
+```
+
+!!! tip
+
+    Don't forget to set `from_attributes=True` to allow conversion of ORM models to Pydantic models.
+
+    See [Pydantic document](https://docs.pydantic.dev/latest/examples/orms/) for more deatils.
+
+See the [marshmallow example](https://github.com/apiflask/apiflask/blob/main/examples/pagination/app.py)
+See the [Pydantic example](https://github.com/apiflask/apiflask/blob/main/examples/pagination/pydantic/app.py)
 for more details.
 
 
