@@ -27,6 +27,10 @@ The following location are supported:
 - `form_and_files`
 - `json_or_form`
 
+!!! tip
+
+    Cookie parameters don't work well with OpenAPI, see this [issue](https://github.com/apiflask/apiflask/issues/705) for more details.
+
 You can declare multiple input data with multiple `app.input` decorators. However,
 you can only declare one body location for your view function, one of:
 
