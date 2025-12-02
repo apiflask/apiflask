@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import typing as t
-from io import IOBase
 
 from flask import current_app
+from werkzeug.datastructures import FileStorage
 
 from ..exceptions import _ValidationError
 from .base import SchemaAdapter
@@ -114,7 +114,7 @@ class PydanticAdapter(SchemaAdapter):
 
                 # Add files to data
                 for key, file in request.files.items():
-                    if isinstance(file, IOBase):
+                    if isinstance(file, FileStorage):
                         data[key] = file
 
                 return self.model_class.model_validate(data)

@@ -3,12 +3,14 @@ from importlib.metadata import version
 
 import pytest
 from packaging.version import parse
+from pydantic import BaseModel
 from werkzeug.datastructures import FileStorage
 
 from .schemas import Files
 from .schemas import FilesList
 from apiflask import Schema
 from apiflask.fields import Config
+from apiflask.fields import UploadFile
 
 
 def test_file_field(app, client):
@@ -135,3 +137,42 @@ def test_config_field(app, client):
         with app.app_context():
             bad = BadSchema()
             bad.dump({})
+
+
+def test_file_model(app, client):
+    class Files(BaseModel):
+        image: UploadFile
+
+    @app.post('/')
+    @app.input(Files, location='files')
+    def index(files_data: Files):
+        data = {}
+        if 'image' in files_data.model_dump() and isinstance(files_data.image, FileStorage):
+            data['image'] = True
+        return data
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    assert 'image' in rv.json['components']['schemas']['Files']['properties']
+    assert rv.json['components']['schemas']['Files']['properties']['image']['type'] == 'string'
+    assert rv.json['components']['schemas']['Files']['properties']['image']['format'] == 'binary'
+
+    rv = client.post(
+        '/',
+        data={
+            'image': (io.BytesIO(b'test'), 'test.jpg'),
+        },
+        content_type='multipart/form-data',
+    )
+    assert rv.status_code == 200
+    assert rv.json == {'image': True}
+
+    rv = client.post(
+        '/',
+        data={
+            'image': 'test',
+        },
+        content_type='multipart/form-data',
+    )
+    assert rv.status_code == 422
+    assert rv.json['detail']['files']['image'] == ['Input should be an instance of FileStorage']
