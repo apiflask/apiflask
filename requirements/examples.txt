@@ -6,9 +6,7 @@
 #    pip-compile-multi
 #
 authlib==1.6.5
-    # via -r requirements/examples.in
-backports-datetime-fromisoformat==2.0.3
-    # via marshmallow
+    # via -r examples.in
 blinker==1.9.0
     # via flask
 cffi==2.0.0
@@ -20,11 +18,9 @@ cryptography==46.0.3
 flask==3.1.2
     # via flask-sqlalchemy
 flask-sqlalchemy==3.1.1
-    # via -r requirements/examples.in
-importlib-metadata==8.7.0
-    # via
-    #   flask
-    #   typeguard
+    # via -r examples.in
+greenlet==3.2.4
+    # via sqlalchemy
 itsdangerous==2.2.0
     # via flask
 jinja2==3.1.6
@@ -37,7 +33,7 @@ markupsafe==3.0.3
 marshmallow==4.0.1
     # via marshmallow-dataclass
 marshmallow-dataclass==8.7.1
-    # via -r requirements/examples.in
+    # via -r examples.in
 mypy-extensions==1.1.0
     # via typing-inspect
 pycparser==2.23
@@ -48,15 +44,10 @@ typeguard==4.4.4
     # via marshmallow-dataclass
 typing-extensions==4.15.0
     # via
-    #   cryptography
-    #   marshmallow
-    #   marshmallow-dataclass
     #   sqlalchemy
     #   typeguard
     #   typing-inspect
 typing-inspect==0.9.0
     # via marshmallow-dataclass
-werkzeug==3.1.3
+werkzeug==3.1.4
     # via flask
-zipp==3.23.0
-    # via importlib-metadata
