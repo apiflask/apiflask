@@ -2,6 +2,12 @@
 import typing as t
 import warnings
 
+from pydantic import GetJsonSchemaHandler
+from pydantic.json_schema import JsonSchemaValue
+from pydantic_core import core_schema
+from typing_extensions import Annotated
+from werkzeug.datastructures import FileStorage
+
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from flask_marshmallow.fields import AbsoluteURLFor as AbsoluteURLFor
@@ -41,3 +47,43 @@ from webargs.fields import DelimitedList as DelimitedList
 from webargs.fields import DelimitedTuple as DelimitedTuple
 from flask_marshmallow.fields import File as File
 from flask_marshmallow.fields import Config as Config
+
+
+class _FileTypeAnnotation:
+    """A model for uploaded files.
+
+    *Version Added: 3.1.0*
+    """
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, _source_tpye: t.Any, _handler: t.Callable[[t.Any], core_schema.CoreSchema]
+    ) -> core_schema.CoreSchema:
+        def validate_from_fs(value: FileStorage) -> FileStorage:
+            if isinstance(value, FileStorage):
+                return value
+            raise TypeError('Not a valid file.')
+
+        from_fs_schema = core_schema.chain_schema(
+            [
+                core_schema.any_schema(),
+                core_schema.no_info_plain_validator_function(validate_from_fs),
+            ]
+        )
+
+        return core_schema.json_or_python_schema(
+            json_schema=from_fs_schema, python_schema=core_schema.is_instance_schema(FileStorage)
+        )
+
+    @classmethod
+    def __get_pydantic_json_schema__(
+        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
+    ) -> JsonSchemaValue:
+        json_schema = handler(_core_schema)
+        json_schema = handler.resolve_ref_schema(json_schema)
+        json_schema['type'] = 'string'
+        json_schema['format'] = 'binary'
+        return json_schema
+
+
+UploadFile = Annotated[FileStorage, _FileTypeAnnotation]
