@@ -2,6 +2,12 @@
 import typing as t
 import warnings
 
+from pydantic import GetJsonSchemaHandler
+from pydantic.json_schema import JsonSchemaValue
+from pydantic_core import core_schema
+from typing_extensions import Annotated
+from werkzeug.datastructures import FileStorage
+
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from flask_marshmallow.fields import AbsoluteURLFor as AbsoluteURLFor
@@ -41,3 +47,31 @@ from webargs.fields import DelimitedList as DelimitedList
 from webargs.fields import DelimitedTuple as DelimitedTuple
 from flask_marshmallow.fields import File as File
 from flask_marshmallow.fields import Config as Config
+
+
+class _FileTypeAnnotation:
+    """A model for uploaded files.
+
+    *Version Added: 3.1.0*
+    """
+
+    @classmethod
+    def _validate(cls, __input_value: t.Any, _: t.Any) -> FileStorage:
+        if not isinstance(__input_value, FileStorage):
+            raise ValueError('Not a valid file.')
+        return __input_value
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, _source_tpye: t.Any, _handler: t.Callable[[t.Any], core_schema.CoreSchema]
+    ) -> core_schema.CoreSchema:
+        return core_schema.with_info_plain_validator_function(cls._validate)
+
+    @classmethod
+    def __get_pydantic_json_schema__(
+        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
+    ) -> JsonSchemaValue:
+        return {'type': 'string', 'format': 'binary'}
+
+
+UploadFile = Annotated[FileStorage, _FileTypeAnnotation]

@@ -21,7 +21,7 @@ def test_spec(app):
 def test_spec_processor(app, client):
     @app.spec_processor
     def edit_spec(spec):
-        assert spec['openapi'] == '3.0.3'
+        assert spec['openapi'] == '3.1.0'
         spec['openapi'] = '3.0.2'
         assert app.title == 'APIFlask'
         assert spec['info']['title'] == 'APIFlask'

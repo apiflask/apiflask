@@ -4,6 +4,7 @@ import typing as t
 
 from flask import request
 from flask import url_for
+from pydantic import BaseModel
 from werkzeug.http import HTTP_STATUS_CODES
 
 from .schemas import PaginationModel
@@ -164,3 +165,15 @@ def pagination_builder(
         return PaginationModel(**pagination_dict)  # type: ignore
     else:
         raise ValueError('Invalid schema_type parameter, should be "marshmallow" or "pydantic"')
+
+
+def _get_fields_by_type(model_class: type[BaseModel], field_type: type) -> t.List[str]:
+    """A helper function to get the fields of the specified type in BaseModel.
+
+    *Version Added: 3.1.0*
+    """
+    return [
+        field_name
+        for field_name, field in model_class.__pydantic_fields__.items()
+        if field_type == field.annotation or field_type in t.get_args(field.annotation)
+    ]
