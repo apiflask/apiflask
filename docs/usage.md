@@ -770,6 +770,17 @@ class Pet(Model):
     category = String()
 ```
 
+And if you work with Pydantic, the model class should be set `from_attributes=True` to allow conversion of ORM models to Pydantic models.
+
+```python
+class PetOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)  # important!
+
+    id: int
+    name: str
+    category: str
+```
+
 For Pydantic models, you can also return an instance of the output model class:
 
 ```python
