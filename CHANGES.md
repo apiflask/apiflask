@@ -1,6 +1,6 @@
 ## Version: 3.1.0
 
-Released: -
+Released: 2026/3/21
 
 - Add FileModel for Pydantic ([issue #701][issue_701]).
 - Support pagination with Pydantic ([issue #702][issue_702]).
