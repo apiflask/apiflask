@@ -108,6 +108,11 @@ You can also write a custom builder function and pagination schema
 to build your custom pagination data.
 
 With Pydantic:
+
+!!! warning "Version >= 3.1.0"
+
+    This feature was added in the [version 3.1.0](/changelog/#version-310).
+
 ```python
 from apiflask import pagination_builder, PaginationModel
 from pydantic import BaseModel, Field, ConfigDict

@@ -1,9 +1,16 @@
+import io
+import typing as t
+
 import pytest
+from pydantic import BaseModel
+from werkzeug.datastructures import FileStorage
 
 from apiflask import get_reason_phrase
 from apiflask import pagination_builder
 from apiflask import PaginationModel
 from apiflask import PaginationSchema
+from apiflask.fields import UploadFile
+from apiflask.helpers import _get_fields_by_type
 
 
 @pytest.mark.parametrize('code', [204, 400, 404, 456, 4123])
@@ -116,3 +123,27 @@ def test_pagination_builder_exception_case(app, client):
 
     rv = client.get('/pets')
     assert rv.status_code == 500
+
+
+def test_get_fields_by_type():
+    class Files(BaseModel):
+        single_file: UploadFile
+        file_list: t.List[UploadFile]
+
+    class OptionalFiles(BaseModel):
+        single_file: t.Optional[UploadFile] = None
+        file_list: t.Optional[t.List[UploadFile]] = None
+
+    fs = FileStorage(io.BytesIO(b'test'), 'test.jpg')
+    fs_list = [
+        FileStorage(io.BytesIO(b'test'), 'test1.jpg'),
+        FileStorage(io.BytesIO(b'test'), 'test2.jpg'),
+        FileStorage(io.BytesIO(b'test'), 'test3.jpg'),
+    ]
+    files = Files(single_file=fs, file_list=fs_list)
+    assert _get_fields_by_type(files, FileStorage) == ['single_file']
+    assert _get_fields_by_type(files, t.List[UploadFile]) == ['file_list']
+
+    optional_files = OptionalFiles()
+    assert _get_fields_by_type(optional_files, UploadFile) == ['single_file']
+    assert _get_fields_by_type(optional_files, t.List[UploadFile]) == ['file_list']

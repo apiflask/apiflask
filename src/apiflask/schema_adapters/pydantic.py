@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import typing as t
-from io import IOBase
 
 from flask import current_app
+from werkzeug.datastructures import FileStorage
 
 from ..exceptions import _ValidationError
+from ..fields import UploadFile
+from ..helpers import _get_fields_by_type
 from .base import SchemaAdapter
 
 if t.TYPE_CHECKING:
@@ -88,6 +90,33 @@ class PydanticAdapter(SchemaAdapter):
     def schema_type(self) -> str:
         return 'pydantic'
 
+    @staticmethod
+    def handle_files(
+        request: Request, data: dict, file_fields: t.List[str], file_list_fields: t.List[str]
+    ) -> None:
+        for key in file_fields:
+            fs = request.files.get(key)
+            if fs:
+                data[key] = fs
+            else:
+                value = request.values.get(key)
+                # handle empty value sent by swagger ui
+                if isinstance(value, t.Sequence) and len(value) == 0:
+                    data[key] = None
+                else:
+                    data[key] = value
+
+        for key in file_list_fields:
+            if key in request.files.keys():
+                data[key] = request.files.getlist(key)
+            else:
+                value = request.values.get(key)
+                # handle empty value sent by swagger ui
+                if isinstance(value, t.Sequence) and (len(value) == 0 or value == 'null'):
+                    data[key] = None
+                else:
+                    data[key] = value
+
     def validate_input(self, request: Request, location: str, **kwargs: t.Any) -> BaseModel:
         """Validate input using Pydantic."""
         try:
@@ -112,18 +141,28 @@ class PydanticAdapter(SchemaAdapter):
                 data = {}
                 data.update(request.form.to_dict())
 
+                file_fields = _get_fields_by_type(
+                    self.model_class, UploadFile
+                ) + _get_fields_by_type(self.model_class, FileStorage)
+                file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
+
                 # Add files to data
-                for key, file in request.files.items():
-                    if isinstance(file, IOBase):
-                        data[key] = file
+                self.handle_files(request, data, file_fields, file_list_fields)
 
                 return self.model_class.model_validate(data)
 
             elif location == 'form_and_files':
                 # Combine form and files
                 data = request.form.to_dict()
-                for key, file in request.files.items():
-                    data[key] = file  # type: ignore
+
+                file_fields = _get_fields_by_type(
+                    self.model_class, UploadFile
+                ) + _get_fields_by_type(self.model_class, FileStorage)
+                file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
+
+                # Add files to data
+                self.handle_files(request, data, file_fields, file_list_fields)
+
                 return self.model_class.model_validate(data)
 
             elif location == 'json_or_form':

@@ -265,6 +265,66 @@ the form data (equals to `form_and_files`).
         image = File(validate=[FileType(['.png', '.jpg', '.jpeg', '.gif']), FileSize(max='5 MB')])
     ```
 
+With Pydantic:
+
+!!! warning "Version >= 3.1.0"
+
+    This feature was added in the [version 3.1.0](/changelog/#version-310).
+
+```python
+import os
+
+from werkzeug.utils import secure_filename
+from apiflask.fields import UploadFile
+from apiflask import APIFlask
+from pydantic import BaseModel
+
+
+class Image(BaseModel):
+    image: UploadFile
+
+
+@app.post('/images')
+@app.input(Image, location='files')
+def upload_image(files_data: Image):
+    f = files_data.image
+
+    filename = secure_filename(f.filename)
+    f.save(os.path.join(the_path_to_uploads, filename))
+
+    return {'message': f'file {filename} saved.'}
+```
+
+```python
+import os
+
+from werkzeug.utils import secure_filename
+from apiflask.fields import UploadFile
+from apiflask import APIFlask
+from pydantic import BaseModel
+
+
+class ProfileIn(BaseModel):
+    name: str
+    avatar: UploadFile
+
+
+@app.post('/profiles')
+@app.input(ProfileIn, location='form_and_files')
+def create_profile(form_and_files_data: ProfileIn):
+    avatar_file = form_and_files_data.avatar
+    name = form_and_files_data.name
+
+    avatar_filename = secure_filename(avatar_file.filename)
+    avatar_file.save(os.path.join(the_path_to_uploads, avatar_filename))
+
+    return {'message': f"{name}'s profile created."}
+```
+
+!!! tip
+
+    See the file uploading [examples](https://github.com/apiflask/apiflask/tree/main/examples/file_upload/pydantic/app.py) for more details.
+
 
 ## Request examples
 

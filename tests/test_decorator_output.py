@@ -292,8 +292,8 @@ def test_output_response_object_directly(app, client):
 
 def test_response_links(app, client):
     links = {
-        'foo': {'operationId': 'getFoo', 'parameters': {'id': 1}},
-        'bar': {'operationId': 'getBar', 'parameters': {'id': 2}},
+        'foo': {'operationId': 'getFoo', 'parameters': {'id': '$response.body#/id'}},
+        'bar': {'operationId': 'getBar', 'parameters': {'id': '$response.body#/id'}},
     }
 
     @app.get('/foo')
@@ -312,7 +312,9 @@ def test_response_links_ref(app, client):
 
     @app.spec_processor
     def add_links(spec):
-        spec['components']['links'] = {'foo': {'operationId': 'getFoo', 'parameters': {'id': 1}}}
+        spec['components']['links'] = {
+            'foo': {'operationId': 'getFoo', 'parameters': {'id': '$response.body#/id'}}
+        }
         return spec
 
     @app.get('/foo')

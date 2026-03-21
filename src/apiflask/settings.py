@@ -9,7 +9,7 @@ from .types import TagsType
 
 
 # OpenAPI fields
-OPENAPI_VERSION: str = '3.0.3'
+OPENAPI_VERSION: str = '3.1.0'
 SERVERS: list[dict[str, str]] | None = None
 TAGS: TagsType | None = None
 EXTERNAL_DOCS: dict[str, str] | None = None
