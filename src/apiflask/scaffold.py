@@ -7,6 +7,10 @@ from flask import current_app
 from flask import jsonify
 from flask import request as flask_request
 from flask import Response
+from flask.typing import HeadersValue
+from flask.typing import ResponseValue as FlaskResponseValue
+from marshmallow import Schema
+from pydantic import BaseModel
 
 from .helpers import _sentinel
 from .schema_adapters import registry
@@ -20,7 +24,41 @@ from .types import SchemaType
 from .views import MethodView
 
 if t.TYPE_CHECKING:
-    from flask.sansio.scaffold import T_route  # noqa: F401
+    from _typeshed.wsgi import WSGIApplication  # noqa: F401
+
+    try:
+        from flask_sqlalchemy import extension as sqla_ext  # type: ignore
+    except ImportError:
+        sqla_ext = None  # type: ignore
+
+    if sqla_ext is not None:
+        ResponseValue = t.Union[  # type: ignore
+            Schema,
+            BaseModel,
+            sqla_ext._FSAModel,
+            FlaskResponseValue,
+        ]
+    else:
+        ResponseValue = t.Union[  # type: ignore
+            Schema,
+            BaseModel,
+            FlaskResponseValue,
+        ]
+
+    ResponseReturnValue = t.Union[
+        ResponseValue,
+        tuple[ResponseValue, HeadersValue],
+        tuple[ResponseValue, int],
+        tuple[ResponseValue, int, HeadersValue],
+        'WSGIApplication',
+    ]
+
+    RouteCallable = t.Union[
+        t.Callable[..., ResponseReturnValue],
+        t.Callable[..., t.Awaitable[ResponseReturnValue]],
+    ]
+
+    T_route = t.TypeVar('T_route', bound=RouteCallable)
 
 BODY_LOCATIONS = ['json', 'files', 'form', 'form_and_files', 'json_or_form']
 
