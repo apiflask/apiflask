@@ -7,7 +7,7 @@ from apiflask.validators import FileSize, FileType
 
 app = APIFlask(__name__)
 
-upload_dir = './upload'
+upload_dir = '../upload'
 
 
 class Image(Schema):

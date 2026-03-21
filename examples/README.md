@@ -23,7 +23,7 @@
 [_basic_auth]: https://github.com/apiflask/apiflask/tree/main/examples/auth/basic_auth/app.py
 [_dataclass]: https://github.com/apiflask/apiflask/tree/main/examples/dataclass/app.py
 [_pydantic]: https://github.com/apiflask/apiflask/tree/main/examples/pydantic/app.py
-[_file_upload]: https://github.com/apiflask/apiflask/tree/main/examples/file_upload/app.py
+[_file_upload]: https://github.com/apiflask/apiflask/tree/main/examples/file_upload
 [_OpenTelemetry]: https://github.com/apiflask/apiflask/tree/main/examples/otel/app.py
 
 If you have built an application with APIFlask, feel free to submit a pull request to add the source link here.
