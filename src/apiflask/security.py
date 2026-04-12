@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import typing as t
 import warnings
-from importlib import metadata
 
 from flask import current_app
 from flask import g
@@ -10,7 +9,6 @@ from flask import request
 from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 from flask_httpauth import MultiAuth as BaseMultiAuth
-from packaging.version import Version
 from werkzeug.datastructures import Authorization
 
 from .exceptions import HTTPError
@@ -18,9 +16,6 @@ from .types import ErrorCallbackType
 from .types import HTTPAuthType
 from .types import ResponseReturnValueType
 from .types import SecurityScheme
-
-
-flask_httpauth_version = Version(metadata.version('Flask-HTTPAuth'))
 
 
 class _AuthBase:
@@ -482,7 +477,7 @@ class MultiAuth(BaseMultiAuth):
 
     @property
     def _auths(self) -> list[HTTPAuthType]:
-        if flask_httpauth_version < Version('4.8.1'):
+        if hasattr(self, 'additional_auth'):
             return [self.main_auth] + list(self.additional_auth)
         else:
             return [self.main_auth] + list(self.additional_auths)
