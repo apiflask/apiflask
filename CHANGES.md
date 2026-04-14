@@ -1,3 +1,11 @@
+## Version: 3.1.1
+
+Released: -
+
+- Support flask-httpauth 4.8.1+ ([issue #743][issue_743]).
+
+[issue_743]: https://github.com/apiflask/apiflask/issues/743
+
 ## Version: 3.1.0
 
 Released: 2026/3/21

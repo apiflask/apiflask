@@ -477,4 +477,7 @@ class MultiAuth(BaseMultiAuth):
 
     @property
     def _auths(self) -> list[HTTPAuthType]:
-        return [self.main_auth] + list(self.additional_auth)
+        if hasattr(self, 'additional_auth'):
+            return [self.main_auth] + list(self.additional_auth)
+        else:
+            return [self.main_auth] + list(self.additional_auths)
