@@ -60,9 +60,11 @@ which schema library you're using.
 #### With marshmallow
 
 The marshmallow adapter delegates header parsing to
-[webargs](https://github.com/marshmallow-code/webargs), which looks up each
-header by the schema field name as-is. To match a header that contains
-dashes or uppercase letters, declare the field with `data_key` set to the
+[webargs](https://github.com/marshmallow-code/webargs). HTTP header names are
+matched case-insensitively, so uppercase letters do not by themselves require
+special handling. However, if the actual header name differs from the schema
+field name—especially when it contains characters that are not valid in Python
+identifiers, such as dashes—declare the field with `data_key` set to the
 actual HTTP header name:
 
 ```python
