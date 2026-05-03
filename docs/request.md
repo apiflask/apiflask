@@ -49,6 +49,76 @@ def hello(headers_data, query_data, json_data):
     pass
 ```
 
+### Request location with headers
+
+HTTP header names are case-insensitive and conventionally contain dashes
+(for example, `X-Token` or `Content-Type`). Python identifiers, however,
+cannot contain dashes, so APIFlask needs a way to bridge HTTP header names
+and the field names you declare on your schema. The exact rule depends on
+which schema library you're using.
+
+#### With marshmallow
+
+The marshmallow adapter delegates header parsing to
+[webargs](https://github.com/marshmallow-code/webargs). HTTP header names are
+matched case-insensitively, so uppercase letters do not by themselves require
+special handling. However, if the actual header name differs from the schema
+field name—especially when it contains characters that are not valid in Python
+identifiers, such as dashes—declare the field with `data_key` set to the
+actual HTTP header name:
+
+```python
+from apiflask import APIFlask, Schema
+from apiflask.fields import String
+
+app = APIFlask(__name__)
+
+
+class HeaderIn(Schema):
+    x_token = String(required=True, data_key='X-Token')
+
+
+@app.get('/')
+@app.input(HeaderIn, location='headers')
+def hello(headers_data):
+    return {'token': headers_data['x_token']}
+```
+
+Headers whose name is already a valid Python identifier (for example,
+`authorization`) can be matched directly without `data_key`.
+
+#### With Pydantic
+
+The Pydantic adapter normalizes every incoming header name before
+validation by lowercasing it and replacing dashes with underscores. So
+`X-Token` becomes `x_token`, `X-API-Version` becomes `x_api_version`, and
+`Content-Type` becomes `content_type`. As a result, you simply declare
+snake_case fields on your model — no `data_key` or alias is needed:
+
+```python
+from apiflask import APIFlask
+from pydantic import BaseModel
+
+app = APIFlask(__name__)
+
+
+class HeaderIn(BaseModel):
+    x_token: str
+
+
+@app.get('/')
+@app.input(HeaderIn, location='headers')
+def hello(headers_data: HeaderIn):
+    return {'token': headers_data.x_token}
+```
+
+!!! warning
+
+    The two adapters are not symmetric here: marshmallow requires an
+    explicit `data_key` for any hyphenated header, while Pydantic
+    normalizes header names automatically. When porting a schema between
+    the two, remember to add or remove `data_key` accordingly.
+
 
 ## Request body content types
 
