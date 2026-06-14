@@ -170,7 +170,7 @@ class OpenAPIHelper:
                 )
 
                 # Normalize header names
-                for param in [p for p in parameters if p.get('in') == 'header']:
+                for param in (p for p in parameters if p.get('in') == 'header'):
                     param['name'] = _normalize_header_name(param['name'])
 
                 return parameters
