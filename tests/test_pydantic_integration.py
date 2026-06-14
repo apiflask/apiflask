@@ -293,6 +293,8 @@ class TestPydanticIntegration:
 
             rv = client.get('/openapi.json')
             assert rv.status_code == 200
+            assert rv.json['paths']['/protected']['get']['parameters'][0]['name'] == 'x-token'
+            assert rv.json['paths']['/protected']['get']['parameters'][1]['name'] == 'x-version'
             osv.validate(rv.json)
 
     def test_cookies_with_pydantic(self):

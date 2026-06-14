@@ -3,8 +3,10 @@
 Released: -
 
 - Support flask-httpauth 4.8.1+ ([issue #743][issue_743]).
+- Normalize header names in OpenAPI ([issue #750][issue_750]).
 
 [issue_743]: https://github.com/apiflask/apiflask/issues/743
+[issue_750]: https://github.com/apiflask/apiflask/issues/750
 
 ## Version: 3.1.0
 

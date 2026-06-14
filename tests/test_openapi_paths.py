@@ -195,7 +195,7 @@ def test_parameters_registration(app, client):
     @app.input(Pagination, location='query', arg_name='pagination')
     @app.input(Header, location='headers')
     def bar(query, pagination, headers_data):
-        return {'query': query['id'], 'pagination': pagination, 'foo': headers_data['foo']}
+        return {'query': query['id'], 'pagination': pagination, 'x_token': headers_data['x_token']}
 
     rv = client.get('/openapi.json')
     assert rv.status_code == 200
@@ -203,6 +203,7 @@ def test_parameters_registration(app, client):
     assert '/foo' in rv.json['paths']
     assert '/bar' in rv.json['paths']
     assert rv.json['paths']['/foo']['get']['parameters'][0]['name'] == 'id'
+    assert rv.json['paths']['/bar']['get']['parameters'][0]['name'] == 'x-token'
     assert len(rv.json['paths']['/foo']['get']['parameters']) == 1
     assert len(rv.json['paths']['/bar']['get']['parameters']) == 4
     rv = client.get('/bar')
@@ -210,7 +211,7 @@ def test_parameters_registration(app, client):
     assert rv.json['query'] == 1
     assert rv.json['pagination']['page'] == 1
     assert rv.json['pagination']['per_page'] == 10
-    assert rv.json['foo'] == 'bar'
+    assert rv.json['x_token'] == 'token'
 
 
 def test_register_validation_error_response(app, client):
