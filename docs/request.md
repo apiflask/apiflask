@@ -119,6 +119,12 @@ def hello(headers_data: HeaderIn):
     normalizes header names automatically. When porting a schema between
     the two, remember to add or remove `data_key` accordingly.
 
+!!! tip
+
+    Most HTTP servers(such as flask development server, nginx) treat header names containing underscores as invalid and ignore them.
+    Therefore, underscores in OpenAPI are automatically normalized to dashes.
+    see [this issue](https://github.com/apiflask/apiflask/issues/750) for more details.
+
 
 ## Request body content types
 
