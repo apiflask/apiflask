@@ -121,9 +121,12 @@ def hello(headers_data: HeaderIn):
 
 !!! tip
 
-    Most HTTP servers(such as flask development server, nginx) treat header names containing underscores as invalid and ignore them.
-    Therefore, underscores in OpenAPI are automatically normalized to dashes.
-    see [this issue](https://github.com/apiflask/apiflask/issues/750) for more details.
+    Most HTTP servers (such as the Flask development server and nginx)
+    treat header names containing underscores as invalid and ignore them.
+    Therefore, underscores in OpenAPI header parameter names are
+    automatically normalized to dashes. See
+    [issue #750](https://github.com/apiflask/apiflask/issues/750) for more
+    details.
 
 
 ## Request body content types
