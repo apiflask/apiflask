@@ -3,6 +3,9 @@
 Released: -
 
 - Support flask-httpauth 4.8.1+ ([issue #743][issue_743]).
+- Add `__str__` method to `HTTPError` to return a human-readable string representation ([issue #748][issue_748]).
+
+[issue_748]: https://github.com/apiflask/apiflask/issues/748
 
 [issue_743]: https://github.com/apiflask/apiflask/issues/743
 
