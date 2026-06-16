@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 import typing as t
 
 from flask import request
@@ -188,5 +187,4 @@ def _normalize_header_name(name: str) -> str:
     if not name:
         return name
 
-    words = re.split(r'[-_]', name)
-    return '-'.join(words)
+    return name.replace('_', '-')
