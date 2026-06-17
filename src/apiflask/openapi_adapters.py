@@ -3,6 +3,7 @@ from __future__ import annotations
 import typing as t
 
 from .fields import DelimitedList
+from .helpers import _normalize_header_name
 from .schema_adapters import registry
 
 if t.TYPE_CHECKING:
@@ -164,9 +165,15 @@ class OpenAPIHelper:
 
             # For marshmallow schemas, extract parameters directly from fields
             if adapter.schema_type == 'marshmallow':
-                return self._extract_marshmallow_parameters(
+                parameters = self._extract_marshmallow_parameters(
                     adapter.schema, location=openapi_location
                 )
+
+                # Normalize header names
+                for param in (p for p in parameters if p.get('in') == 'header'):
+                    param['name'] = _normalize_header_name(param['name'])
+
+                return parameters
 
             # For other schema types, generate basic parameters
             schema_spec = adapter.get_openapi_schema()
@@ -176,7 +183,9 @@ class OpenAPIHelper:
                 required = schema_spec.get('required', [])
                 for name, prop_spec in schema_spec['properties'].items():
                     param = {
-                        'name': name,
+                        'name': _normalize_header_name(name)
+                        if openapi_location == 'header'
+                        else name,
                         'in': openapi_location,
                         'required': name in required,
                         'schema': prop_spec,

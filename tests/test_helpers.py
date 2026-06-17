@@ -11,6 +11,7 @@ from apiflask import PaginationModel
 from apiflask import PaginationSchema
 from apiflask.fields import UploadFile
 from apiflask.helpers import _get_fields_by_type
+from apiflask.helpers import _normalize_header_name
 
 
 @pytest.mark.parametrize('code', [204, 400, 404, 456, 4123])
@@ -147,3 +148,9 @@ def test_get_fields_by_type():
     optional_files = OptionalFiles()
     assert _get_fields_by_type(optional_files, UploadFile) == ['single_file']
     assert _get_fields_by_type(optional_files, t.List[UploadFile]) == ['file_list']
+
+
+def test_normalize_header_name():
+    assert _normalize_header_name('') == ''
+    assert _normalize_header_name('x_token') == 'x-token'
+    assert _normalize_header_name('x-custom_header') == 'x-custom-header'

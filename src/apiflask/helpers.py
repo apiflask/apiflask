@@ -177,3 +177,14 @@ def _get_fields_by_type(model_class: type[BaseModel], field_type: type) -> t.Lis
         for field_name, field in model_class.__pydantic_fields__.items()
         if field_type == field.annotation or field_type in t.get_args(field.annotation)
     ]
+
+
+def _normalize_header_name(name: str) -> str:
+    """Normalize HTTP header name.
+
+    *Version Added: 3.1.1*
+    """
+    if not name:
+        return name
+
+    return name.replace('_', '-')

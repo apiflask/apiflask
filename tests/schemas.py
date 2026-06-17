@@ -76,7 +76,7 @@ class Header(Schema):
     class Meta:
         unknown = EXCLUDE
 
-    foo = String(load_default='bar')
+    x_token = String(load_default='token')
 
 
 class ValidationError(Schema):
