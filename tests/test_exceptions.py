@@ -2,6 +2,7 @@ import pytest
 
 from apiflask.exceptions import abort
 from apiflask.exceptions import HTTPError
+from apiflask.helpers import get_reason_phrase
 
 
 @pytest.mark.parametrize(
@@ -141,3 +142,32 @@ def test_custom_error_classes(app, client):
     assert rv.json['error_code'] == '345'
     assert rv.json['error_docs'] == 'https://example.com/docs/gone'
     assert rv.json['detail'] == {}
+
+
+@pytest.mark.parametrize(
+    'kwargs',
+    [
+        {},
+        {'message': 'bad'},
+        {'message': 'bad', 'detail': {'location': 'json'}},
+        {'message': 'bad', 'detail': {'location': 'json'}, 'headers': {'X-FOO': 'bar'}},
+    ],
+)
+def test_httperror_str(kwargs):
+    http_error_msg = kwargs.get('message', None)
+
+    if http_error_msg is None:
+        http_error_msg = get_reason_phrase(400)
+
+    assert http_error_msg in str(HTTPError(400, **kwargs))
+
+
+def test_httperror_str_default_status_code():
+    assert get_reason_phrase(500) in str(HTTPError())
+
+
+def test_httperror_str_custom_error_class_message():
+    class PetDown(HTTPError):
+        message = 'The pet is down.'
+
+    assert 'The pet is down.' in str(PetDown())

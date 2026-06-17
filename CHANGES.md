@@ -3,9 +3,11 @@
 Released: -
 
 - Support flask-httpauth 4.8.1+ ([issue #743][issue_743]).
+- Add `__str__` method to `HTTPError` to return a human-readable string representation ([issue #748][issue_748]).
 - Normalize header names in OpenAPI ([issue #750][issue_750]).
 
 [issue_743]: https://github.com/apiflask/apiflask/issues/743
+[issue_748]: https://github.com/apiflask/apiflask/issues/748
 [issue_750]: https://github.com/apiflask/apiflask/issues/750
 
 ## Version: 3.1.0
