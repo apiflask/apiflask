@@ -91,6 +91,20 @@ class HTTPError(Exception):
             # make sure the error message is not empty
             self.message: str = get_reason_phrase(self.status_code, 'Unknown error')
 
+    def __str__(self) -> str:
+        return f'<status_code={self.status_code}, message={self.message}>'
+
+    def __repr__(self) -> str:
+        return (
+            f'{self.__class__.__name__}('
+            f'status_code={self.status_code!r}, '
+            f'message={self.message!r}, '
+            f'detail={self.detail!r}, '
+            f'headers={self.headers!r}, '
+            f'extra_data={self.extra_data!r}'
+            f')'
+        )
+
 
 class _ValidationError(HTTPError):
     """The exception used when the request validation error happened."""
