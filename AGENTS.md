@@ -1,10 +1,50 @@
 # AGENTS.md
 
+This file provides guidance to Qoder (qoder.com) when working with code in this repository.
+
 APIFlask is a lightweight Python web API framework based on Flask, supporting both marshmallow
 schemas and Pydantic models through a pluggable schema adapter system.
 
 
-## General Rules and Guidelines
+## General Guidelines for Generative AI Usage
+
+With proper usage, Generative AI can be a valuable tool for writing code, documentation, tests,
+and more. This level of usage requires enough understanding of the project to evaluate the LLM
+output, and to know when to accept or reject it. Contributors must not rely on LLM output as the
+sole basis for their contributions.
+
+Examples of disallowed usage:
+
+- Copying and pasting LLM output into issues or pull requests without any additional context or
+  explanation.
+- Reviewing existing pull requests solely via LLMs, or using LLMs to respond to issues without
+  any additional context or explanation.
+- Copying a GitHub issue into an LLM prompt and blindly submitting the generated PR without
+  active human participation.
+
+Maintainers may — at their discretion — close or hide issues, pull requests, or other
+contributions that are made totally or in part through generative AI tooling without sufficient
+human oversight.
+
+
+## Human Responsibility and Control
+
+The human driving any contribution — whether as an author, reviewer, or maintainer — must remain
+in control of the process and bear full responsibility for the final output. This means:
+
+- Actively reviewing, understanding, and validating any LLM-generated content before submission.
+- You cannot delegate your responsibility to an AI tool, nor can you claim that an AI made an
+  error as a defense for problematic contributions.
+- The human contributor is accountable for ensuring that all content, regardless of its origin,
+  meets project standards, follows established policies, and contributes meaningfully to the
+  project.
+
+To help foster transparency and collaboration, a human who contributes content that was primarily
+created by generative AI tools should freely and openly disclose this fact (see
+[Commit Formatting](#commit-formatting) below).
+
+
+## Contribution Rules
 
 Follow the contribution workflow in CONTRIBUTING.md strictly. The most important rules:
 
