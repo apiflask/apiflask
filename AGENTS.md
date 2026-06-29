@@ -57,6 +57,8 @@ Follow the contribution workflow in CONTRIBUTING.md strictly. The most important
   72 characters.
 - Add an entry in `CHANGES.md`. Use the same style as other entries. Also include
   `Version Changed` or `Version Added` section in relevant docstrings.
+- All commits must pass all pre-commit hooks before submission. Run `pre-commit run --all-files`
+  to verify locally.
 
 
 ## Structure
