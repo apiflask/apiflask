@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This file provides guidance to Qoder (qoder.com) when working with code in this repository.
+This file provides guidance to AI coding assistants (including Qoder, Copilot, Claude, etc.) when working with code in this repository.
 
 APIFlask is a lightweight Python web API framework based on Flask, supporting both marshmallow
 schemas and Pydantic models through a pluggable schema adapter system.
