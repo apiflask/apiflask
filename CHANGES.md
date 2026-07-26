@@ -1,4 +1,6 @@
-## Version: Unreleased
+## Version: 3.1.2
+
+Released: -
 
 - Fix `list[UploadFile]` not being recognized as a multiple file field ([issue #755][issue_755]).
 
