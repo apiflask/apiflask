@@ -167,6 +167,22 @@ def pagination_builder(
         raise ValueError('Invalid schema_type parameter, should be "marshmallow" or "pydantic"')
 
 
+def _is_same_type(left: t.Any, right: t.Any) -> bool:
+    """A helper function to compare two annotations.
+
+    Generic aliases are compared by their origin and arguments, so that the
+    equivalent ``typing.List[X]`` and ``list[X]`` spellings match.
+    """
+    if left == right:
+        return True
+    origin = t.get_origin(left)
+    return (
+        origin is not None
+        and origin is t.get_origin(right)
+        and t.get_args(left) == t.get_args(right)
+    )
+
+
 def _get_fields_by_type(model_class: type[BaseModel], field_type: type) -> t.List[str]:
     """A helper function to get the fields of the specified type in BaseModel.
 
@@ -175,7 +191,8 @@ def _get_fields_by_type(model_class: type[BaseModel], field_type: type) -> t.Lis
     return [
         field_name
         for field_name, field in model_class.__pydantic_fields__.items()
-        if field_type == field.annotation or field_type in t.get_args(field.annotation)
+        if _is_same_type(field_type, field.annotation)
+        or any(_is_same_type(field_type, arg) for arg in t.get_args(field.annotation))
     ]
 
 

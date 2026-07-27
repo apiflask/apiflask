@@ -150,6 +150,25 @@ def test_get_fields_by_type():
     assert _get_fields_by_type(optional_files, t.List[UploadFile]) == ['file_list']
 
 
+def test_get_fields_by_type_with_builtin_generics():
+    # list[UploadFile] and t.List[UploadFile] are equivalent annotations
+    class Files(BaseModel):
+        single_file: UploadFile
+        file_list: list[UploadFile]
+
+    class OptionalFiles(BaseModel):
+        file_list: t.Optional[list[UploadFile]] = None
+
+    fs = FileStorage(io.BytesIO(b'test'), 'test.jpg')
+    fs_list = [FileStorage(io.BytesIO(b'test'), 'test1.jpg')]
+
+    files = Files(single_file=fs, file_list=fs_list)
+    assert _get_fields_by_type(files, t.List[UploadFile]) == ['file_list']
+    assert _get_fields_by_type(files, list[UploadFile]) == ['file_list']
+
+    assert _get_fields_by_type(OptionalFiles(), t.List[UploadFile]) == ['file_list']
+
+
 def test_normalize_header_name():
     assert _normalize_header_name('') == ''
     assert _normalize_header_name('x_token') == 'x-token'

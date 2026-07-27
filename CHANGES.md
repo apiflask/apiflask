@@ -1,3 +1,11 @@
+## Version: 3.1.2
+
+Released: -
+
+- Fix `list[UploadFile]` not being recognized as a multiple file field ([issue #755][issue_755]).
+
+[issue_755]: https://github.com/apiflask/apiflask/issues/755
+
 ## Version: 3.1.1
 
 Released: 2026/6/19

@@ -239,6 +239,34 @@ def test_multiple_file_model(app, client):
     assert rv.json == {'images': True}
 
 
+def test_multiple_file_model_with_builtin_list(app, client):
+    # the PEP 585 list[UploadFile] spelling must behave like t.List[UploadFile]
+    class Files(BaseModel):
+        images: list[UploadFile]
+
+    @app.post('/')
+    @app.input(Files, location='files')
+    def index(files_data: Files):
+        data = {'images': True, 'count': len(files_data.images)}
+        for f in files_data.images:
+            if not isinstance(f, FileStorage):
+                data['images'] = False
+        return data
+
+    rv = client.post(
+        '/',
+        data={
+            'images': [
+                (io.BytesIO(b'test0'), 'test0.jpg'),
+                (io.BytesIO(b'test1'), 'test1.jpg'),
+            ]
+        },
+        content_type='multipart/form-data',
+    )
+    assert rv.status_code == 200
+    assert rv.json == {'images': True, 'count': 2}
+
+
 def test_empty_file_model(app, client):
     class Files(BaseModel):
         image: t.Optional[UploadFile] = None
