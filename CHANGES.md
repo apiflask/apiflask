@@ -3,7 +3,7 @@
 Released: -
 
 - Fix `list[UploadFile]` not being recognized as a multiple file field ([issue #755][issue_755]).
-- Fix AUTO_200_RESPONSE shares the same mutable empty schema object across endpoints ([issue #758][issue_758]).
+- Fix AUTO_200_RESPONSE sharing the same mutable empty schema object across endpoints ([issue #758][issue_758]).
 
 [issue_755]: https://github.com/apiflask/apiflask/issues/755
 [issue_758]: https://github.com/apiflask/apiflask/issues/758
