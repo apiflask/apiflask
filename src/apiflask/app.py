@@ -983,7 +983,7 @@ class APIFlask(APIScaffold, Flask):
                     try:
                         # Use schema_to_parameters for proper handling of different schema types
                         schema_params = openapi_helper.schema_to_parameters(
-                            schema, location=location
+                            schema, location=location, spec=spec
                         )
                         parameters.extend(schema_params)
                     except Exception:
@@ -1468,7 +1468,9 @@ class APIFlask(APIScaffold, Flask):
             operation['responses'][status_code]['links'] = links
         if headers_schema is not None:
             # Use openapi_helper to convert headers schema to parameters
-            header_params = openapi_helper.schema_to_parameters(headers_schema, location='headers')
+            header_params = openapi_helper.schema_to_parameters(
+                headers_schema, location='headers', spec=spec
+            )
             headers = {header['name']: header for header in header_params}
             for header in headers.values():
                 header.pop('in', None)
