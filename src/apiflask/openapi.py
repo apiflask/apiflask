@@ -17,17 +17,6 @@ default_bypassed_endpoints: list[str] = [
     '_debug_toolbar.static',  # Flask-DebugToolbar
 ]
 
-default_response = {
-    'schema': {},
-    'status_code': 200,
-    'description': None,
-    'example': None,
-    'examples': None,
-    'links': None,
-    'content_type': 'application/json',
-    'headers': None,
-}
-
 
 def get_tag(blueprint: APIBlueprint, blueprint_name: str) -> dict[str, t.Any]:
     """Get tag from blueprint object."""
@@ -102,3 +91,18 @@ def get_argument(argument_type: str, argument_name: str) -> dict[str, t.Any]:
     else:
         argument['schema'] = {'type': 'string'}
     return argument
+
+
+def get_default_response() -> dict[str, t.Any]:
+    """Get a default 200 response object."""
+    default_response = {
+        'schema': {},
+        'status_code': 200,
+        'description': None,
+        'example': None,
+        'examples': None,
+        'links': None,
+        'content_type': 'application/json',
+        'headers': None,
+    }
+    return default_response

@@ -51,7 +51,7 @@ from .types import HTTPAuthType
 from .types import TagsType
 from .types import OpenAPISchemaType
 from .openapi import default_bypassed_endpoints
-from .openapi import default_response
+from .openapi import get_default_response
 from .openapi import get_tag
 from .openapi import get_operation_tags
 from .openapi import get_path_summary
@@ -913,7 +913,7 @@ class APIFlask(APIScaffold, Flask):
             # add a default 200 response for bare views
             if not hasattr(view_func, '_spec'):
                 if not inspect.ismethod(view_func) and self.config['AUTO_200_RESPONSE']:  # type: ignore
-                    view_func._spec = {'response': default_response}
+                    view_func._spec = {'response': get_default_response()}
                 else:
                     continue  # pragma: no cover
             # method views
@@ -922,7 +922,7 @@ class APIFlask(APIScaffold, Flask):
                 for method, method_spec in view_func._method_spec.items():
                     if method_spec.get('no_spec'):
                         if self.config['AUTO_200_RESPONSE']:
-                            view_func._method_spec[method]['response'] = default_response
+                            view_func._method_spec[method]['response'] = get_default_response()
                             skip = False
                     else:
                         skip = False
