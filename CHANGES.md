@@ -4,9 +4,11 @@ Released: -
 
 - Fix `list[UploadFile]` not being recognized as a multiple file field ([issue #755][issue_755]).
 - Fix AUTO_200_RESPONSE sharing the same mutable empty schema object across endpoints ([issue #758][issue_758]).
+- Support declaring response headers with `@app.doc(responses={...})` ([issue #654][issue_654]).
 
 [issue_755]: https://github.com/apiflask/apiflask/issues/755
 [issue_758]: https://github.com/apiflask/apiflask/issues/758
+[issue_654]: https://github.com/apiflask/apiflask/issues/654
 
 ## Version: 3.1.1
 

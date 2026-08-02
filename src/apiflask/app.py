@@ -1155,6 +1155,15 @@ class APIFlask(APIScaffold, Flask):
                             existing_response_content.update(value.get('content', {}))
                             if (new_description := value.get('description')) is not None:
                                 existing_response['description'] = new_description
+                            if (new_headers := value.get('headers')) is not None:
+                                # A dict is already an OpenAPI headers object, anything
+                                # else is a schema and is converted like `@app.output(
+                                # ..., headers=...)` does.
+                                if not isinstance(new_headers, dict):
+                                    new_headers = self._make_response_headers(
+                                        t.cast('SchemaType', new_headers)
+                                    )
+                                existing_response['headers'] = new_headers
                             continue
                         else:
                             description = value
@@ -1467,13 +1476,26 @@ class APIFlask(APIScaffold, Flask):
         if links is not None:
             operation['responses'][status_code]['links'] = links
         if headers_schema is not None:
-            # Use openapi_helper to convert headers schema to parameters
-            header_params = openapi_helper.schema_to_parameters(headers_schema, location='headers')
-            headers = {header['name']: header for header in header_params}
-            for header in headers.values():
-                header.pop('in', None)
-                header.pop('name', None)
-            operation['responses'][status_code]['headers'] = headers
+            operation['responses'][status_code]['headers'] = self._make_response_headers(
+                headers_schema
+            )
+
+    def _make_response_headers(self, headers_schema: SchemaType) -> dict[str, t.Any]:
+        """Convert a headers schema to an OpenAPI response headers object.
+
+        Response headers are keyed by header name, and the `in` and `name`
+        keys that `schema_to_parameters` adds are not part of the OpenAPI
+        Header Object.
+
+        *Version added: 3.1.2*
+        """
+        # Use openapi_helper to convert headers schema to parameters
+        header_params = openapi_helper.schema_to_parameters(headers_schema, location='headers')
+        headers = {header['name']: header for header in header_params}
+        for header in headers.values():
+            header.pop('in', None)
+            header.pop('name', None)
+        return headers
 
     def _add_response_with_schema(
         self,
