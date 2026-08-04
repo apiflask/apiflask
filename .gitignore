@@ -134,6 +134,7 @@ dmypy.json
 # IDE
 .vscode/
 .idea/
+.qoder/
 
 # custom
 /app.py
