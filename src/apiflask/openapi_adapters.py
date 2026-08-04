@@ -190,7 +190,10 @@ class OpenAPIHelper:
             # the property schemas at `#/components/schemas/{parent}.{model}`.
             # Register them so those references resolve, the same way body
             # schemas are handled in `APIFlask._register_schema_and_get_ref`.
-            if spec is not None:
+            # This is limited to Pydantic because the `{parent}.{model}` naming
+            # comes from the ref template in `PydanticAdapter.get_openapi_schema`,
+            # so it would not match the refs emitted by any other adapter.
+            if spec is not None and adapter.schema_type == 'pydantic':
                 nested_defs = extract_pydantic_defs(schema_spec, adapter.get_schema_name())
                 for nested_name, nested_schema in nested_defs.items():
                     if nested_name not in spec.components.schemas:
