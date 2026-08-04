@@ -451,6 +451,18 @@ def test_doc_responses_headers(app, client):
     def with_instance():
         pass
 
+    @app.route('/fields')
+    @app.doc(
+        responses={
+            404: {
+                'description': 'Error',
+                'headers': {'x_token': String(metadata={'description': 'The token.'})},
+            },
+        }
+    )
+    def with_fields_dict():
+        pass
+
     @app.route('/raw')
     @app.doc(
         responses={
@@ -474,7 +486,7 @@ def test_doc_responses_headers(app, client):
 
     responses = {
         path: rv.json['paths'][f'/{path}']['get']['responses']['404']
-        for path in ('schema', 'instance', 'raw', 'none')
+        for path in ('schema', 'instance', 'fields', 'raw', 'none')
     }
 
     # A schema class or instance is converted the same way `@app.output(headers=...)`
@@ -489,12 +501,16 @@ def test_doc_responses_headers(app, client):
     assert responses['schema']['headers'] == expected
     assert responses['instance']['headers'] == expected
 
+    # A dict of marshmallow fields is the other shape `@app.output(headers=...)`
+    # takes, so it is converted too instead of landing in the spec verbatim
+    assert responses['fields']['headers'] == expected
+
     # The rest of the response spec is still applied
     assert responses['schema']['content']['application/json']['schema'] == {
         '$ref': '#/components/schemas/CustomHTTPError'
     }
 
-    # A plain dict is already an OpenAPI headers object and is passed through
+    # A dict of anything else is already an OpenAPI headers object and is passed through
     assert responses['raw']['headers'] == {'X-Token': {'schema': {'type': 'string'}}}
 
     # No headers key means no headers in the spec

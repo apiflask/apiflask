@@ -934,8 +934,19 @@ decorator:
 })
 ```
 
-If you would rather write the OpenAPI headers object yourself, pass a dict and
-it will be used as is:
+A dict of fields works too, again matching what the `output` decorator accepts:
+
+```python
+@app.doc(responses={
+    404: {
+        'description': 'Custom error',
+        'headers': {'x_token': String(metadata={'description': 'The token.'})}
+    }
+})
+```
+
+If you would rather write the OpenAPI headers object yourself, pass a dict whose
+values are not fields and it will be used as is:
 
 ```python
 @app.doc(responses={

@@ -625,8 +625,9 @@ class APIScaffold:
                 `{404: {'description': 'Not Found', 'content': {'application/json':
                 {'schema': FooSchema}}}}`. If a dict is passed and a response with the same status
                 code is already present, the existing data will be overwritten. A response dict
-                may also set `headers` to a schema class or instance, or to a dict that is used
-                as the OpenAPI headers object as is.
+                may also set `headers` to a schema class or instance, or to a dict of fields,
+                the same shapes the `headers` parameter of the `output` decorator takes. A dict
+                whose values are not fields is used as the OpenAPI headers object as is.
             deprecated: Flag this endpoint as deprecated in API docs.
             hide: Hide this endpoint in API docs.
             operation_id: The `operationId` of this endpoint. Set config `AUTO_OPERATION_ID` to
