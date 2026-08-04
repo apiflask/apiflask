@@ -33,6 +33,7 @@ from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
 from .exceptions import HTTPError
 from .exceptions import _bad_schema_message
+from .fields import Field
 from .helpers import get_reason_phrase
 from .route import route_patch
 from .schemas import Schema
@@ -63,6 +64,30 @@ from .openapi_adapters import extract_pydantic_defs
 from .ui_templates import ui_templates
 from .ui_templates import swagger_ui_oauth2_redirect_template
 from .scaffold import APIScaffold
+
+
+def _is_headers_schema_dict(headers: dict) -> bool:
+    """Tell a dict of marshmallow fields apart from an OpenAPI headers object.
+
+    `@app.output(..., headers=...)` accepts a mapping of header name to
+    marshmallow field, such as `{'X-Token': String()}`, and that shape needs
+    converting before it can go into the spec. The `headers` key of a
+    `@app.doc(responses=...)` dict also accepts a ready made OpenAPI headers
+    object, which is left alone. An OpenAPI headers object never holds field
+    objects, so the values are what tells the two apart.
+
+    Arguments:
+        headers: The dict passed as the response headers.
+
+    Returns:
+        `True` if every value is a marshmallow field, `False` otherwise.
+    """
+    if not headers:
+        return False
+    return all(
+        isinstance(value, Field) or (isinstance(value, type) and issubclass(value, Field))
+        for value in headers.values()
+    )
 
 
 @route_patch
@@ -1156,10 +1181,13 @@ class APIFlask(APIScaffold, Flask):
                             if (new_description := value.get('description')) is not None:
                                 existing_response['description'] = new_description
                             if (new_headers := value.get('headers')) is not None:
-                                # A dict is already an OpenAPI headers object, anything
-                                # else is a schema and is converted like `@app.output(
-                                # ..., headers=...)` does.
-                                if not isinstance(new_headers, dict):
+                                # A schema class or instance, or a dict of marshmallow
+                                # fields, is converted the same way `@app.output(...,
+                                # headers=...)` does it. Any other dict is already an
+                                # OpenAPI headers object and goes in untouched.
+                                if not isinstance(new_headers, dict) or _is_headers_schema_dict(
+                                    new_headers
+                                ):
                                     new_headers = self._make_response_headers(
                                         t.cast('SchemaType', new_headers)
                                     )
