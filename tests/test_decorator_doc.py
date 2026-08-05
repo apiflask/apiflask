@@ -6,6 +6,8 @@ from packaging.version import Version
 from .conftest import APISPEC_VERSION
 from .schemas import CustomHTTPError
 from .schemas import Foo
+from apiflask import Schema
+from apiflask.fields import String
 
 
 def test_doc_summary_and_description(app, client):
@@ -423,3 +425,93 @@ def test_doc_security_invalid_value(app):
 
     with pytest.raises(ValueError):
         app.spec
+
+
+def test_doc_responses_headers(app, client):
+    """Verify that a custom response spec can declare headers."""
+
+    class HeaderSchema(Schema):
+        x_token = String(metadata={'description': 'The token.'})
+
+    @app.route('/schema')
+    @app.doc(
+        responses={
+            404: {
+                'description': 'Error',
+                'content': {'application/json': {'schema': CustomHTTPError}},
+                'headers': HeaderSchema,
+            },
+        }
+    )
+    def with_schema():
+        pass
+
+    @app.route('/instance')
+    @app.doc(responses={404: {'description': 'Error', 'headers': HeaderSchema()}})
+    def with_instance():
+        pass
+
+    @app.route('/fields')
+    @app.doc(
+        responses={
+            404: {
+                'description': 'Error',
+                'headers': {'x_token': String(metadata={'description': 'The token.'})},
+            },
+        }
+    )
+    def with_fields_dict():
+        pass
+
+    @app.route('/raw')
+    @app.doc(
+        responses={
+            404: {
+                'description': 'Error',
+                'headers': {'X-Token': {'schema': {'type': 'string'}}},
+            },
+        }
+    )
+    def with_raw_dict():
+        pass
+
+    @app.route('/none')
+    @app.doc(responses={404: {'description': 'Error'}})
+    def without_headers():
+        pass
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    osv.validate(rv.json)
+
+    responses = {
+        path: rv.json['paths'][f'/{path}']['get']['responses']['404']
+        for path in ('schema', 'instance', 'fields', 'raw', 'none')
+    }
+
+    # A schema class or instance is converted the same way `@app.output(headers=...)`
+    # does, including the header name normalization
+    expected = {
+        'x-token': {
+            'description': 'The token.',
+            'required': False,
+            'schema': {'type': 'string'},
+        }
+    }
+    assert responses['schema']['headers'] == expected
+    assert responses['instance']['headers'] == expected
+
+    # A dict of marshmallow fields is the other shape `@app.output(headers=...)`
+    # takes, so it is converted too instead of landing in the spec verbatim
+    assert responses['fields']['headers'] == expected
+
+    # The rest of the response spec is still applied
+    assert responses['schema']['content']['application/json']['schema'] == {
+        '$ref': '#/components/schemas/CustomHTTPError'
+    }
+
+    # A dict of anything else is already an OpenAPI headers object and is passed through
+    assert responses['raw']['headers'] == {'X-Token': {'schema': {'type': 'string'}}}
+
+    # No headers key means no headers in the spec
+    assert 'headers' not in responses['none']

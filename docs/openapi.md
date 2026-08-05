@@ -916,6 +916,52 @@ You can also pass a schema class for the `schema`:
 })
 ```
 
+A response can also declare its headers with a `headers` key. It accepts a
+schema class or instance, the same as the `headers` parameter of the `output`
+decorator:
+
+```python
+@app.doc(responses={
+    404: {
+        'description': 'Custom error',
+        'content': {
+            'application/json': {
+                'schema': SomeErrorSchema
+            }
+        },
+        'headers': SomeHeaderSchema
+    }
+})
+```
+
+A dict of fields works too, again matching what the `output` decorator accepts:
+
+```python
+@app.doc(responses={
+    404: {
+        'description': 'Custom error',
+        'headers': {'x_token': String(metadata={'description': 'The token.'})}
+    }
+})
+```
+
+If you would rather write the OpenAPI headers object yourself, pass a dict whose
+values are not fields and it will be used as is:
+
+```python
+@app.doc(responses={
+    404: {
+        'description': 'Custom error',
+        'headers': {
+            'X-Token': {
+                'description': 'The token.',
+                'schema': {'type': 'string'}
+            }
+        }
+    }
+})
+```
+
 
 ### Multiple media types for a response
 

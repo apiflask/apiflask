@@ -624,7 +624,10 @@ class APIScaffold:
                 (`[404, 418]`) or a dict in a format of either `{404: 'Not Found'}` or
                 `{404: {'description': 'Not Found', 'content': {'application/json':
                 {'schema': FooSchema}}}}`. If a dict is passed and a response with the same status
-                code is already present, the existing data will be overwritten.
+                code is already present, the existing data will be overwritten. A response dict
+                may also set `headers` to a schema class or instance, or to a dict of fields,
+                the same shapes the `headers` parameter of the `output` decorator takes. A dict
+                whose values are not fields is used as the OpenAPI headers object as is.
             deprecated: Flag this endpoint as deprecated in API docs.
             hide: Hide this endpoint in API docs.
             operation_id: The `operationId` of this endpoint. Set config `AUTO_OPERATION_ID` to
@@ -638,6 +641,11 @@ class APIScaffold:
                 in this extensions dict should start with "x-" prefix. See more details in the
                 [Specification Extensions](https://spec.openapis.org/oas/v3.1.0#specification-extensions)
                 chapter of OpenAPI docs.
+
+        *Version changed: 3.1.2*
+
+        - Support setting response headers with the `headers` key of a response dict
+          in `responses`.
 
         *Version changed: 2.2.0*
 
