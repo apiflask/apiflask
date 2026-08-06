@@ -4,9 +4,11 @@ Released: -
 
 - Fix `list[UploadFile]` not being recognized as a multiple file field ([issue #755][issue_755]).
 - Fix AUTO_200_RESPONSE sharing the same mutable empty schema object across endpoints ([issue #758][issue_758]).
+- Fix nested Pydantic schemas (e.g. enums) not being registered in `components/schemas` when the model is used in a parameter location such as `query`, `headers`, or `cookies` ([issue #757][issue_757]).
 
 [issue_755]: https://github.com/apiflask/apiflask/issues/755
 [issue_758]: https://github.com/apiflask/apiflask/issues/758
+[issue_757]: https://github.com/apiflask/apiflask/issues/757
 
 ## Version: 3.1.1
 

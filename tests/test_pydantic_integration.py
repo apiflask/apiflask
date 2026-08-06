@@ -1,4 +1,6 @@
 import sys
+import typing
+from enum import Enum
 
 import openapi_spec_validator as osv
 import pytest
@@ -601,3 +603,95 @@ class TestPydanticIntegration:
             assert isinstance(data, dict)
             assert data['user_id'] == 1
             assert data['username'] == 'John Doe'
+
+    @pytest.mark.parametrize(
+        'location, expected_in',
+        [('query', 'query'), ('headers', 'header'), ('cookies', 'cookie')],
+    )
+    def test_enum_in_parameters_registers_nested_schema(self, location, expected_in):
+        """Test that enums used in parameter locations are registered in components/schemas."""
+
+        class PetCategory(str, Enum):
+            DOG = 'dog'
+            CAT = 'cat'
+
+        class PetQuery(BaseModel):
+            category: PetCategory
+
+        app = APIFlask(__name__)
+
+        @app.get('/pets')
+        @app.input(PetQuery, location=location)
+        def get_pets(**kwargs):
+            return []
+
+        with app.test_client() as client:
+            rv = client.get('/openapi.json')
+            assert rv.status_code == 200
+            osv.validate(rv.json)
+
+            spec = rv.get_json()
+            schemas = spec['components']['schemas']
+
+            # The nested enum must be registered, not just referenced
+            assert 'PetQuery.PetCategory' in schemas
+            assert schemas['PetQuery.PetCategory']['enum'] == ['dog', 'cat']
+
+            parameter = spec['paths']['/pets']['get']['parameters'][0]
+            assert parameter['name'] == 'category'
+            assert parameter['in'] == expected_in
+            assert parameter['schema']['$ref'] == '#/components/schemas/PetQuery.PetCategory'
+
+    def test_enum_in_parameters_leaves_no_dangling_refs(self):
+        """Test that a spec mixing body and parameter enums resolves every $ref."""
+
+        class PetCategory(str, Enum):
+            DOG = 'dog'
+            CAT = 'cat'
+
+        class PetQuery(BaseModel):
+            category: typing.Optional[PetCategory] = None
+
+        class PetIn(BaseModel):
+            name: str
+            category: PetCategory
+
+        app = APIFlask(__name__)
+
+        @app.get('/pets')
+        @app.input(PetQuery, location='query')
+        def get_pets(query_data):
+            return []
+
+        @app.post('/pets')
+        @app.input(PetIn, location='json')
+        def create_pet(json_data):
+            return {}
+
+        with app.test_client() as client:
+            rv = client.get('/openapi.json')
+            assert rv.status_code == 200
+            osv.validate(rv.json)
+
+            spec = rv.get_json()
+            defined = {f'#/components/schemas/{name}' for name in spec['components']['schemas']}
+
+            refs = []
+
+            def collect_refs(node):
+                if isinstance(node, dict):
+                    for key, value in node.items():
+                        if key == '$ref':
+                            refs.append(value)
+                        else:
+                            collect_refs(value)
+                elif isinstance(node, list):
+                    for item in node:
+                        collect_refs(item)
+
+            collect_refs(spec)
+
+            assert refs  # guard against the walk silently finding nothing
+            assert sorted(set(refs) - defined) == []
+            assert 'PetQuery.PetCategory' in spec['components']['schemas']
+            assert 'PetIn.PetCategory' in spec['components']['schemas']

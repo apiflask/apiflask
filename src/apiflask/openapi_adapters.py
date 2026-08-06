@@ -138,16 +138,24 @@ class OpenAPIHelper:
             return {'type': 'object'}
 
     def schema_to_parameters(
-        self, schema: t.Any, location: str = 'query'
+        self, schema: t.Any, location: str = 'query', spec: APISpec | None = None
     ) -> list[dict[str, t.Any]]:
         """Convert schema to OpenAPI parameters.
 
         Arguments:
             schema: Schema object
             location: Parameter location ('query', 'header', etc.)
+            spec: The APISpec object used to register nested schemas
+                referenced by the parameters (e.g. Pydantic enums). When
+                omitted, nested schemas are not registered.
 
         Returns:
             List of OpenAPI parameter definitions
+
+        *Version changed: 3.1.2*
+
+        - Add parameter `spec` to register nested schemas referenced by
+          the generated parameters.
         """
         try:
             adapter = registry.create_adapter(schema)
@@ -177,6 +185,20 @@ class OpenAPIHelper:
 
             # For other schema types, generate basic parameters
             schema_spec = adapter.get_openapi_schema()
+
+            # Pydantic emits nested models (e.g. enums) into `$defs` and points
+            # the property schemas at `#/components/schemas/{parent}.{model}`.
+            # Register them so those references resolve, the same way body
+            # schemas are handled in `APIFlask._register_schema_and_get_ref`.
+            # This is limited to Pydantic because the `{parent}.{model}` naming
+            # comes from the ref template in `PydanticAdapter.get_openapi_schema`,
+            # so it would not match the refs emitted by any other adapter.
+            if adapter.schema_type == 'pydantic' and spec is not None:
+                nested_defs = extract_pydantic_defs(schema_spec, adapter.get_schema_name())
+                for nested_name, nested_schema in nested_defs.items():
+                    if nested_name not in spec.components.schemas:
+                        spec.components.schema(nested_name, nested_schema)
+
             parameters = []
 
             if 'properties' in schema_spec:
