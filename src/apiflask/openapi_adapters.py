@@ -193,7 +193,7 @@ class OpenAPIHelper:
             # This is limited to Pydantic because the `{parent}.{model}` naming
             # comes from the ref template in `PydanticAdapter.get_openapi_schema`,
             # so it would not match the refs emitted by any other adapter.
-            if spec is not None and adapter.schema_type == 'pydantic':
+            if adapter.schema_type == 'pydantic' and spec is not None:
                 nested_defs = extract_pydantic_defs(schema_spec, adapter.get_schema_name())
                 for nested_name, nested_schema in nested_defs.items():
                     if nested_name not in spec.components.schemas:
