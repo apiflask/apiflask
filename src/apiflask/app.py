@@ -1078,8 +1078,10 @@ class APIFlask(APIScaffold, Flask):
                         )
 
                 # add validation error response
-                if self.config['AUTO_VALIDATION_ERROR_RESPONSE'] and (
-                    view_func._spec.get('body') or view_func._spec.get('args')
+                if (
+                    self.config['AUTO_VALIDATION_ERROR_RESPONSE']
+                    and (view_func._spec.get('body') or view_func._spec.get('args'))
+                    and view_func._spec.get('validation', True)
                 ):
                     status_code: str = str(  # type: ignore
                         self.config['VALIDATION_ERROR_STATUS_CODE']
