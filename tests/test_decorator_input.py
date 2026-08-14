@@ -452,6 +452,28 @@ def test_skip_validation(app, client):
         == '#/components/schemas/PetIn'
     )
     assert 'PetIn' in rv.json['components']['schemas']
+    assert (
+        '422'
+        not in rv.json['paths']['/pets_without_validation/{pet_id}']['patch']['responses']
+    )
+
+
+def test_skip_validation_keeps_422_when_another_input_validates(app, client):
+    class PetIn(Schema):
+        name = String(required=True)
+
+    class QueryIn(Schema):
+        q = String(required=True)
+
+    @app.post('/pets')
+    @app.input(QueryIn, location='query')
+    @app.input(PetIn, validation=False)
+    def create_pet(query_data, json_data):
+        return {'q': query_data['q'], 'name': json_data['name']}
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    assert '422' in rv.json['paths']['/pets']['post']['responses']
 
 
 @pytest.mark.parametrize('validation', [True, False])

@@ -250,6 +250,12 @@ class APIScaffold:
                 ```
             validation: Flag to allow disabling of validation on input. Default to `True`.
 
+        *Version changed: 3.1.2*
+
+        - When ``validation`` is ``False`` for every ``@app.input`` on a view,
+          the automatic 422 validation error response is omitted from the
+          OpenAPI spec.
+
         *Version changed: 2.2.2
 
         - Add parameter `validation` to allow disabling of validation on input.
@@ -330,6 +336,13 @@ class APIScaffold:
                     _annotate(f, omit_default_path_parameters=True)
                 # TODO: Support set example for request parameters
                 f._spec['args'].append((annotation_schema, location))
+
+            # Remember whether any input on this view still validates, so the
+            # OpenAPI generator can omit the automatic 422 when none do.
+            previous_validation = False
+            if hasattr(f, '_spec'):
+                previous_validation = bool(f._spec.get('validation'))
+            _annotate(f, validation=previous_validation or validation)
 
             arg_name_val = arg_name or f'{location}_data'
 
