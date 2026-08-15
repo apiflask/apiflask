@@ -452,10 +452,7 @@ def test_skip_validation(app, client):
         == '#/components/schemas/PetIn'
     )
     assert 'PetIn' in rv.json['components']['schemas']
-    assert (
-        '422'
-        not in rv.json['paths']['/pets_without_validation/{pet_id}']['patch']['responses']
-    )
+    assert '422' not in rv.json['paths']['/pets_without_validation/{pet_id}']['patch']['responses']
 
 
 def test_skip_validation_keeps_422_when_another_input_validates(app, client):

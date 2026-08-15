@@ -142,7 +142,7 @@ class SchemaRegistry:
         if schema_type not in self._adapters:
             available = ', '.join(self._adapters.keys())
             raise ValueError(
-                f'Unsupported schema type: {schema_type}. ' f'Available types: {available}'
+                f'Unsupported schema type: {schema_type}. Available types: {available}'
             )
 
         adapter_class = self._adapters[schema_type]

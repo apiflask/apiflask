@@ -72,7 +72,7 @@ class PydanticAdapter(SchemaAdapter):
         """
         if not HAS_PYDANTIC:
             raise ImportError(
-                'Pydantic is required for PydanticAdapter. ' 'Install it with: pip install pydantic'
+                'Pydantic is required for PydanticAdapter. Install it with: pip install pydantic'
             )
 
         if isinstance(schema, type) and issubclass(schema, BaseModel):

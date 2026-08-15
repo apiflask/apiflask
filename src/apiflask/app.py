@@ -753,8 +753,7 @@ class APIFlask(APIScaffold, Flask):
 
             if auth.name in auth_names:
                 warnings.warn(
-                    f"The auth scheme name '{auth.name}' has existed, "
-                    'so it will be overwritten.',
+                    f"The auth scheme name '{auth.name}' has existed, so it will be overwritten.",
                     stacklevel=2,
                 )
 
@@ -1027,7 +1026,7 @@ class APIFlask(APIScaffold, Flask):
                 if operation_id is None:
                     if self.config['AUTO_OPERATION_ID']:
                         operation['operationId'] = (
-                            f"{method.lower()}_{rule.endpoint.replace('.', '_')}"
+                            f'{method.lower()}_{rule.endpoint.replace(".", "_")}'
                         )
                 else:
                     operation['operationId'] = operation_id
