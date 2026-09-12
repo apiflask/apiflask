@@ -6,11 +6,11 @@ def test_auto_200_response(app):
 
     @app.get('/foo/<id>')
     def get_foo(id):
-        return {}
+        pass
 
     @app.delete('/foo/<id>')
     def delete_foo(id):
-        return {}
+        pass
 
     spec = app.spec
     get_foo_schema = spec['paths']['/foo/{id}']['get']['responses']['200']['content'][
@@ -29,10 +29,10 @@ def test_auto_200_response_method_view(app):
     @app.route('/foo/<id>')
     class FooAPI(MethodView):
         def get(self, id):
-            return {}
+            pass
 
         def delete(self, id):
-            return {}
+            pass
 
     spec = app.spec
     get_foo_schema = spec['paths']['/foo/{id}']['get']['responses']['200']['content'][

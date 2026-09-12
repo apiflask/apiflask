@@ -1,6 +1,6 @@
 ## Version: 3.1.2
 
-Released: -
+Released: 2026/9/12
 
 - Fix `list[UploadFile]` not being recognized as a multiple file field ([issue #755][issue_755]).
 - Fix AUTO_200_RESPONSE sharing the same mutable empty schema object across endpoints ([issue #758][issue_758]).
