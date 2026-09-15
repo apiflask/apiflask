@@ -116,8 +116,15 @@ class MarshmallowAdapter(SchemaAdapter):
     def schema_type(self) -> str:
         return 'marshmallow'
 
-    def validate_input(self, request: Request, location: str, **kwargs: t.Any) -> t.Any:
-        """Validate input using marshmallow/webargs."""
+    def validate_input(
+        self, request: Request, location: str, *, validation: bool = True, **kwargs: t.Any
+    ) -> t.Any:
+        """Validate input using marshmallow/webargs.
+
+        The ``validation`` parameter is accepted for interface compatibility;
+        ``scaffold.py`` handles ``validation=False`` separately for marshmallow
+        schemas.
+        """
         if location == 'files':
             # Handle file uploads with form data
             data = _get_files_and_form(request, self.schema)

@@ -29,12 +29,16 @@ class SchemaAdapter(ABC):
         self.many = many
 
     @abstractmethod
-    def validate_input(self, request: Request, location: str, **kwargs: t.Any) -> t.Any:
+    def validate_input(
+        self, request: Request, location: str, *, validation: bool = True, **kwargs: t.Any
+    ) -> t.Any:
         """Validate and parse input data from request.
 
         Arguments:
             request: Flask request object
             location: Location of data ('json', 'query', 'form', etc.)
+            validation: Whether to perform validation on input. Default to True.
+                When False, load and parse data without validation.
             **kwargs: Additional arguments passed from decorator
 
         Returns:

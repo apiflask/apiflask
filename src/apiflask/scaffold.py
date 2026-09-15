@@ -358,7 +358,9 @@ class APIScaffold:
 
                 @wraps(f)
                 def wrapper(*args: t.Any, **kwargs: t.Any):
-                    location_data = adapter.validate_input(flask_request, location, **kwargs)
+                    location_data = adapter.validate_input(
+                        flask_request, location, validation=validation, **kwargs
+                    )
                     kwargs[arg_name_val] = location_data
                     return f(*args, **kwargs)
 

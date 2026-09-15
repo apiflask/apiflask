@@ -4,6 +4,7 @@ from enum import Enum
 
 import openapi_spec_validator as osv
 import pytest
+from flask.views import MethodView
 
 from apiflask import APIFlask
 
@@ -695,3 +696,115 @@ class TestPydanticIntegration:
             assert sorted(set(refs) - defined) == []
             assert 'PetQuery.PetCategory' in spec['components']['schemas']
             assert 'PetIn.PetCategory' in spec['components']['schemas']
+
+
+class TestPydanticSkipValidation:
+    """Test validation=False with Pydantic models across all locations."""
+
+    def test_skip_validation_with_pydantic_json(self):
+        """Test validation=False with Pydantic model, location='json'."""
+
+        class PetIn(BaseModel):
+            name: str
+            category: str
+
+        app = APIFlask(__name__)
+
+        @app.post('/pets')
+        @app.input(PetIn, location='json', validation=False)
+        def create_pet(json_data):
+            assert isinstance(json_data, PetIn)
+            return {'received_name': json_data.name}
+
+        with app.test_client() as client:
+            # Missing required field 'category' — should NOT trigger 422
+            response = client.post('/pets', json={'name': 'Kitty'})
+            assert response.status_code == 200
+            assert response.get_json()['received_name'] == 'Kitty'
+
+    def test_skip_validation_with_pydantic_query(self):
+        """Test validation=False with Pydantic model, location='query'."""
+
+        class QueryIn(BaseModel):
+            page: int
+            per_page: int
+
+        app = APIFlask(__name__)
+
+        @app.get('/items')
+        @app.input(QueryIn, location='query', validation=False)
+        def list_items(query_data):
+            assert isinstance(query_data, QueryIn)
+            return {'page': query_data.page}
+
+        with app.test_client() as client:
+            # Missing required field 'per_page' — should NOT trigger 422
+            # Note: model_construct skips type coercion, so 'page' stays as string
+            response = client.get('/items?page=2')
+            assert response.status_code == 200
+            assert response.get_json()['page'] == '2'
+
+    def test_skip_validation_with_pydantic_headers(self):
+        """Test validation=False with Pydantic model, location='headers'."""
+
+        class HeaderIn(BaseModel):
+            x_token: str
+            x_version: str
+
+        app = APIFlask(__name__)
+
+        @app.get('/protected')
+        @app.input(HeaderIn, location='headers', validation=False)
+        def protected_route(headers_data):
+            assert isinstance(headers_data, HeaderIn)
+            return {'token': headers_data.x_token}
+
+        with app.test_client() as client:
+            # Missing required header 'X-Version' — should NOT trigger 422
+            response = client.get('/protected', headers={'X-Token': 'secret123'})
+            assert response.status_code == 200
+            assert response.get_json()['token'] == 'secret123'
+
+    def test_skip_validation_with_pydantic_cookies(self):
+        """Test validation=False with Pydantic model, location='cookies'."""
+
+        class CookieIn(BaseModel):
+            session_id: str
+            theme: str
+
+        app = APIFlask(__name__)
+
+        @app.get('/dashboard')
+        @app.input(CookieIn, location='cookies', validation=False)
+        def dashboard(cookies_data):
+            assert isinstance(cookies_data, CookieIn)
+            return {'session_id': cookies_data.session_id}
+
+        with app.test_client() as client:
+            client.set_cookie(key='session_id', value='abc123', domain='localhost')
+            # Missing required cookie 'theme' — should NOT trigger 422
+            response = client.get('/dashboard')
+            assert response.status_code == 200
+            assert response.get_json()['session_id'] == 'abc123'
+
+    def test_skip_validation_with_pydantic_methodview(self):
+        """Test validation=False with Pydantic model on a MethodView."""
+
+        class PetIn(BaseModel):
+            name: str
+            category: str
+
+        app = APIFlask(__name__)
+
+        @app.route('/pets')
+        class PetsView(MethodView):
+            @app.input(PetIn, location='json', validation=False)
+            def post(self, json_data):
+                assert isinstance(json_data, PetIn)
+                return {'received_name': json_data.name}
+
+        with app.test_client() as client:
+            # Missing required field 'category' — should NOT trigger 422
+            response = client.post('/pets', json={'name': 'Kitty'})
+            assert response.status_code == 200
+            assert response.get_json()['received_name'] == 'Kitty'

@@ -117,85 +117,80 @@ class PydanticAdapter(SchemaAdapter):
                 else:
                     data[key] = value
 
-    def validate_input(self, request: Request, location: str, **kwargs: t.Any) -> BaseModel:
+    def _get_location_data(self, request: Request, location: str) -> t.Any:
+        """Extract raw data from request at the given location."""
+        if location == 'json':
+            data = request.get_json(force=True)
+            return data if data is not None else {}
+
+        elif location == 'query' or location == 'querystring':
+            return request.args.to_dict()
+
+        elif location == 'form':
+            return request.form.to_dict()
+
+        elif location == 'files':
+            data = {}
+            data.update(request.form.to_dict())
+
+            file_fields = _get_fields_by_type(self.model_class, UploadFile) + _get_fields_by_type(
+                self.model_class, FileStorage
+            )
+            file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
+
+            self.handle_files(request, data, file_fields, file_list_fields)
+            return data
+
+        elif location == 'form_and_files':
+            data = request.form.to_dict()
+
+            file_fields = _get_fields_by_type(self.model_class, UploadFile) + _get_fields_by_type(
+                self.model_class, FileStorage
+            )
+            file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
+
+            self.handle_files(request, data, file_fields, file_list_fields)
+            return data
+
+        elif location == 'json_or_form':
+            if request.is_json:
+                return request.get_json(force=True) or {}
+            return request.form.to_dict()
+
+        elif location == 'cookies':
+            return request.cookies.to_dict()
+
+        elif location == 'headers':
+            # Convert header names to field names (e.g., X-Token -> x_token)
+            data = {}
+            for header_name, value in request.headers:
+                field_name = header_name.lower().replace('-', '_')
+                data[field_name] = value
+            return data
+
+        elif location == 'path' or location == 'view_args':
+            return dict(request.view_args or {})
+
+        else:
+            raise ValueError(f'Unsupported location: {location}')
+
+    def validate_input(
+        self, request: Request, location: str, *, validation: bool = True, **kwargs: t.Any
+    ) -> t.Any:
         """Validate input using Pydantic."""
+        data = self._get_location_data(request, location)
+        if not validation:
+            # Skip validation, construct model without checks
+            if self.many and isinstance(data, list):
+                return [
+                    self.model_class.model_construct(**item) if isinstance(item, dict) else item
+                    for item in data
+                ]
+            if isinstance(data, dict):
+                return self.model_class.model_construct(**data)
+            return data
         try:
-            if location == 'json':
-                data = request.get_json(force=True)
-                if data is None:
-                    data = {}
-                return self.model_class.model_validate(data)
-
-            elif location == 'query' or location == 'querystring':
-                # Handle query parameters
-                data = request.args.to_dict()
-                return self.model_class.model_validate(data)
-
-            elif location == 'form':
-                # Handle form data
-                data = request.form.to_dict()
-                return self.model_class.model_validate(data)
-
-            elif location == 'files':
-                # Handle file uploads with form data
-                data = {}
-                data.update(request.form.to_dict())
-
-                file_fields = _get_fields_by_type(
-                    self.model_class, UploadFile
-                ) + _get_fields_by_type(self.model_class, FileStorage)
-                file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
-
-                # Add files to data
-                self.handle_files(request, data, file_fields, file_list_fields)
-
-                return self.model_class.model_validate(data)
-
-            elif location == 'form_and_files':
-                # Combine form and files
-                data = request.form.to_dict()
-
-                file_fields = _get_fields_by_type(
-                    self.model_class, UploadFile
-                ) + _get_fields_by_type(self.model_class, FileStorage)
-                file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
-
-                # Add files to data
-                self.handle_files(request, data, file_fields, file_list_fields)
-
-                return self.model_class.model_validate(data)
-
-            elif location == 'json_or_form':
-                # Try JSON first, then form
-                if request.is_json:
-                    data = request.get_json(force=True) or {}
-                else:
-                    data = request.form.to_dict()
-                return self.model_class.model_validate(data)
-
-            elif location == 'cookies':
-                # Handle cookies
-                data = request.cookies.to_dict()
-                return self.model_class.model_validate(data)
-
-            elif location == 'headers':
-                # Handle headers - convert header names to field names
-                # HTTP headers like X-Token become x_token for Pydantic fields
-                data = {}
-                for header_name, value in request.headers:
-                    # Convert header name to field name (e.g., X-Token -> x_token)
-                    field_name = header_name.lower().replace('-', '_')
-                    data[field_name] = value
-                return self.model_class.model_validate(data)
-
-            elif location == 'path' or location == 'view_args':
-                # Handle path/view_args
-                data = request.view_args or {}
-                return self.model_class.model_validate(data)
-
-            else:
-                raise ValueError(f'Unsupported location: {location}')
-
+            return self.model_class.model_validate(data)
         except PydanticValidationError as error:
             formatted_errors = _format_pydantic_errors(error.errors())
             raise _ValidationError(
