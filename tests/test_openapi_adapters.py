@@ -1,7 +1,9 @@
+import pytest
 from marshmallow import fields
 from marshmallow import Schema
 from marshmallow import validate
 
+from apiflask import APIFlask
 from apiflask.openapi_adapters import get_unique_schema_name
 from apiflask.openapi_adapters import OpenAPIHelper
 
@@ -24,6 +26,12 @@ class NestedSchema(Schema):
 
     user = fields.Nested(SimpleSchema)
     tags = fields.List(fields.String())
+
+
+class NullableQuerySchema(Schema):
+    """Schema with a nullable field."""
+
+    text = fields.String(allow_none=True, load_default=None)
 
 
 def test_get_unique_schema_name():
@@ -60,6 +68,27 @@ class TestOpenAPIHelper:
         assert plugin is not None
         assert hasattr(plugin, 'converter')
         assert plugin.converter is not None
+
+    def test_get_marshmallow_plugin_per_openapi_version(self):
+        """Test that marshmallow plugins are cached per OpenAPI version."""
+        helper = OpenAPIHelper()
+        plugin_30 = helper.get_marshmallow_plugin('3.0.3')
+        plugin_31 = helper.get_marshmallow_plugin('3.1.0')
+
+        assert plugin_30 is not plugin_31
+        assert plugin_30 is helper.get_marshmallow_plugin('3.0.3')
+        assert plugin_31 is helper.get_marshmallow_plugin('3.1.0')
+
+    def test_schema_to_json_schema_follows_spec_openapi_version(self):
+        """Test that schema_to_json_schema uses the OpenAPI version of the spec."""
+        from apispec import APISpec
+
+        helper = OpenAPIHelper()
+        spec = APISpec(title='Test', version='1.0.0', openapi_version='3.1.0')
+
+        json_schema = helper.schema_to_json_schema(NullableQuerySchema(), spec=spec)
+
+        assert json_schema['properties']['text']['type'] == ['string', 'null']
 
     def test_get_marshmallow_plugin_caching(self):
         """Test that marshmallow plugin is cached."""
@@ -210,3 +239,23 @@ class TestOpenAPIHelper:
 
         # Should return empty list
         assert params == []
+
+
+@pytest.mark.parametrize('openapi_version', ['3.0.3', '3.1.0'])
+def test_nullable_query_parameter_follows_openapi_version(openapi_version):
+    """The parameter schema must use the nullable style of the configured version."""
+    app = APIFlask(__name__)
+    app.config['OPENAPI_VERSION'] = openapi_version
+
+    @app.get('/example')
+    @app.input(NullableQuerySchema, location='query')
+    def example(query_data):
+        return {}
+
+    schema = app.spec['paths']['/example']['get']['parameters'][0]['schema']
+    if openapi_version == '3.1.0':
+        assert schema['type'] == ['string', 'null']
+        assert 'nullable' not in schema
+    else:
+        assert schema['type'] == 'string'
+        assert schema['nullable'] is True
