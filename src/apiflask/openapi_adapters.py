@@ -59,38 +59,52 @@ class OpenAPIHelper:
     """
 
     def __init__(self) -> None:
-        self._marshmallow_plugin: MarshmallowPlugin | None = None
-        self._marshmallow_plugin_initialized = False
+        # The marshmallow converter formats some keywords (e.g. nullable fields)
+        # differently for OpenAPI 3.0 and 3.1, so keep one plugin per version.
+        self._marshmallow_plugins: dict[str, MarshmallowPlugin | None] = {}
 
-    def get_marshmallow_plugin(self) -> MarshmallowPlugin | None:
+    def get_marshmallow_plugin(self, openapi_version: str) -> MarshmallowPlugin | None:
         """Get or create marshmallow plugin for OpenAPI schema generation.
 
         Returns a MarshmallowPlugin with initialized converter, ready to use.
         Returns None if marshmallow is not installed.
+
+        Arguments:
+            openapi_version: The OpenAPI version the converter
+                generates schemas for.
+
+        *Version changed: 3.1.3*
+
+        - Add parameter `openapi_version`, so the generated schemas
+          follow the OpenAPI version of the app.
         """
-        if not self._marshmallow_plugin_initialized:
+        if openapi_version not in self._marshmallow_plugins:
+            plugin: MarshmallowPlugin | None
             try:
                 from apispec import APISpec
                 from apispec.ext.marshmallow import MarshmallowPlugin
 
-                self._marshmallow_plugin = MarshmallowPlugin()
+                plugin = MarshmallowPlugin()
                 # Initialize the plugin's converter by adding it to an APISpec
                 APISpec(
                     title='_temp',
                     version='1.0.0',
-                    openapi_version='3.0.3',
-                    plugins=[self._marshmallow_plugin],
+                    openapi_version=openapi_version,
+                    plugins=[plugin],
                 )
-                self._marshmallow_plugin.converter.add_parameter_attribute_function(  # type: ignore
+                plugin.converter.add_parameter_attribute_function(  # type: ignore
                     self.delimited_list2param
                 )
-
             except ImportError:
-                self._marshmallow_plugin = None
-            finally:
-                self._marshmallow_plugin_initialized = True
+                plugin = None
+            self._marshmallow_plugins[openapi_version] = plugin
 
-        return self._marshmallow_plugin
+        return self._marshmallow_plugins[openapi_version]
+
+    @staticmethod
+    def _get_openapi_version(spec: APISpec | None) -> str:
+        """Return the OpenAPI version of the spec, or 3.0.3 without one."""
+        return '3.0.3' if spec is None else str(spec.openapi_version)
 
     def schema_to_spec(self, schema: t.Any) -> dict[str, t.Any]:
         """Convert a schema to OpenAPI specification.
@@ -108,7 +122,7 @@ class OpenAPIHelper:
             # Fallback for unknown schema types
             return {'type': 'object'}
 
-    def schema_to_json_schema(self, schema: t.Any) -> dict[str, t.Any]:
+    def schema_to_json_schema(self, schema: t.Any, spec: APISpec | None = None) -> dict[str, t.Any]:
         """Convert a schema to full JSON schema with properties.
 
         This is different from schema_to_spec in that it returns the complete
@@ -118,16 +132,24 @@ class OpenAPIHelper:
 
         Arguments:
             schema: Schema object (marshmallow, Pydantic, etc.)
+            spec: The APISpec object, used to generate marshmallow
+                schemas for its OpenAPI version. Defaults to 3.0.3
+                when omitted.
 
         Returns:
             Full JSON schema dict with properties
+
+        *Version changed: 3.1.3*
+
+        - Add parameter `spec`, so marshmallow schemas follow the
+          OpenAPI version of the app.
         """
         try:
             adapter = registry.create_adapter(schema)
 
             # For marshmallow schemas, use schema2jsonschema
             if adapter.schema_type == 'marshmallow':
-                plugin = self.get_marshmallow_plugin()
+                plugin = self.get_marshmallow_plugin(self._get_openapi_version(spec))
                 if plugin is not None:
                     return plugin.converter.schema2jsonschema(adapter.schema)  # type: ignore[union-attr, no-any-return]
 
@@ -156,6 +178,11 @@ class OpenAPIHelper:
 
         - Add parameter `spec` to register nested schemas referenced by
           the generated parameters.
+
+        *Version changed: 3.1.3*
+
+        - Generate marshmallow parameters for the OpenAPI version of
+          `spec`.
         """
         try:
             adapter = registry.create_adapter(schema)
@@ -174,7 +201,7 @@ class OpenAPIHelper:
             # For marshmallow schemas, extract parameters directly from fields
             if adapter.schema_type == 'marshmallow':
                 parameters = self._extract_marshmallow_parameters(
-                    adapter.schema, location=openapi_location
+                    adapter.schema, location=openapi_location, spec=spec
                 )
 
                 # Normalize header names
@@ -227,10 +254,10 @@ class OpenAPIHelper:
         return ret
 
     def _extract_marshmallow_parameters(
-        self, schema: t.Any, location: str
+        self, schema: t.Any, location: str, spec: APISpec | None = None
     ) -> list[dict[str, t.Any]]:
         """Extract parameters from marshmallow schema fields using apispec converter."""
-        plugin = self.get_marshmallow_plugin()
+        plugin = self.get_marshmallow_plugin(self._get_openapi_version(spec))
         if plugin is None:
             return []
 

@@ -1,3 +1,11 @@
+## Version: 3.1.3
+
+Released: -
+
+- Fix marshmallow parameter schemas (query, headers and so on) and the base response schema using the OpenAPI 3.0 style, such as `nullable: true`, when `OPENAPI_VERSION` is 3.1 ([issue #771][issue_771]).
+
+[issue_771]: https://github.com/apiflask/apiflask/issues/771
+
 ## Version: 3.1.2
 
 Released: 2026/9/12
