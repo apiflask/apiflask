@@ -63,7 +63,7 @@ class TestOpenAPIHelper:
     def test_get_marshmallow_plugin(self):
         """Test get_marshmallow_plugin method."""
         helper = OpenAPIHelper()
-        plugin = helper.get_marshmallow_plugin()
+        plugin = helper.get_marshmallow_plugin('3.0.3')
 
         assert plugin is not None
         assert hasattr(plugin, 'converter')
@@ -93,8 +93,8 @@ class TestOpenAPIHelper:
     def test_get_marshmallow_plugin_caching(self):
         """Test that marshmallow plugin is cached."""
         helper = OpenAPIHelper()
-        plugin1 = helper.get_marshmallow_plugin()
-        plugin2 = helper.get_marshmallow_plugin()
+        plugin1 = helper.get_marshmallow_plugin('3.0.3')
+        plugin2 = helper.get_marshmallow_plugin('3.0.3')
 
         assert plugin1 is plugin2
 

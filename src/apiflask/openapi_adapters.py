@@ -63,7 +63,7 @@ class OpenAPIHelper:
         # differently for OpenAPI 3.0 and 3.1, so keep one plugin per version.
         self._marshmallow_plugins: dict[str, MarshmallowPlugin | None] = {}
 
-    def get_marshmallow_plugin(self, openapi_version: str = '3.0.3') -> MarshmallowPlugin | None:
+    def get_marshmallow_plugin(self, openapi_version: str) -> MarshmallowPlugin | None:
         """Get or create marshmallow plugin for OpenAPI schema generation.
 
         Returns a MarshmallowPlugin with initialized converter, ready to use.

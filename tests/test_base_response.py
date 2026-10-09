@@ -14,6 +14,11 @@ class BaseResponse(Schema):
     data = Field()
 
 
+class NullableBaseResponse(Schema):
+    message = String(allow_none=True)
+    data = Field()
+
+
 class BadBaseResponse(Schema):
     message = String()
     status_code = Integer()
@@ -187,3 +192,28 @@ def test_input_with_base_response_spec(app, client):
     ]
     assert schema['properties']['status_code'] == {'type': 'integer'}
     assert schema['properties']['message'] == {'type': 'string'}
+
+
+@pytest.mark.parametrize('openapi_version', ['3.0.3', '3.1.0'])
+def test_base_response_nullable_follows_openapi_version(app, client, openapi_version):
+    app.config['OPENAPI_VERSION'] = openapi_version
+    app.config['BASE_RESPONSE_SCHEMA'] = NullableBaseResponse
+
+    @app.get('/')
+    @app.output(Foo)
+    def foo():
+        data = {'id': '123', 'name': 'test'}
+        return {'message': None, 'data': data}
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    schema = rv.json['paths']['/']['get']['responses']['200']['content']['application/json'][
+        'schema'
+    ]
+    message = schema['properties']['message']
+    if openapi_version == '3.1.0':
+        assert message['type'] == ['string', 'null']
+        assert 'nullable' not in message
+    else:
+        assert message['type'] == 'string'
+        assert message['nullable'] is True
