@@ -5,6 +5,7 @@ import typing as t
 from .fields import DelimitedList
 from .helpers import _normalize_header_name
 from .schema_adapters import registry
+from .settings import OPENAPI_VERSION
 
 if t.TYPE_CHECKING:
     from apispec import APISpec
@@ -78,7 +79,7 @@ class OpenAPIHelper:
                 APISpec(
                     title='_temp',
                     version='1.0.0',
-                    openapi_version='3.0.3',
+                    openapi_version=OPENAPI_VERSION,
                     plugins=[self._marshmallow_plugin],
                 )
                 self._marshmallow_plugin.converter.add_parameter_attribute_function(  # type: ignore
