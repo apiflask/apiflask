@@ -20,6 +20,11 @@ class BadBaseResponse(Schema):
     some_data = Field()
 
 
+class BaseResponseWithNullableField(Schema):
+    message = String(allow_none=True)
+    data = Field()
+
+
 base_response_schema_dict = {
     'properties': {
         'data': {'type': 'object'},
@@ -187,3 +192,34 @@ def test_input_with_base_response_spec(app, client):
     ]
     assert schema['properties']['status_code'] == {'type': 'integer'}
     assert schema['properties']['message'] == {'type': 'string'}
+
+
+@pytest.mark.parametrize('openapi_version', ['3.0.0', '3.1.0'])
+def test_nullable_base_response_field_with_openapi_version(app, client, openapi_version):
+    app.config['OPENAPI_VERSION'] = openapi_version
+    app.config['BASE_RESPONSE_SCHEMA'] = BaseResponseWithNullableField
+
+    @app.get('/foo')
+    @app.output(Foo)
+    def foo():
+        data = {'id': '123', 'name': 'test'}
+        return {'message': None, 'data': data}
+
+    rv = client.get('/foo')
+    assert rv.status_code == 200
+    assert rv.json == {'data': {'id': 123, 'name': 'test'}, 'message': None}
+
+    rv = client.get('/openapi.json')
+    assert rv.status_code == 200
+    osv.validate(rv.json)
+    expected = (
+        {'nullable': True, 'type': 'string'}
+        if openapi_version == '3.0.0'
+        else {'type': ['string', 'null']}
+    )
+    assert (
+        rv.json['paths']['/foo']['get']['responses']['200']['content']['application/json'][
+            'schema'
+        ]['properties']['message']
+        == expected
+    )
