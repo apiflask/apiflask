@@ -5,13 +5,9 @@ import pytest
 from pydantic import BaseModel
 from werkzeug.datastructures import FileStorage
 
-from apiflask import get_reason_phrase
-from apiflask import pagination_builder
-from apiflask import PaginationModel
-from apiflask import PaginationSchema
+from apiflask import PaginationModel, PaginationSchema, get_reason_phrase, pagination_builder
 from apiflask.fields import UploadFile
-from apiflask.helpers import _get_fields_by_type
-from apiflask.helpers import _normalize_header_name
+from apiflask.helpers import _get_fields_by_type, _normalize_header_name
 
 
 @pytest.mark.parametrize('code', [204, 400, 404, 456, 4123])
@@ -129,11 +125,11 @@ def test_pagination_builder_exception_case(app, client):
 def test_get_fields_by_type():
     class Files(BaseModel):
         single_file: UploadFile
-        file_list: t.List[UploadFile]
+        file_list: t.List[UploadFile]  # noqa: UP006
 
     class OptionalFiles(BaseModel):
         single_file: t.Optional[UploadFile] = None
-        file_list: t.Optional[t.List[UploadFile]] = None
+        file_list: t.Optional[t.List[UploadFile]] = None  # noqa: UP006
 
     fs = FileStorage(io.BytesIO(b'test'), 'test.jpg')
     fs_list = [
@@ -143,11 +139,11 @@ def test_get_fields_by_type():
     ]
     files = Files(single_file=fs, file_list=fs_list)
     assert _get_fields_by_type(files, FileStorage) == ['single_file']
-    assert _get_fields_by_type(files, t.List[UploadFile]) == ['file_list']
+    assert _get_fields_by_type(files, t.List[UploadFile]) == ['file_list']  # noqa: UP006
 
     optional_files = OptionalFiles()
     assert _get_fields_by_type(optional_files, UploadFile) == ['single_file']
-    assert _get_fields_by_type(optional_files, t.List[UploadFile]) == ['file_list']
+    assert _get_fields_by_type(optional_files, t.List[UploadFile]) == ['file_list']  # noqa: UP006
 
 
 def test_get_fields_by_type_with_builtin_generics():
@@ -163,10 +159,10 @@ def test_get_fields_by_type_with_builtin_generics():
     fs_list = [FileStorage(io.BytesIO(b'test'), 'test1.jpg')]
 
     files = Files(single_file=fs, file_list=fs_list)
-    assert _get_fields_by_type(files, t.List[UploadFile]) == ['file_list']
+    assert _get_fields_by_type(files, t.List[UploadFile]) == ['file_list']  # noqa: UP006
     assert _get_fields_by_type(files, list[UploadFile]) == ['file_list']
 
-    assert _get_fields_by_type(OptionalFiles(), t.List[UploadFile]) == ['file_list']
+    assert _get_fields_by_type(OptionalFiles(), t.List[UploadFile]) == ['file_list']  # noqa: UP006
 
 
 def test_normalize_header_name():

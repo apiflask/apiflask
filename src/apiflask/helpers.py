@@ -2,14 +2,12 @@ from __future__ import annotations
 
 import typing as t
 
-from flask import request
-from flask import url_for
+from flask import request, url_for
 from pydantic import BaseModel
 from werkzeug.http import HTTP_STATUS_CODES
 
 from .schemas import PaginationModel
 from .types import PaginationType
-
 
 _sentinel = object()
 
@@ -183,7 +181,7 @@ def _is_same_type(left: t.Any, right: t.Any) -> bool:
     )
 
 
-def _get_fields_by_type(model_class: type[BaseModel], field_type: type) -> t.List[str]:
+def _get_fields_by_type(model_class: type[BaseModel], field_type: type) -> list[str]:
     """A helper function to get the fields of the specified type in BaseModel.
 
     *Version Added: 3.1.0*

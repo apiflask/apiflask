@@ -4,13 +4,11 @@ import openapi_spec_validator as osv
 import pytest
 from flask import request
 
-from .schemas import Bar
-from .schemas import Baz
-from .schemas import Foo
-from apiflask import APIBlueprint
-from apiflask import Schema
+from apiflask import APIBlueprint, Schema
 from apiflask.commands import spec_command
 from apiflask.fields import Integer
+
+from .schemas import Bar, Baz, Foo
 
 
 def test_spec(app):

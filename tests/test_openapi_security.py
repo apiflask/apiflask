@@ -1,11 +1,13 @@
 import openapi_spec_validator as osv
 import pytest
 
-from apiflask import APIKeyCookieAuth
-from apiflask import APIKeyHeaderAuth
-from apiflask import APIKeyQueryAuth
-from apiflask import HTTPBasicAuth
-from apiflask import HTTPTokenAuth
+from apiflask import (
+    APIKeyCookieAuth,
+    APIKeyHeaderAuth,
+    APIKeyQueryAuth,
+    HTTPBasicAuth,
+    HTTPTokenAuth,
+)
 from apiflask.security import MultiAuth
 
 

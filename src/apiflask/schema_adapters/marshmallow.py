@@ -9,8 +9,7 @@ from webargs.flaskparser import FlaskParser as BaseFlaskParser
 from webargs.multidictproxy import MultiDictProxy
 
 from ..exceptions import _ValidationError
-from ..schemas import EmptySchema
-from ..schemas import FileSchema
+from ..schemas import EmptySchema, FileSchema
 from .base import SchemaAdapter
 
 if t.TYPE_CHECKING:

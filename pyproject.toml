@@ -4,6 +4,7 @@ description = "A lightweight web API framework based on Flask."
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Grey Li", email = "withlihui@gmail.com" }]
+requires-python = ">=3.9"
 version = "3.1.2"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -91,6 +92,7 @@ exclude = [
     "*.md",
     "__pycache__",
 ]
+src = ["src"]
 
 [tool.ruff.format]
 quote-style = "single"
@@ -103,7 +105,9 @@ indent-style = "space"
 # W = pycodestyle warnings
 # B9 = bugbear opinions
 # Q0 = quotes
-extend-select = ["B", "E", "F", "W", "B9", "Q0"]
+# I = isort
+# UP = pyupgrade
+extend-select = ["B", "E", "F", "W", "B9", "Q0", "I", "UP"]
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"

@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import typing as t
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 if t.TYPE_CHECKING:
     from flask import Request

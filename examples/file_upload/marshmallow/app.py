@@ -1,9 +1,9 @@
 import os
 
-from werkzeug.utils import secure_filename
 from apiflask import APIFlask, Schema
 from apiflask.fields import File, String
 from apiflask.validators import FileSize, FileType
+from werkzeug.utils import secure_filename
 
 app = APIFlask(__name__)
 

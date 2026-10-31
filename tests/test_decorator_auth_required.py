@@ -6,13 +6,14 @@ from flask.views import MethodView
 from packaging.version import Version
 
 from apiflask import APIBlueprint
-from apiflask.security import APIKeyCookieAuth
-from apiflask.security import APIKeyHeaderAuth
-from apiflask.security import APIKeyQueryAuth
-from apiflask.security import HTTPBasicAuth
-from apiflask.security import HTTPTokenAuth
-from apiflask.security import MultiAuth
-
+from apiflask.security import (
+    APIKeyCookieAuth,
+    APIKeyHeaderAuth,
+    APIKeyQueryAuth,
+    HTTPBasicAuth,
+    HTTPTokenAuth,
+    MultiAuth,
+)
 
 werkzeug_version = Version(metadata.version('werkzeug'))
 

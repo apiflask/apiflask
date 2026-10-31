@@ -2,11 +2,8 @@ from __future__ import annotations
 
 import typing as t
 
-from .schemas import http_error_schema
-from .schemas import validation_error_schema
-from .types import OpenAPISchemaType
-from .types import TagsType
-
+from .schemas import http_error_schema, validation_error_schema
+from .types import OpenAPISchemaType, TagsType
 
 # OpenAPI fields
 OPENAPI_VERSION: str = '3.1.0'

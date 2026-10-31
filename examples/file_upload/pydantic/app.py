@@ -1,14 +1,11 @@
 import os
 from typing import Annotated
 
-from werkzeug.utils import secure_filename
-from apiflask.fields import UploadFile
-from apiflask.validators import validate_file_size
-from apiflask.validators import validate_file_type
 from apiflask import APIFlask
-from pydantic import AfterValidator
-from pydantic import BaseModel
-
+from apiflask.fields import UploadFile
+from apiflask.validators import validate_file_size, validate_file_type
+from pydantic import AfterValidator, BaseModel
+from werkzeug.utils import secure_filename
 
 app = APIFlask(__name__)
 upload_dir = '../upload'

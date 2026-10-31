@@ -4,17 +4,14 @@ from importlib.metadata import version
 
 import pytest
 from packaging.version import parse
-from pydantic import AfterValidator
-from pydantic import BaseModel
+from pydantic import AfterValidator, BaseModel
 from werkzeug.datastructures import FileStorage
 
-from .schemas import Files
-from .schemas import FilesList
 from apiflask import Schema
-from apiflask.fields import Config
-from apiflask.fields import UploadFile
-from apiflask.validators import validate_file_size
-from apiflask.validators import validate_file_type
+from apiflask.fields import Config, UploadFile
+from apiflask.validators import validate_file_size, validate_file_type
+
+from .schemas import Files, FilesList
 
 
 def test_file_field(app, client):
@@ -213,7 +210,7 @@ def test_file_model_in_location_form_and_files(app, client):
 
 def test_multiple_file_model(app, client):
     class Files(BaseModel):
-        images: t.List[UploadFile]
+        images: list[UploadFile]
 
     @app.post('/')
     @app.input(Files, location='files')
@@ -292,7 +289,7 @@ def test_empty_file_model(app, client):
 
 def test_empty_multiple_file_field(app, client):
     class Files(BaseModel):
-        images: t.Optional[t.List[UploadFile]] = None
+        images: t.Optional[list[UploadFile]] = None
 
     @app.post('/')
     @app.input(Files, location='files')

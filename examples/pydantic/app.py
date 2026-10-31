@@ -1,4 +1,3 @@
-from typing import List
 from enum import Enum
 
 from apiflask import APIFlask, abort
@@ -36,7 +35,7 @@ def say_hello():
 
 
 @app.get('/pets')
-@app.output(List[PetOut])
+@app.output(list[PetOut])
 def get_pets():
     return pets
 

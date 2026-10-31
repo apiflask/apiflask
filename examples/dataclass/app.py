@@ -1,8 +1,8 @@
 from dataclasses import field
 
-from marshmallow_dataclass import dataclass
 from apiflask import APIFlask, abort
 from apiflask.validators import Length, OneOf
+from marshmallow_dataclass import dataclass
 
 app = APIFlask(__name__)
 

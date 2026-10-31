@@ -3,11 +3,11 @@ import pytest
 from flask.views import MethodView
 from packaging.version import Version
 
-from .conftest import APISPEC_VERSION
-from .schemas import CustomHTTPError
-from .schemas import Foo
 from apiflask import Schema
 from apiflask.fields import String
+
+from .conftest import APISPEC_VERSION
+from .schemas import CustomHTTPError, Foo
 
 
 def test_doc_summary_and_description(app, client):

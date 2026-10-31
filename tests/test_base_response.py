@@ -1,11 +1,10 @@
 import openapi_spec_validator as osv
 import pytest
 
-from .schemas import Foo
 from apiflask import Schema
-from apiflask.fields import Field
-from apiflask.fields import Integer
-from apiflask.fields import String
+from apiflask.fields import Field, Integer, String
+
+from .schemas import Foo
 
 
 class BaseResponse(Schema):

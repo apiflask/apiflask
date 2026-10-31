@@ -1,9 +1,8 @@
 import random
-from typing import List
 
+from apiflask import APIFlask, PaginationModel, pagination_builder
 from flask_sqlalchemy import SQLAlchemy
-from apiflask import APIFlask, pagination_builder, PaginationModel
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 app = APIFlask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
@@ -42,7 +41,7 @@ class PetOut(BaseModel):
 
 
 class PetsOut(BaseModel):
-    pets: List[PetOut] = []
+    pets: list[PetOut] = []
     pagination: PaginationModel
 
 

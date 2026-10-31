@@ -14,7 +14,8 @@ if t.TYPE_CHECKING:
     from flask import Request
 
 try:
-    from pydantic import BaseModel, ValidationError as PydanticValidationError
+    from pydantic import BaseModel
+    from pydantic import ValidationError as PydanticValidationError
     from pydantic.fields import FieldInfo
     from pydantic_core import ErrorDetails
 
@@ -92,7 +93,7 @@ class PydanticAdapter(SchemaAdapter):
 
     @staticmethod
     def handle_files(
-        request: Request, data: dict, file_fields: t.List[str], file_list_fields: t.List[str]
+        request: Request, data: dict, file_fields: list[str], file_list_fields: list[str]
     ) -> None:
         for key in file_fields:
             fs = request.files.get(key)
@@ -144,7 +145,7 @@ class PydanticAdapter(SchemaAdapter):
                 file_fields = _get_fields_by_type(
                     self.model_class, UploadFile
                 ) + _get_fields_by_type(self.model_class, FileStorage)
-                file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
+                file_list_fields = _get_fields_by_type(self.model_class, list[UploadFile])
 
                 # Add files to data
                 self.handle_files(request, data, file_fields, file_list_fields)
@@ -158,7 +159,7 @@ class PydanticAdapter(SchemaAdapter):
                 file_fields = _get_fields_by_type(
                     self.model_class, UploadFile
                 ) + _get_fields_by_type(self.model_class, FileStorage)
-                file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
+                file_list_fields = _get_fields_by_type(self.model_class, list[UploadFile])
 
                 # Add files to data
                 self.handle_files(request, data, file_fields, file_list_fields)

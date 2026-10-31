@@ -1,4 +1,4 @@
-from apiflask import APIFlask, APIBlueprint, Schema, abort
+from apiflask import APIBlueprint, APIFlask, Schema, abort
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 

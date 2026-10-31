@@ -2,11 +2,8 @@ from __future__ import annotations
 
 import typing as t
 
-from .openapi import get_path_description
-from .openapi import get_path_summary
-from .types import ViewClassType
-from .types import ViewFuncOrClassType
-from .types import ViewFuncType
+from .openapi import get_path_description, get_path_summary
+from .types import ViewClassType, ViewFuncOrClassType, ViewFuncType
 from .views import MethodView
 
 

@@ -1,7 +1,8 @@
 import typing as t
-from flask import current_app
+
 from apiflask import APIFlask, APIKeyHeaderAuth, abort
-from authlib.jose import jwt, JoseError
+from authlib.jose import JoseError, jwt
+from flask import current_app
 
 app = APIFlask(__name__)
 auth = APIKeyHeaderAuth()

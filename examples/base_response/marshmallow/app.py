@@ -1,5 +1,5 @@
 from apiflask import APIFlask, Schema, abort
-from apiflask.fields import Integer, String, Field
+from apiflask.fields import Field, Integer, String
 from apiflask.validators import Length, OneOf
 
 app = APIFlask(__name__)

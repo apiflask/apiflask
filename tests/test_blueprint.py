@@ -2,8 +2,7 @@ import openapi_spec_validator as osv
 from flask.views import MethodView
 
 from apiflask import APIBlueprint
-from apiflask.security import HTTPBasicAuth
-from apiflask.security import HTTPTokenAuth
+from apiflask.security import HTTPBasicAuth, HTTPTokenAuth
 
 
 def test_blueprint_object():

@@ -3,19 +3,14 @@ from __future__ import annotations
 import typing as t
 import warnings
 
-from flask import current_app
-from flask import g
-from flask import request
+from flask import current_app, g, request
 from flask_httpauth import HTTPBasicAuth as BaseHTTPBasicAuth
 from flask_httpauth import HTTPTokenAuth as BaseHTTPTokenAuth
 from flask_httpauth import MultiAuth as BaseMultiAuth
 from werkzeug.datastructures import Authorization
 
 from .exceptions import HTTPError
-from .types import ErrorCallbackType
-from .types import HTTPAuthType
-from .types import ResponseReturnValueType
-from .types import SecurityScheme
+from .types import ErrorCallbackType, HTTPAuthType, ResponseReturnValueType, SecurityScheme
 
 
 class _AuthBase:

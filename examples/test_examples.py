@@ -1,7 +1,7 @@
 import os
+import re
 import sys
 from importlib import metadata, reload
-import re
 
 import pytest
 from packaging.version import Version

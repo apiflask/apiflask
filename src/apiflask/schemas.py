@@ -3,11 +3,8 @@ from __future__ import annotations
 import typing as t
 
 from marshmallow import Schema as BaseSchema
-from marshmallow.fields import Integer
-from marshmallow.fields import URL
-from pydantic import AnyUrl
-from pydantic import BaseModel
-
+from marshmallow.fields import URL, Integer
+from pydantic import AnyUrl, BaseModel
 
 # schema for the detail object of validation error response
 validation_error_detail_schema: dict[str, t.Any] = {
@@ -82,11 +79,11 @@ class PaginationModel(BaseModel):
     per_page: int
     pages: int
     total: int
-    current: t.Union[AnyUrl, t.Literal['']]
-    next: t.Union[AnyUrl, t.Literal['']]
-    prev: t.Union[AnyUrl, t.Literal['']]
-    first: t.Union[AnyUrl, t.Literal['']]
-    last: t.Union[AnyUrl, t.Literal['']]
+    current: t.Union[AnyUrl, t.Literal['']]  # noqa: UP007
+    next: t.Union[AnyUrl, t.Literal['']]  # noqa: UP007
+    prev: t.Union[AnyUrl, t.Literal['']]  # noqa: UP007
+    first: t.Union[AnyUrl, t.Literal['']]  # noqa: UP007
+    last: t.Union[AnyUrl, t.Literal['']]  # noqa: UP007
 
 
 class FileSchema(Schema):

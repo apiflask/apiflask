@@ -1,8 +1,7 @@
 import openapi_spec_validator as osv
 import pytest
 
-from .schemas import DelimitedListQuery
-from .schemas import NullableFieldSchema
+from .schemas import DelimitedListQuery, NullableFieldSchema
 
 
 def test_query_delimited_list_support(app, client):

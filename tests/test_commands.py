@@ -2,9 +2,9 @@ import json
 
 import pytest
 
-from .schemas import Foo
-from .schemas import Qux
 from apiflask.commands import spec_command
+
+from .schemas import Foo, Qux
 
 
 def test_flask_spec_stdout(app, cli_runner):
