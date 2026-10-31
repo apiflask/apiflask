@@ -210,7 +210,7 @@ def test_file_model_in_location_form_and_files(app, client):
 
 def test_multiple_file_model(app, client):
     class Files(BaseModel):
-        images: list[UploadFile]
+        images: t.List[UploadFile]
 
     @app.post('/')
     @app.input(Files, location='files')
@@ -289,7 +289,7 @@ def test_empty_file_model(app, client):
 
 def test_empty_multiple_file_field(app, client):
     class Files(BaseModel):
-        images: t.Optional[list[UploadFile]] = None
+        images: t.Optional[t.List[UploadFile]] = None
 
     @app.post('/')
     @app.input(Files, location='files')

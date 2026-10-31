@@ -124,3 +124,5 @@ avoid-escape = true
 # HTML templates ignore E501 line too long
 "src/apiflask/ui_templates.py" = ["E501"]
 "tests/*" = ["B018"]
+# Ignore select UP rules until Python 3.9 support is dropped
+"*" = ["UP006", "UP007", "UP035"]

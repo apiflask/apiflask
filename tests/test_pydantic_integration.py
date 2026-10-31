@@ -400,11 +400,12 @@ class TestPydanticIntegration:
 
     def test_list_type_with_typing_List(self):
         """Test list type support with typing.List[Model]."""
+        from typing import List
 
         app = APIFlask(__name__)
 
         @app.get('/users')
-        @app.output(list[UserModel])
+        @app.output(List[UserModel])
         def get_users():
             return [
                 UserModel(id=1, name='Alice', email='alice@example.com'),
@@ -498,11 +499,12 @@ class TestPydanticIntegration:
 
     def test_mixed_list_and_single_endpoints(self):
         """Test that list and single endpoints work correctly together."""
+        from typing import List
 
         app = APIFlask(__name__)
 
         @app.get('/users')
-        @app.output(list[UserModel])
+        @app.output(List[UserModel])
         def list_users():
             return [
                 UserModel(id=1, name='Alice', email='alice@example.com'),

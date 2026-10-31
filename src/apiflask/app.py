@@ -391,7 +391,7 @@ class APIFlask(APIScaffold, Flask):
 
         self.spec_plugins: list[BasePlugin] = spec_plugins or []
         self._spec: dict | str | None = None
-        self._auth_blueprints: dict[str, dict[str, t.Any]] = {}
+        self._auth_blueprints: dict[str, t.Dict[str, t.Any]] = {}
         self._auths: set[HTTPAuthType | MultiAuth] = set()
 
         self._register_openapi_blueprint()
@@ -766,7 +766,7 @@ class APIFlask(APIScaffold, Flask):
                     tags.append(tag)  # type: ignore
         return tags  # type: ignore
 
-    def _collect_security_info(self) -> tuple[list[str], list[HTTPAuthType]]:
+    def _collect_security_info(self) -> t.Tuple[list[str], list[HTTPAuthType]]:
         """Detect `auth_required` on blueprint before_request functions and view functions."""
         # security schemes
         auth_names: set[str] = set()
@@ -822,7 +822,8 @@ class APIFlask(APIScaffold, Flask):
                     if auth is not None and auth not in self._auths:
                         _update_auth_info(auth)
 
-        # only base authentications have a schema, multiple authentication consists of base authentications # noqa: E501
+        # only base authentications have a schema, multiple authentication consists of base
+        # authentications
         base_auths = [auth for auth in self._auths if isinstance(auth, _AuthBase)]
         return [security_schema.name for security_schema in base_auths], [
             security_schema for security_schema in base_auths

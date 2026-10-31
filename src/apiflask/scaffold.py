@@ -24,7 +24,7 @@ from .types import (
 from .views import MethodView
 
 if t.TYPE_CHECKING:
-    from _typeshed.wsgi import WSGIApplication  # noqa: F401
+    from _typeshed.wsgi import WSGIApplication
 
     try:
         from flask_sqlalchemy import extension as sqla_ext  # type: ignore

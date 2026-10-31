@@ -93,7 +93,7 @@ class PydanticAdapter(SchemaAdapter):
 
     @staticmethod
     def handle_files(
-        request: Request, data: dict, file_fields: list[str], file_list_fields: list[str]
+        request: Request, data: dict, file_fields: t.List[str], file_list_fields: t.List[str]
     ) -> None:
         for key in file_fields:
             fs = request.files.get(key)
@@ -145,7 +145,7 @@ class PydanticAdapter(SchemaAdapter):
                 file_fields = _get_fields_by_type(
                     self.model_class, UploadFile
                 ) + _get_fields_by_type(self.model_class, FileStorage)
-                file_list_fields = _get_fields_by_type(self.model_class, list[UploadFile])
+                file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
 
                 # Add files to data
                 self.handle_files(request, data, file_fields, file_list_fields)
@@ -159,7 +159,7 @@ class PydanticAdapter(SchemaAdapter):
                 file_fields = _get_fields_by_type(
                     self.model_class, UploadFile
                 ) + _get_fields_by_type(self.model_class, FileStorage)
-                file_list_fields = _get_fields_by_type(self.model_class, list[UploadFile])
+                file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
 
                 # Add files to data
                 self.handle_files(request, data, file_fields, file_list_fields)

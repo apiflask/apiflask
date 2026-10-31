@@ -324,7 +324,7 @@ def test_doc_responses_additional_content_type(app, client):
     assert 'text/html' in rv.json['paths']['/foo']['get']['responses']['200']['content']
     assert (
         rv.json['paths']['/foo']['get']['responses']['200']['description'] == 'Successful response'
-    )  # noqa: E501
+    )
     assert '200' in rv.json['paths']['/bar']['get']['responses']
     assert 'application/json' in rv.json['paths']['/bar']['get']['responses']['200']['content']
     assert 'text/html' in rv.json['paths']['/bar']['get']['responses']['200']['content']

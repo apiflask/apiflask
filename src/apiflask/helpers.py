@@ -181,7 +181,7 @@ def _is_same_type(left: t.Any, right: t.Any) -> bool:
     )
 
 
-def _get_fields_by_type(model_class: type[BaseModel], field_type: type) -> list[str]:
+def _get_fields_by_type(model_class: type[BaseModel], field_type: type) -> t.List[str]:
     """A helper function to get the fields of the specified type in BaseModel.
 
     *Version Added: 3.1.0*

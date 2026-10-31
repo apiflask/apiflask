@@ -79,11 +79,11 @@ class PaginationModel(BaseModel):
     per_page: int
     pages: int
     total: int
-    current: t.Union[AnyUrl, t.Literal['']]  # noqa: UP007
-    next: t.Union[AnyUrl, t.Literal['']]  # noqa: UP007
-    prev: t.Union[AnyUrl, t.Literal['']]  # noqa: UP007
-    first: t.Union[AnyUrl, t.Literal['']]  # noqa: UP007
-    last: t.Union[AnyUrl, t.Literal['']]  # noqa: UP007
+    current: t.Union[AnyUrl, t.Literal['']]
+    next: t.Union[AnyUrl, t.Literal['']]
+    prev: t.Union[AnyUrl, t.Literal['']]
+    first: t.Union[AnyUrl, t.Literal['']]
+    last: t.Union[AnyUrl, t.Literal['']]
 
 
 class FileSchema(Schema):

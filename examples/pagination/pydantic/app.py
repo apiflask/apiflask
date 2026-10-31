@@ -1,4 +1,5 @@
 import random
+from typing import List
 
 from apiflask import APIFlask, PaginationModel, pagination_builder
 from flask_sqlalchemy import SQLAlchemy
@@ -41,7 +42,7 @@ class PetOut(BaseModel):
 
 
 class PetsOut(BaseModel):
-    pets: list[PetOut] = []
+    pets: List[PetOut] = []
     pagination: PaginationModel
 
 

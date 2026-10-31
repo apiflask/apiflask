@@ -265,7 +265,7 @@ class APIKeyHeaderAuth(_BaseAPIKeyAuth):
     - Expose the `auth.current_user` as a property.
     - Add a `description` attribute for OpenAPI Spec.
     - Add a `name` attribute for OpenAPI Spec.
-    - Add a `param_name` attribute for API Key paramter.
+    - Add a `param_name` attribute for API Key parameter.
     - Add the `get_security_scheme` method for OpenAPI Spec.
 
     Examples:
