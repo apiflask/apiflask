@@ -868,7 +868,10 @@ class APIFlask(APIScaffold, Flask):
             kwargs['externalDocs'] = self.external_docs
 
         # Use a version-aware OpenAPI helper for spec generation
-        self._openapi_helper: OpenAPIHelper = OpenAPIHelper(openapi_version=self.openapi_version)
+        openapi_helper = OpenAPIHelper(openapi_version=self.openapi_version)
+        # Ensure the Marshmallow plugin is initialized, to avoid a potential race condition
+        openapi_helper.get_marshmallow_plugin()
+        self._openapi_helper = openapi_helper
 
         # Keep marshmallow plugin for backwards compatibility
         try:
