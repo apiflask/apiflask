@@ -134,7 +134,7 @@ class MarshmallowAdapter(SchemaAdapter):
 
     def serialize_output(self, data: t.Any, many: bool = False) -> t.Any:
         """Serialize output using marshmallow."""
-        if isinstance(self.schema, (EmptySchema, FileSchema)):
+        if isinstance(self.schema, EmptySchema | FileSchema):
             return data
 
         # Use marshmallow's dump method which handles dump_default values

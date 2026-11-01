@@ -445,7 +445,6 @@ Alternatively, you can use Pydantic models for a more modern, type-hint based ap
 
 ```python
 from enum import Enum
-from typing import Optional
 from pydantic import BaseModel, Field
 
 

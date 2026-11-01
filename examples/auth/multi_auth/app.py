@@ -1,5 +1,3 @@
-import typing as t
-
 from apiflask import APIFlask, HTTPBasicAuth, HTTPTokenAuth, MultiAuth, Schema, abort
 from apiflask.fields import String
 from authlib.jose import JoseError, jwt
@@ -33,19 +31,19 @@ users = [
 username_map = {user.username: user for user in users}
 
 
-def get_user_by_id(id: int) -> t.Union[User, None]:
+def get_user_by_id(id: int) -> User | None:
     return tuple(filter(lambda u: u.id == id, users))[0]
 
 
 @basic_auth.verify_password
-def verify_password(username: str, password: str) -> t.Union[User, None]:
+def verify_password(username: str, password: str) -> User | None:
     if username in username_map and check_password_hash(username_map[username].password, password):
         return username_map[username]
     return None
 
 
 @token_auth.verify_token
-def verify_token(token: str) -> t.Union[User, None]:
+def verify_token(token: str) -> User | None:
     try:
         data = jwt.decode(
             token.encode('ascii'),

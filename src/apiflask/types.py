@@ -32,7 +32,7 @@ RequestType = t.TypeVar('RequestType')
 ResponseBodyType = t.Union[
     str,
     bytes,
-    t.List[t.Any],
+    list[t.Any],
     # Only dict is actually accepted, but Mapping allows for TypedDict.
     t.Mapping[str, t.Any],
     t.Iterator[str],
@@ -40,43 +40,42 @@ ResponseBodyType = t.Union[
     'Response',
 ]
 
-ResponseStatusType = t.Union[str, int]
+ResponseStatusType = str | int
 _HeaderName = str
-_HeaderValue = t.Union[str, t.List[str], t.Tuple[str, ...]]
+_HeaderValue = str | list[str] | tuple[str, ...]
 ResponseHeaderType = t.Union[
-    t.Dict[_HeaderName, _HeaderValue],
+    dict[_HeaderName, _HeaderValue],
     t.Mapping[_HeaderName, _HeaderValue],
-    t.Sequence[t.Tuple[_HeaderName, _HeaderValue]],
+    t.Sequence[tuple[_HeaderName, _HeaderValue]],
     'Headers',
 ]
 ResponseReturnValueType = t.Union[
     ResponseBodyType,
-    t.Tuple[ResponseBodyType, ResponseHeaderType],
-    t.Tuple[ResponseBodyType, ResponseStatusType],
-    t.Tuple[ResponseBodyType, ResponseStatusType, ResponseHeaderType],
+    tuple[ResponseBodyType, ResponseHeaderType],
+    tuple[ResponseBodyType, ResponseStatusType],
+    tuple[ResponseBodyType, ResponseStatusType, ResponseHeaderType],
     'WSGIApplication',
 ]
-SpecCallbackType = t.Callable[[t.Union[dict, str]], t.Union[dict, str]]
+SpecCallbackType = t.Callable[[dict | str], dict | str]
 ErrorCallbackType = t.Callable[['HTTPError'], ResponseReturnValueType]
 
-DictSchemaType = t.Dict[str, t.Union['Field', type]]
-SchemaType = t.Union['Schema', t.Type['Schema'], DictSchemaType, t.Type['BaseModel']]
-OpenAPISchemaType = t.Union['Schema', t.Type['Schema'], dict]
+DictSchemaType = dict[str, t.Union['Field', type]]
+SchemaType = t.Union['Schema', type['Schema'], DictSchemaType, type['BaseModel']]
+OpenAPISchemaType = t.Union['Schema', type['Schema'], dict]
 HTTPAuthType = t.Union[
     'HTTPBasicAuth', 'HTTPTokenAuth', 'APIKeyHeaderAuth', 'APIKeyCookieAuth', 'APIKeyQueryAuth'
 ]
-TagsType = t.Union[t.List[str], t.List[t.Dict[str, t.Any]]]
-ViewClassType = t.Type['View']
-ViewFuncOrClassType = t.Union[t.Callable, ViewClassType]
+TagsType = list[str] | list[dict[str, t.Any]]
+ViewClassType = type['View']
+ViewFuncOrClassType = t.Callable | ViewClassType
 
-ResponseObjectType = t.Dict[str, t.Union[str, t.Dict[str, t.Dict[str, t.Any]]]]
-ResponsesObjectType = t.Dict[t.Union[int, str], ResponseObjectType]
-ResponsesType = t.Union[t.List[int], t.Dict[int, str], ResponsesObjectType]
+ResponseObjectType = dict[str, str | dict[str, dict[str, t.Any]]]
+ResponsesObjectType = dict[int | str, ResponseObjectType]
+ResponsesType = list[int] | dict[int, str] | ResponsesObjectType
 
-RouteCallableType = t.Union[
-    t.Callable[..., ResponseReturnValueType],
-    t.Callable[..., t.Awaitable[ResponseReturnValueType]],
-]
+RouteCallableType = (
+    t.Callable[..., ResponseReturnValueType] | t.Callable[..., t.Awaitable[ResponseReturnValueType]]
+)
 
 
 class PaginationType(t.Protocol):
