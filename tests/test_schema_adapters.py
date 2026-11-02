@@ -1,7 +1,5 @@
 import pytest
-from marshmallow import fields
-from marshmallow import Schema
-from marshmallow import ValidationError
+from marshmallow import Schema, ValidationError, fields
 
 from apiflask.schema_adapters import registry
 from apiflask.schema_adapters.marshmallow import MarshmallowAdapter
@@ -147,9 +145,8 @@ class TestMarshmallowAdapter:
 
     def test_validate_input_json(self):
         """Test validate_input for json location."""
-        from flask import Flask
+        from flask import Flask, request
         from werkzeug.test import EnvironBuilder
-        from flask import request
 
         app = Flask(__name__)
         app.config['VALIDATION_ERROR_STATUS_CODE'] = 422
@@ -246,6 +243,7 @@ class TestFlaskParser:
     def test_handle_error(self):
         """Test handle_error method."""
         from flask import Flask
+
         from apiflask.exceptions import _ValidationError
         from apiflask.schema_adapters.marshmallow import parser
 
@@ -267,6 +265,7 @@ class TestFlaskParser:
     def test_load_location_data(self):
         """Test load_location_data method."""
         from flask import Flask
+
         from apiflask.schema_adapters.marshmallow import parser
 
         app = Flask(__name__)
@@ -283,8 +282,9 @@ class TestFlaskParser:
 
     def test_location_loader_files(self):
         """Test files location loader."""
-        from flask import Flask
         from io import BytesIO
+
+        from flask import Flask
 
         app = Flask(__name__)
 
@@ -303,6 +303,7 @@ class TestFlaskParser:
             content_type='multipart/form-data',
         ):
             from flask import request
+
             from apiflask.schema_adapters.marshmallow import parser
 
             data = parser.load_location_data(schema=schema, req=request, location='files')
@@ -312,8 +313,9 @@ class TestFlaskParser:
 
     def test_location_loader_form_and_files(self):
         """Test form_and_files location loader."""
-        from flask import Flask
         from io import BytesIO
+
+        from flask import Flask
 
         app = Flask(__name__)
 
@@ -329,6 +331,7 @@ class TestFlaskParser:
             content_type='multipart/form-data',
         ):
             from flask import request
+
             from apiflask.schema_adapters.marshmallow import parser
 
             data = parser.load_location_data(schema=schema, req=request, location='form_and_files')

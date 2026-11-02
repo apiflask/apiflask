@@ -5,13 +5,9 @@ import pytest
 from pydantic import BaseModel
 from werkzeug.datastructures import FileStorage
 
-from apiflask import get_reason_phrase
-from apiflask import pagination_builder
-from apiflask import PaginationModel
-from apiflask import PaginationSchema
+from apiflask import PaginationModel, PaginationSchema, get_reason_phrase, pagination_builder
 from apiflask.fields import UploadFile
-from apiflask.helpers import _get_fields_by_type
-from apiflask.helpers import _normalize_header_name
+from apiflask.helpers import _get_fields_by_type, _normalize_header_name
 
 
 @pytest.mark.parametrize('code', [204, 400, 404, 456, 4123])

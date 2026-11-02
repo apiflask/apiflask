@@ -6,17 +6,18 @@ import typing as t
 import warnings
 from functools import wraps
 
-from apispec import APISpec
-from apispec import BasePlugin
+from apispec import APISpec, BasePlugin
 from apispec.ext.marshmallow import MarshmallowPlugin
-from flask import Blueprint
-from flask import Flask
-from flask import has_request_context
-from flask import json
-from flask import jsonify
-from flask import render_template_string
-from flask import request
-from flask import url_for
+from flask import (
+    Blueprint,
+    Flask,
+    has_request_context,
+    json,
+    jsonify,
+    render_template_string,
+    request,
+    url_for,
+)
 from flask.config import ConfigAttribute
 from flask.wrappers import Response
 
@@ -31,40 +32,37 @@ with warnings.catch_warnings():
 
 from werkzeug.exceptions import HTTPException as WerkzeugHTTPException
 
-from .exceptions import HTTPError
-from .exceptions import _bad_schema_message
+from .exceptions import HTTPError, _bad_schema_message
 from .fields import Field
 from .helpers import get_reason_phrase
+from .openapi import (
+    default_bypassed_endpoints,
+    get_argument,
+    get_default_response,
+    get_operation_tags,
+    get_path_summary,
+    get_security_and_security_schemes,
+    get_tag,
+)
+from .openapi_adapters import OpenAPIHelper, extract_pydantic_defs, get_unique_schema_name
 from .route import route_patch
-from .schemas import Schema
-from .schemas import FileSchema
-from .schemas import EmptySchema
-from .schema_adapters import registry
-from .security import MultiAuth
-from .security import _AuthBase
-from .types import SecurityScheme
-from .types import ResponseReturnValueType
-from .types import ResponsesType
-from .types import ViewFuncType
-from .types import ErrorCallbackType
-from .types import SpecCallbackType
-from .types import SchemaType
-from .types import HTTPAuthType
-from .types import TagsType
-from .types import OpenAPISchemaType
-from .openapi import default_bypassed_endpoints
-from .openapi import get_default_response
-from .openapi import get_tag
-from .openapi import get_operation_tags
-from .openapi import get_path_summary
-from .openapi import get_argument
-from .openapi import get_security_and_security_schemes
-from .openapi_adapters import get_unique_schema_name
-from .openapi_adapters import extract_pydantic_defs
-from .openapi_adapters import OpenAPIHelper
-from .ui_templates import ui_templates
-from .ui_templates import swagger_ui_oauth2_redirect_template
 from .scaffold import APIScaffold
+from .schema_adapters import registry
+from .schemas import EmptySchema, FileSchema, Schema
+from .security import MultiAuth, _AuthBase
+from .types import (
+    ErrorCallbackType,
+    HTTPAuthType,
+    OpenAPISchemaType,
+    ResponseReturnValueType,
+    ResponsesType,
+    SchemaType,
+    SecurityScheme,
+    SpecCallbackType,
+    TagsType,
+    ViewFuncType,
+)
+from .ui_templates import swagger_ui_oauth2_redirect_template, ui_templates
 
 
 def _is_headers_schema_dict(headers: dict) -> bool:
@@ -824,7 +822,8 @@ class APIFlask(APIScaffold, Flask):
                     if auth is not None and auth not in self._auths:
                         _update_auth_info(auth)
 
-        # only base authentications have a schema, multiple authentication consists of base authentications # noqa: E501
+        # only base authentications have a schema, multiple authentication consists of base
+        # authentications
         base_auths = [auth for auth in self._auths if isinstance(auth, _AuthBase)]
         return [security_schema.name for security_schema in base_auths], [
             security_schema for security_schema in base_auths

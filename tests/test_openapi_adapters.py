@@ -1,11 +1,9 @@
 import pytest
-from marshmallow import fields
-from marshmallow import Schema
-from marshmallow import validate
+from marshmallow import Schema, fields, validate
+
+from apiflask.openapi_adapters import OpenAPIHelper, get_unique_schema_name
 
 from .schemas import NullableFieldSchema
-from apiflask.openapi_adapters import get_unique_schema_name
-from apiflask.openapi_adapters import OpenAPIHelper
 
 
 class SimpleSchema(Schema):

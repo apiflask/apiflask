@@ -1,10 +1,10 @@
 import typing as t
 
-from flask import current_app
 from apiflask import APIFlask, HTTPBasicAuth, HTTPTokenAuth, MultiAuth, Schema, abort
-from werkzeug.security import generate_password_hash, check_password_hash
 from apiflask.fields import String
-from authlib.jose import jwt, JoseError
+from authlib.jose import JoseError, jwt
+from flask import current_app
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = APIFlask(__name__)
 basic_auth = HTTPBasicAuth()

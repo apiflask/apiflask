@@ -14,7 +14,8 @@ if t.TYPE_CHECKING:
     from flask import Request
 
 try:
-    from pydantic import BaseModel, ValidationError as PydanticValidationError
+    from pydantic import BaseModel
+    from pydantic import ValidationError as PydanticValidationError
     from pydantic.fields import FieldInfo
     from pydantic_core import ErrorDetails
 

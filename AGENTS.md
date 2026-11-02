@@ -124,12 +124,13 @@ mkdocs build
 
 - Use **single quotes** for strings (configured in ruff).
 - Line length limit is **100 characters**.
-- Import ordering is handled by `reorder-python-imports` (application directory is `src`).
-- The `examples/` directory is excluded from import reordering.
 - ruff is the linter and formatter (replaces flake8/black). Run via pre-commit.
+- Import ordering is enforced by the ruff `I` (isort) rules.
+- Syntax upgrades are enforced by the ruff `UP` (pyupgrade) rules. The target version is
+  derived from `requires-python`.
 - Type annotations are checked with mypy (`tool.mypy` in pyproject.toml). Do not add
   `type: ignore` comments—solve type errors properly or note them for a follow-up.
-- Python target version: 3.9+ (note: pre-commit currently runs `pyupgrade --py38-plus`).
+- Python target version: 3.9+.
 - Tests use pytest with coverage (`--cov=apiflask --cov-branch`). Test paths include both
   `tests/` and `examples/`.
 

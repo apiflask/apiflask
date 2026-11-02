@@ -1,9 +1,7 @@
 import openapi_spec_validator as osv
 
 from apiflask import Schema
-from apiflask.fields import Field
-from apiflask.fields import Integer
-from apiflask.fields import String
+from apiflask.fields import Field, Integer, String
 
 
 class PetIn(Schema):

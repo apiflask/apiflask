@@ -1,8 +1,7 @@
 import openapi_spec_validator as osv
 
 from apiflask import APIFlask
-from apiflask.security import HTTPBasicAuth
-from apiflask.security import HTTPTokenAuth
+from apiflask.security import HTTPBasicAuth, HTTPTokenAuth
 
 
 def test_default_auth_error_handler(app, client):

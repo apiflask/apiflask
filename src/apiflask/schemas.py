@@ -3,11 +3,8 @@ from __future__ import annotations
 import typing as t
 
 from marshmallow import Schema as BaseSchema
-from marshmallow.fields import Integer
-from marshmallow.fields import URL
-from pydantic import AnyUrl
-from pydantic import BaseModel
-
+from marshmallow.fields import URL, Integer
+from pydantic import AnyUrl, BaseModel
 
 # schema for the detail object of validation error response
 validation_error_detail_schema: dict[str, t.Any] = {

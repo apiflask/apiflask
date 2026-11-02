@@ -1,6 +1,6 @@
 from apiflask import APIFlask
-from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry import trace
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.semconv.resource import ResourceAttributes

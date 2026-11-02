@@ -5,12 +5,11 @@ from flask import make_response
 from flask.views import MethodView
 from packaging.version import Version
 
-from .conftest import APISPEC_VERSION
-from .schemas import Foo
-from .schemas import Query
 from apiflask import Schema
-from apiflask.fields import Field
-from apiflask.fields import String
+from apiflask.fields import Field, String
+
+from .conftest import APISPEC_VERSION
+from .schemas import Foo, Query
 
 
 def test_output(app, client):

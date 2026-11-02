@@ -6,13 +6,14 @@ from flask.views import MethodView
 from packaging.version import Version
 
 from apiflask import APIBlueprint
-from apiflask.security import APIKeyCookieAuth
-from apiflask.security import APIKeyHeaderAuth
-from apiflask.security import APIKeyQueryAuth
-from apiflask.security import HTTPBasicAuth
-from apiflask.security import HTTPTokenAuth
-from apiflask.security import MultiAuth
-
+from apiflask.security import (
+    APIKeyCookieAuth,
+    APIKeyHeaderAuth,
+    APIKeyQueryAuth,
+    HTTPBasicAuth,
+    HTTPTokenAuth,
+    MultiAuth,
+)
 
 werkzeug_version = Version(metadata.version('werkzeug'))
 
@@ -386,7 +387,8 @@ def test_auth_required_with_multiauth(app, client):
 
 @pytest.mark.skipif(
     werkzeug_version < Version('2.3.0'),
-    reason='The first positional server_name parameter to set_cookie and delete_cookie is deprecated. Use the domain parameter instead.',  # noqa: E501
+    reason='The first positional server_name parameter to set_cookie and delete_cookie is '
+    'deprecated. Use the domain parameter instead.',
 )
 def test_apikey_auth_required_with_multiauth(app, client):
     header_auth = APIKeyHeaderAuth(name='APIKeyHeaderAuth')

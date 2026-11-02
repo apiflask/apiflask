@@ -1,7 +1,7 @@
 import typing as t
 
 from apiflask import APIFlask, HTTPBasicAuth
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = APIFlask(__name__)
 auth = HTTPBasicAuth()

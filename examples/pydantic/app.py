@@ -1,5 +1,5 @@
-from typing import List
 from enum import Enum
+from typing import List
 
 from apiflask import APIFlask, abort
 from pydantic import BaseModel, Field

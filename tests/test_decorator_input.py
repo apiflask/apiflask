@@ -6,17 +6,12 @@ from flask.views import MethodView
 from packaging.version import Version
 from werkzeug.datastructures import FileStorage
 
-from .conftest import APISPEC_VERSION
-from .schemas import Bar
-from .schemas import EnumPathParameter
-from .schemas import Files
-from .schemas import Foo
-from .schemas import Form
-from .schemas import FormAndFiles
 from apiflask import Schema
 from apiflask.fields import String
-from apiflask.validators import Length
-from apiflask.validators import OneOf
+from apiflask.validators import Length, OneOf
+
+from .conftest import APISPEC_VERSION
+from .schemas import Bar, EnumPathParameter, Files, Foo, Form, FormAndFiles
 
 
 def test_input(app, client):

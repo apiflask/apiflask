@@ -1,8 +1,7 @@
 import openapi_spec_validator as osv
 import pytest
 
-from apiflask.schemas import EmptySchema
-from apiflask.schemas import FileSchema
+from apiflask.schemas import EmptySchema, FileSchema
 
 
 def test_file_schema(app, client):

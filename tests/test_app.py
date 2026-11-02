@@ -4,15 +4,11 @@ from apispec import BasePlugin
 from flask import Blueprint
 from flask.views import MethodView
 
-from .schemas import Bar
-from .schemas import Foo
-from .schemas import Pagination
-from apiflask import APIBlueprint
-from apiflask import APIFlask
-from apiflask import Schema
+from apiflask import APIBlueprint, APIFlask, Schema
 from apiflask.exceptions import abort
-from apiflask.fields import Integer
-from apiflask.fields import String
+from apiflask.fields import Integer, String
+
+from .schemas import Bar, Foo, Pagination
 
 
 def test_app_init(app):

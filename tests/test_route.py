@@ -1,11 +1,10 @@
 import openapi_spec_validator as osv
 import pytest
-from flask.views import MethodView
-from flask.views import View
+from flask.views import MethodView, View
+
+from apiflask import APIBlueprint, HTTPTokenAuth
 
 from .schemas import Foo
-from apiflask import APIBlueprint
-from apiflask import HTTPTokenAuth
 
 
 @pytest.mark.parametrize('method', ['get', 'post', 'put', 'patch', 'delete'])

@@ -1,6 +1,5 @@
 import click
-from flask import current_app
-from flask import json
+from flask import current_app, json
 from flask.cli import with_appcontext
 
 

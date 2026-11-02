@@ -3,10 +3,8 @@ from __future__ import annotations
 import typing as t
 from functools import wraps
 
-from flask import current_app
-from flask import jsonify
+from flask import Response, current_app, jsonify
 from flask import request as flask_request
-from flask import Response
 from flask.typing import HeadersValue
 from flask.typing import ResponseValue as FlaskResponseValue
 from marshmallow import Schema
@@ -15,16 +13,18 @@ from pydantic import BaseModel
 from .helpers import _sentinel
 from .schema_adapters import registry
 from .schemas import FileSchema
-from .types import DecoratedType
-from .types import HTTPAuthType
-from .types import OpenAPISchemaType
-from .types import ResponseReturnValueType
-from .types import ResponsesType
-from .types import SchemaType
+from .types import (
+    DecoratedType,
+    HTTPAuthType,
+    OpenAPISchemaType,
+    ResponseReturnValueType,
+    ResponsesType,
+    SchemaType,
+)
 from .views import MethodView
 
 if t.TYPE_CHECKING:
-    from _typeshed.wsgi import WSGIApplication  # noqa: F401
+    from _typeshed.wsgi import WSGIApplication
 
     try:
         from flask_sqlalchemy import extension as sqla_ext  # type: ignore

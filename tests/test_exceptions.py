@@ -1,7 +1,6 @@
 import pytest
 
-from apiflask.exceptions import abort
-from apiflask.exceptions import HTTPError
+from apiflask.exceptions import HTTPError, abort
 from apiflask.helpers import get_reason_phrase
 
 

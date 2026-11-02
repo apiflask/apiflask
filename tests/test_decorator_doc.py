@@ -3,11 +3,11 @@ import pytest
 from flask.views import MethodView
 from packaging.version import Version
 
-from .conftest import APISPEC_VERSION
-from .schemas import CustomHTTPError
-from .schemas import Foo
 from apiflask import Schema
 from apiflask.fields import String
+
+from .conftest import APISPEC_VERSION
+from .schemas import CustomHTTPError, Foo
 
 
 def test_doc_summary_and_description(app, client):
@@ -324,7 +324,7 @@ def test_doc_responses_additional_content_type(app, client):
     assert 'text/html' in rv.json['paths']['/foo']['get']['responses']['200']['content']
     assert (
         rv.json['paths']['/foo']['get']['responses']['200']['description'] == 'Successful response'
-    )  # noqa: E501
+    )
     assert '200' in rv.json['paths']['/bar']['get']['responses']
     assert 'application/json' in rv.json['paths']['/bar']['get']['responses']['200']['content']
     assert 'text/html' in rv.json['paths']['/bar']['get']['responses']['200']['content']

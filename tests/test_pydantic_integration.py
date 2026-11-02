@@ -1,5 +1,5 @@
 import sys
-import typing
+import typing as t
 from enum import Enum
 
 import openapi_spec_validator as osv
@@ -200,7 +200,7 @@ class TestPydanticIntegration:
     def test_mixed_schemas_support(self):
         """Test that both marshmallow and Pydantic schemas can coexist."""
         from apiflask import Schema
-        from apiflask.fields import String, Integer
+        from apiflask.fields import Integer, String
 
         app = APIFlask(__name__)
 
@@ -650,7 +650,7 @@ class TestPydanticIntegration:
             CAT = 'cat'
 
         class PetQuery(BaseModel):
-            category: typing.Optional[PetCategory] = None
+            category: t.Optional[PetCategory] = None
 
         class PetIn(BaseModel):
             name: str

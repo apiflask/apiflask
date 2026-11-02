@@ -1,14 +1,10 @@
 import openapi_spec_validator as osv
 import pytest
 
-from .schemas import Foo
-from .schemas import ResponseHeader
 from apiflask import Schema
-from apiflask.fields import Boolean
-from apiflask.fields import Integer
-from apiflask.fields import List
-from apiflask.fields import Number
-from apiflask.fields import String
+from apiflask.fields import Boolean, Integer, List, Number, String
+
+from .schemas import Foo, ResponseHeader
 
 
 def test_spec_with_dict_headers(app, client):

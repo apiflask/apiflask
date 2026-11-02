@@ -1,9 +1,6 @@
 import openapi_spec_validator as osv
 
-from .schemas import Foo
-from .schemas import Header
-from .schemas import Pagination
-from .schemas import Query
+from .schemas import Foo, Header, Pagination, Query
 
 
 def test_spec_path_summary_description_from_docs(app, client):

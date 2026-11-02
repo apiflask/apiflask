@@ -2,25 +2,26 @@ from __future__ import annotations
 
 import typing as t
 from abc import abstractmethod
-from typing import Protocol
-from typing import runtime_checkable
 
 if t.TYPE_CHECKING:  # pragma: no cover
-    from flask.wrappers import Response  # noqa: F401
-    from werkzeug.datastructures import Headers  # noqa: F401
-    from _typeshed.wsgi import WSGIApplication  # noqa: F401
-    from .fields import Field  # noqa: F401
-    from .schemas import Schema  # noqa: F401
-    from .security import HTTPBasicAuth  # noqa: F401
-    from .security import HTTPTokenAuth  # noqa: F401
-    from .security import APIKeyHeaderAuth  # noqa: F401
-    from .security import APIKeyCookieAuth  # noqa: F401
-    from .security import APIKeyQueryAuth  # noqa: F401
-    from .exceptions import HTTPError  # noqa: F401
-    from .views import View  # noqa: F401
+    from _typeshed.wsgi import WSGIApplication
+    from flask.wrappers import Response
+    from werkzeug.datastructures import Headers
+
+    from .exceptions import HTTPError
+    from .fields import Field
+    from .schemas import Schema
+    from .security import (
+        APIKeyCookieAuth,
+        APIKeyHeaderAuth,
+        APIKeyQueryAuth,
+        HTTPBasicAuth,
+        HTTPTokenAuth,
+    )
+    from .views import View
 
     try:
-        from pydantic import BaseModel  # noqa: F401
+        from pydantic import BaseModel
     except ImportError:
         BaseModel = None  # type: ignore
 
@@ -78,7 +79,7 @@ RouteCallableType = t.Union[
 ]
 
 
-class PaginationType(Protocol):
+class PaginationType(t.Protocol):
     page: int
     per_page: int
     pages: int
@@ -89,13 +90,13 @@ class PaginationType(Protocol):
     has_prev: bool
 
 
-class ViewFuncType(Protocol):
+class ViewFuncType(t.Protocol):
     _spec: t.Any
     _method_spec: t.Any
 
 
-@runtime_checkable
-class SecurityScheme(Protocol):
+@t.runtime_checkable
+class SecurityScheme(t.Protocol):
     name: str
 
     @abstractmethod

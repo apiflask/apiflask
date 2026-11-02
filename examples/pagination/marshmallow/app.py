@@ -1,9 +1,9 @@
 import random
 
-from flask_sqlalchemy import SQLAlchemy
-from apiflask import APIFlask, Schema, PaginationSchema, pagination_builder
-from apiflask.fields import Integer, String, List, Nested
+from apiflask import APIFlask, PaginationSchema, Schema, pagination_builder
+from apiflask.fields import Integer, List, Nested, String
 from apiflask.validators import Range
+from flask_sqlalchemy import SQLAlchemy
 
 app = APIFlask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'

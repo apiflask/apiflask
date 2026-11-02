@@ -1,7 +1,8 @@
 import openapi_spec_validator as osv
 
-from .schemas import Foo
 from apiflask import HTTPTokenAuth
+
+from .schemas import Foo
 
 
 def test_async_view(app, client):

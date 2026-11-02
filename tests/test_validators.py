@@ -2,13 +2,11 @@ import io
 import typing as t
 
 import pytest
-from pydantic import AfterValidator
-from pydantic import BaseModel
+from pydantic import AfterValidator, BaseModel
 from werkzeug.datastructures import FileStorage
 
 from apiflask.fields import UploadFile
-from apiflask.validators import validate_file_size
-from apiflask.validators import validate_file_type
+from apiflask.validators import validate_file_size, validate_file_type
 
 
 def test_validate_file_type():

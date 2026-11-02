@@ -2,14 +2,12 @@ from __future__ import annotations
 
 import typing as t
 
-from flask import request
-from flask import url_for
+from flask import request, url_for
 from pydantic import BaseModel
 from werkzeug.http import HTTP_STATUS_CODES
 
 from .schemas import PaginationModel
 from .types import PaginationType
-
 
 _sentinel = object()
 
