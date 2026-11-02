@@ -103,3 +103,7 @@ class ResponseHeader(Schema):
 
 class DelimitedListQuery(Schema):
     tags = DelimitedList(String)
+
+
+class NullableFieldSchema(Schema):
+    name = String(allow_none=True)

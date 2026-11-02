@@ -5,7 +5,6 @@ import typing as t
 from .fields import DelimitedList
 from .helpers import _normalize_header_name
 from .schema_adapters import registry
-from .settings import OPENAPI_VERSION
 
 if t.TYPE_CHECKING:
     from apispec import APISpec
@@ -56,10 +55,19 @@ def extract_pydantic_defs(schema_dict: dict[str, t.Any], parent_name: str) -> di
 class OpenAPIHelper:
     """Helper class for generating OpenAPI schemas from different schema types.
 
+    Arguments:
+        openapi_version: The OpenAPI Specification version used when
+            converting schemas, e.g. `'3.0.3'` or `'3.1.0'`.
+
+    *Version changed: 3.1.3*
+
+    - Add parameter `openapi_version`.
+
     *Version added: 3.0.0*
     """
 
-    def __init__(self) -> None:
+    def __init__(self, openapi_version: str) -> None:
+        self.openapi_version = openapi_version
         self._marshmallow_plugin: MarshmallowPlugin | None = None
         self._marshmallow_plugin_initialized = False
 
@@ -79,7 +87,7 @@ class OpenAPIHelper:
                 APISpec(
                     title='_temp',
                     version='1.0.0',
-                    openapi_version=OPENAPI_VERSION,
+                    openapi_version=self.openapi_version,
                     plugins=[self._marshmallow_plugin],
                 )
                 self._marshmallow_plugin.converter.add_parameter_attribute_function(  # type: ignore
@@ -251,7 +259,3 @@ class OpenAPIHelper:
             return adapter.get_schema_name()
         except Exception:
             return 'Schema'
-
-
-# Global helper instance
-openapi_helper = OpenAPIHelper()

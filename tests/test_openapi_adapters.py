@@ -1,7 +1,9 @@
+import pytest
 from marshmallow import fields
 from marshmallow import Schema
 from marshmallow import validate
 
+from .schemas import NullableFieldSchema
 from apiflask.openapi_adapters import get_unique_schema_name
 from apiflask.openapi_adapters import OpenAPIHelper
 
@@ -32,7 +34,7 @@ def test_get_unique_schema_name():
     from apispec.ext.marshmallow import MarshmallowPlugin
 
     plugin = MarshmallowPlugin()
-    spec = APISpec(title='Test', version='1.0.0', openapi_version='3.0.3', plugins=[plugin])
+    spec = APISpec(title='Test', version='1.0.0', openapi_version='3.1.0', plugins=[plugin])
 
     # Register a schema
     spec.components.schema('TestSchema', schema=SimpleSchema())
@@ -54,7 +56,7 @@ class TestOpenAPIHelper:
 
     def test_get_marshmallow_plugin(self):
         """Test get_marshmallow_plugin method."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
         plugin = helper.get_marshmallow_plugin()
 
         assert plugin is not None
@@ -63,7 +65,7 @@ class TestOpenAPIHelper:
 
     def test_get_marshmallow_plugin_caching(self):
         """Test that marshmallow plugin is cached."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
         plugin1 = helper.get_marshmallow_plugin()
         plugin2 = helper.get_marshmallow_plugin()
 
@@ -71,7 +73,7 @@ class TestOpenAPIHelper:
 
     def test_schema_to_spec_marshmallow(self):
         """Test schema_to_spec with marshmallow schema."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
         schema = SimpleSchema()
 
         spec = helper.schema_to_spec(schema)
@@ -82,7 +84,7 @@ class TestOpenAPIHelper:
 
     def test_schema_to_spec_dict(self):
         """Test schema_to_spec with dict schema."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
         schema = {'name': fields.String(required=True)}
 
         spec = helper.schema_to_spec(schema)
@@ -92,7 +94,7 @@ class TestOpenAPIHelper:
 
     def test_schema_to_json_schema_marshmallow(self):
         """Test schema_to_json_schema with marshmallow schema."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
         schema = SimpleSchema()
 
         json_schema = helper.schema_to_json_schema(schema)
@@ -104,9 +106,27 @@ class TestOpenAPIHelper:
         assert 'age' in json_schema['properties']
         assert json_schema['properties']['age']['type'] == 'integer'
 
+    @pytest.mark.parametrize(
+        'openapi_version, expected',
+        [
+            ('3.0.0', {'type': 'string', 'nullable': True}),
+            ('3.1.0', {'type': ['string', 'null']}),
+        ],
+    )
+    def test_nullable_field_with_openapi_version(self, openapi_version, expected):
+        """Test that nullable fields follow the configured OpenAPI version."""
+        helper = OpenAPIHelper(openapi_version)
+        schema = NullableFieldSchema()
+
+        json_schema = helper.schema_to_json_schema(schema)
+        assert json_schema['properties']['name'] == expected
+
+        parameters = helper.schema_to_parameters(schema, location='query')
+        assert parameters[0]['schema'] == expected
+
     def test_schema_to_parameters_query(self):
         """Test schema_to_parameters for query parameters."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
         schema = SimpleSchema()
 
         params = helper.schema_to_parameters(schema, location='query')
@@ -123,7 +143,7 @@ class TestOpenAPIHelper:
 
     def test_schema_to_parameters_headers(self):
         """Test schema_to_parameters for headers."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
         schema = SimpleSchema()
 
         params = helper.schema_to_parameters(schema, location='headers')
@@ -133,7 +153,7 @@ class TestOpenAPIHelper:
 
     def test_schema_to_parameters_path(self):
         """Test schema_to_parameters for path parameters."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
         schema = SimpleSchema()
 
         params = helper.schema_to_parameters(schema, location='view_args')
@@ -143,7 +163,7 @@ class TestOpenAPIHelper:
 
     def test_schema_to_parameters_with_enum(self):
         """Test schema_to_parameters handles enum validation."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
         schema = EnumSchema()
 
         params = helper.schema_to_parameters(schema, location='query')
@@ -155,7 +175,7 @@ class TestOpenAPIHelper:
 
     def test_schema_to_parameters_location_mapping(self):
         """Test schema_to_parameters location mapping."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
         schema = SimpleSchema()
 
         # Test various location mappings
@@ -173,7 +193,7 @@ class TestOpenAPIHelper:
 
     def test_get_schema_name_dict(self):
         """Test get_schema_name with dict schema."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
         schema = {'name': fields.String()}
 
         name = helper.get_schema_name(schema)
@@ -183,7 +203,7 @@ class TestOpenAPIHelper:
 
     def test_schema_to_spec_unknown_type(self):
         """Test schema_to_spec with unknown schema type."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
 
         # Pass something that's not a valid schema
         spec = helper.schema_to_spec('not_a_schema')
@@ -193,7 +213,7 @@ class TestOpenAPIHelper:
 
     def test_schema_to_json_schema_unknown_type(self):
         """Test schema_to_json_schema with unknown schema type."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
 
         # Pass something that's not a valid schema
         json_schema = helper.schema_to_json_schema('not_a_schema')
@@ -203,7 +223,7 @@ class TestOpenAPIHelper:
 
     def test_schema_to_parameters_unknown_type(self):
         """Test schema_to_parameters with unknown schema type."""
-        helper = OpenAPIHelper()
+        helper = OpenAPIHelper('3.1.0')
 
         # Pass something that's not a valid schema
         params = helper.schema_to_parameters('not_a_schema', location='query')

@@ -3,8 +3,10 @@
 Released: -
 
 - Fix marshmallow parameter schemas using the OpenAPI 3.0 `nullable` style in the default OpenAPI 3.1 spec ([issue #771][issue_771]).
+- Fix the OpenAPI version not being respected by the OpenAPI helper class used to generate OpenAPI specification elements ([issue #773][issue_773]).
 
 [issue_771]: https://github.com/apiflask/apiflask/issues/771
+[issue_773]: https://github.com/apiflask/apiflask/issues/773
 
 ## Version: 3.1.2
 

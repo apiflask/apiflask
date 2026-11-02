@@ -119,7 +119,7 @@ The version of OpenAPI Specification (`openapi.openapi`). This configuration can
 be configured from the `app.openapi_version` attribute.
 
 - Type: `str`
-- Default value: `'3.0.3'`
+- Default value: `'3.1.0'`
 - Examples:
 
 ```python
@@ -749,7 +749,7 @@ app.config['AUTO_200_RESPONSE'] = False
 ```
 
 
-### `AUTO_404_RESPONSE`
+### AUTO_404_RESPONSE
 
 If a view function's URL rule contains a variable. By default, APIFlask will add a
 404 response for this view into OpenAPI spec. Set this config to `False` to disable
@@ -1028,12 +1028,12 @@ app.config['REDOC_CONFIG'] = {'disableSearch': True, 'hideLoading': True}
     This configuration variable was added in the [version 0.9.0](/changelog/#version-090).
 
 
-### REDOC_STANDALONE_JS`
+### REDOC_STANDALONE_JS
 
 The absolute or relative URL of the Redoc standalone JavaScript file.
 
 - Type: `str`
-- Default value: `'https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js'`
+- Default value: `'https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js'`
 - Examples:
 
 ```python
@@ -1046,7 +1046,7 @@ app.config['REDOC_STANDALONE_JS'] = 'https://cdn.redoc.ly/redoc/latest/bundles/r
 The absolute or relative URL of the Swagger UI CSS file.
 
 - Type: `str`
-- Default value: `'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css'`
+- Default value: `'https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui.css'`
 - Examples:
 
 ```python
@@ -1059,7 +1059,7 @@ app.config['SWAGGER_UI_CSS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-u
 The absolute or relative URL of the Swagger UI bundle JavaScript file.
 
 - Type: `str`
-- Default value: `'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-bundle.js'`
+- Default value: `'https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui-bundle.js'`
 - Examples:
 
 ```python
@@ -1072,7 +1072,7 @@ app.config['SWAGGER_UI_BUNDLE_JS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swa
 The absolute or relative URL of the Swagger UI standalone preset JavaScript file.
 
 - Type: `str`
-- Default value: `'https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-standalone-preset.js'`
+- Default value: `'https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui-standalone-preset.js'`
 - Examples:
 
 ```python
