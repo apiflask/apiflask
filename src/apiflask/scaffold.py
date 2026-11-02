@@ -32,21 +32,22 @@ if t.TYPE_CHECKING:
         sqla_ext = None  # type: ignore
 
     if sqla_ext is not None:
-        ResponseValue = Schema | BaseModel | sqla_ext._FSAModel | FlaskResponseValue  # type: ignore
+        ResponseValue: t.TypeAlias = (
+            Schema | BaseModel | sqla_ext._FSAModel | FlaskResponseValue  # type: ignore
+        )
     else:
-        ResponseValue = Schema | BaseModel | FlaskResponseValue  # type: ignore
+        ResponseValue: t.TypeAlias = Schema | BaseModel | FlaskResponseValue  # type: ignore
 
-    ResponseReturnValue = (
+    ResponseReturnValue: t.TypeAlias = (
         ResponseValue
-        | tuple[ResponseValue, HeadersValue]  # type: ignore
-        | tuple[ResponseValue, int]  # type: ignore
-        | tuple[ResponseValue, int, HeadersValue]  # type: ignore
+        | tuple[ResponseValue, HeadersValue]
+        | tuple[ResponseValue, int]
+        | tuple[ResponseValue, int, HeadersValue]
         | WSGIApplication
     )
 
-    RouteCallable = (
-        t.Callable[..., ResponseReturnValue]  # type: ignore
-        | t.Callable[..., t.Awaitable[ResponseReturnValue]]  # type: ignore
+    RouteCallable: t.TypeAlias = (
+        t.Callable[..., ResponseReturnValue] | t.Callable[..., t.Awaitable[ResponseReturnValue]]
     )
 
     T_route = t.TypeVar('T_route', bound=RouteCallable)
