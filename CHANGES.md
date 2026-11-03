@@ -3,6 +3,8 @@
 Released: -
 
 - Drop support for Python 3.9 ([issue #777][issue_777]).
+- Disable coverage collection in the PyPy test environment to avoid a PyPy
+  JIT crash.
 
 [issue_777]: https://github.com/apiflask/apiflask/issues/777
 
