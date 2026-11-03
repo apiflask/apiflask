@@ -20,7 +20,7 @@ from werkzeug.datastructures import FileStorage
 
 
 def validate_file_type(
-    accept: t.Iterable[str], error: t.Optional[str] = None
+    accept: t.Iterable[str], error: str | None = None
 ) -> t.Callable[[FileStorage], FileStorage]:
     """Validator which succeeds if the uploaded file is allowed by a given list
     of extensions.
@@ -53,11 +53,11 @@ def validate_file_type(
 
 
 def validate_file_size(
-    min: t.Optional[str] = None,
-    max: t.Optional[str] = None,
+    min: str | None = None,
+    max: str | None = None,
     min_inclusive: bool = True,
     max_inclusive: bool = True,
-    error: t.Optional[str] = None,
+    error: str | None = None,
 ) -> t.Callable[[FileStorage], FileStorage]:
     """Validator which succeeds if the file passed to it is within the specified
     size range. If ``min`` is not specified, or is specified as `None`,

@@ -5,7 +5,6 @@ import warnings
 from pydantic import GetJsonSchemaHandler
 from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import core_schema
-from typing_extensions import Annotated
 from werkzeug.datastructures import FileStorage
 
 with warnings.catch_warnings():
@@ -74,4 +73,4 @@ class _FileTypeAnnotation:
         return {'type': 'string', 'format': 'binary'}
 
 
-UploadFile = Annotated[FileStorage, _FileTypeAnnotation]
+UploadFile = t.Annotated[FileStorage, _FileTypeAnnotation]

@@ -133,7 +133,7 @@ class PetOut(BaseModel):
 
 
 class PetsOut(BaseModel):
-    pets: List[PetOut] = []
+    pets: list[PetOut] = []
     pagination: PaginationModel
 
 

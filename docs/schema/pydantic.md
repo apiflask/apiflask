@@ -18,7 +18,6 @@ Here's how to define and use Pydantic models with APIFlask:
 
 ```python
 from enum import Enum
-from typing import Optional
 from pydantic import BaseModel, Field
 from apiflask import APIFlask
 
@@ -35,14 +34,14 @@ class PetCategory(str, Enum):
 class PetIn(BaseModel):
     name: str = Field(min_length=1, max_length=50, description='Pet name')
     category: PetCategory = Field(description='Pet category')
-    age: Optional[int] = Field(default=None, ge=0, le=30, description='Pet age')
+    age: int | None = Field(default=None, ge=0, le=30, description='Pet age')
 
 
 class PetOut(BaseModel):
     id: int = Field(description='Pet ID')
     name: str = Field(description='Pet name')
     category: PetCategory = Field(description='Pet category')
-    age: Optional[int] = Field(default=None, description='Pet age')
+    age: int | None = Field(default=None, description='Pet age')
 
 
 @app.post('/pets')
@@ -67,14 +66,13 @@ Pydantic uses Python type hints for automatic validation:
 
 ```python
 from datetime import datetime
-from typing import Optional
 from pydantic import BaseModel, Field, EmailStr, HttpUrl
 
 class UserIn(BaseModel):
     username: str = Field(min_length=3, max_length=20)
     email: EmailStr  # Requires: pip install pydantic[email]
     age: int = Field(ge=18, le=120)
-    website: Optional[HttpUrl] = None  # Requires: pip install pydantic[email]
+    website: HttpUrl | None = None  # Requires: pip install pydantic[email]
     tags: list[str] = Field(default_factory=list)
     is_active: bool = True
     created_at: datetime = Field(default_factory=datetime.now)
@@ -161,14 +159,13 @@ class User(BaseModel):
 You can use Pydantic models for query parameters:
 
 ```python
-from typing import Optional
 from pydantic import BaseModel, Field
 
 class SearchQuery(BaseModel):
     q: str = Field(description='Search query')
     page: int = Field(default=1, ge=1, description='Page number')
     per_page: int = Field(default=10, ge=1, le=100, description='Items per page')
-    sort_by: Optional[str] = Field(default=None, description='Sort field')
+    sort_by: str | None = Field(default=None, description='Sort field')
 
 @app.get('/search')
 @app.input(SearchQuery, location='query')
@@ -183,7 +180,6 @@ def search(query_data):
 Pydantic models automatically generate comprehensive OpenAPI schemas:
 
 ```python
-from typing import Optional
 from pydantic import BaseModel, Field, ConfigDict
 from enum import Enum
 
@@ -208,7 +204,7 @@ class Task(BaseModel):
     )
 
     title: str = Field(description='Task title', examples=['Complete project'])
-    description: Optional[str] = Field(default=None, description='Task description')
+    description: str | None = Field(default=None, description='Task description')
     priority: Priority = Field(default=Priority.medium, description='Task priority')
     completed: bool = Field(default=False, description='Task completion status')
     tags: list[str] = Field(default_factory=list, description='Task tags')

@@ -1,5 +1,3 @@
-import sys
-import typing as t
 from enum import Enum
 
 import openapi_spec_validator as osv
@@ -400,12 +398,12 @@ class TestPydanticIntegration:
 
     def test_list_type_with_typing_List(self):
         """Test list type support with typing.List[Model]."""
-        from typing import List
+        import typing as t
 
         app = APIFlask(__name__)
 
         @app.get('/users')
-        @app.output(List[UserModel])
+        @app.output(t.List[UserModel])  # noqa: UP006
         def get_users():
             return [
                 UserModel(id=1, name='Alice', email='alice@example.com'),
@@ -438,9 +436,8 @@ class TestPydanticIntegration:
             assert 'items' in response_schema
             assert response_schema['items']['$ref'] == '#/components/schemas/UserModel'
 
-    @pytest.mark.skipif(sys.version_info < (3, 9), reason='Native list syntax requires Python 3.9+')
     def test_list_type_with_native_list(self):
-        """Test list type support with native list[Model] (Python 3.9+)."""
+        """Test list type support with native list[Model]."""
         app = APIFlask(__name__)
 
         @app.get('/users')
@@ -475,7 +472,6 @@ class TestPydanticIntegration:
             assert 'items' in response_schema
             assert response_schema['items']['$ref'] == '#/components/schemas/UserModel'
 
-    @pytest.mark.skipif(sys.version_info < (3, 9), reason='Native list syntax requires Python 3.9+')
     def test_list_type_with_dict_response(self):
         """Test list type with dict responses instead of model instances."""
         app = APIFlask(__name__)
@@ -499,12 +495,11 @@ class TestPydanticIntegration:
 
     def test_mixed_list_and_single_endpoints(self):
         """Test that list and single endpoints work correctly together."""
-        from typing import List
 
         app = APIFlask(__name__)
 
         @app.get('/users')
-        @app.output(List[UserModel])
+        @app.output(list[UserModel])
         def list_users():
             return [
                 UserModel(id=1, name='Alice', email='alice@example.com'),
@@ -650,7 +645,7 @@ class TestPydanticIntegration:
             CAT = 'cat'
 
         class PetQuery(BaseModel):
-            category: t.Optional[PetCategory] = None
+            category: PetCategory | None = None
 
         class PetIn(BaseModel):
             name: str

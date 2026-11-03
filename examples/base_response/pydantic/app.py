@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List
 
 from apiflask import APIFlask, abort
 from pydantic import BaseModel, Field
@@ -60,7 +59,7 @@ def get_pet(pet_id):
 
 
 @app.get('/pets')
-@app.output(List[PetOut])
+@app.output(list[PetOut])
 def get_pets():
     return {
         'data': pets,

@@ -1,3 +1,11 @@
+## Version: 3.2.0
+
+Released: -
+
+- Drop support for Python 3.9 ([issue #777][issue_777]).
+
+[issue_777]: https://github.com/apiflask/apiflask/issues/777
+
 ## Version: 3.1.3
 
 Released: 2026/11/2

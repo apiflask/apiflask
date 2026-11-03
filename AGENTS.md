@@ -130,7 +130,7 @@ mkdocs build
   derived from `requires-python`.
 - Type annotations are checked with mypy (`tool.mypy` in pyproject.toml). Do not add
   `type: ignore` comments—solve type errors properly or note them for a follow-up.
-- Python target version: 3.9+.
+- Python target version: 3.10+.
 - Tests use pytest with coverage (`--cov=apiflask --cov-branch`). Test paths include both
   `tests/` and `examples/`.
 

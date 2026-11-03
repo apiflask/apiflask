@@ -146,7 +146,7 @@ attribute.
 [`AUTO_SERVERS`](/configuration#auto_servers) config is default to `True`, which
 means the server information will be set automatically when the request context is available.
 
-- Type: `List[Dict[str, str]]`
+- Type: `list[dict[str, str]]`
 - Default value: `None`
 - Examples:
 
@@ -188,7 +188,7 @@ This configuration can also be configured from the `app.tags` attribute.
 If not set, the blueprint names will use as tags, all the endpoints under the
 blueprint will be marked with the blueprint tag automatically.
 
-- Type: `Union[List[str], List[Dict[str, str]]]`
+- Type: `list[str] | list[dict[str, str]]`
 - Default value: `None`
 - Examples:
 
@@ -235,7 +235,7 @@ app.tags = ['foo', 'bar', 'baz']
 The external documentation information of the API (`openapi.externalDocs`).
 This configuration can also be configured from the `app.external_docs` attribute.
 
-- Type: `Dict[str, str]`
+- Type: `dict[str, str]`
 - Default value: `None`
 - Examples:
 
@@ -263,7 +263,7 @@ from the `app.info` attribute. The info object (openapi.info), it accepts a dict
 following info fields: `description`, `termsOfService`, `contact`, `license`. You can use
 separate configuration variables to overwrite this dict.
 
-- Type: `Dict[str, str]`
+- Type: `dict[str, str]`
 - Default value: `None`
 - Examples:
 
@@ -347,7 +347,7 @@ app.terms_of_service = 'http://example.com/terms/'
 The contact information of the API (`openapi.info.contact`).
 This configuration can also be configured from the `app.contact` attribute.
 
-- Type: `Dict[str, str]`
+- Type: `dict[str, str]`
 - Default value: `None`
 - Examples:
 
@@ -375,7 +375,7 @@ app.contact = {
 The license of the API (`openapi.info.license`).
 This configuration can also be configured from the `app.license` attribute.
 
-- Type: `Dict[str, str]`
+- Type: `dict[str, str]`
 - Default value: `None`
 - Examples:
 
@@ -405,7 +405,7 @@ and `HTTPTokenAuth`, the security schemes will be generated automatically.
 
 This configuration can also be configured from the `app.security_schemes` attribute.
 
-- Type: `Dict[str, t.Any]`
+- Type: `dict[str, t.Any]`
 - Default value: `None`
 - Examples:
 
@@ -581,7 +581,7 @@ app.config['SPEC_PROCESSOR_PASS_OBJECT'] = True
 
 The custom decorators of the OpenAPI documentation UI endpoint (`/docs`).
 
-- Type: `List[Callable]`
+- Type: `list[Callable]`
 - Default value: `None`
 - Examples:
 
@@ -594,7 +594,7 @@ app.config['DOCS_DECORATORS'] = [your_decorator]
 
 The custom decorators of the OpenAPI spec endpoint (`/openapi.json`).
 
-- Type: `List[Callable]`
+- Type: `list[Callable]`
 - Default value: `None`
 - Examples:
 
@@ -607,7 +607,7 @@ app.config['SPEC_DECORATORS'] = [your_decorator]
 
 The custom decorators of the Swagger UI OAuth redirect endpoint (`/docs/oauth2-redirect`).
 
-- Type: `List[Callable]`
+- Type: `list[Callable]`
 - Default value: `None`
 - Examples:
 
@@ -873,7 +873,7 @@ app.config['VALIDATION_ERROR_DESCRIPTION'] = 'Invalid JSON body'
 The schema of validation error response, accepts a schema class or
 a dict of OpenAPI schema definition.
 
-- Type: `Union[Schema, dict]`
+- Type: `Schema | dict`
 - Default value: `apiflask.schemas.validation_error_schema`
 - Examples:
 
@@ -913,7 +913,7 @@ app.config['AUTH_ERROR_DESCRIPTION'] = 'Auth error'
 The schema of generic HTTP error response, accepts a schema class or
 a dict of OpenAPI schema definition.
 
-- Type: `Union[Schema, dict]`
+- Type: `Schema | dict`
 - Default value: `apiflask.schemas.http_error_schema`
 - Examples:
 
@@ -927,7 +927,7 @@ app.config['HTTP_ERROR_SCHEMA'] = CustomHTTPErrorSchema
 The schema of base response schema, accepts a schema class or a dict of
 OpenAPI schema definition.
 
-- Type: `Union[Schema, dict]`
+- Type: `Schema | dict`
 - Default value: `None`
 - Examples:
 

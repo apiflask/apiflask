@@ -1,5 +1,3 @@
-import typing as t
-
 from apiflask import APIFlask, APIKeyHeaderAuth, abort
 from authlib.jose import JoseError, jwt
 from flask import current_app
@@ -26,12 +24,12 @@ users = [
 ]
 
 
-def get_user_by_id(id: int) -> t.Union[User, None]:
+def get_user_by_id(id: int) -> User | None:
     return tuple(filter(lambda u: u.id == id, users))[0]
 
 
 @auth.verify_token
-def verify_apikey(apikey: str) -> t.Union[User, None]:
+def verify_apikey(apikey: str) -> User | None:
     try:
         data = jwt.decode(
             apikey.encode('ascii'),

@@ -93,7 +93,7 @@ class PydanticAdapter(SchemaAdapter):
 
     @staticmethod
     def handle_files(
-        request: Request, data: dict, file_fields: t.List[str], file_list_fields: t.List[str]
+        request: Request, data: dict, file_fields: list[str], file_list_fields: list[str]
     ) -> None:
         for key in file_fields:
             fs = request.files.get(key)
@@ -145,7 +145,7 @@ class PydanticAdapter(SchemaAdapter):
                 file_fields = _get_fields_by_type(
                     self.model_class, UploadFile
                 ) + _get_fields_by_type(self.model_class, FileStorage)
-                file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
+                file_list_fields = _get_fields_by_type(self.model_class, list[UploadFile])
 
                 # Add files to data
                 self.handle_files(request, data, file_fields, file_list_fields)
@@ -159,7 +159,7 @@ class PydanticAdapter(SchemaAdapter):
                 file_fields = _get_fields_by_type(
                     self.model_class, UploadFile
                 ) + _get_fields_by_type(self.model_class, FileStorage)
-                file_list_fields = _get_fields_by_type(self.model_class, t.List[UploadFile])
+                file_list_fields = _get_fields_by_type(self.model_class, list[UploadFile])
 
                 # Add files to data
                 self.handle_files(request, data, file_fields, file_list_fields)
@@ -207,7 +207,7 @@ class PydanticAdapter(SchemaAdapter):
 
     def serialize_output(self, data: t.Any, many: bool = False) -> t.Any:
         """Serialize output using Pydantic with validation."""
-        if many and isinstance(data, (list, tuple)):
+        if many and isinstance(data, list | tuple):
             # Handle lists of data
             result = []
             for item in data:
@@ -222,7 +222,7 @@ class PydanticAdapter(SchemaAdapter):
         elif isinstance(data, BaseModel):
             # Pydantic model instance - already validated, just serialize
             return data.model_dump(mode='json', by_alias=True)
-        elif isinstance(data, (list, tuple)) and not many:
+        elif isinstance(data, list | tuple) and not many:
             # Handle lists when many=False
             result = []
             for item in data:

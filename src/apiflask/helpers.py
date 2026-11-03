@@ -102,7 +102,7 @@ def pagination_builder(
 
 
     class PetsOut(BaseModel):
-        pets: List[PetOut] = []
+        pets: list[PetOut] = []
         pagination: PaginationModel
 
 
@@ -181,7 +181,7 @@ def _is_same_type(left: t.Any, right: t.Any) -> bool:
     )
 
 
-def _get_fields_by_type(model_class: type[BaseModel], field_type: type) -> t.List[str]:
+def _get_fields_by_type(model_class: type[BaseModel], field_type: type) -> list[str]:
     """A helper function to get the fields of the specified type in BaseModel.
 
     *Version Added: 3.1.0*
