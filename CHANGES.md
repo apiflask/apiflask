@@ -3,8 +3,10 @@
 Released: -
 
 - Drop support for Python 3.9 ([issue #777][issue_777]).
+- Fix getting `enable_openapi` on Flask blueprint when generating `openapi.json` ([issue #782][issue_782]).
 
 [issue_777]: https://github.com/apiflask/apiflask/issues/777
+[issue_782]: https://github.com/apiflask/apiflask/issues/782
 
 ## Version: 3.1.3
 

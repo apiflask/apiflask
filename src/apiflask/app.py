@@ -777,8 +777,7 @@ class APIFlask(APIScaffold, Flask):
 
             if auth.name in auth_names:
                 warnings.warn(
-                    f"The auth scheme name '{auth.name}' has existed, "
-                    'so it will be overwritten.',
+                    f"The auth scheme name '{auth.name}' has existed, so it will be overwritten.",
                     stacklevel=2,
                 )
 
@@ -797,7 +796,9 @@ class APIFlask(APIScaffold, Flask):
         # collect auth info on blueprint before_request functions
         for blueprint_name, funcs in self.before_request_funcs.items():
             # skip app-level before_request functions (blueprint_name is None)
-            if blueprint_name is None or not self.blueprints[blueprint_name].enable_openapi:  # type: ignore
+            if blueprint_name is None or not getattr(
+                self.blueprints[blueprint_name], 'enable_openapi', None
+            ):  # type: ignore
                 continue
             for f in funcs:
                 if hasattr(f, '_spec'):  # pragma: no cover
@@ -1058,7 +1059,7 @@ class APIFlask(APIScaffold, Flask):
                 if operation_id is None:
                     if self.config['AUTO_OPERATION_ID']:
                         operation['operationId'] = (
-                            f"{method.lower()}_{rule.endpoint.replace('.', '_')}"
+                            f'{method.lower()}_{rule.endpoint.replace(".", "_")}'
                         )
                 else:
                     operation['operationId'] = operation_id
