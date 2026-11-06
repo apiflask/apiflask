@@ -777,8 +777,7 @@ class APIFlask(APIScaffold, Flask):
 
             if auth.name in auth_names:
                 warnings.warn(
-                    f"The auth scheme name '{auth.name}' has existed, "
-                    'so it will be overwritten.',
+                    f"The auth scheme name '{auth.name}' has existed, so it will be overwritten.",
                     stacklevel=2,
                 )
 
@@ -1058,7 +1057,7 @@ class APIFlask(APIScaffold, Flask):
                 if operation_id is None:
                     if self.config['AUTO_OPERATION_ID']:
                         operation['operationId'] = (
-                            f"{method.lower()}_{rule.endpoint.replace('.', '_')}"
+                            f'{method.lower()}_{rule.endpoint.replace(".", "_")}'
                         )
                 else:
                     operation['operationId'] = operation_id
@@ -1483,7 +1482,9 @@ class APIFlask(APIScaffold, Flask):
             if isinstance(base_schema, type):
                 # Convert schema class to instance, then to full JSON schema
                 # Use schema_to_json_schema to get complete schema with properties
-                base_schema_spec = self._openapi_helper.schema_to_json_schema(base_schema)
+                base_schema_spec = self._openapi_helper.schema_to_json_schema(
+                    base_schema, spec=spec
+                )
             elif isinstance(base_schema, dict):
                 base_schema_spec = base_schema
             else:

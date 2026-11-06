@@ -1,6 +1,9 @@
 import openapi_spec_validator as osv
 import pytest
 
+from apiflask import Schema
+from apiflask.fields import Nested, String
+
 from .schemas import DelimitedListQuery, NullableFieldSchema
 
 
@@ -74,3 +77,37 @@ def test_spec_valid_after_openapi_version_update(app):
         'nullable': True,
         'type': 'string',
     }
+
+
+@pytest.mark.parametrize(
+    'location, route_path',
+    [
+        ('query', '/query'),
+        ('headers', '/headers'),
+        ('cookies', '/cookies'),
+        ('view_args', '/pets/<item>'),
+    ],
+)
+def test_nested_schema_registered_in_components_for_parameters(app, location, route_path):
+    class ChildSchema(Schema):
+        name = String()
+
+    class ParameterSchema(Schema):
+        item = Nested(ChildSchema)
+
+    if location == 'view_args':
+
+        @app.get(route_path)
+        @app.input(ParameterSchema, location=location)
+        def handle_path(item, **kwargs):
+            return {}
+    else:
+
+        @app.get(route_path)
+        @app.input(ParameterSchema, location=location)
+        def handle_param(**kwargs):
+            return {}
+
+    spec = app.spec
+    osv.validate(spec)
+    assert 'ChildSchema' in spec['components']['schemas']

@@ -2,7 +2,7 @@ import openapi_spec_validator as osv
 import pytest
 
 from apiflask import Schema
-from apiflask.fields import Field, Integer, String
+from apiflask.fields import Field, Integer, Nested, String
 
 from .schemas import Foo
 
@@ -222,3 +222,26 @@ def test_nullable_base_response_field_with_openapi_version(app, client, openapi_
         ]['properties']['message']
         == expected
     )
+
+
+def test_nested_schema_registered_in_components_for_base_response(app):
+    class Pagination(Schema):
+        page = Integer()
+
+    class Envelope(Schema):
+        data = Field()
+        pagination = Nested(Pagination)
+
+    app.config['BASE_RESPONSE_SCHEMA'] = Envelope
+
+    @app.get('/pets')
+    @app.output(Foo)
+    def pets():
+        return {}
+
+    spec = app.spec
+    osv.validate(spec)
+    assert spec['paths']['/pets']['get']['responses']['200']['content']['application/json'][
+        'schema'
+    ]['properties']['pagination'] == {'$ref': '#/components/schemas/Pagination'}
+    assert 'Pagination' in spec['components']['schemas']

@@ -3,8 +3,10 @@
 Released: -
 
 - Drop support for Python 3.9 ([issue #777][issue_777]).
+- Fix nested schemas not being registered in `components/schemas` when used in parameters, response headers, or base response schemas ([issue #780][issue_780]).
 
 [issue_777]: https://github.com/apiflask/apiflask/issues/777
+[issue_780]: https://github.com/apiflask/apiflask/issues/780
 
 ## Version: 3.1.3
 
