@@ -71,12 +71,28 @@ class OpenAPIHelper:
         self._marshmallow_plugin: MarshmallowPlugin | None = None
         self._marshmallow_plugin_initialized = False
 
-    def get_marshmallow_plugin(self) -> MarshmallowPlugin | None:
+    def get_marshmallow_plugin(self, spec: APISpec | None = None) -> MarshmallowPlugin | None:
         """Get or create marshmallow plugin for OpenAPI schema generation.
 
-        Returns a MarshmallowPlugin with initialized converter, ready to use.
+        If a spec is provided and has an initialized MarshmallowPlugin, that plugin
+        will be returned so nested schemas are registered in the spec's components.
+        Otherwise, returns a shared MarshmallowPlugin with initialized converter.
         Returns None if marshmallow is not installed.
         """
+        if spec is not None:
+            try:
+                from apispec.ext.marshmallow import MarshmallowPlugin
+
+                for p in getattr(spec, 'plugins', []):
+                    if isinstance(p, MarshmallowPlugin):
+                        converter = getattr(p, 'converter', None)
+                        param_funcs = getattr(converter, 'parameter_attribute_functions', [])
+                        if converter is not None and self.delimited_list2param not in param_funcs:
+                            converter.add_parameter_attribute_function(self.delimited_list2param)
+                        return p
+            except ImportError:
+                return None
+
         if not self._marshmallow_plugin_initialized:
             try:
                 from apispec import APISpec
@@ -117,7 +133,7 @@ class OpenAPIHelper:
             # Fallback for unknown schema types
             return {'type': 'object'}
 
-    def schema_to_json_schema(self, schema: t.Any) -> dict[str, t.Any]:
+    def schema_to_json_schema(self, schema: t.Any, spec: APISpec | None = None) -> dict[str, t.Any]:
         """Convert a schema to full JSON schema with properties.
 
         This is different from schema_to_spec in that it returns the complete
@@ -127,6 +143,7 @@ class OpenAPIHelper:
 
         Arguments:
             schema: Schema object (marshmallow, Pydantic, etc.)
+            spec: The APISpec object used to register nested schemas.
 
         Returns:
             Full JSON schema dict with properties
@@ -136,12 +153,23 @@ class OpenAPIHelper:
 
             # For marshmallow schemas, use schema2jsonschema
             if adapter.schema_type == 'marshmallow':
-                plugin = self.get_marshmallow_plugin()
+                plugin = self.get_marshmallow_plugin(spec=spec)
                 if plugin is not None:
-                    return plugin.converter.schema2jsonschema(adapter.schema)  # type: ignore[union-attr, no-any-return]
+                    res = plugin.converter.schema2jsonschema(adapter.schema)  # type: ignore[union-attr, no-any-return]
+                    if spec is not None and getattr(plugin.converter, 'spec', None) is not spec:
+                        for name, s_def in plugin.converter.spec.components.schemas.items():
+                            if name not in spec.components.schemas:
+                                spec.components.schema(name, s_def)
+                    return res
 
             # For other schema types, fall back to get_openapi_schema
-            return adapter.get_openapi_schema()
+            schema_dict = adapter.get_openapi_schema()
+            if adapter.schema_type == 'pydantic' and spec is not None:
+                nested_defs = extract_pydantic_defs(schema_dict, adapter.get_schema_name())
+                for nested_name, nested_schema in nested_defs.items():
+                    if nested_name not in spec.components.schemas:
+                        spec.components.schema(nested_name, nested_schema)
+            return schema_dict
         except Exception:
             # Fallback for unknown schema types
             return {'type': 'object'}
@@ -183,7 +211,7 @@ class OpenAPIHelper:
             # For marshmallow schemas, extract parameters directly from fields
             if adapter.schema_type == 'marshmallow':
                 parameters = self._extract_marshmallow_parameters(
-                    adapter.schema, location=openapi_location
+                    adapter.schema, location=openapi_location, spec=spec
                 )
 
                 # Normalize header names
@@ -236,14 +264,19 @@ class OpenAPIHelper:
         return ret
 
     def _extract_marshmallow_parameters(
-        self, schema: t.Any, location: str
+        self, schema: t.Any, location: str, spec: APISpec | None = None
     ) -> list[dict[str, t.Any]]:
         """Extract parameters from marshmallow schema fields using apispec converter."""
-        plugin = self.get_marshmallow_plugin()
+        plugin = self.get_marshmallow_plugin(spec=spec)
         if plugin is None:
             return []
 
-        return plugin.converter.schema2parameters(schema, location=location)  # type: ignore[union-attr, no-any-return]
+        res = plugin.converter.schema2parameters(schema, location=location)  # type: ignore[union-attr, no-any-return]
+        if spec is not None and getattr(plugin.converter, 'spec', None) is not spec:
+            for name, s_def in plugin.converter.spec.components.schemas.items():
+                if name not in spec.components.schemas:
+                    spec.components.schema(name, s_def)
+        return res
 
     def get_schema_name(self, schema: t.Any) -> str:
         """Get the name for a schema.

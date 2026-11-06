@@ -2,7 +2,7 @@ import openapi_spec_validator as osv
 import pytest
 
 from apiflask import Schema
-from apiflask.fields import Boolean, Integer, List, Number, String
+from apiflask.fields import Boolean, Integer, List, Nested, Number, String
 
 from .schemas import Foo, ResponseHeader
 
@@ -120,3 +120,26 @@ def test_nullable_header_field_with_openapi_version(app, client, openapi_version
         ]
         == expected
     )
+
+
+def test_nested_schema_registered_in_components_for_headers(app):
+    class HeaderChild(Schema):
+        name = String()
+
+    class HeaderSchema(Schema):
+        x_child = Nested(HeaderChild)
+
+    @app.get('/output-header')
+    @app.output(Foo, headers=HeaderSchema)
+    def output_header():
+        return {}
+
+    @app.get('/doc-header')
+    @app.doc(responses={202: {'description': 'Accepted', 'headers': HeaderSchema}})
+    @app.output(Foo)
+    def doc_header():
+        return {}
+
+    spec = app.spec
+    osv.validate(spec)
+    assert 'HeaderChild' in spec['components']['schemas']

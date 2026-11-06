@@ -228,3 +228,29 @@ class TestOpenAPIHelper:
 
         # Should return empty list
         assert params == []
+
+    def test_schema_to_parameters_registers_nested_schemas_with_spec(self):
+        """Test schema_to_parameters registers nested schemas when spec is provided."""
+        from apispec import APISpec
+        from apispec.ext.marshmallow import MarshmallowPlugin
+
+        plugin = MarshmallowPlugin()
+        spec = APISpec(title='Test', version='1.0.0', openapi_version='3.1.0', plugins=[plugin])
+        helper = OpenAPIHelper('3.1.0')
+
+        params = helper.schema_to_parameters(NestedSchema, location='query', spec=spec)
+        assert len(params) == 2
+        assert 'Simple' in spec.components.schemas
+
+    def test_schema_to_json_schema_registers_nested_schemas_with_spec(self):
+        """Test schema_to_json_schema registers nested schemas when spec is provided."""
+        from apispec import APISpec
+        from apispec.ext.marshmallow import MarshmallowPlugin
+
+        plugin = MarshmallowPlugin()
+        spec = APISpec(title='Test', version='1.0.0', openapi_version='3.1.0', plugins=[plugin])
+        helper = OpenAPIHelper('3.1.0')
+
+        json_schema = helper.schema_to_json_schema(NestedSchema, spec=spec)
+        assert 'properties' in json_schema
+        assert 'Simple' in spec.components.schemas
