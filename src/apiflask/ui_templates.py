@@ -22,7 +22,7 @@ redoc_template = """
 <body>
   <div id="redoc"></div>
 
-  <script src="{{ config.REDOC_STANDALONE_JS }}"> </script>
+  <script src="{{ config.REDOC_STANDALONE_JS }}"{% if config.REDOC_STANDALONE_JS_INTEGRITY %} integrity="{{ config.REDOC_STANDALONE_JS_INTEGRITY }}" crossorigin="anonymous"{% endif %}> </script>
   <script>
     Redoc.init(
       "{{ url_for('openapi.spec') }}",
@@ -42,7 +42,7 @@ swagger_ui_template = """
 <head>
   <meta charset="UTF-8">
   <title>{{ title }} {{ version }} - Swagger UI</title>
-  <link rel="stylesheet" type="text/css" href="{{ config.SWAGGER_UI_CSS }}">
+  <link rel="stylesheet" type="text/css" href="{{ config.SWAGGER_UI_CSS }}"{% if config.SWAGGER_UI_CSS_INTEGRITY %} integrity="{{ config.SWAGGER_UI_CSS_INTEGRITY }}" crossorigin="anonymous"{% endif %}>
   <link rel="icon" type="image/png"
     href="{{ config.DOCS_FAVICON }}">
   <style>
@@ -68,8 +68,8 @@ swagger_ui_template = """
 <body>
   <div id="swagger-ui"></div>
 
-  <script src="{{ config.SWAGGER_UI_BUNDLE_JS }}"></script>
-  <script src="{{ config.SWAGGER_UI_STANDALONE_PRESET_JS }}"></script>
+  <script src="{{ config.SWAGGER_UI_BUNDLE_JS }}"{% if config.SWAGGER_UI_BUNDLE_JS_INTEGRITY %} integrity="{{ config.SWAGGER_UI_BUNDLE_JS_INTEGRITY }}" crossorigin="anonymous"{% endif %}></script>
+  <script src="{{ config.SWAGGER_UI_STANDALONE_PRESET_JS }}"{% if config.SWAGGER_UI_STANDALONE_PRESET_JS_INTEGRITY %} integrity="{{ config.SWAGGER_UI_STANDALONE_PRESET_JS_INTEGRITY }}" crossorigin="anonymous"{% endif %}></script>
   <script>
     // we can get several config items of Function type
     // referring to https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
@@ -206,8 +206,8 @@ elements_template = """
   <title>{{ title }} {{ version }} - Elements</title>
   <link rel="icon" type="image/png"
     href="{{ config.DOCS_FAVICON }}">
-  <script src="{{ config.ELEMENTS_JS }}"></script>
-  <link rel="stylesheet" href="{{ config.ELEMENTS_CSS }}">
+  <script src="{{ config.ELEMENTS_JS }}"{% if config.ELEMENTS_JS_INTEGRITY %} integrity="{{ config.ELEMENTS_JS_INTEGRITY }}" crossorigin="anonymous"{% endif %}></script>
+  <link rel="stylesheet" href="{{ config.ELEMENTS_CSS }}"{% if config.ELEMENTS_CSS_INTEGRITY %} integrity="{{ config.ELEMENTS_CSS_INTEGRITY }}" crossorigin="anonymous"{% endif %}>
 </head>
 <body>
 
@@ -239,7 +239,7 @@ rapidoc_template = """
   <title>{{ title }} {{ version }} - RapiDoc</title>
   <link rel="icon" type="image/png"
     href="{{ config.DOCS_FAVICON }}">
-  <script type="module" src="{{ config.RAPIDOC_JS }}"></script>
+  <script type="module" src="{{ config.RAPIDOC_JS }}"{% if config.RAPIDOC_JS_INTEGRITY %} integrity="{{ config.RAPIDOC_JS_INTEGRITY }}" crossorigin="anonymous"{% endif %}></script>
 </head>
 <body>
   <rapi-doc
@@ -268,7 +268,7 @@ rapipdf_template = """
   <title>{{ title }} {{ version }} - RapiPDF</title>
   <link rel="icon" type="image/png"
     href="{{ config.DOCS_FAVICON }}">
-  <script src="{{ config.RAPIPDF_JS }}"></script>
+  <script src="{{ config.RAPIPDF_JS }}"{% if config.RAPIPDF_JS_INTEGRITY %} integrity="{{ config.RAPIPDF_JS_INTEGRITY }}" crossorigin="anonymous"{% endif %}></script>
 </head>
 <body>
   <rapi-pdf
