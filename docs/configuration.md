@@ -1302,6 +1302,38 @@ app.config['RAPIPDF_CONFIG'] = {
 ```
 
 
+### Integrity of API documentation resources
+
+The [Subresource Integrity][_sri] hash of each API documentation resource. When one
+is set, the corresponding `<script>` or `<link>` tag is rendered with the `integrity`
+attribute and `crossorigin="anonymous"`, so the browser refuses to use the file if its
+content does not match the hash. Pin the resource URL to a fixed version when you use it.
+
+[_sri]: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
+
+- `REDOC_STANDALONE_JS_INTEGRITY` (for `REDOC_STANDALONE_JS`)
+- `SWAGGER_UI_CSS_INTEGRITY` (for `SWAGGER_UI_CSS`)
+- `SWAGGER_UI_BUNDLE_JS_INTEGRITY` (for `SWAGGER_UI_BUNDLE_JS`)
+- `SWAGGER_UI_STANDALONE_PRESET_JS_INTEGRITY` (for `SWAGGER_UI_STANDALONE_PRESET_JS`)
+- `ELEMENTS_JS_INTEGRITY` (for `ELEMENTS_JS`)
+- `ELEMENTS_CSS_INTEGRITY` (for `ELEMENTS_CSS`)
+- `RAPIDOC_JS_INTEGRITY` (for `RAPIDOC_JS`)
+- `RAPIPDF_JS_INTEGRITY` (for `RAPIPDF_JS`)
+
+- Type: `str`
+- Default value: `None`
+- Examples:
+
+```python
+app.config['SWAGGER_UI_CSS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui.min.css'
+app.config['SWAGGER_UI_CSS_INTEGRITY'] = 'sha384-...'
+```
+
+!!! warning "Version >= 3.2.0"
+
+    These configuration variables were added in the [version 3.2.0](/changelog/#version-320).
+
+
 ## Flask built-in configuration variables
 
 See *[Builtin Configuration Values][_flask_config]{target:_blank}* for the

@@ -174,3 +174,37 @@ def test_rapipdf_resources():
     rv = client.get('/docs')
     assert rv.status_code == 200
     assert b'src="https://cdn.example.com/rapipdf.js"' in rv.data
+
+
+@pytest.mark.parametrize(
+    'ui_name, config_name, attr',
+    [
+        ('redoc', 'REDOC_STANDALONE_JS', 'src'),
+        ('swagger-ui', 'SWAGGER_UI_CSS', 'href'),
+        ('swagger-ui', 'SWAGGER_UI_BUNDLE_JS', 'src'),
+        ('swagger-ui', 'SWAGGER_UI_STANDALONE_PRESET_JS', 'src'),
+        ('elements', 'ELEMENTS_JS', 'src'),
+        ('elements', 'ELEMENTS_CSS', 'href'),
+        ('rapidoc', 'RAPIDOC_JS', 'src'),
+        ('rapipdf', 'RAPIPDF_JS', 'src'),
+    ],
+)
+def test_docs_resources_integrity(ui_name, config_name, attr):
+    app = APIFlask(__name__, docs_ui=ui_name)
+    app.config[config_name] = 'https://cdn.example.com/resource'
+    client = app.test_client()
+
+    rv = client.get('/docs')
+    assert rv.status_code == 200
+    assert f'{attr}="https://cdn.example.com/resource">'.encode() in rv.data
+    assert b'integrity=' not in rv.data
+    assert b'crossorigin=' not in rv.data
+
+    app.config[f'{config_name}_INTEGRITY'] = 'sha384-abc+/='
+    rv = client.get('/docs')
+    assert rv.status_code == 200
+    assert (
+        f'{attr}="https://cdn.example.com/resource" integrity="sha384-abc+/=" '
+        'crossorigin="anonymous">'
+    ).encode() in rv.data
+    assert rv.data.count(b'integrity=') == 1

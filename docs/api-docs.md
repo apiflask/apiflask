@@ -217,6 +217,27 @@ See *[Configuration](/configuration/#api-documentations)* for the
 introduction and examples of these configuration variables.
 
 
+## Use Subresource Integrity for API documentation resources
+
+If your security policy requires [Subresource Integrity][_sri_mdn]{target=_blank} for
+files loaded from a CDN, set the hash of each resource in the configuration variable
+named after it with an `_INTEGRITY` suffix, for example `SWAGGER_UI_CSS_INTEGRITY` for
+`SWAGGER_UI_CSS`. The tag is then rendered with the `integrity` attribute and
+`crossorigin="anonymous"`:
+
+```py
+app.config['SWAGGER_UI_CSS'] = 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.11.1/swagger-ui.min.css'
+app.config['SWAGGER_UI_CSS_INTEGRITY'] = 'sha384-...'
+```
+
+Use a URL with a fixed version, since the hash only matches one exact file.
+
+See *[Configuration](/configuration/#integrity-of-api-documentation-resources)* for
+the full list of these configuration variables.
+
+[_sri_mdn]: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
+
+
 ## Serve API documentation from local resources
 
 Like what you need to do in the last section, to use local resources, you can pass
