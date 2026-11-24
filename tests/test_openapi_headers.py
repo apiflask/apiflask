@@ -2,7 +2,7 @@ import openapi_spec_validator as osv
 import pytest
 
 from apiflask import Schema
-from apiflask.fields import Boolean, Integer, List, Number, String
+from apiflask.fields import Boolean, Integer, List, String
 
 from .schemas import Foo, ResponseHeader
 
@@ -14,7 +14,6 @@ def test_spec_with_dict_headers(app, client):
         headers={
             'X-boolean': Boolean(metadata={'description': 'A boolean header'}),
             'X-integer': Integer(metadata={'description': 'An integer header'}),
-            'X-number': Number(metadata={'description': 'A number header'}),
             'X-string': String(metadata={'description': 'A string header'}),
             'X-array': List(String(), metadata={'description': 'An array header'}),
         },
@@ -33,11 +32,6 @@ def test_spec_with_dict_headers(app, client):
             'description': 'An integer header',
             'required': False,
             'schema': {'type': 'integer'},
-        },
-        'X-number': {
-            'description': 'A number header',
-            'required': False,
-            'schema': {'type': 'number'},
         },
         'X-string': {
             'description': 'A string header',

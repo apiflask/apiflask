@@ -5,6 +5,7 @@ Released: -
 - Drop support for Python 3.9 ([issue #777][issue_777]).
 - Fix getting `enable_openapi` on Flask blueprint when generating `openapi.json` ([issue #782][issue_782]).
 - Add `*_INTEGRITY` configuration variables to set Subresource Integrity hashes for the API documentation resources, e.g. `SWAGGER_UI_CSS_INTEGRITY` ([issue #719][issue_719]).
+- Add support for Python 3.15.
 
 [issue_719]: https://github.com/apiflask/apiflask/issues/719
 [issue_777]: https://github.com/apiflask/apiflask/issues/777

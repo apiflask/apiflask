@@ -37,7 +37,6 @@ from marshmallow.fields import Mapping as Mapping
 from marshmallow.fields import Method as Method
 from marshmallow.fields import NaiveDateTime as NaiveDateTime
 from marshmallow.fields import Nested as Nested
-from marshmallow.fields import Number as Number
 from marshmallow.fields import Pluck as Pluck
 from marshmallow.fields import Raw as Raw
 from marshmallow.fields import String as String

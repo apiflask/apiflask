@@ -22,9 +22,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {name: '3.14 on Linux', python: '3.14', os: ubuntu-latest, tox: py314}
-          - {name: '3.14 on Windows', python: '3.14', os: windows-latest, tox: py314}
-          - {name: '3.14 on Mac', python: '3.14', os: macos-latest, tox: py314}
+          - {name: '3.15 on Linux', python: '3.15', os: ubuntu-latest, tox: py315}
+          - {name: '3.15 on Windows', python: '3.15', os: windows-latest, tox: py315}
+          - {name: '3.15 on Mac', python: '3.15', os: macos-latest, tox: py315}
+          - {name: '3.14', python: '3.14', os: ubuntu-latest, tox: py314}
           - {name: '3.13', python: '3.13', os: ubuntu-latest, tox: py313}
           - {name: '3.12', python: '3.12', os: ubuntu-latest, tox: py312}
           - {name: '3.11', python: '3.11', os: ubuntu-latest, tox: py311}

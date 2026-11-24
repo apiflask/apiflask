@@ -1,3 +1,4 @@
 flask-sqlalchemy
 authlib
 marshmallow-dataclass
+cffi>=2.1.0

@@ -2,3 +2,4 @@ pytest
 pytest-cov
 openapi-spec-validator
 asgiref
+rpds-py>=2026.5.1
