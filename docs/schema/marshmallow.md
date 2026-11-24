@@ -108,7 +108,6 @@ API documentation: <https://marshmallow.readthedocs.io/en/stable/marshmallow.fie
 - `Method`
 - `NaiveDateTime`
 - `Nested`
-- `Number`
 - `Pluck`
 - `Raw`
 - `String`

@@ -29,12 +29,11 @@ jobs:
           - {name: '3.13', python: '3.13', os: ubuntu-latest, tox: py313}
           - {name: '3.12', python: '3.12', os: ubuntu-latest, tox: py312}
           - {name: '3.11', python: '3.11', os: ubuntu-latest, tox: py311}
-          - {name: '3.10', python: '3.10', os: ubuntu-latest, tox: py310}
           - {name: 'PyPy', python: 'pypy-3.11', os: ubuntu-latest, tox: pypy311}
-          - {name: 'Minimum Versions', python: '3.10', os: ubuntu-latest, tox: 'min-versions'}
-          - {name: Style, python: '3.10', os: ubuntu-latest, tox: style}
-          - {name: Docs, python: '3.10', os: ubuntu-latest, tox: docs}
-          - {name: Typing, python: '3.10', os: ubuntu-latest, tox: typing}
+          - {name: 'Minimum Versions', python: '3.11', os: ubuntu-latest, tox: 'min-versions'}
+          - {name: Style, python: '3.11', os: ubuntu-latest, tox: style}
+          - {name: Docs, python: '3.11', os: ubuntu-latest, tox: docs}
+          - {name: Typing, python: '3.11', os: ubuntu-latest, tox: typing}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v6

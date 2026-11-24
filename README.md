@@ -22,7 +22,7 @@ With APIFlask, you will have:
 
 ## Requirements
 
-- Python 3.10+
+- Python 3.11+
 - Flask 2.1+
 
 
