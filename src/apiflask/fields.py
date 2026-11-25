@@ -33,7 +33,6 @@ from marshmallow.fields import Integer as Integer
 from marshmallow.fields import IPv4 as IPv4
 from marshmallow.fields import IPv6 as IPv6
 from marshmallow.fields import List as List
-from marshmallow.fields import Mapping as Mapping
 from marshmallow.fields import Method as Method
 from marshmallow.fields import NaiveDateTime as NaiveDateTime
 from marshmallow.fields import Nested as Nested
