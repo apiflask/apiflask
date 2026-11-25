@@ -104,7 +104,6 @@ API documentation: <https://marshmallow.readthedocs.io/en/stable/marshmallow.fie
 - `IPv4`
 - `IPv6`
 - `List`
-- `Mapping`
 - `Method`
 - `NaiveDateTime`
 - `Nested`
