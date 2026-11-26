@@ -5,7 +5,7 @@
 #
 #    requirements upgrade
 #
-babel==2.18.0
+babel==2.19.0
     # via mkdocs-material
 backrefs==8.3.1
     # via mkdocs-material
@@ -28,7 +28,7 @@ jinja2==3.1.6
     #   mkdocs
     #   mkdocs-material
     #   mkdocstrings
-markdown==3.11.3
+markdown==3.11.4
     # via
     #   mkdocs
     #   mkdocs-autorefs
