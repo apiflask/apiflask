@@ -1,3 +1,6 @@
 [build]
   publish = "site"
   command = "pip install -r requirements/docs.txt && pip install flask flask-marshmallow webargs flask-httpauth apispec && pip install . && export PYTHONPATH=$(pwd) && mkdocs build"
+
+[build.environment]
+  PYTHON_VERSION = "3.11"
