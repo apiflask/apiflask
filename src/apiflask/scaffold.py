@@ -32,7 +32,7 @@ if t.TYPE_CHECKING:
         sqla_ext = None  # type: ignore
 
     if sqla_ext is not None:
-        ResponseValue: t.TypeAlias = (
+        ResponseValue: t.TypeAlias = (  # type: ignore[unreachable]
             Schema | BaseModel | sqla_ext._FSAModel | FlaskResponseValue  # type: ignore
         )
     else:
